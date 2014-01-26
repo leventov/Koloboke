@@ -1,0 +1,6 @@
+net.openhft.collect
+net.openhft.collect.map
+net.openhft.collect.map.hash
+net.openhft.collect.set
+net.openhft.collect.set.hash
+net.openhft.function
