@@ -1,0 +1,63 @@
+/*
+ * Copyright 2014 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.openhft.jpsg.collect.bulk;
+
+import net.openhft.jpsg.PrimitiveType;
+
+import static net.openhft.jpsg.collect.MethodGenerator.primitiveHash;
+
+
+public abstract class HashCode extends BulkMethod {
+
+    abstract int initialValue();
+
+    @Override
+    public void beginning() {
+        gen.lines("int hashCode = " + initialValue() + ";");
+    }
+
+    abstract String aggregate(String elemHash);
+
+    @Override
+    public void loopBody() {
+        String key = gen.key(), keyHash;
+        if (cxt.keyOption() instanceof PrimitiveType) {
+            keyHash = primitiveHash((PrimitiveType) cxt.keyOption(), key);
+        } else {
+            keyHash = "nullableKeyHashCode(" + key + ")";
+        }
+        String value = gen.value(), valueHash;
+        if (cxt.mapValueOption() instanceof PrimitiveType) {
+            valueHash = primitiveHash((PrimitiveType) cxt.mapValueOption(), value);
+        } else {
+            valueHash = "nullableValueHashCode(" + value + ")";
+        }
+
+        String hash;
+        if (cxt.isMapView()) {
+            hash = keyHash + " ^ " + valueHash;
+        } else {
+            hash = cxt.isKeyView() ? keyHash : valueHash;
+        }
+        gen.lines(aggregate(hash) + ";");
+    }
+
+    @Override
+    public void end() {
+        gen.ret("hashCode");
+    }
+}

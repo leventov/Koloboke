@@ -1,0 +1,34 @@
+subprojects {
+    apply plugin: 'idea'
+    apply plugin: 'java'
+    apply plugin: 'jpsg' // defined in buildSrc
+
+    sourceCompatibility = 1.6
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile 'org.kohsuke.jetbrains:annotations:9.0'
+        testCompile 'junit:junit:4.11'
+    }
+
+    tasks.withType(net.openhft.jpsg.GeneratorTask).each { gen ->
+        gen.addProcessor net.openhft.jpsg.collect.MethodGeneratingProcessor
+        gen.never 'float|double'
+    }
+}
+
+project(':api').javadoc.options.links 'http://docs.oracle.com/javase/7/docs/api/'
+
+project(':impl') {
+    dependencies {
+        compile project(':api')
+        testCompile 'com.google.guava:guava-testlib:16.0'
+    }
+
+    test {
+        jvmArgs '-XX:MaxJavaStackTraceDepth=-1'
+    }
+}

@@ -1,0 +1,25 @@
+apply plugin: 'groovy'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile localGroovy()
+    compile gradleApi()
+    compile 'com.beust:jcommander:1.32'
+    compile ('org.slf4j:slf4j-api:1.7.5', 'org.slf4j:slf4j-simple:1.7.5')
+}
+
+sourceSets {
+    main {
+        groovy {
+            // really frustrating that gradle api depends on jcommander-1.12,
+            // which hides our dep (I didn't find how to resolve this conflict)
+            exclude '**/CLI.java'
+        }
+    }
+}
