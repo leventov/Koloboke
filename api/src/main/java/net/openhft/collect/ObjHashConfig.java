@@ -53,7 +53,7 @@ public final class ObjHashConfig {
      * <p>Default: {@code true}.
      *
      * @return {@code true} if null key is allowed, {@code false} otherwise
-     * @see #withNullKeysAllowed(boolean)
+     * @see #withNullKeyAllowed(boolean)
      */
     public boolean isNullKeyAllowed() {
         return nullKeyAllowed;
@@ -62,7 +62,7 @@ public final class ObjHashConfig {
     /**
      * @see #isNullKeyAllowed()
      */
-    public ObjHashConfig withNullKeysAllowed(boolean nullKeyAllowed) {
+    public ObjHashConfig withNullKeyAllowed(boolean nullKeyAllowed) {
         if (this.nullKeyAllowed == nullKeyAllowed)
             return this;
         return new ObjHashConfig(hashConfig, nullKeyAllowed);
