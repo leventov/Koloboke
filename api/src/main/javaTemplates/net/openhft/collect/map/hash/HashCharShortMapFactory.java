@@ -57,7 +57,6 @@ public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/
     /* define gv *//* if !(obj value) //Short// elif obj value //V2// endif *//* enddefine */
 
     /* if obj key */
-    @Override
     <KE> HashCharShortMapFactory<KE/* if obj value */, V/* endif */>
     withKeyEquivalence(@Nullable Equivalence<KE> keyEquivalence);
     /* endif */
@@ -69,7 +68,7 @@ public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/
 
     /* elif !(obj value) */
     @Override
-    CharShortMapFactory/*<>*/ withDefaultValue(short defaultValue);
+    HashCharShortMapFactory/*<>*/ withDefaultValue(short defaultValue);
     /* endif */
 
     /* if !(float|double key) */CharHashConfig/* elif float|double key //HashConfig// endif */

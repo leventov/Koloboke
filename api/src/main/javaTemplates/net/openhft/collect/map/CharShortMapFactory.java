@@ -60,9 +60,6 @@ public interface CharShortMapFactory/*<>*/ {
 
     /* if obj key */
     @Nullable Equivalence<Character> getKeyEquivalence();
-
-    <KE> CharShortMapFactory<KE/* if obj value */, Short/* endif */>
-    withKeyEquivalence(@Nullable Equivalence<KE> keyEquivalence);
     /* endif */
 
     /* if obj value */
