@@ -2,6 +2,9 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 
 sourceCompatibility = 1.7
+idea.module.iml { withXml {
+    it.asNode().component.find { it.@name == 'NewModuleRootManager' }.@LANGUAGE_LEVEL = 'JDK_1_7'
+} }
 
 repositories {
     mavenCentral()

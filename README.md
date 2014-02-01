@@ -23,6 +23,8 @@ Bonus: java.uti.Map default methods from JDK8 in the API for Java 6 and 7.
     $ git clone git@github.com:OpenHFT/UntitledCollectionsProject.git collections
     $ cd collections
     $ gradle idea
+    $ cd buildSrc
+    $ gradle idea
 
 Then you can open the project in IntelliJ IDEA. To build, run
 
