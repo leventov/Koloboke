@@ -28,9 +28,14 @@ import java.util.Set;
  */
 public interface CharSet/*<>*/ extends CharCollection/*<>*/, Set<Character> {
 
-    // Need to override this method, because Set.add(Object) -- erasure! -- conflicts with
-    // CharCollection.add(Character)
+    /* if !(obj elem) */
+
+    /**
+     * Need to override this method, because Set.add(Object) -- erasure! -- conflicts with
+     * {@code CharCollection.add(Character)}
+     */
     @Override
     @Deprecated
     boolean add(Character e);
+    /* endif */
 }
