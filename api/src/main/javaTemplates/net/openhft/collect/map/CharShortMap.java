@@ -391,7 +391,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      * when combining multiple mapped values for a key.
      *
      // removeIfNull //
-     * <p>If the // mergeOperator // itself throws an (unchecked) exception,
+     * <p>If the remappingFunction itself throws an (unchecked) exception,
      * the exception is rethrown, and the current mapping is left unchanged.
      *
      * @param key key with which the specified value is to be associated
