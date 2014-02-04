@@ -26,7 +26,7 @@ import java.util.Collection;
 public abstract class AbstractView<E> implements Collection<E>, Container {
 
     @Override
-    public boolean ensureCapacity(int minSize) {
+    public final boolean ensureCapacity(int minSize) {
         throw new UnsupportedOperationException();
     }
 

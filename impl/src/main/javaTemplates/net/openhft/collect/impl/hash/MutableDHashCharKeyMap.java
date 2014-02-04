@@ -227,11 +227,6 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
 
 
         @Override
-        public boolean ensureCapacity(int additionalSize) {
-            return MutableDHashCharKeyMap.this.ensureCapacity(additionalSize);
-        }
-
-        @Override
         public boolean shrink() {
             return MutableDHashCharKeyMap.this.shrink();
         }
