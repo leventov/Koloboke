@@ -100,4 +100,26 @@ public class MutableDHashCharSetGO/*<>*/ extends MutableCharDHashSetSO/*<>*/
         /* template Remove */ throw new NotGenerated(); /* endtemplate */
     }
     /* endif */
+
+
+    @Override
+    public boolean removeAll(@NotNull Collection<?> c) {
+        /* if !(obj elem) */
+        if (c instanceof CharCollection) {
+        /* endif */
+            if (c instanceof InternalCharCollectionOps) {
+                InternalCharCollectionOps c2 = (InternalCharCollectionOps) c;
+                if (c2.size() < this.size()/* if obj elem //
+                            && NullableObjects.equals(equivalence(), c2.equivalence())
+                            // endif */) {
+                    /* if obj elem */// noinspection unchecked/* endif */
+                    return c2.reverseRemoveAllFrom(this);
+                }
+            }
+        /* if !(obj elem) */
+            return super.removeAll((CharCollection) c);
+        }
+        /* endif */
+        return super.removeAll(c);
+    }
 }
