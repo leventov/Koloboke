@@ -22,6 +22,7 @@ import net.openhft.collect.set.hash.HashCharSetFactory;
 import net.openhft.function.*;
 import net.openhft.collect.set.hash.HashCharSet;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 
@@ -87,7 +88,10 @@ public abstract class HashCharSetFactoryGO/*<>*/ extends HashCharSetFactorySO/*<
 
     @Override
     public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elements) {
-        return newMutableSet(elements, hashConf.getDefaultExpectedSize());
+        int expectedSize = elements instanceof Collection ?
+                ((Collection) elements).size() :
+                hashConf.getDefaultExpectedSize();
+        return newMutableSet(elements, expectedSize);
     }
 
     @Override
