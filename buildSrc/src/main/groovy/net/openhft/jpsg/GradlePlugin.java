@@ -40,6 +40,105 @@ import java.util.concurrent.Callable;
 public class GradlePlugin  implements Plugin<ProjectInternal> {
     public static final String JPSG_CONFIGURATION_NAME = "jpsg";
 
+    private enum Flavor {
+        JAVA("java") {
+            @Override
+            String sourceSetNameEnd() {
+                return " Java primitive specialization sources";
+            }
+
+            @Override
+            SourceDirectorySet getSourceDirectorySet(SourceSet sourceSet) {
+                return sourceSet.getJava();
+            }
+
+            @Override
+            String dependentTaskName(SourceSet sourceSet) {
+                return sourceSet.getCompileJavaTaskName();
+            }
+        },
+
+        RESOURCES("resource") {
+            @Override
+            String sourceSetNameEnd() {
+                return " primitive specializations of resources";
+            }
+
+            @Override
+            String generatedPart() {
+                return "resources";
+            }
+
+            @Override
+            SourceDirectorySet getSourceDirectorySet(SourceSet sourceSet) {
+                return sourceSet.getResources();
+            }
+
+            @Override
+            String dependentTaskName(SourceSet sourceSet) {
+                return sourceSet.getProcessResourcesTaskName();
+            }
+        };
+
+        private final String word;
+
+        Flavor(String word) {
+            this.word = word;
+        }
+
+        abstract String sourceSetNameEnd();
+        String templatesPart() {
+            return word + "Templates";
+        }
+        String taskNameSuffix() {
+            return word.substring(0, 1).toUpperCase() + word.substring(1) + "Specializations";
+        }
+        String taskDescriptionFormat() {
+            return "Processes the %s " + word + " specialization sources.";
+        }
+        String generatedPart() {
+            return word;
+        }
+        abstract SourceDirectorySet getSourceDirectorySet(SourceSet sourceSet);
+        abstract String dependentTaskName(SourceSet sourceSet);
+    }
+
+    private static void setupTask(ProjectInternal project, SourceSet sourceSet, Flavor f) {
+        String dirPath = String.format("src/%s/%s", sourceSet.getName(), f.templatesPart());
+        FileResolver fileResolver = project.getFileResolver();
+        File dir = fileResolver.resolve(dirPath);
+        if (!dir.exists())
+            return;
+        // for each source set we will:
+        // 1) Add a new 'javaTemplates' or 'resourceTemplates' source dirs
+        String sourceSetName = ((DefaultSourceSet) sourceSet).getDisplayName();
+        SourceDirectorySet templates = new DefaultSourceDirectorySet(
+                sourceSetName + f.sourceSetNameEnd(), fileResolver);
+        templates.srcDir(dirPath);
+        sourceSet.getAllSource().source(templates);
+
+        // 2) create an GeneratorTask for this sourceSet following the gradle
+        //    naming conventions via call to sourceSet.getTaskName()
+        final String taskName =
+                sourceSet.getTaskName("generate", f.taskNameSuffix());
+        GeneratorTask gen = project.getTasks().create(taskName, GeneratorTask.class);
+        gen.setDescription(String.format(f.taskDescriptionFormat(), sourceSet.getName()));
+
+        // 3) set up convention mapping for default sources
+        // (allows user to not have to specify)
+        gen.setSource(dir);
+
+        // 4) Set up the Jpsg output directory (adding to javac inputs!)
+        final String target = String.format("%s/generated-src/jpsg/%s/%s",
+                project.getBuildDir(), sourceSet.getName(), f.generatedPart());
+        gen.setTarget(target);
+        f.getSourceDirectorySet(sourceSet).srcDir(new File(target));
+
+        // 5) register fact that jpsg should be run before compiling
+        project.getTasks().getByName(f.dependentTaskName(sourceSet)).dependsOn(taskName);
+    }
+
+    @Override
     public void apply(final ProjectInternal project) {
         project.getPlugins().apply(JavaPlugin.class);
 
@@ -53,65 +152,10 @@ public class GradlePlugin  implements Plugin<ProjectInternal> {
 
         project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().all(
                 new Action<SourceSet>() {
+                    @Override
                     public void execute(SourceSet sourceSet) {
-                        FileResolver fileResolver = project.getFileResolver();
-                        // for each source set we will:
-                        // 1) Add a new 'javaTemplates' and 'resourceTemplates' source dirs
-                        String sourceSetName = ((DefaultSourceSet) sourceSet).getDisplayName();
-                        SourceDirectorySet javaTemplates = new DefaultSourceDirectorySet(
-                                sourceSetName + " Java primitive specialization sources",
-                                fileResolver);
-                        String javaDir = String.format("src/%s/javaTemplates", sourceSet.getName());
-                        javaTemplates.srcDir(javaDir);
-                        sourceSet.getAllSource().source(javaTemplates);
-
-                        SourceDirectorySet resourceTemplates = new DefaultSourceDirectorySet(
-                                sourceSetName + " primitive specializations of resources",
-                                fileResolver);
-                        String resourcesDir =
-                                String.format("src/%s/resourceTemplates", sourceSet.getName());
-                        resourceTemplates.srcDir(resourcesDir);
-                        sourceSet.getAllSource().source(resourceTemplates);
-
-                        // 2) create an GeneratorTask for this sourceSet following the gradle
-                        //    naming conventions via call to sourceSet.getTaskName()
-                        final String javaTaskName =
-                                sourceSet.getTaskName("generate", "JavaSpecializations");
-                        final String resourcesTaskName =
-                                sourceSet.getTaskName("generate", "ResourceSpecializations");
-                        GeneratorTask javaGen = project.getTasks()
-                                .create(javaTaskName, GeneratorTask.class);
-                        GeneratorTask resourcesGen = project.getTasks()
-                                .create(resourcesTaskName, GeneratorTask.class);
-                        javaGen.setDescription(String.format(
-                                "Processes the %s Java specialization sources.",
-                                sourceSet.getName()));
-                        resourcesGen.setDescription(String.format(
-                                "Processes the %s resource specialization sources.",
-                                sourceSet.getName()));
-
-                        // 3) set up convention mapping for default sources
-                        // (allows user to not have to specify)
-                        javaGen.setSource(fileResolver.resolve(javaDir));
-                        resourcesGen.setSource(fileResolver.resolve(resourcesDir));
-
-                        // 4) Set up the Jpsg output directory (adding to javac inputs!)
-                        final String javaTarget = String.format("%s/generated-src/jpsg/%s/java",
-                                project.getBuildDir(), sourceSet.getName());
-                        javaGen.setTarget(javaTarget);
-                        final String resourcesTarget =
-                                String.format("%s/generated-src/jpsg/%s/resources",
-                                        project.getBuildDir(), sourceSet.getName());
-                        resourcesGen.setTarget(resourcesTarget);
-
-                        sourceSet.getJava().srcDir(new File(javaTarget));
-                        sourceSet.getResources().srcDir(new File(resourcesTarget));
-
-                        // 5) register fact that jpsg should be run before compiling
-                        project.getTasks().getByName(sourceSet.getCompileJavaTaskName())
-                                .dependsOn(javaTaskName);
-                        project.getTasks().getByName(sourceSet.getProcessResourcesTaskName())
-                                .dependsOn(resourcesTaskName);
+                        setupTask(project, sourceSet, Flavor.JAVA);
+                        setupTask(project, sourceSet, Flavor.RESOURCES);
                     }
                 });
     }

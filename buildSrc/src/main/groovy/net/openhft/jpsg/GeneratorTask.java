@@ -211,14 +211,16 @@ public class GeneratorTask extends ConventionTask {
         return this;
     }
 
-    public Path getSource() {
-        return source;
+    @InputDirectory
+    public File getSource() {
+        return source.toFile();
     }
 
     public GeneratorTask setTarget(File target) {
         this.target = target.toPath();
         return this;
     }
+
 
     public GeneratorTask setTarget(Path target) {
         this.target = target;
@@ -230,8 +232,9 @@ public class GeneratorTask extends ConventionTask {
         return this;
     }
 
-    public Path getTarget() {
-        return target;
+    @OutputDirectory
+    public File getTarget() {
+        return target.toFile();
     }
 
     @TaskAction
