@@ -17,31 +17,51 @@
 
 package net.openhft.collect.impl.hash;
 
-import net.openhft.collect.CharCollection;
-import net.openhft.collect.CharHashConfig;
+import net.openhft.collect.*;
 import net.openhft.function.CharConsumer;
 import net.openhft.collect.set.hash.HashCharSetFactory;
 
 import java.util.Set;
 
 
-public abstract class HashCharSetFactorySO extends CharHashFactory<MutableDHashCharSetGO>
+public abstract class HashCharSetFactorySO
+        /* if !(float|double elem) */extends CharHashFactory<MutableDHashCharSetGO>/* endif */
         implements HashCharSetFactory {
 
-    HashCharSetFactorySO(CharHashConfig conf) {
+    /* if float|double elem */final HashConfig hashConf;/* endif */
+
+    HashCharSetFactorySO(/* if !(float|double elem) */CharHashConfig
+            /* elif float|double elem //HashConfig// endif */ conf) {
+        /* if !(float|double elem) */
         super(conf);
+        /* elif float|double elem */
+        hashConf = conf;
+        /* endif */
     }
 
+    /* if !(float|double elem) */
     @Override
     MutableDHashCharSetGO createNew(float loadFactor, int expectedSize, char free, char removed) {
         MutableDHashCharSet set = new MutableDHashCharSet();
         set.init(loadFactor, expectedSize, free, removed);
         return set;
     }
+    /* elif float|double elem */
+    @Override
+    public HashConfig getConfig() {
+        return hashConf;
+    }
+    /* endif */
 
     @Override
     public MutableDHashCharSetGO newMutableSet(int expectedSize) {
+        /* if !(float|double elem) */
         return newHash(expectedSize);
+        /* elif float|double elem */
+        MutableDHashCharSetGO set = new MutableDHashCharSet();
+        set.init(hashConf.getLoadFactor(), expectedSize);
+        return set;
+        /* endif */
     }
 
     ImmutableDHashCharSetGO uninitializedImmutableSet() {

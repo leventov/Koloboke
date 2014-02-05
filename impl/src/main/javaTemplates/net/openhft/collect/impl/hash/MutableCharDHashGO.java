@@ -21,6 +21,7 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
+import net.openhft.collect.impl.InternalCharCollectionOps;
 import net.openhft.function.*;
 import net.openhft.collect.impl.NotGenerated;
 
@@ -52,13 +53,32 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
         /* template AllContainingIn */ throw new NotGenerated(); /* endtemplate */
     }
 
+    /* if float|double elem */
+    boolean allContainingIn(InternalCharCollectionOps c) {
+        /* template AllContainingIn with internal version */throw new NotGenerated();/*endtemplate*/
+    }
+    /* endif */
+
     public boolean reverseAddAllTo(CharCollection/*<super>*/ c) {
         /* template ReverseAddAllTo */ throw new NotGenerated(); /* endtemplate */
     }
 
+    /* if float|double elem */
+    boolean reverseAddAllTo(InternalCharCollectionOps c) {
+        /* template ReverseAddAllTo with internal version */throw new NotGenerated();/*endtemplate*/
+    }
+    /* endif */
+
     public boolean reverseRemoveAllFrom(CharSet/*<?>*/ s) {
         /* template ReverseRemoveAllFrom */ throw new NotGenerated(); /* endtemplate */
     }
+
+    /* if float|double elem */
+    boolean reverseRemoveAllFrom(InternalCharCollectionOps s) {
+        /* template ReverseRemoveAllFrom with internal version */ throw new NotGenerated();
+        /* endtemplate */
+    }
+    /* endif */
 
 
     public CharIterator/*<>*/ iterator() {
@@ -119,13 +139,19 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
     /* endif */
 
     public boolean removeAll(@NotNull Collection<?> c) {
-        /* template RemoveAll */ throw new NotGenerated(); /* endtemplate */
+        /* template RemoveAll with generic version */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if !(obj elem) */
     boolean removeAll(@NotNull CharCollection c) {
         /* template RemoveAll */ throw new NotGenerated(); /* endtemplate */
     }
+
+    /* if float|double elem */
+    boolean removeAll(@NotNull InternalCharCollectionOps c) {
+        /* template RemoveAll with internal version */ throw new NotGenerated(); /* endtemplate */
+    }
+    /* endif */
     /* endif */
 
     public boolean retainAll(@NotNull Collection<?> c) {
@@ -133,13 +159,19 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
         if (c instanceof CharCollection)
             return retainAll((CharCollection) c);
         /* endif */
-        /* template RetainAll */ throw new NotGenerated(); /* endtemplate */
+        /* template RetainAll with generic version */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if !(obj elem) */
     private boolean retainAll(@NotNull CharCollection c) {
         /* template RetainAll */ throw new NotGenerated(); /* endtemplate */
     }
+
+    /* if float|double elem */
+    private boolean retainAll(@NotNull InternalCharCollectionOps c) {
+        /* template RetainAll with internal version */ throw new NotGenerated(); /* endtemplate */
+    }
+    /* endif */
     /* endif */
 
 

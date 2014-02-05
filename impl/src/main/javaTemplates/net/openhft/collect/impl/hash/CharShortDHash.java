@@ -25,5 +25,5 @@ import org.jetbrains.annotations.NotNull;
 
 public interface CharShortDHash extends CharDHash {
 
-    @NotNull /* raw */short[] valueArray();
+    @NotNull /* bits *//* raw */short[] valueArray();
 }

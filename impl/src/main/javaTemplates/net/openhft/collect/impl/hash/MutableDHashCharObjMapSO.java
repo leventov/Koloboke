@@ -22,9 +22,8 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
+import net.openhft.collect.impl.*;
 import net.openhft.function.*;
-import net.openhft.collect.impl.InternalCharObjMapOps;
-import net.openhft.collect.impl.NotGenerated;
 import net.openhft.collect.map.hash.HashCharObjMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -131,8 +130,8 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
         /* template Rehash */
     }
 
-    int insert(char key, V value) {
-        /* template Insert */ throw new NotGenerated(); /* endtemplate */
+    int insert(/* bits */char key, V value) {
+        /* template Insert with internal version */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if obj key */
@@ -192,6 +191,13 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     boolean removeAll(@NotNull CharCollection c) {
         /* template RemoveAll */ throw new NotGenerated(); /* endtemplate */
     }
+
+    /* if float|double key */
+    @Override
+    boolean removeAll(@NotNull InternalCharCollectionOps c) {
+        /* template RemoveAll with internal version */ throw new NotGenerated(); /* endtemplate */
+    }
+    /* endif */
     /* endif */
 
     @Override
@@ -200,13 +206,19 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
         if (c instanceof CharCollection)
             return retainAll((CharCollection) c);
         /* endif */
-        /* template RetainAll */ throw new NotGenerated(); /* endtemplate */
+        /* template RetainAll with generic version */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if !(obj key) */
     private boolean retainAll(@NotNull CharCollection c) {
         /* template RetainAll */ throw new NotGenerated(); /* endtemplate */
     }
+
+    /* if float|double key */
+    private boolean retainAll(@NotNull InternalCharCollectionOps c) {
+        /* template RetainAll with internal version */ throw new NotGenerated(); /* endtemplate */
+    }
+    /* endif */
     /* endif */
 
     /* endwith*/

@@ -34,14 +34,14 @@ public abstract class HashCode extends BulkMethod {
 
     @Override
     public void loopBody() {
-        String key = gen.key(), keyHash;
-        if (cxt.keyOption() instanceof PrimitiveType) {
+        String key = gen.unwrappedKey(), keyHash;
+        if (cxt.isPrimitiveKey()) {
             keyHash = primitiveHash((PrimitiveType) cxt.keyOption(), key);
         } else {
             keyHash = "nullableKeyHashCode(" + key + ")";
         }
-        String value = gen.value(), valueHash;
-        if (cxt.mapValueOption() instanceof PrimitiveType) {
+        String value = gen.unwrappedValue(), valueHash;
+        if (cxt.isPrimitiveValue()) {
             valueHash = primitiveHash((PrimitiveType) cxt.mapValueOption(), value);
         } else {
             valueHash = "nullableValueHashCode(" + value + ")";

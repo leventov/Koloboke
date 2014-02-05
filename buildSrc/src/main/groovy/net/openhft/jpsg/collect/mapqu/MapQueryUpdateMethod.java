@@ -29,8 +29,6 @@ import static net.openhft.jpsg.collect.mapqu.Branch.KEY_PRESENT;
 
 public abstract class MapQueryUpdateMethod implements Method {
 
-    private static final SimpleOption AS = new SimpleOption("as");
-
     protected MapQueryUpdateMethodGenerator gen;
     protected MethodContext cxt;
 
@@ -54,15 +52,7 @@ public abstract class MapQueryUpdateMethod implements Method {
     }
 
     public String name() {
-        String name = getClass().getSimpleName();
-        name = name.substring(0, 1).toLowerCase() + name.substring(1);
-        if (cxt.isPrimitiveValue()) {
-            Option suffix = cxt.getOption("suffix");
-            if (AS.equals(suffix)) {
-                name += "As" + ((PrimitiveType) cxt.mapValueOption()).title;
-            }
-        }
-        return name;
+        return MethodGenerator.defaultMethodName(cxt, this);
     }
 
     public String nullArgs() {

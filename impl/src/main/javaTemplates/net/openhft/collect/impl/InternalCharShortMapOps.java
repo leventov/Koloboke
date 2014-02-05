@@ -31,6 +31,12 @@ public interface InternalCharShortMapOps/*<>*/
 
     void justPut(char key, short value);
 
+    /* if float|double key || float|double value */
+    boolean containsEntry(/* bits *//* raw */char key, /* bits *//* raw */short value);
+
+    void justPut(/* bits */char key, /* bits */short value);
+    /* endif */
+
     boolean allEntriesContainingIn(InternalCharShortMapOps/*<?>*/ map);
 
     void reversePutAllTo(InternalCharShortMapOps/*<super>*/ map);

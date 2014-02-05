@@ -22,6 +22,11 @@ import java.util.Map;
 public abstract class AbstractEntry<K, V> implements Map.Entry<K, V> {
 
     @Override
+    public V setValue(V value) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public abstract int hashCode();
 
     @Override

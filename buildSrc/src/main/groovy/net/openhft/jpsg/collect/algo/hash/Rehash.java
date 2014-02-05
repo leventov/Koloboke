@@ -27,26 +27,26 @@ public class Rehash extends BulkMethod {
         gen.lines(
                 "initForRehash(newCapacity);",
                 "mc++; // modCount is incremented in initForRehash()",
-                cxt.keyRawType() + "[] newKeys = set;",
+                cxt.keyUnwrappedRawType() + "[] newKeys = set;",
                 "int capacity = newKeys.length;"
         );
         if (cxt.isMapView())
-            gen.lines(cxt.valueType() + "[] newVals = values;");
+            gen.lines(cxt.valueUnwrappedType() + "[] newVals = values;");
     }
 
     @Override
     public void loopBody() {
-        String key = gen.key();
+        String key = gen.unwrappedKey();
         gen.lines("int hash, index;");
-        gen.ifBlock(firstKey(cxt, "newKeys", key, true) + " != " + free(cxt));
+        gen.ifBlock(isNotFree(cxt, firstKey(cxt, "newKeys", key, true)));
         gen.lines(step());
         gen.lines("do").block();
         gen.lines(nextIndex());
         gen.unIndent();
-        gen.lines("} while (newKeys[index] != " + free(cxt) + ");");
+        gen.lines("} while (" + isNotFree(cxt, "newKeys[index]") + ");");
         gen.blockEnd();
         gen.lines("newKeys[index] = " + key + ";");
         if (cxt.isMapView())
-            gen.lines("newVals[index] = " + gen.value() + ";");
+            gen.lines("newVals[index] = " + gen.unwrappedValue() + ";");
     }
 }

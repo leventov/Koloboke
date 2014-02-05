@@ -33,6 +33,7 @@ public class MethodContext {
     private static SimpleOption entryView = new SimpleOption("entry");
 
     static final SimpleOption GENERIC = new SimpleOption("generic");
+    static final SimpleOption INTERNAL = new SimpleOption("internal");
 
     private final SimpleOption view;
 
@@ -65,8 +66,7 @@ public class MethodContext {
 
     public boolean isIntegralKey() {
         Option key = keyOption();
-        return isPrimitiveKey() &&
-                !key.equals(PrimitiveType.FLOAT) && !key.equals(PrimitiveType.DOUBLE);
+        return isPrimitiveKey() && !(key == PrimitiveType.FLOAT) && !(key == PrimitiveType.DOUBLE);
     }
 
     public boolean isFloatingKey() {
@@ -93,6 +93,11 @@ public class MethodContext {
         return mapValueOption() instanceof PrimitiveType;
     }
 
+    public boolean isFloatingValue() {
+        Option opt = mapValueOption();
+        return opt == PrimitiveType.FLOAT || opt == PrimitiveType.DOUBLE;
+    }
+
     public boolean isNullValue() {
         return NULL.equals(mapValueOption());
     }
@@ -101,6 +106,19 @@ public class MethodContext {
         if (isKeyView()) return keyOption();
         if (isValueView()) return mapValueOption();
         throw new IllegalStateException();
+    }
+
+    /** @return K or char..long, floating bits */
+    public String keyUnwrappedType() {
+        if (isObjectKey()) {
+            return ObjectType.genericParamName(keyDim());
+        } else if (isPrimitiveKey()) {
+            return primitiveBitsType(keyOption());
+        } else if (isNullKey()) {
+            return "Object";
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
     /** @return K or char..double */
@@ -116,35 +134,53 @@ public class MethodContext {
         }
     }
 
-    /** @return Object or char..double */
-    public String keyRawType() {
+    /** @return Object or char..long, floating bits */
+    public String keyUnwrappedRawType() {
         if (!isPrimitiveKey()) {
             return "Object";
         } else {
-            return ((PrimitiveType) keyOption()).standalone;
+            return primitiveBitsType(keyOption());
+        }
+    }
+
+    /** @return V or char..long, floating bits */
+    public String valueUnwrappedType() {
+        if (isPrimitiveValue()) {
+            return primitiveBitsType(mapValueOption());
+        } else {
+            return "V";
         }
     }
 
     /** @return V or char..double */
     public String valueType() {
-        if (isObjectValue()) {
-            return "V";
-        } else {
+        if (isPrimitiveValue()) {
             return ((PrimitiveType) mapValueOption()).standalone;
+        } else {
+            return "V";
+        }
+    }
+
+    private String primitiveBitsType(Option opt) {
+        PrimitiveType type = (PrimitiveType) opt;
+        switch (type) {
+            case FLOAT: return "int";
+            case DOUBLE: return "long";
+            default: return type.standalone;
         }
     }
 
     /** @return V or char..double if version=Generic, else Character..Double */
     public String valueGenericType() {
-        if (isObjectValue()) {
-            return "V";
-        } else {
+        if (isPrimitiveValue()) {
             PrimitiveType valType = (PrimitiveType) mapValueOption();
             if (genericVersion()) {
                 return valType.className;
             } else {
                 return valType.standalone;
             }
+        } else {
+            return "V";
         }
     }
 
@@ -176,6 +212,10 @@ public class MethodContext {
         return (isKeyView() && !isObjectKey()) || (isValueView() && !isObjectValue());
     }
 
+    public final boolean isFloatingView() {
+        return (isKeyView() && isFloatingKey()) || (isValueView() && isFloatingValue());
+    }
+
     public final boolean isObjectView() {
         return (isKeyView() && isObjectKey()) || (isValueView() && isObjectValue());
     }
@@ -198,5 +238,9 @@ public class MethodContext {
 
     public boolean genericVersion() {
         return GENERIC.equals(getOption("version"));
+    }
+
+    public boolean internalVersion() {
+        return INTERNAL.equals(getOption("version"));
     }
 }

@@ -49,6 +49,15 @@ public final class CharSamples {
                         /* const t -2 */(char) -2/* endconst */
                 )
                 /* endif */
+                /* if float|double t */,
+                new SampleElements<Character>(
+                                /* const t 0 */(char) 0/* endconst */,
+                                /* if float t */Float/* elif double t //Double// endif */.NaN,
+                                Character.MAX_VALUE,
+                                /* const t 1 */(char) 1/* endconst */,
+                                /* const t -2 */(char) -2/* endconst */
+                )
+                /* endif */
         );
     }
 

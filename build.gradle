@@ -16,7 +16,6 @@ subprojects {
 
     tasks.withType(net.openhft.jpsg.GeneratorTask).each { gen ->
         gen.addProcessor net.openhft.jpsg.collect.MethodGeneratingProcessor
-        gen.never 'float|double'
     }
 
     idea.module {

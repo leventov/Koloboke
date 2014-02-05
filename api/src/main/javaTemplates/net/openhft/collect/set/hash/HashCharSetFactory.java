@@ -17,8 +17,7 @@
 
 package net.openhft.collect.set.hash;
 
-import net.openhft.collect.CharHashConfig;
-import net.openhft.collect.Equivalence;
+import net.openhft.collect.*;
 import net.openhft.function.*;
 import net.openhft.collect.set.CharSetFactory;
 import org.jetbrains.annotations.Nullable;
@@ -32,11 +31,11 @@ public interface HashCharSetFactory/*<>*/ extends CharSetFactory/*<>*/ {
     <E2> HashCharSetFactory<E2> withEquivalence(@Nullable Equivalence<E2> equivalence);
     /* endif */
 
-    /* if !(float|double key) */CharHashConfig/* elif float|double key //HashConfig// endif */
+    /* if !(float|double elem) */CharHashConfig/* elif float|double elem //HashConfig// endif */
     getConfig();
 
-    HashCharSetFactory/*<>*/ withConfig(/* if !(float|double key) */CharHashConfig
-            /* elif float|double key //HashConfig// endif */ config);
+    HashCharSetFactory/*<>*/ withConfig(/* if !(float|double elem) */CharHashConfig
+            /* elif float|double elem //HashConfig// endif */ config);
 
     /* define p1 *//* if obj elem //<E2 extends E>// endif *//* enddefine */
 

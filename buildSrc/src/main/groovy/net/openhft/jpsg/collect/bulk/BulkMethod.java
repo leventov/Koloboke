@@ -30,6 +30,18 @@ public abstract class BulkMethod implements Method {
         return EntryType.SIMPLE;
     }
 
+    public boolean withInternalVersion() {
+        return false;
+    }
+
+    public String collectionArgName() {
+        return cxt.isMapView() ? "m" : "c";
+    }
+
+    public String name() {
+        return MethodGenerator.defaultMethodName(cxt, this);
+    }
+
     @Override
     public final void init(MethodGenerator g, MethodContext c) {
         this.gen = (BulkMethodGenerator) g;

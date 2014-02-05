@@ -24,6 +24,11 @@ public class AllContainingIn extends BulkMethod {
     }
 
     @Override
+    public boolean withInternalVersion() {
+        return true;
+    }
+
+    @Override
     public void beginning() {
         gen.lines(
                 "if (isEmpty())",

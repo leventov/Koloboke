@@ -96,12 +96,14 @@ public class GeneratorTask extends ConventionTask {
     private Dimensions.Parser dimensionsParser;
 
     private final List<TemplateProcessor> processors = new ArrayList<TemplateProcessor>() {{
+        // in chronological order
         add(new OptionProcessor());
         add(new ConstProcessor());
         add(new BlocksProcessor());
         add(new GenericsProcessor());
         add(new DefinitionProcessor());
         add(new FunctionProcessor());
+        add(new FloatingWrappingProcessor());
     }};
 
     private List<String> with = new ArrayList<>();

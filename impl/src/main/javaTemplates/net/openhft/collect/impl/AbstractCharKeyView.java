@@ -35,7 +35,14 @@ public abstract class AbstractCharKeyView/*<>*/ extends AbstractSetView<Characte
     /* if !(obj key) */
     @Override
     public final boolean add(char e) {
-        throw new IllegalArgumentException();
+        throw new UnsupportedOperationException();
     }
+
+    /* if float|double key */
+    @Override
+    public final boolean add(/* bits */char bits) {
+        throw new UnsupportedOperationException();
+    }
+    /* endif */
     /* endif */
 }

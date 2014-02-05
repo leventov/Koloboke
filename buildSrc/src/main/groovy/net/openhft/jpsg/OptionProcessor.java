@@ -23,22 +23,43 @@ public final class OptionProcessor extends TemplateProcessor {
     public static final int PRIORITY = DEFAULT_PRIORITY;
 
     private static final String RAW = "/[\\*/]\\s*raw\\s*[\\*/]/";
+    private static final String BITS = "/[\\*/]\\s*bits\\s*[\\*/]/";
 
-    private static String rawPattern(String primitive) {
-        return RAW + primitive + "(?![A-Za-z0-9_$#])";
+    private static String prefixPattern(String prefix, String primitive) {
+        return prefix + primitive + "(?![A-Za-z0-9_$#])";
     }
 
-    private static String processRawTemplates(Context source, Context target, String template) {
+    private static String processRaw(Context source, Context target, String template) {
         for (Map.Entry<String, Option> e : source) {
             String dim = e.getKey();
             if (e.getValue() instanceof PrimitiveType &&
                     target.getOption(dim) instanceof ObjectType) {
                 PrimitiveType sourceT = (PrimitiveType) e.getValue();
-                String rawP = rawPattern("(" + sourceT.className + "|" + sourceT.standalone + ")");
+                String rawP = prefixPattern(RAW,
+                        "(" + sourceT.className + "|" + sourceT.standalone + ")");
                 template = template.replaceAll(rawP, "Object");
             }
         }
         return template.replaceAll(RAW, "");
+    }
+
+    private static String processBits(Context source, Context target, String template) {
+        for (Map.Entry<String, Option> e : source) {
+            if (e.getValue() instanceof PrimitiveType) {
+                String dim = e.getKey();
+                Option targetT = target.getOption(dim);
+                if (targetT == PrimitiveType.FLOAT || targetT == PrimitiveType.DOUBLE) {
+                    PrimitiveType sourceT = (PrimitiveType) e.getValue();
+                    String bitsP = prefixPattern(BITS, sourceT.standalone);
+                    // will be replaced with bits type during regular final replace
+                    // can't replace immediately, because if source option is long,
+                    // generated double -- long bits will be replaced with double back during
+                    // regular replace
+                    template = template.replaceAll(bitsP, "#" + dim + ".bits.standalone#");
+                }
+            }
+        }
+        return template.replaceAll(BITS, "");
     }
 
     @Override
@@ -48,7 +69,8 @@ public final class OptionProcessor extends TemplateProcessor {
 
     @Override
     protected void process(Context source, Context target, String template) {
-        template = processRawTemplates(source, target, template);
+        template = processRaw(source, target, template);
+        template = processBits(source, target, template);
 
         for (Map.Entry<String, Option> e : source) {
             String dim = e.getKey();

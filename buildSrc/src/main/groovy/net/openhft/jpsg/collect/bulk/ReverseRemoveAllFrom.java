@@ -27,6 +27,16 @@ public class ReverseRemoveAllFrom extends BulkMethod {
     }
 
     @Override
+    public boolean withInternalVersion() {
+        return true;
+    }
+
+    @Override
+    public String collectionArgName() {
+        return "s";
+    }
+
+    @Override
     public void beginning() {
         gen.lines(
                 "if (isEmpty() || s.isEmpty())",

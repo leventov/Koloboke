@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect;
 
-import net.openhft.jpsg.PrimitiveType;
+import net.openhft.jpsg.*;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -41,6 +41,42 @@ public abstract class MethodGenerator {
             default:
                 throw new IllegalStateException();
         }
+    }
+
+    public static String wrap(MethodContext cxt, Option opt, String v) {
+        if (cxt.internalVersion()) {
+            // don't wrap, if internal version
+            return v;
+        }
+        if (opt == PrimitiveType.FLOAT)
+            v = "Float.intBitsToFloat(" + v + ")";
+        if (opt == PrimitiveType.DOUBLE)
+            v = "Double.longBitsToDouble(" + v + ")";
+        return v;
+    }
+
+    public static String unwrap(MethodContext cxt, Option opt, String v) {
+        if (cxt.internalVersion())
+            return v;
+        if (opt == PrimitiveType.FLOAT)
+            v = "Float.floatToIntBits(" + v + ")";
+        if (opt == PrimitiveType.DOUBLE)
+            v = "Double.doubleToLongBits(" + v + ")";
+        return v;
+    }
+
+    private static final SimpleOption AS = new SimpleOption("as");
+
+    public static String defaultMethodName(MethodContext cxt, Method method) {
+        String name = method.getClass().getSimpleName();
+        name = name.substring(0, 1).toLowerCase() + name.substring(1);
+        if (cxt.isPrimitiveValue()) {
+            Option suffix = cxt.getOption("suffix");
+            if (AS.equals(suffix)) {
+                name += "As" + ((PrimitiveType) cxt.mapValueOption()).title;
+            }
+        }
+        return name;
     }
 
     // Useful utils
@@ -95,6 +131,24 @@ public abstract class MethodGenerator {
     }
 
     protected abstract void generateLines(Method method);
+
+
+    protected String wrapKey(String key) {
+        return wrap(cxt, cxt.keyOption(), key);
+    }
+
+    protected String unwrapKey(String key) {
+        return unwrap(cxt, cxt.keyOption(), key);
+    }
+
+    protected String wrapValue(String value) {
+        return wrap(cxt, cxt.mapValueOption(), value);
+    }
+
+    protected String unwrapValue(String value) {
+        return unwrap(cxt, cxt.mapValueOption(), value);
+    }
+
 
     public final MethodGenerator indent() {
         indent += "    ";

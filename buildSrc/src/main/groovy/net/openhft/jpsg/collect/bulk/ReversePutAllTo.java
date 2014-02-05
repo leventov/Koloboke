@@ -19,6 +19,11 @@ package net.openhft.jpsg.collect.bulk;
 public class ReversePutAllTo extends BulkMethod {
 
     @Override
+    public boolean withInternalVersion() {
+        return true;
+    }
+
+    @Override
     public void beginning() {
         escapeIfEmpty();
     }

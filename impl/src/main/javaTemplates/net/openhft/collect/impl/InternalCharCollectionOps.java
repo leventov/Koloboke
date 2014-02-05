@@ -24,6 +24,14 @@ import net.openhft.collect.set.CharSet;
 
 public interface InternalCharCollectionOps/*<>*/ extends CharCollection/*<>*/ {
 
+    /* if float|double elem */
+    boolean contains(/* bits */char bits);
+
+    boolean add(/* bits */char bits);
+
+    boolean removeChar(/* bits */char bits);
+    /* endif */
+
     boolean allContainingIn(CharCollection/*<?>*/ c);
 
     boolean reverseAddAllTo(CharCollection/*<super>*/ c);

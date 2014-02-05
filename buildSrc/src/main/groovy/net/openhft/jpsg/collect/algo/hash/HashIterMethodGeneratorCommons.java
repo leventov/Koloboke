@@ -20,8 +20,7 @@ import net.openhft.jpsg.Option;
 import net.openhft.jpsg.collect.MethodContext;
 import net.openhft.jpsg.collect.MethodGenerator;
 
-import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.free;
-import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.removed;
+import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
 
 
 public final class HashIterMethodGeneratorCommons {
@@ -29,15 +28,14 @@ public final class HashIterMethodGeneratorCommons {
     private HashIterMethodGeneratorCommons() {}
 
     static void commonFields(MethodGenerator g, MethodContext cxt) {
-        g.lines("final " + cxt.keyType() + "[] keys;");
+        g.lines("final " + cxt.keyUnwrappedType() + "[] keys;");
         if (!cxt.isKeyView()) {
-            g.lines("final " + cxt.valueType() + "[] vals;");
+            g.lines("final " + cxt.valueUnwrappedType() + "[] vals;");
         }
-        if (cxt.isPrimitiveKey()) {
+        if (cxt.isIntegralKey()) {
             g.lines("final " + cxt.keyType() + " " + free(cxt) + ";");
             if (cxt.mutable()) {
-                g.lines("final " + cxt.keyType() + " " +
-                        removed(cxt) + ";");
+                g.lines("final " + cxt.keyType() + " " + removed(cxt) + ";");
             }
         }
         if (cxt.mutable()) {
@@ -84,32 +82,47 @@ public final class HashIterMethodGeneratorCommons {
         g.blockEnd();
     }
 
-    static String keyNotFreeOrRemoved(MethodContext cxt, String indexVariableName,
-            boolean copyKey) {
-        if (noRemoved(cxt) && cxt.isValueView() && !copyKey) {
-            return "keys[" + indexVariableName + "] != " + free(cxt);
+    static void ifKeyNotFreeOrRemoved(MethodGenerator gen, MethodContext cxt,
+            String indexVariableName, boolean forceCopyKey) {
+        String keyAssignment;
+        if (forceCopyKey || (!noRemoved(cxt) && !cxt.isFloatingKey()) || !cxt.isValueView()) {
+            gen.lines(cxt.keyUnwrappedRawType() + " key;");
+            keyAssignment = "(key = keys[" + indexVariableName + "])";
+        } else {
+            keyAssignment = "keys[" + indexVariableName + "]";
         }
-        return "(key = keys[" + indexVariableName + "]) != " + free(cxt) +
-                (noRemoved(cxt) ? "" : (" && key != " + removed(cxt)));
+        String cond = cxt.isFloatingKey() ?
+                keyAssignment + " < FREE_BITS" :
+                isNotFree(cxt, keyAssignment) +
+                        (noRemoved(cxt) ? "" : (" && " + isNotRemoved(cxt, "key")));
+        gen.ifBlock(cond);
     }
 
     static String makeNext(MethodContext cxt, String index) {
+        if (cxt.isKeyView()) {
+            return makeKey(cxt, true);
+        } else if (cxt.isValueView()) {
+            return makeValue(cxt, index);
+        } else if (cxt.isEntryView()) {
+            return entry(cxt, makeKey(cxt, false), index);
+        } else if (cxt.isMapView()) {
+            return makeKey(cxt, true) + ", " + makeValue(cxt, index);
+        } else {
+            throw new IllegalStateException();
+        }
+    }
+
+    private static String makeKey(MethodContext cxt, boolean wrap) {
         String key = "key";
         if (cxt.isObjectKey()) {
             key = "(" + cxt.keyType() + ") " + key;
         }
-        String value = "vals[" + index + "]";
-        if (cxt.isKeyView()) {
-            return key;
-        } else if (cxt.isValueView()) {
-            return value;
-        } else if (cxt.isEntryView()) {
-            return entry(cxt, key, index);
-        } else if (cxt.isMapView()) {
-            return key + ", " + value;
-        } else {
-            throw new IllegalStateException();
-        }
+        if (wrap) key = MethodGenerator.wrap(cxt, cxt.keyOption(), key);
+        return key;
+    }
+
+    private static String makeValue(MethodContext cxt, String index) {
+        return MethodGenerator.wrap(cxt, cxt.mapValueOption(), "vals[" + index + "]");
     }
 
     static boolean noRemoved(MethodContext cxt) {
@@ -119,18 +132,6 @@ public final class HashIterMethodGeneratorCommons {
 
     static String modCount() {
         return "modCount()";
-    }
-
-    static String elemType(MethodContext cxt) {
-        if (cxt.isKeyView()) {
-            return cxt.keyType();
-        } else if (cxt.isValueView()) {
-            return cxt.valueType();
-        } else if (cxt.isEntryView()) {
-            return entryType(cxt);
-        } else {
-            throw new IllegalStateException();
-        }
     }
 
     static String entry(MethodContext cxt, String key, String index) {
@@ -145,12 +146,8 @@ public final class HashIterMethodGeneratorCommons {
         }
     }
 
-    static String entryType(MethodContext cxt) {
-        return (cxt.mutable() ? "Mutable" : "Immutable") + "Entry";
-    }
-
     static void copySpecials(MethodGenerator g, MethodContext cxt) {
-        if (cxt.isPrimitiveKey()) {
+        if (cxt.isIntegralKey()) {
             g.lines(cxt.keyType() + " " + free(cxt) + " = this." + free(cxt) + ";");
             if (cxt.mutable() && !noRemoved(cxt)) {
                 g.lines(cxt.keyType() + " " + removed(cxt) + " = this." + removed(cxt) + ";");
@@ -159,8 +156,8 @@ public final class HashIterMethodGeneratorCommons {
     }
 
     static void copyArrays(MethodGenerator g, MethodContext cxt) {
-        g.lines(cxt.keyRawType() + "[] keys = this.keys;");
+        g.lines(cxt.keyUnwrappedRawType() + "[] keys = this.keys;");
         if (!cxt.isKeyView())
-            g.lines(cxt.valueType() + "[] vals = this.vals;");
+            g.lines(cxt.valueUnwrappedType() + "[] vals = this.vals;");
     }
 }

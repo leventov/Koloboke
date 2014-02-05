@@ -20,7 +20,7 @@
 
 package net.openhft.collect.map;
 
-import net.openhft.collect.Equivalence;
+import net.openhft.collect.*;
 import net.openhft.function.*;
 import org.jetbrains.annotations.Nullable;
 

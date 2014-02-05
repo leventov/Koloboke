@@ -58,6 +58,10 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
 
     abstract boolean justRemove(/* raw */char key);
 
+    /* if float|double key */
+    abstract boolean justRemove(/* bits */char key);
+    /* endif */
+
     class KeyView extends AbstractCharKeyView/*<>*/
             implements HashCharSet/*<>*/, InternalCharCollectionOps/*<>*/, CharDHash {
 
@@ -83,7 +87,7 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
             return MutableDHashCharKeyMap.this.currentLoad();
         }
 
-        /* if !(obj key) */
+        /* if !(obj|float|double key) */
         @Override
         public char freeValue() {
             return MutableDHashCharKeyMap.this.freeValue();
@@ -102,7 +106,7 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
 
         @NotNull
         @Override
-        public /* raw */char[] keys() {
+        public /* bits *//* raw */char[] keys() {
             return MutableDHashCharKeyMap.this.keys();
         }
 
@@ -141,6 +145,13 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
         public boolean contains(char key) {
             return MutableDHashCharKeyMap.this.contains(key);
         }
+
+        /* if float|double key */
+        @Override
+        public boolean contains(/* bits */char bits) {
+            return MutableDHashCharKeyMap.this.contains(bits);
+        }
+        /* endif */
         /* endif */
 
 
@@ -242,6 +253,13 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
         public boolean removeChar(char v) {
             return justRemove(v);
         }
+
+        /* if float|double key */
+        @Override
+        public boolean removeChar(/* bits */char bits) {
+            return justRemove(bits);
+        }
+        /* endif */
         /* endif */
 
 

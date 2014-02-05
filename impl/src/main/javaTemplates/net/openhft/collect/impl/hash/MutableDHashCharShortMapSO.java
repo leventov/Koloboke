@@ -30,7 +30,7 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
         extends MutableDHashCharKeyMap/* if obj key //<K>// endif */
         implements HashCharShortMap/*<>*/, InternalCharShortMapOps/*<>*/, CharShortDHash {
 
-    short[] values;
+    /* bits */short[] values;
 
 
     final void copy(CharShortDHash hash) {
@@ -46,25 +46,25 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
 
     @Override
     @NotNull
-    public short[] valueArray() {
+    public /* bits */short[] valueArray() {
         return values;
     }
 
-    int valueIndex(short value) {
+    /* with internal|simple version */
+    /* if simple version || float|double value */
+    /* define valueBits */
+    /* if internal version //// bits //short// elif simple version //short// endif */
+    /* enddefine */
+    int valueIndex(/* valueBits */short/**/ value) {
         /* template ValueIndex */ throw new NotGenerated(); /* endtemplate */
     }
 
-    @Override
-    public boolean containsValue(short value) {
+    /* if simple version */@Override public/* endif */
+    boolean containsValue(/* valueBits */short/**/ value) {
         return valueIndex(value) >= 0;
     }
 
-    @Override
-    public boolean containsValue(Object value) {
-        return containsValue(((Short) value).shortValue());
-    }
-
-    boolean removeValue(short value) {
+    boolean removeValue(/* valueBits */short/**/ value) {
         /* if Mutable mutability */
         int index = valueIndex(value);
         if (index >= 0) {
@@ -77,6 +77,13 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
         throw new UnsupportedOperationException();
         // endif */
     }
+    /* endif */
+    /* endwith */
+
+    @Override
+    public boolean containsValue(Object value) {
+        return containsValue(((Short) value).shortValue());
+    }
 
     /* if Mutable mutability */
     @Override
@@ -84,13 +91,13 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
         /* template Rehash */
     }
 
-    int insert(char key, short value) {
-        /* template Insert */ throw new NotGenerated(); /* endtemplate */
+    int insert(/* bits */char key, /* bits */short value) {
+        /* template Insert with internal version */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if obj key */
-    int insertNullKey(short value) {
-        /* template Insert with null key */ throw new NotGenerated(); /* endtemplate */
+    int insertNullKey(/* bits */short value) {
+        /* template Insert with null key internal version */throw new NotGenerated();/*endtemplate*/
     }
     /* endif */
 
@@ -98,7 +105,7 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
     @Override
     void allocateArrays(int capacity) {
         super.allocateArrays(capacity);
-        values = new short[capacity];
+        values = new /* bits */short[capacity];
     }
     /* endif */
 }

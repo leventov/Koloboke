@@ -20,7 +20,7 @@
 
 package net.openhft.collect.impl.hash;
 
-import net.openhft.collect.CharCursor;
+import net.openhft.collect.*;
 import net.openhft.collect.impl.*;
 import net.openhft.collect.set.hash.HashCharSet;
 import org.jetbrains.annotations.NotNull;
@@ -64,11 +64,16 @@ public class MutableDHashCharSetGO/*<>*/ extends MutableCharDHashSetSO/*<>*/
     /* endif */
 
     @Override
-    public boolean add(char key) {
-        /* template Add */ throw new NotGenerated(); /* endtemplate */
+    public boolean add(/* bits */char key) {
+        /* template Add with internal version */ throw new NotGenerated(); /* endtemplate */
     }
 
-    /* if obj elem */
+    /* if float|double elem */
+    @Override
+    public boolean add(char key) {
+        return add(/* unwrap elem */key/**/);
+    }
+    /* elif obj elem */
     private boolean addNullKey() {
         /* template Add with null elem */ throw new NotGenerated(); /* endtemplate */
     }
@@ -96,9 +101,16 @@ public class MutableDHashCharSetGO/*<>*/ extends MutableCharDHashSetSO/*<>*/
 
     /* if !(obj elem) */
     @Override
-    public boolean removeChar(char key) {
-        /* template Remove */ throw new NotGenerated(); /* endtemplate */
+    public boolean removeChar(/* bits */char key) {
+        /* template Remove with internal version */ throw new NotGenerated(); /* endtemplate */
     }
+
+    /* if float|double elem */
+    @Override
+    public boolean removeChar(char key) {
+        return removeChar(/* unwrap elem */key/**/);
+    }
+    /* endif */
     /* endif */
 
 

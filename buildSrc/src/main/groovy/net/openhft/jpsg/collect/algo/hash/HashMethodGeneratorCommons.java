@@ -27,7 +27,7 @@ public final class HashMethodGeneratorCommons {
 
     static String curAssignment(MethodContext cxt, String keys, String key,
             boolean capacityAssigned) {
-        return "(cur = " + firstKey(cxt, keys, key, capacityAssigned)+ ")";
+        return "(cur = " + firstKey(cxt, keys, key, capacityAssigned) + ")";
     }
 
     static String firstKey(MethodContext cxt, String keys, String key,
@@ -73,6 +73,30 @@ public final class HashMethodGeneratorCommons {
                 default:
                     throw new IllegalStateException();
             }
+        }
+    }
+
+    static String isFree(MethodContext cxt, String key) {
+        return key + " == " + free(cxt);
+    }
+
+    static String isNotFree(MethodContext cxt, String key) {
+        return key + " != " + free(cxt);
+    }
+
+    static String isRemoved(MethodContext cxt, String key) {
+        if (cxt.isFloatingKey()) {
+            return key + " > FREE_BITS";
+        } else {
+            return key + " == " + removed(cxt);
+        }
+    }
+
+    static String isNotRemoved(MethodContext cxt, String key) {
+        if (cxt.isFloatingKey()) {
+            return key + " <= FREE_BITS";
+        } else {
+            return key + " != " + removed(cxt);
         }
     }
 

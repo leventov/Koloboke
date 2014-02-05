@@ -56,6 +56,13 @@ public class MutableDHashCharShortMapGO/*<>*/
         /* template ContainsEntry */ throw new NotGenerated(); /* endtemplate */
     }
 
+    /* if float|double key || float|double value */
+    @Override
+    public boolean containsEntry(/* bits *//* raw */char key, /* bits *//* raw */short value) {
+        /* template ContainsEntry with internal version */ throw new NotGenerated(); /*endtemplate*/
+    }
+    /* endif */
+
     /* if !(obj key obj value) */
     @Override
     public Short get(Object key) {
@@ -118,12 +125,13 @@ public class MutableDHashCharShortMapGO/*<>*/
 
     @Override
     public boolean allEntriesContainingIn(InternalCharShortMapOps/*<?>*/ m) {
-        /* template AllContainingIn */ throw new NotGenerated(); /* endtemplate */
+        /* template AllContainingIn with internal version */ throw new NotGenerated();
+        /* endtemplate */
     }
 
     @Override
     public void reversePutAllTo(InternalCharShortMapOps/*<super>*/ m) {
-        /* template ReversePutAllTo */
+        /* template ReversePutAllTo with internal version */
     }
 
     @Override
@@ -183,6 +191,13 @@ public class MutableDHashCharShortMapGO/*<>*/
     public void justPut(char key, short value) {
         /* template JustPut */
     }
+
+    /* if float|double key || float|double value */
+    @Override
+    public void justPut(/* bits */char key, /* bits */short value) {
+        /* template JustPut with internal version */
+    }
+    /* endif */
 
     /* if obj key obj value || JDK8 jdk */@Override/* endif */
     public Short compute(Character key,
@@ -357,7 +372,12 @@ public class MutableDHashCharShortMapGO/*<>*/
         /* template JustRemove */ throw new NotGenerated(); /* endtemplate */
     }
 
-    /* if obj key */
+    /* if float|double key */
+    @Override
+    public boolean justRemove(/* bits */char key) {
+        /* template JustRemove with internal version */ throw new NotGenerated(); /* endtemplate */
+    }
+    /* elif obj key */
     boolean justRemoveNullKey() {
         /* template JustRemove with null key */ throw new NotGenerated(); /* endtemplate */
     }
@@ -577,30 +597,31 @@ public class MutableDHashCharShortMapGO/*<>*/
 
 
     abstract class CharShortEntry extends AbstractEntry<Character, Short> {
-        abstract char key();
+
+        abstract /* bits */char key();
 
         @Override
         public final Character getKey() {
-            return key();
+            return /* wrap key */key();
         }
 
-        abstract short value();
+        abstract /* bits */short value();
 
         @Override
         public final Short getValue() {
-            return value();
+            return /* wrap value */value();
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public boolean equals(Object o) {
             Map.Entry e2;
-            char k2;
-            short v2;
+            /* bits */char k2;
+            /* bits */short v2;
             try {
                 e2 = (Map.Entry) o;
-                k2 = (Character) e2.getKey();
-                v2 = (Short) e2.getValue();
+                k2 = /* unwrap key */(Character) e2.getKey()/**/;
+                v2 = /* unwrap value */(Short) e2.getValue()/**/;
                 return /* if !(obj key) */key() == k2
                         /* elif obj key //nullableKeyEquals(key(), k2)// endif */
                         &&
@@ -621,8 +642,6 @@ public class MutableDHashCharShortMapGO/*<>*/
                     /* if !(obj value) */Primitives.hashCode(value())
                     /* elif obj value //nullableValueHashCode(value())// endif */;
         }
-
-
     }
 
 
@@ -630,10 +649,10 @@ public class MutableDHashCharShortMapGO/*<>*/
     class MutableEntry extends CharShortEntry {
         int modCount;
         private final int index;
-        private final char key;
-        private short value;
+        private final /* bits */char key;
+        private /* bits */short value;
 
-        MutableEntry(int modCount, int index, char key, short value) {
+        MutableEntry(int modCount, int index, /* bits */char key, /* bits */short value) {
             this.modCount = modCount;
             this.index = index;
             this.key = key;
@@ -641,12 +660,12 @@ public class MutableDHashCharShortMapGO/*<>*/
         }
 
         @Override
-        public char key() {
+        public /* bits */char key() {
             return key;
         }
 
         @Override
-        public short value() {
+        public /* bits */short value() {
             return value;
         }
 
@@ -654,8 +673,8 @@ public class MutableDHashCharShortMapGO/*<>*/
         public Short setValue(Short newValue) {
             if (modCount != modCount())
                 throw new IllegalStateException();
-            short oldValue = value;
-            value = values[index] = newValue;
+            short oldValue = /* wrap value */value;
+            value = values[index] = /* unwrap value */newValue;
             return oldValue;
         }
     }
@@ -663,55 +682,45 @@ public class MutableDHashCharShortMapGO/*<>*/
 
     /* elif Immutable mutability */
     private class ImmutableEntry extends CharShortEntry {
-        private final char key;
-        private final short value;
+        private final /* bits */char key;
+        private final /* bits */short value;
 
-        ImmutableEntry(char key, short value) {
+        ImmutableEntry(/* bits */char key, /* bits */short value) {
             this.key = key;
             this.value = value;
         }
 
         @Override
-        public char key() {
+        public /* bits */char key() {
             return key;
         }
 
         @Override
-        public short value() {
+        public /* bits */short value() {
             return value;
-        }
-
-        @Override
-        public Short setValue(Short newValue) {
-            throw new UnsupportedOperationException();
         }
     }
     /* endif */
 
 
     class ReusableEntry extends CharShortEntry {
-        private char key;
-        private short value;
+        private /* bits */char key;
+        private /* bits */short value;
 
-        ReusableEntry with(char key, short value) {
+        ReusableEntry with(/* bits */char key, /* bits */short value) {
             this.key = key;
             this.value = value;
             return this;
         }
 
         @Override
-        public char key() {
+        public /* bits */char key() {
             return key;
         }
 
         @Override
-        public short value() {
+        public /* bits */short value() {
             return value;
-        }
-
-        @Override
-        public Short setValue(Short value) {
-            throw new UnsupportedOperationException();
         }
     }
 
@@ -741,11 +750,18 @@ public class MutableDHashCharShortMapGO/*<>*/
             return MutableDHashCharShortMapGO.this.containsValue(o);
         }
 
-        /* if !(object value) */
+        /* if !(obj value) */
         @Override
         public boolean contains(short v) {
             return MutableDHashCharShortMapGO.this.containsValue(v);
         }
+
+        /* if float|double value */
+        @Override
+        public boolean contains(/* bits */short bits) {
+            return MutableDHashCharShortMapGO.this.containsValue(bits);
+        }
+        /* endif */
         /* endif */
 
 
@@ -771,15 +787,37 @@ public class MutableDHashCharShortMapGO/*<>*/
             /* template AllContainingIn */ throw new NotGenerated(); /* endtemplate */
         }
 
+        /* if float|double value */
+        private boolean allContainingIn(InternalShortCollectionOps c) {
+            /* template AllContainingIn with internal version */ throw new NotGenerated();
+            /* endtemplate */
+        }
+        /* endif */
+
         @Override
         public boolean reverseAddAllTo(ShortCollection/*<super>*/ c) {
             /* template ReverseAddAllTo */ throw new NotGenerated(); /* endtemplate */
         }
 
+        /* if float|double value */
+        private boolean reverseAddAllTo(InternalShortCollectionOps c) {
+            /* template ReverseAddAllTo with internal version */ throw new NotGenerated();
+            /* endtemplate */
+        }
+        /* endif */
+
         @Override
         public boolean reverseRemoveAllFrom(ShortSet/*<?>*/ s) {
             /* template ReverseRemoveAllFrom */ throw new NotGenerated(); /* endtemplate */
         }
+
+        /* if float|double value */
+        private boolean reverseRemoveAllFrom(InternalShortCollectionOps s) {
+            /* template ReverseRemoveAllFrom with internal version */ throw new NotGenerated();
+            /* endtemplate */
+        }
+        /* endif */
+
 
         @Override
         @NotNull
@@ -845,6 +883,13 @@ public class MutableDHashCharShortMapGO/*<>*/
         public boolean removeShort(short v) {
             return removeValue(v);
         }
+
+        /* if float|double value */
+        @Override
+        public boolean removeShort(/* bits */short bits) {
+            return removeValue(bits);
+        }
+        /* endif */
         /* endif */
 
 
@@ -867,17 +912,23 @@ public class MutableDHashCharShortMapGO/*<>*/
 
         @Override
         public boolean removeAll(@NotNull Collection<?> c) {
-            /* if !(obj value) */
+            /* if !(obj value) && Mutable mutability */
             if (c instanceof ShortCollection)
                 return removeAll((ShortCollection) c);
             /* endif */
-            /* template RemoveAll */ throw new NotGenerated(); /* endtemplate */
+            /* template RemoveAll with generic version */ throw new NotGenerated(); /* endtemplate*/
         }
 
-        /* if !(obj value) */
+        /* if !(obj value) && Mutable mutability */
         private boolean removeAll(ShortCollection c) {
             /* template RemoveAll */ throw new NotGenerated(); /* endtemplate */
         }
+
+        /* if float|double value */
+        private boolean removeAll(InternalShortCollectionOps c) {
+            /* template RemoveAll with internal version */ throw new NotGenerated(); /*endtemplate*/
+        }
+        /* endif */
         /* endif */
 
         @Override
@@ -886,13 +937,19 @@ public class MutableDHashCharShortMapGO/*<>*/
             if (c instanceof ShortCollection)
                 return retainAll((ShortCollection) c);
             /* endif */
-            /* template RetainAll */ throw new NotGenerated(); /* endtemplate */
+            /* template RetainAll with generic version */ throw new NotGenerated(); /* endtemplate*/
         }
 
         /* if !(obj value) && Mutable mutability */
         private boolean retainAll(ShortCollection c) {
             /* template RetainAll */ throw new NotGenerated(); /* endtemplate */
         }
+
+        /* if float|double value */
+        private boolean retainAll(InternalShortCollectionOps c) {
+            /* template RetainAll with internal version */ throw new NotGenerated(); /*endtemplate*/
+        }
+        /* endif */
         /* endif */
     }
     /* endwith */

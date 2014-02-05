@@ -16,17 +16,25 @@
 
 package net.openhft.jpsg.collect.algo.hash;
 
+import net.openhft.jpsg.collect.MethodGenerator;
 import net.openhft.jpsg.collect.bulk.BulkMethod;
 
 
 public class ValueIndex extends BulkMethod {
 
+    private String value = "value";
+
     @Override
     public void beginning() {
         gen.lines("if (isEmpty())");
         gen.lines("    return -1;");
-        if (cxt.isObjectValue())
-            gen.lines(cxt.valueType() + " val = (" + cxt.valueType() + ") value;");
+        if (cxt.isFloatingValue() && !cxt.internalVersion()) {
+            gen.lines(cxt.valueUnwrappedType() + " val = " +
+                    MethodGenerator.unwrap(cxt, cxt.mapValueOption(), "value") + ";");
+            value = "val";
+        } else if (cxt.isObjectValue()) {
+            gen.lines(cxt.valueUnwrappedType() + " val = (" + cxt.valueUnwrappedType() + ") value;");
+        }
         gen.lines("int index = -1;");
     }
 
@@ -34,7 +42,7 @@ public class ValueIndex extends BulkMethod {
     public void loopBody() {
         String cond;
         if (cxt.isPrimitiveValue()) {
-            cond = "value == " + gen.value();
+            cond = value + " == " + gen.unwrappedValue();
         } else if (cxt.isObjectValue()) {
             cond = "valueEquals(val, " + gen.value() + ")";
         } else if (cxt.isNullValue()) {

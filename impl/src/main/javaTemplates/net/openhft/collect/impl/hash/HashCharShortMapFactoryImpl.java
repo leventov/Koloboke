@@ -48,14 +48,18 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
     /* define andP1 *//* if obj value //, V2 extends V// endif *//* enddefine */
     /* define andP2 *//* if obj value //, V2// endif *//* enddefine */
 
+    /* define configClass */
+    /* if !(float|double key) //CharHashConfig// elif float|double key //HashConfig// endif */
+    /* enddefine */
+
     /**
      * For ServiceLoader
      */
     public HashCharShortMapFactoryImpl() {
-        this(CharHashConfig.DEFAULT);
+        this(/* configClass */CharHashConfig/**/.DEFAULT);
     }
 
-    HashCharShortMapFactoryImpl(CharHashConfig conf) {
+    HashCharShortMapFactoryImpl(/* configClass */CharHashConfig/**/ conf) {
         super(conf);
     }
 
@@ -67,7 +71,7 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
             // noinspection unchecked
             return (HashObjShortMapFactory<KE/*andV*/>) this;
         }
-        return new WithCustomKeyEquivalence<KE/*andV*/>(conf, keyEquivalence);
+        return new WithCustomKeyEquivalence<KE/*andV*/>(getConfig(), keyEquivalence);
     }
     /* endif */
 
@@ -77,7 +81,7 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
     public HashCharShortMapFactory/*<>*/ withDefaultValue(short defaultValue) {
         if (defaultValue == /* const value 0 */0)
             return this;
-        return new WithCustomDefaultValue/*<>*/(conf, defaultValue);
+        return new WithCustomDefaultValue/*<>*/(getConfig(), defaultValue);
     }
     /* elif obj value */
     @Override
@@ -87,13 +91,13 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
             // noinspection unchecked
             return (HashCharObjMapFactory</*kAnd*/VE>) this;
         }
-        return new WithCustomValueEquivalence</*kAnd*/VE>(conf, valueEquivalence);
+        return new WithCustomValueEquivalence</*kAnd*/VE>(getConfig(), valueEquivalence);
     }
     /* endif */
 
     @Override
-    public HashCharShortMapFactory/*<>*/ withConfig(CharHashConfig config) {
-        if (conf.equals(config))
+    public HashCharShortMapFactory/*<>*/ withConfig(/* configClass */CharHashConfig/**/ config) {
+        if (getConfig().equals(config))
             return this;
         return new HashCharShortMapFactoryImpl/*<>*/(config);
     }
@@ -140,7 +144,7 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
                 // noinspection unchecked
                 return (HashObjShortMapFactory<KE/*andV*/>) this;
             }
-            return new WithCustomKeyEquivalence<KE/*andV*/>(conf, keyEquivalence);
+            return new WithCustomKeyEquivalence<KE/*andV*/>(getConfig(), keyEquivalence);
         }
 
         /* if !(obj value) */
@@ -149,7 +153,7 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
             if (defaultValue == /* const value 0 */0)
                 return this;
             return new WithCustomKeyEquivalenceAndDefaultValue<K/*andV*/>(
-                    conf, keyEquivalence, defaultValue);
+                    getConfig(), keyEquivalence, defaultValue);
         }
         /* elif obj value */
         @Override
@@ -159,13 +163,13 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
                 // noinspection unchecked
                 return (HashObjObjMapFactory<K, VE>) this;
             }
-            return new WithCustomEquivalences<K, VE>(conf, keyEquivalence, valueEquivalence);
+            return new WithCustomEquivalences<K, VE>(getConfig(), keyEquivalence, valueEquivalence);
         }
         /* endif */
 
         @Override
         public HashObjShortMapFactory<K/*andV*/> withConfig(ObjHashConfig config) {
-            if (conf.equals(config))
+            if (getConfig().equals(config))
                 return this;
             return new WithCustomKeyEquivalence<K/*andV*/>(config, keyEquivalence);
         }
@@ -176,7 +180,7 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
     static final class WithCustomDefaultValue/*<>*/ extends HashCharShortMapFactoryGO/*<>*/ {
         private final short defaultValue;
 
-        WithCustomDefaultValue(CharHashConfig conf, short defaultValue) {
+        WithCustomDefaultValue(/* configClass */CharHashConfig/**/ conf, short defaultValue) {
             super(conf);
             this.defaultValue = defaultValue;
         }
@@ -211,22 +215,23 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
                 return (HashObjShortMapFactory<KE>) this;
             }
             return new WithCustomKeyEquivalenceAndDefaultValue<KE>(
-                    conf, keyEquivalence, defaultValue);
+                    getConfig(), keyEquivalence, defaultValue);
         }
         /* endif */
 
         @Override
         public HashCharShortMapFactory/*<>*/ withDefaultValue(short defaultValue) {
             if (defaultValue == /* const value 0 */0)
-                return new HashCharShortMapFactoryImpl/*<>*/(conf);
+                return new HashCharShortMapFactoryImpl/*<>*/(getConfig());
             if (defaultValue == this.defaultValue)
                 return this;
-            return new WithCustomDefaultValue/*<>*/(conf, defaultValue);
+            return new WithCustomDefaultValue/*<>*/(getConfig(), defaultValue);
         }
 
         @Override
-        public HashCharShortMapFactory/*<>*/ withConfig(CharHashConfig config) {
-            if (conf.equals(config))
+        public HashCharShortMapFactory/*<>*/ withConfig(
+                /* configClass */CharHashConfig/**/ config) {
+            if (getConfig().equals(config))
                 return this;
             return new WithCustomDefaultValue/*<>*/(config, defaultValue);
         }
@@ -236,7 +241,8 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
             extends HashCharObjMapFactoryGO</*kAnd*/V> {
 
         private final Equivalence<V> valueEquivalence;
-        WithCustomValueEquivalence(CharHashConfig conf, Equivalence<V> valueEquivalence) {
+        WithCustomValueEquivalence(/* configClass */CharHashConfig/**/ conf,
+                Equivalence<V> valueEquivalence) {
             super(conf);
             this.valueEquivalence = valueEquivalence;
         }
@@ -271,7 +277,7 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
                 // noinspection unchecked
                 return (HashObjObjMapFactory<KE, V>) this;
             }
-            return new WithCustomEquivalences<KE, V>(conf, keyEquivalence, valueEquivalence);
+            return new WithCustomEquivalences<KE, V>(getConfig(), keyEquivalence, valueEquivalence);
         }
         /* endif */
 
@@ -279,17 +285,18 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
         public <VE> HashCharObjMapFactory</*kAnd*/VE> withValueEquivalence(
                 @Nullable Equivalence<VE> valueEquivalence) {
             if (valueEquivalence == null)
-                return new HashCharObjMapFactoryImpl</*kAnd*/VE>(conf);
+                return new HashCharObjMapFactoryImpl</*kAnd*/VE>(getConfig());
             if (valueEquivalence.equals(this.valueEquivalence))
                 // noinspection unchecked
                 return (HashCharObjMapFactory</*kAnd*/VE>) this;
             return new WithCustomValueEquivalence</*kAnd*/VE>(
-                    conf, valueEquivalence);
+                    getConfig(), valueEquivalence);
         }
 
         @Override
-        public HashCharObjMapFactory</*kAnd*/V> withConfig(CharHashConfig config) {
-            if (conf.equals(config))
+        public HashCharObjMapFactory</*kAnd*/V> withConfig(
+                /* configClass */CharHashConfig/**/ config) {
+            if (getConfig().equals(config))
                 return this;
             return new WithCustomValueEquivalence</*kAnd*/V>(config, valueEquivalence);
         }
@@ -341,28 +348,28 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
         public <KE> HashObjShortMapFactory<KE> withKeyEquivalence(
                 @Nullable Equivalence<KE> keyEquivalence) {
             if (keyEquivalence == null)
-                return new WithCustomDefaultValue<KE>(conf, defaultValue);
+                return new WithCustomDefaultValue<KE>(getConfig(), defaultValue);
             if (keyEquivalence.equals(this.keyEquivalence)) {
                 // noinspection unchecked
                 return (HashObjShortMapFactory<KE>) this;
             }
             return new WithCustomKeyEquivalenceAndDefaultValue<KE>(
-                    conf, keyEquivalence, defaultValue);
+                    getConfig(), keyEquivalence, defaultValue);
         }
 
         @Override
         public HashObjShortMapFactory<K> withDefaultValue(short defaultValue) {
             if (defaultValue == /* const value 0 */0)
-                return new WithCustomKeyEquivalence<K>(conf, keyEquivalence);
+                return new WithCustomKeyEquivalence<K>(getConfig(), keyEquivalence);
             if (defaultValue == this.defaultValue)
                 return this;
             return new WithCustomKeyEquivalenceAndDefaultValue<K>(
-                    conf, keyEquivalence, defaultValue);
+                    getConfig(), keyEquivalence, defaultValue);
         }
 
         @Override
         public HashObjShortMapFactory<K> withConfig(ObjHashConfig config) {
-            if (conf.equals(config))
+            if (getConfig().equals(config))
                 return this;
             return new WithCustomKeyEquivalenceAndDefaultValue<K>(
                     config, keyEquivalence, defaultValue);
@@ -414,29 +421,29 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
         public <KE> HashObjObjMapFactory<KE, V> withKeyEquivalence(
                 @Nullable Equivalence<KE> keyEquivalence) {
             if (keyEquivalence == null)
-                return new WithCustomValueEquivalence<KE, V>(conf, valueEquivalence);
+                return new WithCustomValueEquivalence<KE, V>(getConfig(), valueEquivalence);
             if (keyEquivalence.equals(this.keyEquivalence)) {
                 // noinspection unchecked
                 return (HashObjObjMapFactory<KE, V>) this;
             }
-            return new WithCustomEquivalences<KE, V>(conf, keyEquivalence, valueEquivalence);
+            return new WithCustomEquivalences<KE, V>(getConfig(), keyEquivalence, valueEquivalence);
         }
 
         @Override
         public <VE> HashObjObjMapFactory<K, VE> withValueEquivalence(
                 @Nullable Equivalence<VE> valueEquivalence) {
             if (valueEquivalence == null)
-                return new WithCustomKeyEquivalence<K, VE>(conf, keyEquivalence);
+                return new WithCustomKeyEquivalence<K, VE>(getConfig(), keyEquivalence);
             if (valueEquivalence.equals(this.valueEquivalence)) {
                 // noinspection unchecked
                 return (HashObjObjMapFactory<K, VE>) this;
             }
-            return new WithCustomEquivalences<K, VE>(conf, keyEquivalence, valueEquivalence);
+            return new WithCustomEquivalences<K, VE>(getConfig(), keyEquivalence, valueEquivalence);
         }
 
         @Override
         public HashObjObjMapFactory<K, V> withConfig(ObjHashConfig config) {
-            if (conf.equals(config))
+            if (getConfig().equals(config))
                 return this;
             return new WithCustomEquivalences<K, V>(config, keyEquivalence, valueEquivalence);
         }

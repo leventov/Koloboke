@@ -34,8 +34,15 @@ public abstract class AbstractShortValueView/*<>*/ extends AbstractView<Short>
 
     /* if !(obj value) */
     @Override
-    public final boolean add(short v) {
-        throw new IllegalArgumentException();
+    public final boolean add(short e) {
+        throw new UnsupportedOperationException();
     }
+
+    /* if float|double value */
+    @Override
+    public final boolean add(/* bits */short bits) {
+        throw new UnsupportedOperationException();
+    }
+    /* endif */
     /* endif */
 }

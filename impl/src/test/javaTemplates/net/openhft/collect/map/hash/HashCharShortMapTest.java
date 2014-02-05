@@ -38,10 +38,15 @@ public class HashCharShortMapTest extends TestCase {
         /* define pp */
         /* if obj key obj value //<Object, Object>// elif obj key || obj value //<Object>// endif */
         /* enddefine */
-        builder.setFactories(Lists.transform(CharHashConfigs.all(),
-                new Function<CharHashConfig, CharShortMapFactory/*pp*/>() {
+        builder.setFactories(Lists.transform(/* if !(float|double key) */CharHashConfigs
+                /* elif float|double key //HashConfigs// endif */.all(),
+                new Function</* if !(float|double key) */CharHashConfig
+                            /* elif float|double key //HashConfig// endif */,
+                        CharShortMapFactory/*pp*/>() {
                     @Override
-                    public CharShortMapFactory/*pp*/ apply(CharHashConfig config) {
+                    public CharShortMapFactory/*pp*/ apply(
+                            /* if !(float|double key) */CharHashConfig
+                            /* elif float|double key //HashConfig// endif */ config) {
                         return HashCharShortMaps.getDefaultFactory().withConfig(config);
                     }
                 }));

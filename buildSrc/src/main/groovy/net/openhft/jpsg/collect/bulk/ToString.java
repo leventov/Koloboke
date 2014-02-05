@@ -38,13 +38,13 @@ public class ToString extends BulkMethod {
         if (cxt.isMapView() || cxt.isEntryView()) {
             gen.lines("sb.append(' ');");
             String key = gen.key();
-            if (!(cxt.keyOption() instanceof PrimitiveType)) {
+            if (cxt.isObjectKey()) {
                 key = key + " != this ? " + key + " : " + thisContainer;
             }
             gen.lines("sb.append(" + key + ");");
             gen.lines("sb.append(\'=\');");
             String value = gen.value();
-            if (!(cxt.mapValueOption() instanceof PrimitiveType)) {
+            if (cxt.isObjectValue()) {
                 gen.lines("Object val = " + value + ";");
 
                 value = "val != this ? val : " + thisContainer;

@@ -21,11 +21,17 @@ import net.openhft.jpsg.collect.MethodGenerator;
 
 public abstract class BulkMethodGenerator extends MethodGenerator {
 
-    public abstract String keyAndValue();
+    public String keyAndValue() {
+        return key() + ", " + value();
+    }
 
     public abstract String key();
 
+    public abstract String unwrappedKey();
+
     public abstract String value();
+
+    public abstract String unwrappedValue();
 
     public abstract MethodGenerator remove();
 

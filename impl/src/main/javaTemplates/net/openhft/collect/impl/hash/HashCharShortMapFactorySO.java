@@ -20,7 +20,7 @@
 
 package net.openhft.collect.impl.hash;
 
-import net.openhft.collect.CharHashConfig;
+import net.openhft.collect.*;
 import net.openhft.function.CharShortConsumer;
 import net.openhft.collect.map.CharShortMap;
 import net.openhft.collect.map.hash.HashCharShortMapFactory;
@@ -29,11 +29,19 @@ import java.util.Map;
 
 
 public abstract class HashCharShortMapFactorySO/*<>*/
-        extends CharHashFactory<MutableDHashCharShortMapGO/*<>*/>
+        /* if !(float|double key) */extends CharHashFactory<MutableDHashCharShortMapGO/*<>*/>
+        /* endif */
         implements HashCharShortMapFactory/*<>*/ {
 
-    HashCharShortMapFactorySO(CharHashConfig conf) {
+    /* if float|double key */final HashConfig hashConf;/* endif */
+
+    HashCharShortMapFactorySO(/* if !(float|double key) */CharHashConfig
+            /* elif float|double key //HashConfig// endif */ conf) {
+        /* if !(float|double key) */
         super(conf);
+        /* elif float|double key */
+        hashConf = conf;
+        /* endif */
     }
 
     /* define p1 *//* if obj value //<V2 extends V>// endif *//* enddefine */
@@ -42,6 +50,7 @@ public abstract class HashCharShortMapFactorySO/*<>*/
 
     /* define pv *//* if !(obj value) //short// elif obj value //V2// endif *//* enddefine */
 
+    /* if !(float|double key) */
     @Override
     MutableDHashCharShortMapGO/*<>*/ createNew(float loadFactor, int expectedSize, char free,
             char removed) {
@@ -49,6 +58,12 @@ public abstract class HashCharShortMapFactorySO/*<>*/
         map.init(loadFactor, expectedSize, free, removed);
         return map;
     }
+    /* elif float|double key */
+    @Override
+    public HashConfig getConfig() {
+        return hashConf;
+    }
+    /* endif */
 
     /*p1*/ MutableDHashCharShortMapGO/*p2*/ uninitializedMutableMap() {
         return new MutableDHashCharShortMap/*p2*/();
@@ -60,8 +75,14 @@ public abstract class HashCharShortMapFactorySO/*<>*/
 
     @Override
     public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(int expectedSize) {
+        /* if !(float|double key) */
         // noinspection unchecked
         return (MutableDHashCharShortMapGO/*p2*/) newHash(expectedSize);
+        /* elif float|double key */
+        MutableDHashCharShortMapGO/*p2*/ set = uninitializedMutableMap();
+        set.init(hashConf.getLoadFactor(), expectedSize);
+        return set;
+        /* endif */
     }
 
     /* define ev */

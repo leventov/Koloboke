@@ -31,7 +31,8 @@ import java.util.*;
 
 public abstract class HashCharShortMapFactoryGO/*<>*/ extends HashCharShortMapFactorySO/*<>*/ {
 
-    HashCharShortMapFactoryGO(CharHashConfig conf) {
+    HashCharShortMapFactoryGO(/* if !(float|double key) */CharHashConfig
+            /* elif float|double key //HashConfig// endif */ conf) {
         super(conf);
     }
 

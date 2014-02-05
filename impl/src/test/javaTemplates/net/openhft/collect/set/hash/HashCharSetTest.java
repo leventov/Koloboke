@@ -31,11 +31,15 @@ public class HashCharSetTest extends TestCase {
     public static Test suite() {
         CharSetTestSuiteBuilder builder = new CharSetTestSuiteBuilder()
                 .setSamples(CharSamples.allKeys());
-        builder.setFactories(Lists.transform(CharHashConfigs.all(),
-                new Function<CharHashConfig, CharSetFactory/* if obj elem //<Object>// endif */>() {
+        builder.setFactories(Lists.transform(/* if !(float|double elem) */CharHashConfigs
+                /* elif float|double elem //HashConfigs// endif */.all(),
+                new Function</* if !(float|double elem) */CharHashConfig
+                            /* elif float|double elem //HashConfig// endif */,
+                        CharSetFactory/* if obj elem //<Object>// endif */>() {
                     @Override
                     public CharSetFactory/* if obj elem //<Object>// endif */ apply(
-                            CharHashConfig config) {
+                            /* if !(float|double elem) */CharHashConfig
+                            /* elif float|double elem //HashConfig// endif */ config) {
                         return HashCharSets.getDefaultFactory().withConfig(config);
                     }
                 }));

@@ -17,24 +17,30 @@
 
 package net.openhft.collect.impl.hash;
 
-import net.openhft.collect.CharHashConfig;
+import net.openhft.collect.*;
 
 
 public class HashCharSetFactoryImpl extends HashCharSetFactoryGO {
+
+    /* define configClass */
+    /* if !(float|double elem) //CharHashConfig// elif float|double elem //HashConfig// endif */
+    /* enddefine */
 
     /**
      * For ServiceLoader
      */
     public HashCharSetFactoryImpl() {
-        this(CharHashConfig.DEFAULT);
+        this(/* configClass */CharHashConfig/**/.DEFAULT);
     }
 
-    public HashCharSetFactoryImpl(CharHashConfig conf) {
+    public HashCharSetFactoryImpl(/* configClass */CharHashConfig/**/ conf) {
         super(conf);
     }
 
     @Override
-    public HashCharSetFactoryImpl withConfig(CharHashConfig config) {
+    public HashCharSetFactoryImpl withConfig(/* configClass */CharHashConfig/**/ config) {
+        if (getConfig().equals(config))
+            return this;
         return new HashCharSetFactoryImpl(config);
     }
 }

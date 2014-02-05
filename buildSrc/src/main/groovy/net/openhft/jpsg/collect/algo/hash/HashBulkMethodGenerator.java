@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.algo.hash;
 
-import net.openhft.jpsg.*;
+import net.openhft.jpsg.PrimitiveType;
 import net.openhft.jpsg.collect.*;
 import net.openhft.jpsg.collect.bulk.*;
 
@@ -40,6 +40,8 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     public void generateLines(Method m) {
         this.method = (BulkMethod) m;
 
+        callInternalVersion();
+
         method.beginning();
 
         if (cxt.isEntryView() && method.entryType() == EntryType.REUSABLE)
@@ -48,23 +50,24 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         if (cxt.mutable()) {
             lines("int mc = modCount();");
         }
-        if (cxt.isPrimitiveKey()) {
+        if (cxt.isIntegralKey()) {
             lines(cxt.keyType() + " free = freeValue;");
             if (cxt.mutable()) {
                 lines(cxt.keyType() + " removed = removedValue;");
             }
         }
-        lines(cxt.keyRawType() + "[] keys = set;");
+        lines(cxt.keyUnwrappedRawType() + "[] keys = set;");
         int beforeLoops = lines.size();
 
         method.rightBeforeLoop();
 
-        if (cxt.mutable()) {
+        boolean splitLoops = cxt.mutable() && !cxt.isFloatingKey();
+        if (splitLoops) {
             lines("if (noRemoved()) {");
             indent();
         }
         bulkLoop();
-        if (cxt.mutable()) {
+        if (splitLoops) {
             unIndent();
             lines("} else").block();
             noRemoved = false;
@@ -89,6 +92,30 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
         method.end();
 
+    }
+
+    private void callInternalVersion() {
+        if (method.withInternalVersion() && !cxt.internalVersion() && !cxt.genericVersion() &&
+                (cxt.isFloatingView() ||
+                        cxt.isMapView() && (cxt.isFloatingKey() || cxt.isFloatingValue()))) {
+            String internalClass = "Internal";
+            if (cxt.isFloatingView()) {
+                internalClass += ((PrimitiveType) cxt.viewOption()).title + "CollectionOps";
+            } else {
+                internalClass += cxt.keyOption() instanceof PrimitiveType ?
+                        ((PrimitiveType) cxt.keyOption()).title :
+                        "Obj";
+                internalClass += cxt.mapValueOption() instanceof PrimitiveType ?
+                        ((PrimitiveType) cxt.mapValueOption()).title :
+                        "Obj";
+                internalClass += "MapOps";
+            }
+            String collectionArgName = method.collectionArgName();
+            lines(
+                    "if (" + collectionArgName + " instanceof " + internalClass + ")",
+                    "    " + method.name() + "((" + internalClass + ") " + collectionArgName + ");"
+            );
+        }
     }
 
     private void bulkLoop() {
@@ -127,7 +154,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
                 }
                 lines.set(i, replaceAll(line, KEY_OBJ_SUB, "key"));
             }
-            lines.add(bodyStart, indent + cxt.keyRawType() + " key;");
+            lines.add(bodyStart, indent + cxt.keyUnwrappedRawType() + " key;");
         } else {
             boolean replacedFirst = false;
             for (int i = bodyStart; i < lines.size(); i++) {
@@ -148,7 +175,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
                 line = replaceAll(line, KEY_SUB, "key");
                 lines.set(i, replaceAll(line, KEY_OBJ_SUB, "key"));
             }
-            lines.add(bodyStart, indent + cxt.keyType() + " key;");
+            lines.add(bodyStart, indent + cxt.keyUnwrappedType() + " key;");
         }
         if (cxt.isObjectKey()) {
             Pattern cast = Pattern.compile(Pattern.quote("(" + cxt.keyType() + ")"));
@@ -168,16 +195,12 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     }
 
     private String copyValueArray() {
-        if (cxt.isPrimitiveValue()) {
-            PrimitiveType type = (PrimitiveType) cxt.mapValueOption();
-            return type.standalone + "[] vals = values;";
-        } else {
-            // object or null value
-            return "V[] vals = values;";
-        }
+        return cxt.valueUnwrappedType() + "[] vals = values;";
     }
 
     private String isFull() {
+        if (cxt.isFloatingKey())
+            return KEY_OBJ_SUB + " < FREE_BITS";
         if (!noRemoved) {
             return KEY_OBJ_SUB + " != " + free(cxt) + " && " + KEY_OBJ_SUB + " != " + removed(cxt);
         } else {
@@ -188,23 +211,27 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
     @Override
     public String viewValues() {
-        if (cxt.isKeyView()) return KEY_SUB;
-        if (cxt.isValueView()) return "vals[i]";
+        if (cxt.isKeyView()) return key();
+        if (cxt.isValueView()) return value();
         if (cxt.isEntryView()) return entry();
         if (cxt.isMapView()) return keyAndValue();
-        return null;
+        throw new IllegalStateException();
     }
 
     private String entry() {
         if (method.entryType() == EntryType.SIMPLE) {
             if (cxt.mutable()) {
-                return "new MutableEntry(mc, i, " + KEY_SUB + ", vals[i])";
+                return "new MutableEntry(mc, i, " + unwrappedKeyAndValue() + ")";
             } else {
-                return "new ImmutableEntry(" + KEY_SUB + ", vals[i])";
+                return "new ImmutableEntry(" + unwrappedKeyAndValue() + ")";
             }
         } else {
-            return "entry.with(" + KEY_SUB + ", vals[i])";
+            return "entry.with(" + unwrappedKeyAndValue() + ")";
         }
+    }
+
+    private String unwrappedKeyAndValue() {
+        return unwrappedKey() + ", " + unwrappedValue();
     }
 
     @Override
@@ -214,18 +241,22 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     }
 
     @Override
-    public String keyAndValue() {
-        if (!cxt.isMapView()) throw new IllegalStateException();
-        return KEY_SUB + ", vals[i]";
+    public String key() {
+        return wrapKey(unwrappedKey());
     }
 
     @Override
-    public String key() {
+    public String unwrappedKey() {
         return KEY_SUB;
     }
 
     @Override
     public String value() {
+        return wrapValue(unwrappedValue());
+    }
+
+    @Override
+    public String unwrappedValue() {
         return "vals[i]";
     }
 
@@ -248,7 +279,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     @Override
     public BulkMethodGenerator setValue(String newValue) {
         if (!cxt.isMapView()) throw new IllegalStateException();
-        lines("vals[i] = " + newValue + ";");
+        lines("vals[i] = " + unwrapValue(newValue) + ";");
         permissions.add(Permission.SET_VALUE);
         return this;
     }

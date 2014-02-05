@@ -28,7 +28,8 @@ import java.util.Iterator;
 
 public abstract class HashCharSetFactoryGO/*<>*/ extends HashCharSetFactorySO/*<>*/ {
 
-    public HashCharSetFactoryGO(CharHashConfig conf) {
+    public HashCharSetFactoryGO(/* if !(float|double elem) */CharHashConfig
+            /* elif float|double elem //HashConfig// endif */ conf) {
         super(conf);
     }
 

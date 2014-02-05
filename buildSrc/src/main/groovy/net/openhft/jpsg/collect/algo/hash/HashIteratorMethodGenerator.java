@@ -34,15 +34,13 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
         }
         lines(
                 "int nextIndex;",
-                elemType(cxt) + " next;"
+                elemType() + " next;"
         );
     }
 
     private void loop() {
         lines("while (--nextI >= 0)").block();
-        if (!noRemoved(cxt) || !cxt.isValueView())
-            lines(cxt.keyRawType() + " key;");
-        ifBlock(keyNotFreeOrRemoved(cxt, "nextI", false));
+        ifKeyNotFreeOrRemoved(this, cxt, "nextI", false);
         if (cxt.isObjectKey())
             lines("// noinspection unchecked");
         lines("next = " + makeNext(cxt, "nextI") + ";");
@@ -60,12 +58,12 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
                     cxt.keyType() + "[] keys = this.keys = (" + cxt.keyType() + "[]) set;"
             );
         } else {
-            this.lines(cxt.keyType() + "[] keys = this.keys = set;");
+            this.lines(cxt.keyUnwrappedType() + "[] keys = this.keys = set;");
         }
         if (cxt.isValueView() || cxt.isEntryView()) {
-            this.lines(cxt.valueType() + "[] vals = this.vals = values;");
+            this.lines(cxt.valueUnwrappedType() + "[] vals = this.vals = values;");
         }
-        if (cxt.isPrimitiveKey()) {
+        if (cxt.isIntegralKey()) {
             this.lines(cxt.keyType() + " " + free(cxt) + " = this." + free(cxt) + " = freeValue;");
             if (cxt.mutable()) {
                 this.lines(
@@ -91,7 +89,7 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
             lines("index = nextI;");
         copyArrays(this, cxt);
         copySpecials(this, cxt);
-        lines(elemType(cxt) + " prev = next;");
+        lines(elemType() + " prev = next;");
         loop();
         ret("prev");
         endOfModCountCheck(this, cxt);
@@ -126,9 +124,7 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
         copySpecials(this, cxt);
         lines("int nextI = nextIndex;");
         lines("for (int i = nextI; i >= 0; i--)").block();
-        if (!noRemoved(cxt) || !cxt.isValueView())
-            lines(cxt.keyRawType() + " key;");
-        ifBlock(keyNotFreeOrRemoved(cxt, "i", false));
+        ifKeyNotFreeOrRemoved(this, cxt, "i", false);
         if (cxt.isObjectKey())
             lines("// noinspection unchecked");
         lines("action.accept(" + makeNext(cxt, "i") + ");");
@@ -140,5 +136,21 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
         concurrentMod();
         blockEnd();
         lines((cxt.mutable() ? "index = " : "") + "nextIndex = -1;");
+    }
+
+    private String elemType() {
+        if (cxt.isKeyView()) {
+            return cxt.keyType();
+        } else if (cxt.isValueView()) {
+            return cxt.valueType();
+        } else if (cxt.isEntryView()) {
+            return entryType();
+        } else {
+            throw new IllegalStateException();
+        }
+    }
+
+    private String entryType() {
+        return (cxt.mutable() ? "Mutable" : "Immutable") + "Entry";
     }
 }
