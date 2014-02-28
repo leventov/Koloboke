@@ -91,8 +91,10 @@ public interface HashCharSetFactory/*<>*/ extends CharSetFactory/*<>*/ {
     /*p1*/ HashCharSet/*p2*/ newMutableSet(/*pe*/char/**/[] elements, int expectedSize);
 
     /* if !(obj elem) */
+    @Override
     /*p1*/ HashCharSet/*p2*/ newMutableSet(Character[] elements);
 
+    @Override
     /*p1*/ HashCharSet/*p2*/ newMutableSet(Character[] elements, int expectedSize);
     /* endif */
 
