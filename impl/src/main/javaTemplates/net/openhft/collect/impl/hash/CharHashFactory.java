@@ -67,15 +67,22 @@ public abstract class CharHashFactory<MT> {
 
     abstract MT createNew(float loadFactor, int expectedSize, char free, char removed);
 
+    /* define nextIntOrLong */
+    /* if !(long elem) //nextInt// elif long elem //nextLong// endif */
+    /* enddefine */
+
     MT newHash(int expectedSize) {
         char free, removed;
         if (randomRemoved) {
             Random random = ThreadLocalRandom.current();
-            removed = (char) random.nextInt();
+            removed = (char) random./* nextIntOrLong */nextInt/**/();
             if (randomFree) {
-                free = (char) random.nextInt();
+                free = (char) random./* nextIntOrLong */nextInt/**/();
             } else {
                 free = freeValue;
+            }
+            while (free == removed) {
+                removed = (char) random./* nextIntOrLong */nextInt/**/();
             }
         } else {
             removed = removedValue;
