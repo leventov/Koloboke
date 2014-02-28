@@ -36,6 +36,11 @@ public class IncrementValueWithDefault extends IncrementValue {
     }
 
     @Override
+    String toAdd() {
+        return "increment";
+    }
+
+    @Override
     public void ifAbsent() {
         gen.ret("value");
     }

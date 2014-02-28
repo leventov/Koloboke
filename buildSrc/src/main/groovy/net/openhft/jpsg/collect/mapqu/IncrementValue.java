@@ -28,9 +28,13 @@ public class IncrementValue extends MapQueryUpdateMethod {
         return BasicMapQueryUpdateOp.INSERT;
     }
 
+    String toAdd() {
+        return "value";
+    }
+
     @Override
     public void ifPresent() {
-        String newValue = gen.value() + " + value";
+        String newValue = gen.value() + " + " + toAdd();
         Option mvo = cxt.mapValueOption();
         if (mvo == BYTE || mvo == CHAR || mvo == SHORT) {
             newValue = "(" + cxt.valueType() + ") (" + newValue + ")";

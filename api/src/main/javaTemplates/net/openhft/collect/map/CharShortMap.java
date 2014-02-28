@@ -417,8 +417,13 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     short incrementValue(char key, short increment);
 
     /**
-     * {@code map.incrementValue(key, inc, defaultValue)} is equivalent
-     * of {@code map.put(key, map.getOrDefault(key, defaultValue) + inc)}.
+     * {@code map.incrementValue(key, increment, defaultValue)} is equivalent to
+     * <pre>{@code
+     * short newValue = map.getOrDefault(key, defaultValue) + increment;
+     * map.put(key, newValue);
+     * return newValue;
+     * }</pre>
+     *
      * @return the new value associated with the specified key
      */
     short incrementValue(char key, short increment, short defaultValue);
