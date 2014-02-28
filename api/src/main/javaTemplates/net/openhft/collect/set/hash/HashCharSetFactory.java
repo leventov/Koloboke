@@ -25,6 +25,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Iterator;
 
 
+/**
+ * @see HashCharSets#getDefaultFactory()
+ */
 public interface HashCharSetFactory/*<>*/ extends CharSetFactory/*<>*/ {
 
     /* if obj elem */

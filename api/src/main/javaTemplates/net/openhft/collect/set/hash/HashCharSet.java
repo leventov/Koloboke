@@ -21,5 +21,8 @@ import net.openhft.collect.HashContainer;
 import net.openhft.collect.set.CharSet;
 
 
+/**
+ * @see net.openhft.collect.set.hash.HashCharSets
+ */
 public interface HashCharSet/*<>*/ extends CharSet/*<>*/, HashContainer {
 }

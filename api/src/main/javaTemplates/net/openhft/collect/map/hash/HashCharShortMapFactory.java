@@ -28,6 +28,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 
+/**
+ * @see HashCharShortMaps#getDefaultFactory()
+ */
 public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/ {
 
     /* define p1 */

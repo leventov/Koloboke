@@ -27,6 +27,9 @@ import net.openhft.collect.set.hash.HashObjSet;
 import org.jetbrains.annotations.NotNull;
 
 
+/**
+ * @see net.openhft.collect.map.hash.HashCharShortMaps
+ */
 public interface HashCharShortMap/*<>*/ extends CharShortMap/*<>*/, HashContainer {
 
     /* with key view */
