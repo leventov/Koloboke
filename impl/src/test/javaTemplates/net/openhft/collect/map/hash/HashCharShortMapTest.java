@@ -2,7 +2,6 @@
  char|byte|short|int|long|float|double|obj key
  short|byte|char|int|long|float|double|obj value
 */
-/* if !(obj key) || obj value */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -52,10 +51,7 @@ public class HashCharShortMapTest extends TestCase {
                 }));
         /* if !(obj key) */
         builder.withSpecialFeatures(MapFeature.RESTRICTS_KEYS);
-        /* elif obj value */
-        // TODO submit guava bug or make a workaround
-        // allow null keys -> allow null queries -> guava think that null queries on values
-        // are also allowed. that is why we can't check null keys with ObjChar maps
+        /* elif obj key */
         builder.withSpecialFeatures(MapFeature.ALLOWS_NULL_KEYS);
         /* endif */
         /* if !(obj value) */

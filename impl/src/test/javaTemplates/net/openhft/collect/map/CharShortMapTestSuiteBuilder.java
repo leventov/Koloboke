@@ -119,6 +119,7 @@ public class CharShortMapTestSuiteBuilder/*<>*/ {
             MapTestSuiteBuilder<Character, Short> builder) {
         return builder.suppressing(suppressing)
                 .withFeatures(MapFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION)
+                .withFeatures(MapFeature.ALLOWS_NULL_ENTRY_QUERIES)
                 .withFeatures(CollectionSize.ANY)
                 .withFeatures(specialFeatures);
     }

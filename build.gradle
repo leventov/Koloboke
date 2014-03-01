@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.batcha.gradle.plugins:git-dependencies:0.1'
+    }
+}
+
 subprojects {
     apply plugin: 'idea'
     apply plugin: 'java'
@@ -28,9 +37,13 @@ subprojects {
 project(':api').javadoc.options.links 'http://docs.oracle.com/javase/7/docs/api/'
 
 project(':impl') {
+    apply plugin: 'git-dependencies'
+
     dependencies {
         compile project(':api')
-        testCompile 'com.google.guava:guava-testlib:16.0'
+        testCompile('com.google.guava:guava-testlib:17.0-SNAPSHOT') {
+            ext.git = 'https://code.google.com/p/guava-libraries/'
+        }
         testCompile 'org.apache.mahout:mahout-math:0.9'
     }
 
