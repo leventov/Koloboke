@@ -24,6 +24,11 @@ public class Add extends MapQueryUpdateMethod {
     }
 
     @Override
+    public Branch mostProbableBranch() {
+        return Branch.KEY_ABSENT;
+    }
+
+    @Override
     public void ifPresent() {
         gen.ret(false);
     }
