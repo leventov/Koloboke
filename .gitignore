@@ -1,0 +1,13 @@
+# Gradle
+.gradle
+buildSrc/build/
+api/build/
+impl/build/
+benchmarks/build/
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+out/
+.idea/workspace.xml
