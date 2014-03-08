@@ -1,0 +1,29 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name 'Shadow'
+            url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
+        }
+    }
+    dependencies {
+        classpath 'org.gradle.plugins:shadow:0.7.4'
+    }
+}
+
+apply plugin: 'shadow'
+
+sourceCompatibility = 1.7
+
+dependencies {
+    compile project(':impl')
+    compile 'org.openjdk.jmh:jmh-core:0.4.2'
+}
+
+jar.manifest.attributes 'Main-Class': 'org.openjdk.jmh.Main'
+
+shadow.outputFile = new File(libsDir, 'microbenchmarks.jar')
+
+build.doLast {
+    tasks.shadow.execute()
+}

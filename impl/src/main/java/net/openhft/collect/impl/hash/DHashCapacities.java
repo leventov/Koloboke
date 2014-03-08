@@ -21,7 +21,7 @@ import java.util.*;
 import static java.lang.Math.abs;
 
 
-final class DHashCapacities {
+public final class DHashCapacities {
 
     /**
      * @param desiredSize must be non-negative
@@ -29,7 +29,7 @@ final class DHashCapacities {
      * @param currentSize could be negative because of overflow
      * @return best capacity for DHash
      */
-    static int bestCapacity(long desiredSize, double loadFactor, int currentSize) {
+    public static int bestCapacity(long desiredSize, double loadFactor, int currentSize) {
         long desiredCapacity = ((long) (desiredSize / loadFactor)) + 1;
         if (0 < desiredCapacity) {
             if (desiredCapacity < SMALL_CAPACITY_LOOKUP_TABLE.length) {
