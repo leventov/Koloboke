@@ -28,7 +28,7 @@ import net.openhft.function.*;
 import net.openhft.collect.ShortCollection;
 import net.openhft.collect.set.CharSet;
 import net.openhft.collect.set.ObjSet;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Map;
 
@@ -158,23 +158,23 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      */
     boolean forEachWhile(/*f*/CharShortPredicate predicate);
 
-    @NotNull
+    @Nonnull
     CharShortCursor/*<>*/ cursor();
 
     /* with key view */
     @Override
-    @NotNull
+    @Nonnull
     CharSet/*<>*/ keySet();
     /* endwith */
 
     /* with value view */
     @Override
-    @NotNull
+    @Nonnull
     ShortCollection/*<>*/ values();
     /* endwith */
 
     @Override
-    @NotNull
+    @Nonnull
     ObjSet<Entry<Character, Short>> entrySet();
 
 

@@ -20,10 +20,10 @@
 
 package net.openhft.collect.impl.hash;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 
 public interface CharShortDHash extends CharDHash {
 
-    @NotNull /* bits *//* raw */short[] valueArray();
+    @Nonnull /* bits *//* raw */short[] valueArray();
 }

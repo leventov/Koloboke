@@ -22,8 +22,8 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.Equivalence;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 
 final class MutableDHashCharShortMap/*<>*/ extends MutableDHashCharShortMapGO/*<>*/ {
@@ -48,7 +48,7 @@ final class MutableDHashCharShortMap/*<>*/ extends MutableDHashCharShortMapGO/*<
         }
 
         @Override
-        boolean keyEquals(@NotNull K a, @Nullable K b) {
+        boolean keyEquals(@Nonnull K a, @Nullable K b) {
             return b != null && keyEquivalence.equivalent(a, b);
         }
 
@@ -58,7 +58,7 @@ final class MutableDHashCharShortMap/*<>*/ extends MutableDHashCharShortMapGO/*<
         }
 
         @Override
-        int keyHashCode(@NotNull K key) {
+        int keyHashCode(@Nonnull K key) {
             return keyEquivalence.hash(key);
         }
         /* enddefine */
@@ -99,7 +99,7 @@ final class MutableDHashCharShortMap/*<>*/ extends MutableDHashCharShortMapGO/*<
         }
 
         @Override
-        boolean valueEquals(@NotNull V a, @Nullable V b) {
+        boolean valueEquals(@Nonnull V a, @Nullable V b) {
             return b != null && valueEquivalence.equivalent(a, b);
         }
 
@@ -109,7 +109,7 @@ final class MutableDHashCharShortMap/*<>*/ extends MutableDHashCharShortMapGO/*<
         }
 
         @Override
-        int valueHashCode(@NotNull V value) {
+        int valueHashCode(@Nonnull V value) {
             return valueEquivalence.hash(value);
         }
         /* enddefine */

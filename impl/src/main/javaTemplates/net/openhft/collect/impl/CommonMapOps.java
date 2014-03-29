@@ -17,7 +17,7 @@
 
 package net.openhft.collect.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Map;
 
@@ -25,7 +25,7 @@ import java.util.Map;
 public final class CommonMapOps {
 
     @SuppressWarnings("unchecked")
-    public static boolean equals(@NotNull InternalMapOps<?, ?> map, Object obj) {
+    public static boolean equals(@Nonnull InternalMapOps<?, ?> map, Object obj) {
         if (map == obj) { return true; }
         if (!(obj instanceof Map)) {
             return false;

@@ -19,8 +19,8 @@ package net.openhft.collect;
 
 import net.openhft.function.Consumer;
 import net.openhft.function.Predicate;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.Collection;
 
@@ -36,7 +36,7 @@ public interface ObjCollection<E> extends Collection<E>, Container {
 
     boolean forEachWhile(Predicate<? super E> predicate);
 
-    @NotNull
+    @Nonnull
     ObjCursor<E> cursor();
 
     /* if JDK8 jdk //@Override// endif */

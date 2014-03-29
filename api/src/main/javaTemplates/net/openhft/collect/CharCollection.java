@@ -19,7 +19,7 @@ package net.openhft.collect;
 
 import net.openhft.function.CharConsumer;
 import net.openhft.function.CharPredicate;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Collection;
 
@@ -50,7 +50,7 @@ public interface CharCollection extends Collection<Character>, Container {
      */
     @Override
     @Deprecated
-    @NotNull
+    @Nonnull
     Object[] toArray();
 
     /**
@@ -58,8 +58,8 @@ public interface CharCollection extends Collection<Character>, Container {
      */
     @Override
     @Deprecated
-    @NotNull
-    <T> T[] toArray(@NotNull T[] array);
+    @Nonnull
+    <T> T[] toArray(@Nonnull T[] array);
 
     /**
      * Returns an array containing all of the elements in this collection.
@@ -107,7 +107,7 @@ public interface CharCollection extends Collection<Character>, Container {
      */
     char[] toArray(char[] a);
 
-    @NotNull
+    @Nonnull
     CharCursor cursor();
 
     /* if JDK8 jdk //@Override// endif */

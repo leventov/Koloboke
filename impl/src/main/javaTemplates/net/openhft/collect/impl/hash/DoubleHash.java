@@ -17,12 +17,12 @@
 
 package net.openhft.collect.impl.hash;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 
 interface DoubleHash extends Hash {
     static final long FREE_BITS = Long.MAX_VALUE - 1, REMOVED_BITS = Long.MAX_VALUE;
 
-    @NotNull
+    @Nonnull
     long[] keys();
 }

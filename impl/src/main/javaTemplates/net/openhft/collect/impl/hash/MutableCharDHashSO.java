@@ -22,7 +22,7 @@ package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.HashOverflowException;
 import net.openhft.collect.impl.*;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -69,7 +69,7 @@ public abstract class MutableCharDHashSO extends MutableDHash
 
 
 
-    @NotNull
+    @Nonnull
     @Override
     public char[] keys() {
         return set;

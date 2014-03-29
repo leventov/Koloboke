@@ -26,7 +26,7 @@ import net.openhft.function.*;
 import net.openhft.collect.impl.NotGenerated;
 
 import net.openhft.collect.set.CharSet;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.*;
 
@@ -95,24 +95,24 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
         return new NoRemovedCursor();
     }
 
-    @NotNull
+    @Nonnull
     public Object[] toArray() {
         /* template ToArray with generic version */ throw new NotGenerated(); /* endtemplate */
     }
 
     @SuppressWarnings("unchecked")
-    @NotNull
-    public <T> T[] toArray(@NotNull T[] a) {
+    @Nonnull
+    public <T> T[] toArray(@Nonnull T[] a) {
         /* template ToTypedArray */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if !(obj elem) */
-    @NotNull
+    @Nonnull
     public char[] toCharArray() {
         /* template ToArray */ throw new NotGenerated(); /* endtemplate */
     }
 
-    @NotNull
+    @Nonnull
     public char[] toArray(char[] a) {
         /* template ToPrimitiveArray */ throw new NotGenerated(); /* endtemplate */
     }
@@ -138,23 +138,23 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
     }
     /* endif */
 
-    public boolean removeAll(@NotNull Collection<?> c) {
+    public boolean removeAll(@Nonnull Collection<?> c) {
         /* template RemoveAll with generic version */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if !(obj elem) */
-    boolean removeAll(@NotNull CharCollection c) {
+    boolean removeAll(@Nonnull CharCollection c) {
         /* template RemoveAll */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if float|double elem */
-    boolean removeAll(@NotNull InternalCharCollectionOps c) {
+    boolean removeAll(@Nonnull InternalCharCollectionOps c) {
         /* template RemoveAll with internal version */ throw new NotGenerated(); /* endtemplate */
     }
     /* endif */
     /* endif */
 
-    public boolean retainAll(@NotNull Collection<?> c) {
+    public boolean retainAll(@Nonnull Collection<?> c) {
         /* if !(obj elem) */
         if (c instanceof CharCollection)
             return retainAll((CharCollection) c);
@@ -163,12 +163,12 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
     }
 
     /* if !(obj elem) */
-    private boolean retainAll(@NotNull CharCollection c) {
+    private boolean retainAll(@Nonnull CharCollection c) {
         /* template RetainAll */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if float|double elem */
-    private boolean retainAll(@NotNull InternalCharCollectionOps c) {
+    private boolean retainAll(@Nonnull InternalCharCollectionOps c) {
         /* template RetainAll with internal version */ throw new NotGenerated(); /* endtemplate */
     }
     /* endif */

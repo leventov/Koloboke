@@ -21,8 +21,8 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.impl.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.*;
 
@@ -42,7 +42,7 @@ public abstract class MutableObjDHashSO<E> extends MutableDHash implements ObjDH
         set = hash.keys();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Object[] keys() {
         return set;
@@ -57,7 +57,7 @@ public abstract class MutableObjDHashSO<E> extends MutableDHash implements ObjDH
         return a == b || (a != null && a.equals(b));
     }
 
-    boolean keyEquals(@NotNull E a, @Nullable E b) {
+    boolean keyEquals(@Nonnull E a, @Nullable E b) {
         return a.equals(b);
     }
 
@@ -65,7 +65,7 @@ public abstract class MutableObjDHashSO<E> extends MutableDHash implements ObjDH
         return key != null ? key.hashCode() : 0;
     }
 
-    int keyHashCode(@NotNull E key) {
+    int keyHashCode(@Nonnull E key) {
         return key.hashCode();
     }
 

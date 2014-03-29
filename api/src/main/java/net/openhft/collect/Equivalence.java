@@ -17,8 +17,8 @@
 
 package net.openhft.collect;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.Map;
 
@@ -39,7 +39,7 @@ public abstract class Equivalence<T> {
         }
 
         @Override
-        public boolean equivalent(@NotNull Object a, @NotNull Object b) {
+        public boolean equivalent(@Nonnull Object a, @Nonnull Object b) {
             return a == b;
         }
 
@@ -49,7 +49,7 @@ public abstract class Equivalence<T> {
         }
 
         @Override
-        public int hash(@NotNull Object o) {
+        public int hash(@Nonnull Object o) {
             return System.identityHashCode(o);
         }
 
@@ -80,7 +80,7 @@ public abstract class Equivalence<T> {
         }
 
         @Override
-        public boolean equivalent(@NotNull Map.Entry<K, V> a, @NotNull Map.Entry<K, V> b) {
+        public boolean equivalent(@Nonnull Map.Entry<K, V> a, @Nonnull Map.Entry<K, V> b) {
             if (a == b)
                 return true;
             K aKey = a.getKey();
@@ -101,7 +101,7 @@ public abstract class Equivalence<T> {
         }
 
         @Override
-        public int hash(@NotNull Map.Entry<K, V> entry) {
+        public int hash(@Nonnull Map.Entry<K, V> entry) {
             int keyHash = keyEquivalence == null ?
                     NullableObjects.hashCode(entry.getKey()) :
                     keyEquivalence.nullableHash(entry.getKey());
@@ -151,14 +151,14 @@ public abstract class Equivalence<T> {
         return a == b || (a != null && b != null && equivalent(a, b));
     }
 
-    public abstract boolean equivalent(@NotNull T a, @NotNull T b);
+    public abstract boolean equivalent(@Nonnull T a, @Nonnull T b);
 
 
     public int nullableHash(@Nullable T t) {
         return t != null ? hash(t) : 0;
     }
 
-    public abstract int hash(@NotNull T t);
+    public abstract int hash(@Nonnull T t);
 
     @Override
     public abstract boolean equals(Object o);

@@ -23,7 +23,7 @@ package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.impl.*;
 import net.openhft.collect.map.hash.HashCharShortMap;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 
 public abstract class MutableDHashCharShortMapSO/*<>*/
@@ -45,7 +45,7 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
 
 
     @Override
-    @NotNull
+    @Nonnull
     public /* bits */short[] valueArray() {
         return values;
     }

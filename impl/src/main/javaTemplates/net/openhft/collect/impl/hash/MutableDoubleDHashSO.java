@@ -21,7 +21,7 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.impl.NotGenerated;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Arrays;
 
@@ -40,7 +40,7 @@ public abstract class MutableDoubleDHashSO extends MutableDHash implements Doubl
         set = hash.keys();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public long[] keys() {
         return set;

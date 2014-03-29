@@ -20,7 +20,7 @@ package net.openhft.collect.set.hash;
 import net.openhft.collect.*;
 import net.openhft.function.*;
 import net.openhft.collect.set.CharSetFactory;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import java.util.Iterator;
 

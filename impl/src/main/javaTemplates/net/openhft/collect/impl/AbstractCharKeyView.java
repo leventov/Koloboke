@@ -19,7 +19,7 @@
 package net.openhft.collect.impl;
 
 import net.openhft.collect.set.CharSet;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Collection;
 
@@ -28,7 +28,7 @@ public abstract class AbstractCharKeyView/*<>*/ extends AbstractSetView<Characte
         implements CharSet/*<>*/, InternalCharCollectionOps/*<>*/ {
 
     @Override
-    public final boolean containsAll(@NotNull Collection<?> c) {
+    public final boolean containsAll(@Nonnull Collection<?> c) {
         return CommonCharCollectionOps.containsAll(this, c);
     }
 

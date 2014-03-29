@@ -25,8 +25,8 @@ import net.openhft.collect.*;
 import net.openhft.collect.impl.*;
 import net.openhft.function.*;
 import net.openhft.collect.map.hash.HashCharObjMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.*;
 
@@ -52,7 +52,7 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public Object[] valueArray() {
         return values;
     }
@@ -62,7 +62,7 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
         return a == b || (a != null && a.equals(b));
     }
 
-    boolean valueEquals(@NotNull V a, @Nullable V b) {
+    boolean valueEquals(@Nonnull V a, @Nullable V b) {
         return a.equals(b);
     }
 
@@ -70,7 +70,7 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
         return value != null ? value.hashCode() : 0;
     }
 
-    int valueHashCode(@NotNull V value) {
+    int valueHashCode(@Nonnull V value) {
         return value.hashCode();
     }
 
@@ -182,26 +182,26 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     /* endif */
 
     @Override
-    public boolean removeAll(@NotNull Collection<?> c) {
+    public boolean removeAll(@Nonnull Collection<?> c) {
         /* template RemoveAll */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if !(obj key) */
     @Override
-    boolean removeAll(@NotNull CharCollection c) {
+    boolean removeAll(@Nonnull CharCollection c) {
         /* template RemoveAll */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if float|double key */
     @Override
-    boolean removeAll(@NotNull InternalCharCollectionOps c) {
+    boolean removeAll(@Nonnull InternalCharCollectionOps c) {
         /* template RemoveAll with internal version */ throw new NotGenerated(); /* endtemplate */
     }
     /* endif */
     /* endif */
 
     @Override
-    public boolean retainAll(@NotNull Collection<?> c) {
+    public boolean retainAll(@Nonnull Collection<?> c) {
         /* if !(obj key) */
         if (c instanceof CharCollection)
             return retainAll((CharCollection) c);
@@ -210,12 +210,12 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     }
 
     /* if !(obj key) */
-    private boolean retainAll(@NotNull CharCollection c) {
+    private boolean retainAll(@Nonnull CharCollection c) {
         /* template RetainAll */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if float|double key */
-    private boolean retainAll(@NotNull InternalCharCollectionOps c) {
+    private boolean retainAll(@Nonnull InternalCharCollectionOps c) {
         /* template RetainAll with internal version */ throw new NotGenerated(); /* endtemplate */
     }
     /* endif */

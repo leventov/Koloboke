@@ -19,7 +19,7 @@ package net.openhft.collect.set;
 
 import net.openhft.collect.Equivalence;
 import net.openhft.function.*;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import java.util.Iterator;
 

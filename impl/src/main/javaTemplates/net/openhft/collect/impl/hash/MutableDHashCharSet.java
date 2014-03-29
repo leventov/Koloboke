@@ -21,8 +21,8 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.Equivalence;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 
 public final class MutableDHashCharSet/*<>*/ extends MutableDHashCharSetGO/*<>*/ {
@@ -43,7 +43,7 @@ public final class MutableDHashCharSet/*<>*/ extends MutableDHashCharSetGO/*<>*/
         }
 
         @Override
-        boolean keyEquals(@NotNull E a, @Nullable E b) {
+        boolean keyEquals(@Nonnull E a, @Nullable E b) {
             return b != null && equivalence.equivalent(a, b);
         }
 
@@ -53,7 +53,7 @@ public final class MutableDHashCharSet/*<>*/ extends MutableDHashCharSetGO/*<>*/
         }
 
         @Override
-        int keyHashCode(@NotNull E key) {
+        int keyHashCode(@Nonnull E key) {
             return equivalence.hash(key);
         }
     }

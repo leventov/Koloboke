@@ -19,7 +19,7 @@
 package net.openhft.collect.impl;
 
 import net.openhft.collect.ShortCollection;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Collection;
 
@@ -28,7 +28,7 @@ public abstract class AbstractShortValueView/*<>*/ extends AbstractView<Short>
         implements ShortCollection/*<>*/, InternalShortCollectionOps/*<>*/ {
 
     @Override
-    public final boolean containsAll(@NotNull Collection<?> c) {
+    public final boolean containsAll(@Nonnull Collection<?> c) {
         return CommonShortCollectionOps.containsAll(this, c);
     }
 

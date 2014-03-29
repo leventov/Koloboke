@@ -23,7 +23,7 @@ package net.openhft.collect.impl.hash;
 import net.openhft.collect.*;
 import net.openhft.collect.impl.*;
 import net.openhft.collect.set.hash.HashCharSet;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.*;
 
@@ -45,11 +45,11 @@ public class MutableDHashCharSetGO/*<>*/ extends MutableCharDHashSetSO/*<>*/
     }
 
     @Override
-    public boolean containsAll(@NotNull Collection<?> c) {
+    public boolean containsAll(@Nonnull Collection<?> c) {
         return CommonCharCollectionOps.containsAll(this, c);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public CharCursor/*<>*/ cursor() {
         return setCursor();
@@ -80,7 +80,7 @@ public class MutableDHashCharSetGO/*<>*/ extends MutableCharDHashSetSO/*<>*/
     /* endif */
 
     @Override
-    public boolean addAll(@NotNull Collection<? extends Character> c) {
+    public boolean addAll(@Nonnull Collection<? extends Character> c) {
         return CommonCharCollectionOps.addAll(this, c);
     }
 
@@ -115,7 +115,7 @@ public class MutableDHashCharSetGO/*<>*/ extends MutableCharDHashSetSO/*<>*/
 
 
     @Override
-    public boolean removeAll(@NotNull Collection<?> c) {
+    public boolean removeAll(@Nonnull Collection<?> c) {
         /* if !(obj elem) */
         if (c instanceof CharCollection) {
         /* endif */

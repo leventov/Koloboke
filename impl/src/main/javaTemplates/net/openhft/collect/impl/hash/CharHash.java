@@ -17,7 +17,7 @@
 
 package net.openhft.collect.impl.hash;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 
 interface CharHash extends Hash {
@@ -32,6 +32,6 @@ interface CharHash extends Hash {
      */
     char removedValue();
 
-    @NotNull
+    @Nonnull
     char[] keys();
 }

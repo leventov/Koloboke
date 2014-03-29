@@ -18,7 +18,7 @@
 package net.openhft.collect.impl;
 
 import net.openhft.collect.Container;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Collection;
 
@@ -43,7 +43,7 @@ public abstract class AbstractView<E> implements Collection<E>, Container {
     }
 
     @Override
-    public final boolean addAll(@NotNull Collection<? extends E> c) {
+    public final boolean addAll(@Nonnull Collection<? extends E> c) {
         throw new UnsupportedOperationException();
     }
 }

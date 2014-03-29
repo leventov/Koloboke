@@ -28,8 +28,8 @@ import net.openhft.collect.map.CharShortCursor;
 import net.openhft.collect.set.ObjSet;
 import net.openhft.collect.set.ShortSet;
 import net.openhft.collect.set.hash.HashObjSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.*;
 
@@ -108,7 +108,7 @@ public class MutableDHashCharShortMapGO/*<>*/
         /* template ForEachWhile */ throw new NotGenerated(); /* endtemplate */
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public CharShortCursor/*<>*/ cursor() {
         /* if Mutable mutability //
@@ -135,13 +135,13 @@ public class MutableDHashCharShortMapGO/*<>*/
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public HashObjSet<Map.Entry<Character, Short>> entrySet() {
         return new EntryView();
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public ShortCollection/* if obj value //<V>// endif */ values() {
         return new ValueView();
     }
@@ -309,7 +309,7 @@ public class MutableDHashCharShortMapGO/*<>*/
 
 
     @Override
-    public void putAll(@NotNull Map<? extends Character, ? extends Short> m) {
+    public void putAll(@Nonnull Map<? extends Character, ? extends Short> m) {
         CommonCharShortMapOps.putAll(this, m);
     }
 
@@ -473,15 +473,15 @@ public class MutableDHashCharShortMapGO/*<>*/
 
 
         @Override
-        @NotNull
+        @Nonnull
         public final Object[] toArray() {
             /* template ToArray */ throw new NotGenerated(); /* endtemplate */
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        @NotNull
-        public final <T> T[] toArray(@NotNull T[] a) {
+        @Nonnull
+        public final <T> T[] toArray(@Nonnull T[] a) {
             /* template ToTypedArray */ throw new NotGenerated(); /* endtemplate */
         }
 
@@ -496,7 +496,7 @@ public class MutableDHashCharShortMapGO/*<>*/
         }
 
         @Override
-        @NotNull
+        @Nonnull
         public Iterator<Map.Entry<Character, Short>> iterator() {
             /* if Mutable mutability //
             if (!noRemoved()) return new SomeRemovedEntryIterator();
@@ -504,7 +504,7 @@ public class MutableDHashCharShortMapGO/*<>*/
             return new NoRemovedEntryIterator();
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public ObjCursor<Map.Entry<Character, Short>> cursor() {
             /* if Mutable mutability //
@@ -514,7 +514,7 @@ public class MutableDHashCharShortMapGO/*<>*/
         }
 
         @Override
-        public final boolean containsAll(@NotNull Collection<?> c) {
+        public final boolean containsAll(@Nonnull Collection<?> c) {
             return CommonObjCollectionOps.containsAll(this, c);
         }
 
@@ -571,7 +571,7 @@ public class MutableDHashCharShortMapGO/*<>*/
         }
 
         @Override
-        public final boolean removeAll(@NotNull Collection<?> c) {
+        public final boolean removeAll(@Nonnull Collection<?> c) {
             if (c instanceof InternalObjCollectionOps) {
                 InternalObjCollectionOps c2 = (InternalObjCollectionOps) c;
                 if (NullableObjects.equals(this.equivalence(), c2.equivalence()) &&
@@ -584,7 +584,7 @@ public class MutableDHashCharShortMapGO/*<>*/
         }
 
         @Override
-        public final boolean retainAll(@NotNull Collection<?> c) {
+        public final boolean retainAll(@Nonnull Collection<?> c) {
             /* template RetainAll */ throw new NotGenerated(); /* endtemplate */
         }
 
@@ -820,7 +820,7 @@ public class MutableDHashCharShortMapGO/*<>*/
 
 
         @Override
-        @NotNull
+        @Nonnull
         public ShortIterator/*<>*/ iterator() {
         /* if Mutable mutability //
         if (!noRemoved()) return new SomeRemovedValueIterator();
@@ -828,7 +828,7 @@ public class MutableDHashCharShortMapGO/*<>*/
             return new NoRemovedValueIterator();
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public ShortCursor/*<>*/ cursor() {
         /* if Mutable mutability //
@@ -838,15 +838,15 @@ public class MutableDHashCharShortMapGO/*<>*/
         }
 
         @Override
-        @NotNull
+        @Nonnull
         public Object[] toArray() {
             /* template ToArray with generic version */ throw new NotGenerated(); /* endtemplate */
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        @NotNull
-        public <T> T[] toArray(@NotNull T[] a) {
+        @Nonnull
+        public <T> T[] toArray(@Nonnull T[] a) {
             /* template ToTypedArray */ throw new NotGenerated(); /* endtemplate */
         }
 
@@ -911,7 +911,7 @@ public class MutableDHashCharShortMapGO/*<>*/
         /* endif */
 
         @Override
-        public boolean removeAll(@NotNull Collection<?> c) {
+        public boolean removeAll(@Nonnull Collection<?> c) {
             /* if !(obj value) && Mutable mutability */
             if (c instanceof ShortCollection)
                 return removeAll((ShortCollection) c);
@@ -932,7 +932,7 @@ public class MutableDHashCharShortMapGO/*<>*/
         /* endif */
 
         @Override
-        public boolean retainAll(@NotNull Collection<?> c) {
+        public boolean retainAll(@Nonnull Collection<?> c) {
             /* if !(obj value) && Mutable mutability */
             if (c instanceof ShortCollection)
                 return retainAll((ShortCollection) c);

@@ -18,7 +18,7 @@
 package net.openhft.collect;
 
 import net.openhft.function.Predicate;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 
 /**

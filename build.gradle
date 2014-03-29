@@ -19,7 +19,7 @@ subprojects {
     }
 
     dependencies {
-        compile 'org.kohsuke.jetbrains:annotations:9.0'
+        compile 'com.google.code.findbugs:jsr305:2.0.3'
         testCompile 'junit:junit:4.11'
     }
 

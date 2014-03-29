@@ -19,7 +19,7 @@ package net.openhft.collect.impl.hash;
 import net.openhft.collect.Equivalence;
 import net.openhft.collect.ObjHashConfig;
 import net.openhft.collect.set.hash.HashObjSetFactory;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 
 public final class HashObjSetFactoryImpl<E> extends HashObjSetFactoryGO<E> {

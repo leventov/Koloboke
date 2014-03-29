@@ -16,11 +16,11 @@
 
 package net.openhft.collect.impl.hash;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 
 interface ObjHash extends Hash {
     static final Object REMOVED = new Object(), FREE = new Object();
 
-    @NotNull Object[] keys();
+    @Nonnull Object[] keys();
 }

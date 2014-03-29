@@ -25,7 +25,7 @@ import net.openhft.function.*;
 import net.openhft.collect.impl.*;
 import net.openhft.collect.set.CharSet;
 import net.openhft.collect.set.hash.HashCharSet;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.*;
 
@@ -50,7 +50,7 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
     /* endif */
 
 
-    @NotNull
+    @Nonnull
     public HashCharSet keySet() {
         return new KeyView();
     }
@@ -104,7 +104,7 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
         }
         /* endif */
 
-        @NotNull
+        @Nonnull
         @Override
         public /* bits *//* raw */char[] keys() {
             return MutableDHashCharKeyMap.this.keys();
@@ -190,26 +190,26 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
         }
 
         @Override
-        @NotNull
+        @Nonnull
         public CharIterator/*<>*/ iterator() {
             return MutableDHashCharKeyMap.this.iterator();
         }
 
         @Override
-        @NotNull
+        @Nonnull
         public CharCursor/*<>*/ cursor() {
             return setCursor();
         }
 
         @Override
-        @NotNull
+        @Nonnull
         public Object[] toArray() {
             return MutableDHashCharKeyMap.this.toArray();
         }
 
         @Override
-        @NotNull
-        public <T> T[] toArray(@NotNull T[] a) {
+        @Nonnull
+        public <T> T[] toArray(@Nonnull T[] a) {
             return MutableDHashCharKeyMap.this.toArray(a);
         }
 
@@ -276,7 +276,7 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
         /* endif */
 
         @Override
-        public boolean removeAll(@NotNull Collection<?> c) {
+        public boolean removeAll(@Nonnull Collection<?> c) {
             /* if !(obj key) */
             if (c instanceof CharCollection) {
             /* endif */
@@ -297,7 +297,7 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
         }
 
         @Override
-        public boolean retainAll(@NotNull Collection<?> c) {
+        public boolean retainAll(@Nonnull Collection<?> c) {
             return MutableDHashCharKeyMap.this.retainAll(c);
         }
 

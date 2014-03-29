@@ -17,14 +17,14 @@
 
 package net.openhft.collect.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Set;
 
 
 public final class CommonSetOps {
 
-    public static boolean equals(@NotNull Set<?> set, Object obj) {
+    public static boolean equals(@Nonnull Set<?> set, Object obj) {
         if (set == obj)
             return true;
         if (!(obj instanceof Set))

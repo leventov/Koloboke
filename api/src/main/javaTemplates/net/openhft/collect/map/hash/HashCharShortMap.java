@@ -24,7 +24,7 @@ import net.openhft.collect.HashContainer;
 import net.openhft.collect.map.CharShortMap;
 import net.openhft.collect.set.hash.HashCharSet;
 import net.openhft.collect.set.hash.HashObjSet;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 
 /**
@@ -34,11 +34,11 @@ public interface HashCharShortMap/*<>*/ extends CharShortMap/*<>*/, HashContaine
 
     /* with key view */
     @Override
-    @NotNull
+    @Nonnull
     HashCharSet/*<>*/ keySet();
     /* endwith */
 
     @Override
-    @NotNull
+    @Nonnull
     HashObjSet<Entry<Character, Short>> entrySet();
 }
