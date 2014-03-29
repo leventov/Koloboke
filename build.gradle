@@ -1,9 +1,11 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'http://repo.springsource.org/plugins-release' }
     }
     dependencies {
         classpath 'org.batcha.gradle.plugins:git-dependencies:0.1'
+        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.5'
     }
 }
 
@@ -11,6 +13,8 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: 'java'
     apply plugin: 'jpsg' // defined in buildSrc
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-idea'
 
     sourceCompatibility = 1.6
 
@@ -21,6 +25,7 @@ subprojects {
     dependencies {
         compile 'com.google.code.findbugs:jsr305:2.0.3'
         testCompile 'junit:junit:4.11'
+        provided 'com.google.auto.value:auto-value:1.0-rc1'
     }
 
     tasks.withType(net.openhft.jpsg.GeneratorTask).each { gen ->
@@ -29,8 +34,8 @@ subprojects {
 
     idea.module {
         excludeDirs = [file('.gradle')]
-        ['classes', 'docs', 'dependency-cache', 'libs', 'reports', 'resources', 'test-results',
-                'tmp'].each { excludeDirs << file("$buildDir/$it") }
+        ['docs', 'dependency-cache', 'libs', 'reports', 'resources', 'test-results', 'tmp']
+                .each { excludeDirs << file("$buildDir/$it") }
     }
 }
 

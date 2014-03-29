@@ -18,36 +18,35 @@
 package net.openhft.collect;
 
 
+import com.google.auto.value.AutoValue;
+
+
 /**
  * Immutable config for hash containers with primitive char keys.
  */
-public final class CharHashConfig {
+@AutoValue
+public abstract class CharHashConfig {
 
     public static final CharHashConfig DEFAULT =
-            new CharHashConfig(HashConfig.DEFAULT, Character.MIN_VALUE, Character.MAX_VALUE);
+            create(HashConfig.DEFAULT, Character.MIN_VALUE, Character.MAX_VALUE);
 
-
-    private final HashConfig hashConfig;
-    private final char lowerKeyDomainBound;
-    private final char upperKeyDomainBound;
-
-
-    private CharHashConfig(HashConfig hashConfig,
+    private static CharHashConfig create(HashConfig hashConfig,
             char lowerKeyDomainBound, char upperKeyDomainBound) {
-        this.hashConfig = hashConfig;
-        this.lowerKeyDomainBound = lowerKeyDomainBound;
-        this.upperKeyDomainBound = upperKeyDomainBound;
+        return new AutoValue_CharHashConfig(hashConfig, lowerKeyDomainBound, upperKeyDomainBound);
     }
 
+    /**
+     * Package-private constructor to prevent subclassing from outside of the package
+     */
+    CharHashConfig() {}
 
-    public HashConfig getHashConfig() {
-        return hashConfig;
-    }
+
+    public abstract HashConfig getHashConfig();
 
     public CharHashConfig withHashConfig(HashConfig config) {
-        if (hashConfig.equals(config))
+        if (getHashConfig().equals(config))
             return this;
-        return new CharHashConfig(config, lowerKeyDomainBound, upperKeyDomainBound);
+        return create(config, getLowerKeyDomainBound(), getUpperKeyDomainBound());
     }
 
     /**
@@ -57,9 +56,7 @@ public final class CharHashConfig {
      *
      * @return lower (inclusive) bound of keys domain
      */
-    public char getLowerKeyDomainBound() {
-        return lowerKeyDomainBound;
-    }
+    public abstract char getLowerKeyDomainBound();
 
     /**
      * Returns upper (inclusive) bound of keys domain.
@@ -68,9 +65,7 @@ public final class CharHashConfig {
      *
      * @return upper (inclusive) bound of keys domain
      */
-    public char getUpperKeyDomainBound() {
-        return upperKeyDomainBound;
-    }
+    public abstract char getUpperKeyDomainBound();
 
     /**
      * Returns char hash config with the specified keys domain.
@@ -112,49 +107,22 @@ public final class CharHashConfig {
 
     private CharHashConfig internalWithKeysDomain(
             char lowerKeyDomainBound, char upperKeyDomainBound) {
-        if (this.lowerKeyDomainBound == lowerKeyDomainBound &&
-                this.upperKeyDomainBound == upperKeyDomainBound)
+        if (getLowerKeyDomainBound() == lowerKeyDomainBound &&
+                getUpperKeyDomainBound() == upperKeyDomainBound)
             return this;
-        return new CharHashConfig(hashConfig, lowerKeyDomainBound, upperKeyDomainBound);
-    }
-
-
-    @Override
-    public int hashCode() {
-        int hashCode = 17;
-        hashCode = hashCode * 31 + hashConfig.hashCode();
-        char l = lowerKeyDomainBound;
-        hashCode = hashCode * 31 +
-                /* if !(long elem) */l/* elif long elem //((int) ((l >>> 32) ^ l))// endif */;
-        char u = upperKeyDomainBound;
-        hashCode = hashCode * 31 +
-                /* if !(long elem) */u/* elif long elem //((int) ((u >>> 32) ^ u))// endif */;
-        return hashCode;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-        if (obj == null)
-            return false;
-        if (obj instanceof CharHashConfig) {
-            CharHashConfig conf = (CharHashConfig) obj;
-            return lowerKeyDomainBound == conf.lowerKeyDomainBound &&
-                    upperKeyDomainBound == conf.upperKeyDomainBound &&
-                    hashConfig.equals(conf.hashConfig);
-        } else {
-            return false;
-        }
+        return create(getHashConfig(), lowerKeyDomainBound, upperKeyDomainBound);
     }
 
     @Override
     public String toString() {
-        return "CharHashConfig[hashConfig=" + hashConfig +
-                ",lowerKeyDomainBound=" + boundAsString(lowerKeyDomainBound) +
-                ",upperKeyDomainBound=" + boundAsString(upperKeyDomainBound) + "]";
+        return "CharHashConfig[hashConfig=" + getHashConfig() +
+                ",lowerKeyDomainBound=" + boundAsString(getLowerKeyDomainBound()) +
+                ",upperKeyDomainBound=" + boundAsString(getUpperKeyDomainBound()) + "]";
     }
 
+    /**
+     * To distinguish non-printable characters in debug output
+     */
     private String boundAsString(char bound) {
         /* if char elem */
         return String.format("%04x", (int) bound);

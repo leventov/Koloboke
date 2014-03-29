@@ -17,6 +17,7 @@
 
 package net.openhft.collect;
 
+import com.google.auto.value.AutoValue;
 import net.openhft.function.Predicate;
 import javax.annotation.Nullable;
 
@@ -24,47 +25,47 @@ import javax.annotation.Nullable;
 /**
  * Immutable hash config.
  */
-public final class HashConfig {
+@AutoValue
+public abstract class HashConfig {
 
     /**
      * Config with {@literal 0.5f} load factor, {@code null} shrink condition,
      * default expected size is 10.
      */
-    public static final HashConfig DEFAULT = new HashConfig(0.5f, null, 10);
+    public static final HashConfig DEFAULT = create(0.5f, null, 10);
 
 
-    private final float loadFactor;
-    @Nullable
-    private final Predicate<HashContainer> shrinkCondition;
-    private final int defaultExpectedSize;
-
-    private HashConfig(float loadFactor, @Nullable Predicate<HashContainer> shrinkCondition,
-            int defaultExpectedSize) {
-        this.loadFactor = loadFactor;
-        this.shrinkCondition = shrinkCondition;
-        this.defaultExpectedSize = defaultExpectedSize;
+    private static HashConfig create(float loadFactor,
+            @Nullable Predicate<HashContainer> shrinkCondition, int defaultExpectedSize) {
+        if (Float.isNaN(loadFactor) || loadFactor <= 0.0f || loadFactor >= 1.0f)
+            throw new IllegalArgumentException("Load factor must be in (0.0, 1.0) range, " +
+                    loadFactor + " given.");
+        if (defaultExpectedSize < 0)
+            throw new IllegalArgumentException("Default expected hash size must be non-negative, " +
+                    defaultExpectedSize + " given");
+        return new AutoValue_HashConfig(loadFactor, shrinkCondition, defaultExpectedSize);
     }
+
+    /**
+     * Package-private constructor to prevent subclassing from outside of the package
+     */
+    HashConfig() {}
 
     /**
      * @return load factor, a value in (0.0, 1.0) range
      * @see #withLoadFactor(float)
-     * @see HashContainer#loadFactor()
+     * @see net.openhft.collect.HashContainer#loadFactor()
      */
-    public float getLoadFactor() {
-        return loadFactor;
-    }
+    public abstract float getLoadFactor();
 
     /**
      * Load factor should be in (0.0, 1.0) range.
      * @see #getLoadFactor()
      */
-    public HashConfig withLoadFactor(float loadFactor) {
-        if (this.loadFactor == loadFactor)
+    public final HashConfig withLoadFactor(float loadFactor) {
+        if (getLoadFactor() == loadFactor)
             return this;
-        if (Float.isNaN(loadFactor) || loadFactor <= 0.0f || loadFactor >= 1.0f)
-            throw new IllegalArgumentException("Load factor must be in (0.0, 1.0) range, " +
-                    loadFactor + " given.");
-        return new HashConfig(loadFactor, shrinkCondition, defaultExpectedSize);
+        return create(loadFactor, getShrinkCondition(), getDefaultExpectedSize());
     }
 
     /**
@@ -79,11 +80,10 @@ public final class HashConfig {
      *
      * @return shrink condition
      * @see #withShrinkCondition(net.openhft.function.Predicate)
-     * @see HashContainer#shrink()
+     * @see net.openhft.collect.HashContainer#shrink()
      */
-    public @Nullable Predicate<HashContainer> getShrinkCondition() {
-        return shrinkCondition;
-    }
+    @Nullable
+    public abstract Predicate<HashContainer> getShrinkCondition();
 
     /**
      * Returns hash config with the specified shrink condition.
@@ -97,10 +97,10 @@ public final class HashConfig {
      * @return hash config with the specified shrink condition
      * @see #getShrinkCondition()
      */
-    public HashConfig withShrinkCondition(@Nullable Predicate<HashContainer> condition) {
-        if (NullableObjects.equals(this.shrinkCondition, condition))
+    public final HashConfig withShrinkCondition(@Nullable Predicate<HashContainer> condition) {
+        if (NullableObjects.equals(getShrinkCondition(), condition))
             return this;
-        return new HashConfig(loadFactor, condition, defaultExpectedSize);
+        return create(getLoadFactor(), condition, getDefaultExpectedSize());
     }
 
     /**
@@ -108,48 +108,11 @@ public final class HashConfig {
      *
      * @return default expected size
      */
-    public int getDefaultExpectedSize() {
-        return defaultExpectedSize;
-    }
+    public abstract int getDefaultExpectedSize();
 
-    public HashConfig withDefaultExpectedSize(int defaultExpectedSize) {
-        if (this.defaultExpectedSize == defaultExpectedSize)
+    public final HashConfig withDefaultExpectedSize(int defaultExpectedSize) {
+        if (getDefaultExpectedSize() == defaultExpectedSize)
             return this;
-        if (defaultExpectedSize < 0)
-            throw new IllegalArgumentException("Default expected hash size must be positive, " +
-                    defaultExpectedSize + " given");
-        return new HashConfig(loadFactor, shrinkCondition, defaultExpectedSize);
-    }
-
-
-    @Override
-    public int hashCode() {
-        int hashCode = 17;
-        hashCode = hashCode * 31 + Float.floatToIntBits(loadFactor);
-        hashCode = hashCode * 31 + NullableObjects.hashCode(shrinkCondition);
-        return hashCode * 31 + defaultExpectedSize;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-        if (obj == null)
-            return false;
-        if (obj instanceof HashConfig) {
-            HashConfig conf = (HashConfig) obj;
-            return loadFactor == conf.loadFactor &&
-                    defaultExpectedSize == conf.defaultExpectedSize &&
-                    NullableObjects.equals(shrinkCondition, conf.shrinkCondition);
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "HashConfig[loadFactor[loadFactor=" + loadFactor +
-                ",shrinkCondition=" + shrinkCondition +
-                ",defaultExpectedSize=" + defaultExpectedSize + "]";
+        return create(getLoadFactor(), getShrinkCondition(), defaultExpectedSize);
     }
 }
