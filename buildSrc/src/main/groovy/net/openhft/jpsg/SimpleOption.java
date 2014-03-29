@@ -55,7 +55,7 @@ public final class SimpleOption implements Option {
         lower = title.substring(0, 1).toLowerCase() + title.substring(1);
         lowerP = Pattern.compile("(?<![A-Za-z])" + lower + "(?![a-rt-z].|s[a-z])");
 
-        Matcher m = Pattern.compile("[A-Z]([a-z]*+)").matcher(title);
+        Matcher m = Pattern.compile("[A-Z]([a-z0-9]*+)").matcher(title);
         String upper = "";
         int parts = 0;
         while (m.find()) {

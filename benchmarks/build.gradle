@@ -18,6 +18,7 @@ sourceCompatibility = 1.7
 dependencies {
     compile project(':impl')
     compile 'org.openjdk.jmh:jmh-core:0.4.2'
+    compile 'net.openhft:lang:6.3.3'
 }
 
 jar.manifest.attributes 'Main-Class': 'org.openjdk.jmh.Main'
