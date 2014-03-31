@@ -16,6 +16,7 @@
 
 package net.openhft.collect.impl.hash;
 
+import net.openhft.collect.HashConfig;
 import net.openhft.collect.HashOverflowException;
 import net.openhft.collect.impl.AbstractContainer;
 
@@ -77,7 +78,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     ////////////////////////////
     // Fields
 
-    private float loadFactor;
+    private HashConfig hashConfig;
 
 
     /** The current number of occupied slots in the hash. */
@@ -101,8 +102,12 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     // Getters
 
     @Override
-    public final float loadFactor() {
-        return loadFactor;
+    public final HashConfig hashConfig() {
+        return hashConfig;
+    }
+
+    private float loadFactor() {
+        return hashConfig().getLoadFactor();
     }
 
     @Override
@@ -153,10 +158,10 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
      * @param hash Mutable or Immutable DHash instance
      */
     final void copy(DHash hash) {
-        this.loadFactor = hash.loadFactor();
+        this.hashConfig = hash.hashConfig();
         this.size = hash.size();
         int freeSlots = this.freeSlots = hash.freeSlots();
-        int minFreeSlots = this.minFreeSlots = max(1, (int) (hash.capacity() * (1 - loadFactor)));
+        int minFreeSlots = this.minFreeSlots = max(1, (int) (hash.capacity() * (1 - loadFactor())));
         // see #initSlotCounts()
         if (freeSlots < minFreeSlots) this.minFreeSlots = (freeSlots + 1) >> 1;
         this.removedSlots = hash.removedSlots();
@@ -170,10 +175,10 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
      * If {@code justExpected} is false, MutableDHash setups itself as if there are
      * already {@code size} elements in the hash (useful for externalization).
      */
-    final void init(float loadFactor, int size) {
-        this.loadFactor = loadFactor;
+    final void init(HashConfig hashConfig, int size) {
+        this.hashConfig = hashConfig;
         this.size = 0;
-        int capacity = bestCapacity(size, loadFactor, 0);
+        int capacity = bestCapacity(size, loadFactor(), 0);
         internalInit(capacity);
     }
 
@@ -196,7 +201,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     private void initSlotCounts(int capacity) {
         int freeSlots = this.freeSlots = capacity - size;
         // Need at least one free slot for open addressing
-        int minFreeSlots = this.minFreeSlots = max(1, (int) (capacity * (1 - loadFactor)));
+        int minFreeSlots = this.minFreeSlots = max(1, (int) (capacity * (1 - loadFactor())));
         // free could be less than minFreeSlots only in case when capacity
         // is not sufficient to comply load factor (due to saturation with
         // Java array size limit). Set minFreeSlots to a half of free to avoid
@@ -255,7 +260,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
 
     @Override
     public boolean shrink() {
-        int newCapacity = bestCapacity(size, loadFactor, size);
+        int newCapacity = bestCapacity(size, loadFactor(), size);
         if (removedSlots > 0 || newCapacity < capacity()) {
             rehash(newCapacity);
             return true;
@@ -265,7 +270,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     }
 
     private boolean tryRehashForExpansion(long desiredSize) {
-        int newCapacity = bestCapacity(desiredSize, loadFactor, size);
+        int newCapacity = bestCapacity(desiredSize, loadFactor(), size);
         // No sense in rehashing for expansion if we already reached Java array
         // size limit.
         if (newCapacity > capacity() || removedSlots > 0) {
@@ -356,7 +361,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
      */
     private boolean tryRehashIfTooFewFreeSlots() {
         if ( removedSlots > 0 ) {
-            double k = 1 - Math.sqrt(1 - loadFactor);
+            double k = 1 - Math.sqrt(1 - loadFactor());
             rehash(bestCapacity(size, k, size));
             return true;
         } else {

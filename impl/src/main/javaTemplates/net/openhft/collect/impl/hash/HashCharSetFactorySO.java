@@ -41,9 +41,9 @@ public abstract class HashCharSetFactorySO
 
     /* if !(float|double elem) */
     @Override
-    MutableDHashCharSetGO createNew(float loadFactor, int expectedSize, char free, char removed) {
+    MutableDHashCharSetGO createNew(HashConfig hashConfig, int expectedSize, char free, char removed) {
         MutableDHashCharSet set = new MutableDHashCharSet();
-        set.init(loadFactor, expectedSize, free, removed);
+        set.init(hashConfig, expectedSize, free, removed);
         return set;
     }
     /* elif float|double elem */
@@ -59,7 +59,7 @@ public abstract class HashCharSetFactorySO
         return newHash(expectedSize);
         /* elif float|double elem */
         MutableDHashCharSetGO set = new MutableDHashCharSet();
-        set.init(hashConf.getLoadFactor(), expectedSize);
+        set.init(hashConf, expectedSize);
         return set;
         /* endif */
     }
@@ -73,7 +73,7 @@ public abstract class HashCharSetFactorySO
         if (elements instanceof CharCollection) {
             if (elements instanceof CharDHash) {
                 CharDHash hash = (CharDHash) elements;
-                if (hash.loadFactor() == hashConf.getLoadFactor()) {
+                if (hash.hashConfig().getLoadFactor() == hashConf.getLoadFactor()) {
                     MutableDHashCharSet set = new MutableDHashCharSet();
                     set.copy(hash);
                     return set;

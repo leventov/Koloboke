@@ -20,6 +20,7 @@
 
 package net.openhft.collect.impl.hash;
 
+import net.openhft.collect.HashConfig;
 import net.openhft.collect.HashOverflowException;
 import net.openhft.collect.impl.*;
 import javax.annotation.Nonnull;
@@ -57,14 +58,14 @@ public abstract class MutableCharDHashSO extends MutableDHash
         set = hash.keys();
     }
 
-    final void init(float loadFactor, int size,
+    final void init(HashConfig hashConfig, int size,
             char freeValue/* if Mutable mutability */, char removedValue/* endif */) {
         this.freeValue = freeValue;
         /* if Mutable mutability */
         this.removedValue = removedValue;
         /* endif */
         // calls allocateArrays, fill keys with this.freeValue => assign it before
-        super.init(loadFactor, size);
+        super.init(hashConfig, size);
     }
 
 

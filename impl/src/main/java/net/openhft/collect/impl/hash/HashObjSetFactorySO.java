@@ -57,7 +57,7 @@ public abstract class HashObjSetFactorySO<E> implements HashObjSetFactory<E> {
     @Override
     public <E2 extends E> MutableDHashObjSetGO<E2> newMutableSet(int expectedSize) {
         MutableDHashObjSetGO<E2> set = uninitializedMutableSet();
-        set.init(hashConf.getLoadFactor(), expectedSize);
+        set.init(hashConf, expectedSize);
         return set;
     }
 
@@ -70,7 +70,7 @@ public abstract class HashObjSetFactorySO<E> implements HashObjSetFactory<E> {
                 ObjSet elemSet = (ObjSet) elements;
                 if (elements instanceof ObjDHash) {
                     ObjDHash hash = (ObjDHash) elements;
-                    if (hash.loadFactor() == hashConf.getLoadFactor() &&
+                    if (hash.hashConfig().getLoadFactor() == hashConf.getLoadFactor() &&
                             NullableObjects.equals(
                                     elemSet.equivalence(), getEquivalence())) {
                         MutableDHashObjSetGO<E2> set = uninitializedMutableSet();

@@ -16,6 +16,7 @@
 
 package net.openhft.collect.impl.hash;
 
+import net.openhft.collect.HashConfig;
 import net.openhft.collect.impl.AbstractContainer;
 
 
@@ -24,19 +25,19 @@ public abstract class ImmutableDHash extends AbstractContainer implements DHash 
     ////////////////////////////
     // Fields
 
-    private float loadFactor;
+    private HashConfig hashConfig;
 
     /** The current number of occupied slots in the hash. */
     private int size;
 
 
     final void copy(DHash hash) {
-        this.loadFactor = hash.loadFactor();
+        this.hashConfig = hash.hashConfig();
         this.size = hash.size();
     }
 
-    final void init(float loadFactor, int size) {
-        this.loadFactor = loadFactor;
+    final void init(HashConfig hashConfig, int size) {
+        this.hashConfig = hashConfig;
         this.size = size;
     }
 
@@ -51,8 +52,8 @@ public abstract class ImmutableDHash extends AbstractContainer implements DHash 
 
 
     @Override
-    public final float loadFactor() {
-        return loadFactor;
+    public HashConfig hashConfig() {
+        return hashConfig;
     }
 
 

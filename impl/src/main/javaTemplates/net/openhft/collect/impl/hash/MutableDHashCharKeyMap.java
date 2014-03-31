@@ -73,8 +73,8 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
         /* endif */
 
         @Override
-        public float loadFactor() {
-            return MutableDHashCharKeyMap.this.loadFactor();
+        public HashConfig hashConfig() {
+            return MutableDHashCharKeyMap.this.hashConfig();
         }
 
         @Override

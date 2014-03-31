@@ -54,7 +54,6 @@ public abstract class HashConfig {
     /**
      * @return load factor, a value in (0.0, 1.0) range
      * @see #withLoadFactor(float)
-     * @see net.openhft.collect.HashContainer#loadFactor()
      */
     public abstract float getLoadFactor();
 
@@ -90,7 +89,7 @@ public abstract class HashConfig {
      *
      * <p>Example:
      * <pre> {@code
-     * conf.withShrinkCondition(h -> h.currentLoad() + 0.1f < h.loadFactor());
+     * conf.withShrinkCondition(h -> h.currentLoad() + 0.1f < h.hashConfig().getLoadFactor());
      * }</pre>
      *
      * @param condition shrink condition

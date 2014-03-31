@@ -442,8 +442,8 @@ public class MutableDHashCharShortMapGO/*<>*/
         }
 
         @Override
-        public float loadFactor() {
-            return MutableDHashCharShortMapGO.this.loadFactor();
+        public HashConfig hashConfig() {
+            return MutableDHashCharShortMapGO.this.hashConfig();
         }
 
 

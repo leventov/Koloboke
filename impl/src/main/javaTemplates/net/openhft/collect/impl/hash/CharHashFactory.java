@@ -65,7 +65,7 @@ public abstract class CharHashFactory<MT> {
         return conf;
     }
 
-    abstract MT createNew(float loadFactor, int expectedSize, char free, char removed);
+    abstract MT createNew(HashConfig hashConfig, int expectedSize, char free, char removed);
 
     /* define nextIntOrLong */
     /* if !(long elem) //nextInt// elif long elem //nextLong// endif */
@@ -88,6 +88,6 @@ public abstract class CharHashFactory<MT> {
             removed = removedValue;
             free = freeValue;
         }
-        return createNew(hashConf.getLoadFactor(), expectedSize, free, removed);
+        return createNew(hashConf, expectedSize, free, removed);
     }
 }

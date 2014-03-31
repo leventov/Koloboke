@@ -89,7 +89,7 @@ public abstract class HashObjShortMapFactorySO<K/* if obj value //, V// endif */
     public /*p1*/<K2 extends K>/**/ MutableDHashObjShortMapGO/*p2*/<K2>/**/ newMutableMap(
             int expectedSize) {
         MutableDHashObjShortMapGO/*p2*/<K2>/**/ map = uninitializedMutableMap();
-        map.init(hashConf.getLoadFactor(), expectedSize);
+        map.init(hashConf, expectedSize);
         return map;
     }
 
@@ -101,7 +101,7 @@ public abstract class HashObjShortMapFactorySO<K/* if obj value //, V// endif */
             ObjShortMap/*p2*/<K2>/**/ objShortMap = (ObjShortMap/*p2*/<K2>/**/) map;
             if (map instanceof ObjShortDHash) {
                 ObjShortDHash hash = (ObjShortDHash) map;
-                if (hash.loadFactor() == hashConf.getLoadFactor() &&
+                if (hash.hashConfig().getLoadFactor() == hashConf.getLoadFactor() &&
                         NullableObjects.equals(objShortMap.keyEquivalence(), getKeyEquivalence())) {
                     MutableDHashObjShortMapGO/*p2*/<K2>/**/ res = uninitializedMutableMap();
                     res.copy(hash);

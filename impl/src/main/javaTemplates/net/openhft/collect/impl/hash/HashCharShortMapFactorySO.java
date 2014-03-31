@@ -52,10 +52,10 @@ public abstract class HashCharShortMapFactorySO/*<>*/
 
     /* if !(float|double key) */
     @Override
-    MutableDHashCharShortMapGO/*<>*/ createNew(float loadFactor, int expectedSize, char free,
+    MutableDHashCharShortMapGO/*<>*/ createNew(HashConfig hashConfig, int expectedSize, char free,
             char removed) {
         MutableDHashCharShortMapGO/*<>*/ map = uninitializedMutableMap();
-        map.init(loadFactor, expectedSize, free, removed);
+        map.init(hashConfig, expectedSize, free, removed);
         return map;
     }
     /* elif float|double key */
@@ -80,7 +80,7 @@ public abstract class HashCharShortMapFactorySO/*<>*/
         return (MutableDHashCharShortMapGO/*p2*/) newHash(expectedSize);
         /* elif float|double key */
         MutableDHashCharShortMapGO/*p2*/ set = uninitializedMutableMap();
-        set.init(hashConf.getLoadFactor(), expectedSize);
+        set.init(hashConf, expectedSize);
         return set;
         /* endif */
     }
@@ -95,7 +95,7 @@ public abstract class HashCharShortMapFactorySO/*<>*/
         if (map instanceof CharShortMap) {
             if (map instanceof CharShortDHash) {
                 CharShortDHash hash = (CharShortDHash) map;
-                if (hash.loadFactor() == hashConf.getLoadFactor()) {
+                if (hash.hashConfig().getLoadFactor() == hashConf.getLoadFactor()) {
                     MutableDHashCharShortMapGO/*p2*/ res = uninitializedMutableMap();
                     res.copy(hash);
                     return res;
