@@ -20,24 +20,34 @@ package net.openhft.collect;
 public interface Container {
 
     /**
-     * @return number of elements (entries) in the container
+     * Returns the number of elements (entries) in this container. If this container contains more
+     * than {@code Integer.MAX_VALUE} elements (entries), returns {@code Integer.MAX_VALUE}.
+     *
+     * @return the number of elements (entries) in this container
+     * @see #sizeAsLong()
      */
     int size();
 
+    /**
+     * Returns the number of elements (entries) in this container.
+     *
+     * @return the number of elements (entries) in this container
+     */
+    long sizeAsLong();
 
     /**
-     * If the container is array-based data structure, increases the capacity of this container,
-     * if necessary, to ensure that it can hold at least the number of elements specified
-     * by the {@code minSize} argument. Returns {@code true}, if the capacity has been increased,
-     * {@code false} if it isn't necessary.
+     * If the container is an array-based data structure, increases the capacity of this container,
+     * if necessary, to ensure that it can hold at least {@code minSize} elements.
+     * Returns {@code true}, if the capacity has been increased, {@code false}
+     * if it isn't necessary.
      *
-     * <p>If the container is linked data structure, does nothing and returns {@code false}.
+     * <p>If the container is a linked data structure, does nothing and returns {@code false}.
      *
      * @param minSize the desired minimum size
      * @return {@code true} if the capacity has been increased, {@code false} if it isn't necessary
      * @throws java.lang.UnsupportedOperationException if the container doesn't support insertions
      */
-    boolean ensureCapacity(int minSize);
+    boolean ensureCapacity(long minSize);
 
     /**
      * If the container is array-based data structure, and the memory is overused due to preventive

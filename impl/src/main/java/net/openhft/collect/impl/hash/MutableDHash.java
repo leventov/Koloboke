@@ -217,9 +217,8 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
      *
      *  3. Move elements, entries, etc. from the old arrays to the new ones.
      *
-     * <p>Subclasses should implement, but MUST NOT call this method. This method
-     * is called in DHash from postInsertHooks, {@link #ensureCapacity(int)} and
-     * {@link #shrink()} methods.
+     * <p>Subclasses should implement, but MUST NOT call this method. This method is called
+     * in DHash from postInsertHooks, {@link #ensureCapacity(long)} and {@link #shrink()} methods.
      */
     abstract void rehash(int newCapacity);
 
@@ -280,11 +279,12 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     }
 
     @Override
-    public final boolean ensureCapacity(int minSize) {
-        if (minSize < 0)
+    public final boolean ensureCapacity(long minSize) {
+        int intMinSize = (int) Math.min(minSize, Integer.MAX_VALUE);
+        if (minSize < 0L)
             throw new IllegalArgumentException(
                     "Min size should be positive, " + minSize + " given.");
-        int additionalSize = minSize - size;
+        int additionalSize = intMinSize - size;
         if (additionalSize <= 0)
             return false;
         int lowFreeEstimate;

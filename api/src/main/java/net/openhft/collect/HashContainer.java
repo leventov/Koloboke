@@ -58,7 +58,7 @@ public interface HashContainer extends Container {
      * @throws java.lang.UnsupportedOperationException if the container doesn't support insertions
      */
     @Override
-    boolean ensureCapacity(int minSize);
+    boolean ensureCapacity(long minSize);
 
     /**
      * If {@link #currentLoad()} is less than {@link #loadFactor()},

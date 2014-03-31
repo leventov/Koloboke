@@ -17,17 +17,32 @@
 
 package net.openhft.collect.impl;
 
-public abstract class AbstractContainer {
+import net.openhft.collect.Container;
 
-    public abstract int size();
+
+public abstract class AbstractContainer implements Container {
+
+    @Override
+    public int size() {
+        long sizeAsLong = sizeAsLong();
+        return sizeAsLong <= Integer.MAX_VALUE ? (int) sizeAsLong : Integer.MAX_VALUE;
+    }
+
+    @Override
+    public long sizeAsLong() {
+        return (long) size();
+    }
 
     public final boolean isEmpty() {
         return size() == 0;
     }
 
+    @Override
     public abstract boolean equals(Object o);
 
+    @Override
     public abstract int hashCode();
 
+    @Override
     public abstract String toString();
 }

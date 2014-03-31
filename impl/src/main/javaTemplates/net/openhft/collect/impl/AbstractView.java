@@ -26,7 +26,18 @@ import java.util.Collection;
 public abstract class AbstractView<E> implements Collection<E>, Container {
 
     @Override
-    public final boolean ensureCapacity(int minSize) {
+    public int size() {
+        long sizeAsLong = sizeAsLong();
+        return sizeAsLong <= Integer.MAX_VALUE ? (int) sizeAsLong : Integer.MAX_VALUE;
+    }
+
+    @Override
+    public long sizeAsLong() {
+        return (long) size();
+    }
+
+    @Override
+    public final boolean ensureCapacity(long minSize) {
         throw new UnsupportedOperationException();
     }
 
@@ -35,6 +46,7 @@ public abstract class AbstractView<E> implements Collection<E>, Container {
         return size() == 0;
     }
 
+    @Override
     public abstract String toString();
 
     @Override

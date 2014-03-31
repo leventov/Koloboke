@@ -94,7 +94,7 @@ public abstract class ImmutableDHash extends AbstractContainer implements DHash 
 
 
     @Override
-    public boolean ensureCapacity(int minSize) {
+    public boolean ensureCapacity(long minSize) {
         throw new UnsupportedOperationException();
     }
 
