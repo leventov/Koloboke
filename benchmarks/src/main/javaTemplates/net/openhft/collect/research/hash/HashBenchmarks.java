@@ -59,8 +59,8 @@ public class HashBenchmarks {
     /* with char|byte|short|int|long key */
 
 
-    /* with Bit|Byte|ByteAlong|No states LHash|DHash hash */
-    /* if !(Bit states DHash hash) */
+    /* with Bit|Byte|ByteAlong|No states LHash|DHash|RHoodSimpleHash hash */
+    /* if !(Bit states DHash hash) && !(Bit|Byte|ByteAlong states RHoodSimpleHash hash) */
 
     @State(Scope.Thread)
     public static class BitStatesLHashChars {
@@ -75,7 +75,7 @@ public class HashBenchmarks {
         public void allocate() {
             keys = new char[N];
             notKeys = new char[N];
-            set = new BitStatesLHashCharSet(CONF./* if LHash hash */powerOf2Capacity
+            set = new BitStatesLHashCharSet(CONF./* if LHash|RHoodSimpleHash hash */powerOf2Capacity
                     /* elif DHash hash //primeCapacity// endif */);
         }
 
@@ -108,7 +108,7 @@ public class HashBenchmarks {
     }
 
     /* with Binary|Ternary state Simple|Unsafe indexing */
-    /* if !(Bit states Ternary state) && !(LHash hash Ternary state) &&
+    /* if !(Bit states Ternary state) && !(LHash|RHoodSimpleHash hash Ternary state) &&
           !(ByteAlong states Simple indexing) */
 
     @GenerateMicroBenchmark
