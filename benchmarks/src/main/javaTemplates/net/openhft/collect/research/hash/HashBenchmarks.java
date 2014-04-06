@@ -166,7 +166,7 @@ public class HashBenchmarks {
                     String[] dims = "capacity loadFactor arity algo states queryResult key indexing"
                             .split(" ");
                     for (String dim : dims) {
-                        System.out.printf("%-12s", dim);
+                        System.out.print(alignDimString(dim));
                     }
                     System.out.printf(":%8s%8s\n", "mean", "std");
                     headerPrinted = true;
@@ -177,8 +177,8 @@ public class HashBenchmarks {
                     String methodName = parts[parts.length - 1];
                     parts = methodName.split("_");
                     StringBuilder dims = new StringBuilder();
-                    dims.append(String.format("%-12d", capacity));
-                    dims.append(String.format("%-12s", loadFactor));
+                    dims.append(alignDimNumber(capacity));
+                    dims.append(alignDimString(loadFactor));
                     for (int i = 1; i < parts.length; i++) {
                         String[] camelCaseParts = parts[i].split("(?<!^)(?=[A-Z])");
                         int lastPart = camelCaseParts.length == 1 ? 1 : camelCaseParts.length - 1;
@@ -186,7 +186,7 @@ public class HashBenchmarks {
                         for (int j = 0; j < lastPart; j++) {
                             value += camelCaseParts[j];
                         }
-                        dims.append(String.format("%-12s", value));
+                        dims.append(alignDimString(value));
                     }
                     System.out.print(dims.toString());
                     Statistics stats = e.getValue().getPrimaryResult().getStatistics();
@@ -196,5 +196,13 @@ public class HashBenchmarks {
                 }
             }
         }
+    }
+
+    private static String alignDimNumber(int n) {
+        return String.format("%-12d", n);
+    }
+
+    private static String alignDimString(String name) {
+        return String.format("%-12s", name);
     }
 }
