@@ -92,7 +92,7 @@ public class NoStatesLHashCharSet extends UnsafeConstants {
                     while (true) {
                         offset = (offset + CHAR_SCALE) & capacityOffsetMask;
                         if ((cur = U.getChar(keys, CHAR_BASE + offset)) == key) {
-                            return (int) (index >> CHAR_SCALE_SHIFT);
+                            return (int) (offset >> CHAR_SCALE_SHIFT);
                         } else if (cur == free) {
                             return -1;
                         }
