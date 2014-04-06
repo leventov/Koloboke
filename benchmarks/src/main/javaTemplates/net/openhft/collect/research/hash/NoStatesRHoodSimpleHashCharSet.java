@@ -61,22 +61,22 @@ public class NoStatesRHoodSimpleHashCharSet extends NoStatesRHoodHashCharSet {
         char free = freeValue;
         if (key != free) {
             char[] keys = set;
-            int capacityMask = this.capacityMask;
-            int index = Primitives.hashCode(key) & capacityMask;
-            char cur = U.getChar(keys, CHAR_BASE + ((long) index) << CHAR_SCALE_SHIFT);
+            long capacityMask = (long) this.capacityMask;
+            long index = Primitives.hashCode(key) & capacityMask;
+            char cur = U.getChar(keys, CHAR_BASE + (index << CHAR_SCALE_SHIFT));
             if (cur == key) {
-                return index;
+                return (int) index;
             } else {
                 if (cur == free) {
                     return -1;
                 } else {
-                    int distance = 1;
-                    int capacity = capacityMask + 1;
+                    long distance = 1L;
+                    long capacity = capacityMask + 1L;
                     while (true) {
-                        index = (index + 1) & capacityMask;
-                        if ((cur = U.getChar(keys, CHAR_BASE + ((long) index) << CHAR_SCALE_SHIFT))
-                                == key) {
-                            return index;
+                        index = (index + 1L) & capacityMask;
+                        cur = U.getChar(keys, CHAR_BASE + (index << CHAR_SCALE_SHIFT));
+                        if (cur == key) {
+                            return (int) index;
                         } else if (cur == free || distance >
                                 ((index + capacity - Primitives.hashCode(cur)) & capacityMask)) {
                             return -1;
