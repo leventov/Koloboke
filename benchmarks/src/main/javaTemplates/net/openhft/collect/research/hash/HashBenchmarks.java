@@ -59,8 +59,8 @@ public class HashBenchmarks {
     /* with char|byte|short|int|long key */
 
 
-    /* with Bit|Byte|ByteAlong|No states LHash|DHash|RHoodSimpleHash hash */
-    /* if !(Bit states DHash hash) && !(Bit|Byte|ByteAlong states RHoodSimpleHash hash) */
+    /* with Bit|Byte|ByteAlong|No states LHash|DHash|RHoodSimpleHash|QHash hash */
+    /* if !(Bit states DHash hash) && !(Bit|Byte|ByteAlong states RHoodSimpleHash|QHash hash) */
 
     @State(Scope.Thread)
     public static class BitStatesLHashChars {
@@ -76,7 +76,7 @@ public class HashBenchmarks {
             keys = new char[N];
             notKeys = new char[N];
             set = new BitStatesLHashCharSet(CONF./* if LHash|RHoodSimpleHash hash */powerOf2Capacity
-                    /* elif DHash hash //primeCapacity// endif */);
+                    /* elif DHash|QHash hash //primeCapacity// endif */);
         }
 
         @Setup(Level.Iteration)
