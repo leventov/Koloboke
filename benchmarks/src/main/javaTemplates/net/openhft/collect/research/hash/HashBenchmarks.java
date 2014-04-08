@@ -56,27 +56,48 @@ public class HashBenchmarks {
     public static final int N = (int) (CAPACITY * LOAD_FACTOR);
 
 
+    static double harmonic(int n, double power) {
+        double h = 0.0;
+        for (int i = 1; i <= n; i++) {
+            h += 1.0 / Math.pow(i, power);
+        }
+        return h;
+    }
+
     /* with char|byte|short|int|long key */
 
+    static void shuffle(char[] a, Random r) {
+        for (int i = a.length - 1; i > 0; i--) {
+            int index = r.nextInt(i + 1);
+            char t = a[index];
+            a[index] = a[i];
+            a[i] = t;
+        }
+    }
 
-    /* with Bit|Byte|ByteAlong|No states LHash|DHash|RHoodSimpleHash|QHash hash */
-    /* if !(Bit states DHash hash) && !(Bit|Byte|ByteAlong states RHoodSimpleHash|QHash hash) */
+    /* with Bit|Byte|ByteAlong|No states LHash|LSelfAdjHash|DHash|RHoodSimpleHash|QHash hash */
+    /* if !(Bit states DHash hash) &&
+          !(Bit|Byte|ByteAlong states RHoodSimpleHash|QHash|LSelfAdjHash hash) */
 
     @State(Scope.Thread)
-    public static class BitStatesLHashChars {
-        Random r = ThreadLocalRandom.current();
-        CharSet keySet = HashCharSets.newMutableSet(N);
-        CharSet notKeySet = HashCharSets.newMutableSet(N);
+    public static class BitStatesLHashCharsUniformQueries {
+        Random r;
+        CharSet keySet;
+        CharSet notKeySet;
         public char[] keys;
         public char[] notKeys;
         public BitStatesLHashCharSet set;
 
         @Setup(Level.Trial)
         public void allocate() {
+            r = ThreadLocalRandom.current();
+            keySet = HashCharSets.newMutableSet(N);
+            notKeySet = HashCharSets.newMutableSet(N);
             keys = new char[N];
             notKeys = new char[N];
-            set = new BitStatesLHashCharSet(CONF./* if LHash|RHoodSimpleHash hash */powerOf2Capacity
-                    /* elif DHash|QHash hash //primeCapacity// endif */);
+            set = new BitStatesLHashCharSet(
+                    CONF./* if LHash|LSelfAdjHash|RHoodSimpleHash hash */powerOf2Capacity
+                         /* elif DHash|QHash hash //primeCapacity// endif */);
         }
 
         @Setup(Level.Iteration)
@@ -107,12 +128,96 @@ public class HashBenchmarks {
         }
     }
 
-    /* with Binary|Ternary state Simple|Unsafe indexing */
-    /* if !(Bit states Ternary state) && !(LHash|RHoodSimpleHash hash Ternary state) &&
+    public static abstract class BitStatesLHashCharsDistributedQueries {
+        Random r;
+        CharSet keySet;
+        public char[] keys;
+        public BitStatesLHashCharSet set;
+
+        @Setup(Level.Trial)
+        public void allocate() {
+            r = ThreadLocalRandom.current();
+            keySet = HashCharSets.newMutableSet(N);
+            keys = new char[N];
+            set = new BitStatesLHashCharSet(
+                    CONF./* if LHash|LSelfAdjHash|RHoodSimpleHash hash */powerOf2Capacity
+                         /* elif DHash|QHash hash //primeCapacity// endif */);
+        }
+
+        @Setup(Level.Iteration)
+        public void fill() {
+            set.clear();
+            keySet.clear();
+            int order = 1;
+            int i = 0;
+            while (i < N) {
+                char key;
+                while (!set.addBinaryState(key = (char) r.nextLong()));
+                keySet.add(key);
+                int count = Math.max((int) (count(order) + 0.55), 1);
+                int limit = Math.min(N, i + count);
+                for (; i < limit; i++) {
+                    keys[i] = key;
+                }
+                order++;
+            }
+            shuffle(keys, r);
+            while (set.size < N) {
+                char key = (char) r.nextLong();
+                if (set.addBinaryState(key))
+                    keySet.add(key);
+            }
+            // Don't give advantage to early generated keys
+            set.clear();
+            char[] keys = keySet.toCharArray();
+            shuffle(keys, r);
+            for (char key : keys) {
+                set.addBinaryState(key);
+            }
+        }
+
+        abstract double count(int order);
+
+        @TearDown(Level.Trial)
+        public void recycle() {
+            keySet = null;
+            keys = null;
+            set = null;
+        }
+    }
+
+    // All the following formulas taken from TAoCP Vol. 3 chapter 6.1
+
+    @State(Scope.Thread)
+    public static class BitStatesLHashCharsZipfQueries
+            extends BitStatesLHashCharsDistributedQueries {
+        static final double C = N / harmonic(N, 1.0);
+        @Override
+        double count(int order) {
+            return C / order;
+        }
+    }
+
+    @State(Scope.Thread)
+    public static class BitStatesLHashCharsParetoQueries
+            extends BitStatesLHashCharsDistributedQueries {
+        static final double PARETO_THETA = Math.log(0.80) / Math.log(0.20);
+        static final double C = N / harmonic(N, 1.0 - PARETO_THETA);
+
+        @Override
+        double count(int order) {
+            return C / Math.pow(order, 1.0 - PARETO_THETA);
+        }
+    }
+    // End of TAoCP formulas
+
+    /* with Binary|Ternary state Simple|Unsafe indexing Uniform|Zipf|Pareto queries */
+    /* if !(Bit states Ternary state) && !(LHash|LSelfAdjHash|RHoodSimpleHash hash Ternary state) &&
           !(ByteAlong states Simple indexing) */
 
     @GenerateMicroBenchmark
-    public int lookup_binary_lHash_bitStates_present_charKey_simpleIndexing(BitStatesLHashChars s) {
+    public int lookup_binary_lHash_bitStates_present_uniformQueries_charKey_simpleIndexing(
+            BitStatesLHashCharsUniformQueries s) {
         int x = 0;
         BitStatesLHashCharSet set = s.set;
         for (char key : s.keys) {
@@ -121,8 +226,10 @@ public class HashBenchmarks {
         return x;
     }
 
+    /* if Uniform queries */
     @GenerateMicroBenchmark
-    public int lookup_binary_lHash_bitStates_absent_charKey_simpleIndexing(BitStatesLHashChars s) {
+    public int lookup_binary_lHash_bitStates_absent_uniformQueries_charKey_simpleIndexing(
+            BitStatesLHashCharsUniformQueries s) {
         int x = 0;
         BitStatesLHashCharSet set = s.set;
         for (char key : s.notKeys) {
@@ -130,6 +237,7 @@ public class HashBenchmarks {
         }
         return x;
     }
+    /* endif */
 
     /* endif */
     /* endwith */
@@ -163,7 +271,8 @@ public class HashBenchmarks {
                 SortedMap<BenchmarkRecord, RunResult> results = new Runner(opt).run();
 
                 if (!headerPrinted) {
-                    String[] dims = "capacity loadFactor arity algo states queryResult key indexing"
+                    String[] dims =
+                            "capacity loadFactor arity algo states queryResult queries key indexing"
                             .split(" ");
                     for (String dim : dims) {
                         System.out.print(alignDimString(dim));
