@@ -1,3 +1,4 @@
+/* with char|byte|short|int|long key */
 /*
  * Copyright 2014 the original author or authors.
  *
