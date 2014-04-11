@@ -53,24 +53,22 @@ public class BitStatesLHashCharSet extends UnsafeConstants {
         char[] keys = set;
         int capacityMask = keys.length - 1;
         int index = Primitives.hashCode(key) & capacityMask;
-        long curBitMask = 1L << index;
-        long curStatesWord = stateBits[index >> WORD_INDEX_SHIFT];
-        if ((curStatesWord & curBitMask) != 0) {
+        long curStatesWord = stateBits[index >> WORD_INDEX_SHIFT] << index;
+        if (curStatesWord < 0L) {
             if (keys[index] == key)
                 return index;
+            curStatesWord <<= 1L;
             while (true) {
                 index = (index + 1) & capacityMask;
-                curBitMask = curBitMask << 1;
-                if (curBitMask == 0) {
-                    curBitMask = 1L;
+                if ((index & 63) == 0)
                     curStatesWord = stateBits[index >> WORD_INDEX_SHIFT];
-                }
-                if ((curStatesWord & curBitMask) != 0) {
+                if (curStatesWord < 0L) {
                     if (keys[index] == key)
                         return index;
                 } else {
                     return -1;
                 }
+                curStatesWord <<= 1L;
             }
         } else {
             return -1;
@@ -82,29 +80,28 @@ public class BitStatesLHashCharSet extends UnsafeConstants {
         char[] keys = set;
         int capacityMask = this.capacityMask;
         long index0 = (long) (Primitives.hashCode(key) & capacityMask);
-        long curBitMask = 1L << index0;
         long curStatesWord = U.getLong(stateBits,
-                LONG_BASE + (index0 >> (WORD_INDEX_SHIFT - LONG_SCALE_SHIFT)));
-        if ((curStatesWord & curBitMask) != 0) {
+                LONG_BASE + (index0 >> (WORD_INDEX_SHIFT - LONG_SCALE_SHIFT))) << index0;
+        if (curStatesWord < 0L) {
             long offset = index0 << CHAR_SCALE_SHIFT;
             if (U.getChar(keys, CHAR_BASE + offset) == key)
                 return (int) index0;
             long capacityOffsetMask = ((long) capacityMask) << CHAR_SCALE_SHIFT;
+            curStatesWord <<= 1L;
             while (true) {
-                offset = (offset + CHAR_SCALE) & capacityOffsetMask;
-                curBitMask = curBitMask << 1;
-                if (curBitMask == 0) {
-                    curBitMask = 1L;
+                offset = offset + CHAR_SCALE & capacityOffsetMask;
+                if ((offset & (63L << CHAR_SCALE_SHIFT)) == 0L) {
                     long wordOffset =
                             offset >> (WORD_INDEX_SHIFT + CHAR_SCALE_SHIFT - LONG_SCALE_SHIFT);
                     curStatesWord = U.getLong(stateBits, LONG_BASE + wordOffset);
                 }
-                if ((curStatesWord & curBitMask) != 0) {
+                if (curStatesWord < 0L) {
                     if (U.getChar(keys, CHAR_BASE + offset) == key)
                         return (int) (offset >> CHAR_SCALE_SHIFT);
                 } else {
                     return -1;
                 }
+                curStatesWord <<= 1L;
             }
         } else {
             return -1;
