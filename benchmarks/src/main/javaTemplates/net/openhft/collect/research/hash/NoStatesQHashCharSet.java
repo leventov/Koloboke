@@ -71,9 +71,11 @@ public class NoStatesQHashCharSet extends UnsafeConstants {
                         } else if (cur == free) {
                             return -1;
                         }
-                        fIndex += step;
+                        // This way of wrapping capacity is less clear and a bit slower than
+                        // the method from indexTernaryStateUnsafeIndexing(), but it protects
+                        // from possible int overflow issues
                         int t;
-                        if ((t = fIndex - capacity) >= 0) fIndex = t;
+                        if ((t = (fIndex += step) - capacity) >= 0) fIndex = t;
                         if ((cur = keys[fIndex]) == key) {
                             return fIndex;
                         } else if (cur == free) {
@@ -105,16 +107,15 @@ public class NoStatesQHashCharSet extends UnsafeConstants {
                     long step = 1L;
                     long bIndex = index;
                     long fIndex = index;
+                    long capacityAsLong = (long) capacity;
                     while (true) {
-                        if ((bIndex -= step) < 0L) bIndex += capacity;
+                        if ((bIndex -= step) < 0L) bIndex += capacityAsLong;
                         if ((cur = U.getChar(keys, CHAR_BASE + (bIndex << CHAR_SCALE_SHIFT))) == key) {
                             return (int) bIndex;
                         } else if (cur == free) {
                             return -1;
                         }
-                        fIndex += step;
-                        long t;
-                        if ((t = fIndex - capacity) >= 0L) fIndex = t;
+                        if ((fIndex += step) >= capacityAsLong) fIndex -= capacityAsLong;
                         if ((cur = U.getChar(keys, CHAR_BASE + (fIndex << CHAR_SCALE_SHIFT))) == key) {
                             return (int) fIndex;
                         } else if (cur == free) {
@@ -153,9 +154,9 @@ public class NoStatesQHashCharSet extends UnsafeConstants {
                         } else if (cur == free) {
                             return -1;
                         }
-                        fIndex += step;
+                        // See comment in indexTernaryStateSimpleIndexing()
                         int t;
-                        if ((t = fIndex - capacity) >= 0) fIndex = t;
+                        if ((t = (fIndex += step) - capacity) >= 0) fIndex = t;
                         if ((cur = keys[fIndex]) == key) {
                             return fIndex;
                         } else if (cur == free) {
@@ -187,16 +188,15 @@ public class NoStatesQHashCharSet extends UnsafeConstants {
                     long step = 1L;
                     long bIndex = index;
                     long fIndex = index;
+                    long capacityAsLong = (long) capacity;
                     while (true) {
-                        if ((bIndex -= step) < 0L) bIndex += capacity;
+                        if ((bIndex -= step) < 0L) bIndex += capacityAsLong;
                         if ((cur = U.getChar(keys, CHAR_BASE + (bIndex << CHAR_SCALE_SHIFT))) == key) {
                             return (int) bIndex;
                         } else if (cur == free) {
                             return -1;
                         }
-                        fIndex += step;
-                        long t;
-                        if ((t = fIndex - capacity) >= 0L) fIndex = t;
+                        if ((fIndex += step) >= capacityAsLong) fIndex -= capacityAsLong;
                         if ((cur = U.getChar(keys, CHAR_BASE + (fIndex << CHAR_SCALE_SHIFT))) == key) {
                             return (int) fIndex;
                         } else if (cur == free) {
