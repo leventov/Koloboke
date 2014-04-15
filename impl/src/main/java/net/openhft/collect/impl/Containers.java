@@ -32,5 +32,9 @@ public final class Containers {
         return m instanceof Container ? ((Container) m).sizeAsLong() : (long) m.size();
     }
 
+    public static int sizeAsInt(long size) {
+        return size <= (long) Integer.MAX_VALUE ? (int) size : Integer.MAX_VALUE;
+    }
+
     private Containers() {}
 }

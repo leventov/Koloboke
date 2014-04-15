@@ -25,6 +25,8 @@ import net.openhft.collect.set.hash.HashCharSet;
 import java.util.Collection;
 import java.util.Iterator;
 
+import static net.openhft.collect.impl.Containers.sizeAsInt;
+
 
 public abstract class HashCharSetFactoryGO/*<>*/ extends HashCharSetFactorySO/*<>*/ {
 
@@ -87,12 +89,54 @@ public abstract class HashCharSetFactoryGO/*<>*/ extends HashCharSetFactorySO/*<
         return newMutableSet(hashConf.getDefaultExpectedSize());
     }
 
+
+    private static int sizeOr(Iterable elems, int defaultSize) {
+        return elems instanceof Collection ? ((Collection) elems).size() : defaultSize;
+    }
+
     @Override
     public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elements) {
-        int expectedSize = elements instanceof Collection ?
-                ((Collection) elements).size() :
-                hashConf.getDefaultExpectedSize();
-        return newMutableSet(elements, expectedSize);
+        return newMutableSet(elements, sizeOr(elements, hashConf.getDefaultExpectedSize()));
+    }
+
+    @Override
+    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2) {
+        long expectedSize = (long) sizeOr(elems1, 0);
+        expectedSize += (long) sizeOr(elems2, 0);
+        return newMutableSet(elems1, elems2, sizeAsInt(expectedSize));
+    }
+
+    @Override
+    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3) {
+        long expectedSize = (long) sizeOr(elems1, 0);
+        expectedSize += (long) sizeOr(elems2, 0);
+        expectedSize += (long) sizeOr(elems3, 0);
+        return newMutableSet(elems1, elems2, elems3, sizeAsInt(expectedSize));
+    }
+
+    @Override
+    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
+            Iterable/*ep*/<Character>/**/ elems4) {
+        long expectedSize = (long) sizeOr(elems1, 0);
+        expectedSize += (long) sizeOr(elems2, 0);
+        expectedSize += (long) sizeOr(elems3, 0);
+        expectedSize += (long) sizeOr(elems4, 0);
+        return newMutableSet(elems1, elems2, elems3, elems4, sizeAsInt(expectedSize));
+    }
+
+    @Override
+    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
+            Iterable/*ep*/<Character>/**/ elems4, Iterable/*ep*/<Character>/**/ elems5) {
+        long expectedSize = (long) sizeOr(elems1, 0);
+        expectedSize += (long) sizeOr(elems2, 0);
+        expectedSize += (long) sizeOr(elems3, 0);
+        expectedSize += (long) sizeOr(elems4, 0);
+        expectedSize += (long) sizeOr(elems5, 0);
+        return newMutableSet(elems1, elems2, elems3, elems4, elems5, sizeAsInt(expectedSize));
     }
 
     @Override
@@ -100,6 +144,66 @@ public abstract class HashCharSetFactoryGO/*<>*/ extends HashCharSetFactorySO/*<
             int expectedSize) {
         return shrunk(super.newMutableSet(elements, expectedSize));
     }
+
+
+    private static /*<>*/ void addAll(MutableDHashCharSetGO/*<>*/ set,
+            Iterable<? extends Character> elems) {
+        if (elems instanceof Collection) {
+            // noinspection unchecked
+            set.addAll((Collection<? extends Character>) elems);
+        } else {
+            for (char e : elems) {
+                set.add(e);
+            }
+        }
+    }
+
+    @Override
+    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, int expectedSize) {
+        MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
+        addAll(set, elems1);
+        addAll(set, elems2);
+        return shrunk(set);
+    }
+
+    @Override
+    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
+            int expectedSize) {
+        MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
+        addAll(set, elems1);
+        addAll(set, elems2);
+        addAll(set, elems3);
+        return shrunk(set);
+    }
+
+    @Override
+    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
+            Iterable/*ep*/<Character>/**/ elems4, int expectedSize) {
+        MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
+        addAll(set, elems1);
+        addAll(set, elems2);
+        addAll(set, elems3);
+        addAll(set, elems4);
+        return shrunk(set);
+    }
+
+    @Override
+    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
+            Iterable/*ep*/<Character>/**/ elems4, Iterable/*ep*/<Character>/**/ elems5,
+            int expectedSize) {
+        MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
+        addAll(set, elems1);
+        addAll(set, elems2);
+        addAll(set, elems3);
+        addAll(set, elems4);
+        addAll(set, elems5);
+        return shrunk(set);
+    }
+
 
     @Override
     public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterator/*ep*/<Character>/**/ elements) {
@@ -221,20 +325,52 @@ public abstract class HashCharSetFactoryGO/*<>*/ extends HashCharSetFactorySO/*<
         return shrunk(set);
     }
 
+    /* with with|without expectedSize */
+    /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */
+    /* define apply *//* if with expectedSize //, expectedSize// endif *//* enddefine */
+
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterable/*ep*/<Character>/**/ elements) {
+    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterable/*ep*/<Character>/**/ elements/*arg*/) {
         ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elements));
+        set.move(newMutableSet(elements/*apply*/));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterable/*ep*/<Character>/**/ elements,
-            int expectedSize) {
+    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2/*arg*/) {
         ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elements, expectedSize));
+        set.move(newMutableSet(elems1, elems2/*apply*/));
         return set;
     }
+
+    @Override
+    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3/*arg*/) {
+        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
+        set.move(newMutableSet(elems1, elems2, elems3/*apply*/));
+        return set;
+    }
+
+    @Override
+    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
+            Iterable/*ep*/<Character>/**/ elems4/*arg*/) {
+        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
+        set.move(newMutableSet(elems1, elems2, elems3, elems4/*apply*/));
+        return set;
+    }
+
+    @Override
+    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
+            Iterable/*ep*/<Character>/**/ elems4, Iterable/*ep*/<Character>/**/ elems5/*arg*/) {
+        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
+        set.move(newMutableSet(elems1, elems2, elems3, elems4, elems5/*apply*/));
+        return set;
+    }
+
+    /* endwith */
 
     @Override
     public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterator/*ep*/<Character>/**/ elements) {

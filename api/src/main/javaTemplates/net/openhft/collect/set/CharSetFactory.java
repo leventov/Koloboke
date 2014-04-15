@@ -43,16 +43,34 @@ public interface CharSetFactory/*<>*/ {
 
     /*p1*/ CharSet/*p2*/ newMutableSet(int expectedSize);
 
+
     /* with Mutable|Immutable mutability */
 
-    /*p1*/ CharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elements);
+    /* with with|without expectedSize */
+    /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */
 
-    /**
+    /* if with expectedSize *//**
      * If the specified elements is a set// if obj elem //
      * and has the same equivalence with this factory// endif //,
      * {@code expectedSize} is ignored.
-     */
-    /*p1*/ CharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elements, int expectedSize);
+     *//* endif*/
+    /*p1*/ CharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elements/*arg*/);
+
+    /*p1*/ CharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2/*arg*/);
+
+    /*p1*/ CharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3/*arg*/);
+
+    /*p1*/ CharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
+            Iterable/*ep*/<Character>/**/ elems4/*arg*/);
+
+    /*p1*/ CharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
+            Iterable/*ep*/<Character>/**/ elems4, Iterable/*ep*/<Character>/**/ elems5/*arg*/);
+
+    /* endwith */
 
     /*p1*/ CharSet/*p2*/ newMutableSet(Iterator/*ep*/<Character>/**/ elements);
 

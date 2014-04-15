@@ -49,21 +49,46 @@ public final class HashCharSets {
         return getDefaultFactory().newMutableSet(expectedSize);
     }
 
+
     /* with Mutable|Immutable mutability */
 
-    public static /*<>*/ HashCharSet/*<>*/ newMutableSet(Iterable/*ep*/<Character>/**/ elements) {
-        return getDefaultFactory().newMutableSet(elements);
-    }
+    /* with with|without expectedSize */
+    /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */
+    /* define apply *//* if with expectedSize //, expectedSize// endif *//* enddefine */
 
-    /**
+    /* if with expectedSize *//**
      * If the specified elements is a set// if obj elem //
      * and has the same equivalence with this factory// endif //,
      * {@code expectedSize} is ignored.
-     */
-    public static /*<>*/ HashCharSet/*<>*/ newMutableSet(Iterable/*ep*/<Character>/**/ elements,
-            int expectedSize) {
-        return getDefaultFactory().newMutableSet(elements, expectedSize);
+     *//* endif*/
+    public static /*<>*/ HashCharSet/*<>*/ newMutableSet(
+            Iterable/*ep*/<Character>/**/ elements/*arg*/) {
+        return getDefaultFactory().newMutableSet(elements/*apply*/);
     }
+
+    public static /*<>*/ HashCharSet/*<>*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2/*arg*/) {
+        return getDefaultFactory().newMutableSet(elems1, elems2/*apply*/);
+    }
+
+    public static /*<>*/ HashCharSet/*<>*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3/*arg*/) {
+        return getDefaultFactory().newMutableSet(elems1, elems2, elems3/*apply*/);
+    }
+
+    public static /*<>*/ HashCharSet/*<>*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
+            Iterable/*ep*/<Character>/**/ elems4/*arg*/) {
+        return getDefaultFactory().newMutableSet(elems1, elems2, elems3, elems4/*apply*/);
+    }
+
+    public static /*<>*/ HashCharSet/*<>*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
+            Iterable/*ep*/<Character>/**/ elems4, Iterable/*ep*/<Character>/**/ elems5/*arg*/) {
+        return getDefaultFactory().newMutableSet(elems1, elems2, elems3, elems4, elems5/*apply*/);
+    }
+
+    /* endwith */
 
     public static /*<>*/ HashCharSet/*<>*/ newMutableSet(Iterator/*ep*/<Character>/**/ elements) {
         return getDefaultFactory().newMutableSet(elements);

@@ -63,21 +63,46 @@ public final class HashCharShortMaps {
         return getDefaultFactory().newMutableMap(expectedSize);
     }
 
-    /* with Mutable|Immutable mutability */
-    public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map) {
-        return getDefaultFactory().newMutableMap(map);
-    }
 
-    /* if obj key */
-    /**
-     * If the specified map has the same key equivalence with this factory,
-     * {@code expectedSize} is ignored.
-     */
-    public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map,
-            int expectedSize) {
-        return getDefaultFactory().newMutableMap(map, expectedSize);
+    /* with Mutable|Immutable mutability */
+
+    /* with with|without expectedSize */
+    /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */
+    /* define apply *//* if with expectedSize //, expectedSize// endif *//* enddefine */
+
+    /* if obj key || without expectedSize */
+    /* if with expectedSize *//**
+     * If the specified map doesn't have specific key equivalence, {@code expectedSize} is ignored.
+     *//* endif */
+    public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(
+            Map/*ep*/<Character, Short>/**/ map/*arg*/) {
+        return getDefaultFactory().newMutableMap(map/*apply*/);
     }
     /* endif */
+
+    public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
+            Map/*ep*/<Character, Short>/**/ map2/*arg*/) {
+        return getDefaultFactory().newMutableMap(map1, map2/*apply*/);
+    }
+
+    public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
+            Map/*ep*/<Character, Short>/**/ map2, Map/*ep*/<Character, Short>/**/ map3/*arg*/) {
+        return getDefaultFactory().newMutableMap(map1, map2, map3/*apply*/);
+    }
+
+    public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
+            Map/*ep*/<Character, Short>/**/ map2, Map/*ep*/<Character, Short>/**/ map3,
+            Map/*ep*/<Character, Short>/**/ map4/*arg*/) {
+        return getDefaultFactory().newMutableMap(map1, map2, map3, map4/*apply*/);
+    }
+
+    public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
+            Map/*ep*/<Character, Short>/**/ map2, Map/*ep*/<Character, Short>/**/ map3,
+            Map/*ep*/<Character, Short>/**/ map4, Map/*ep*/<Character, Short>/**/ map5/*arg*/) {
+        return getDefaultFactory().newMutableMap(map1, map2, map3, map4, map5/*apply*/);
+    }
+
+    /* endwith */
 
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(
             Consumer</*f*/CharShortConsumer/*<>*/> entriesSupplier) {

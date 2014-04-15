@@ -27,8 +27,7 @@ public abstract class AbstractView<E> implements Collection<E>, Container {
 
     @Override
     public int size() {
-        long sizeAsLong = sizeAsLong();
-        return sizeAsLong <= Integer.MAX_VALUE ? (int) sizeAsLong : Integer.MAX_VALUE;
+        return Containers.sizeAsInt(sizeAsLong());
     }
 
     @Override

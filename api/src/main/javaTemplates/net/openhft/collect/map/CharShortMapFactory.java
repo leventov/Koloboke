@@ -81,16 +81,35 @@ public interface CharShortMapFactory/*<>*/ {
 
     /*p1*/ CharShortMap/*p2*/ newMutableMap(int expectedSize);
 
-    /* with Mutable|Immutable mutability */
-    /*p1*/ CharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map);
 
-    /* if obj key */
-    /**
+    /* with Mutable|Immutable mutability */
+
+    /* with with|without expectedSize */
+    /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */
+
+    /* if obj key || without expectedSize */
+    /* if with expectedSize *//**
      * If the specified map has the same key equivalence with this factory,
      * {@code expectedSize} is ignored.
-     */
-    /*p1*/ CharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map, int expectedSize);
+     *//* endif */
+    /*p1*/ CharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map/*arg*/);
     /* endif */
+
+    /*p1*/ CharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
+            Map/*ep*/<Character, Short>/**/ map2/*arg*/);
+
+    /*p1*/ CharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
+            Map/*ep*/<Character, Short>/**/ map2, Map/*ep*/<Character, Short>/**/ map3/*arg*/);
+
+    /*p1*/ CharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
+            Map/*ep*/<Character, Short>/**/ map2, Map/*ep*/<Character, Short>/**/ map3,
+            Map/*ep*/<Character, Short>/**/ map4/*arg*/);
+
+    /*p1*/ CharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
+            Map/*ep*/<Character, Short>/**/ map2, Map/*ep*/<Character, Short>/**/ map3,
+            Map/*ep*/<Character, Short>/**/ map4, Map/*ep*/<Character, Short>/**/ map5/*arg*/);
+
+    /* endwith */
 
     /*p1*/ CharShortMap/*p2*/ newMutableMap(
             Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier);
