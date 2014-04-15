@@ -17,6 +17,8 @@
 
 package net.openhft.collect;
 
+import com.google.auto.value.AutoValue;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -29,9 +31,66 @@ public abstract class Equivalence<T> {
         return IDENTITY;
     }
 
+    public static Equivalence<String> caseInsensitive() {
+        return CASE_INSENSITIVE;
+    }
+
+    public static <K, V> Equivalence<Map.Entry<K, V>> entryEquivalence(
+            @Nullable Equivalence<K> keyEquivalence, @Nullable Equivalence<V> valueEquivalence) {
+        if (keyEquivalence == null && valueEquivalence == null)
+            return null;
+        return new AutoValue_Equivalence_EntryEquivalence<K, V>(keyEquivalence, valueEquivalence);
+    }
+
+    @AutoValue
+    static abstract class EntryEquivalence<K, V> extends Equivalence<Map.Entry<K, V>> {
+
+        @Nullable
+        abstract Equivalence<K> keyEquivalence();
+
+        @Nullable
+        abstract Equivalence<V> valueEquivalence();
+
+        @Override
+        public boolean equivalent(@Nonnull Map.Entry<K, V> a, @Nonnull Map.Entry<K, V> b) {
+            if (a == b)
+                return true;
+            K aKey = a.getKey();
+            K bKey = b.getKey();
+            Equivalence<K> keyEquivalence = keyEquivalence();
+            if (keyEquivalence == null) {
+                if (!NullableObjects.equals(aKey, bKey))
+                    return false;
+            } else if (!keyEquivalence.nullableEquivalent(aKey, bKey)) {
+                return false;
+            }
+            V aVal = a.getValue();
+            V bVal = b.getValue();
+            Equivalence<V> valueEquivalence = valueEquivalence();
+            if (valueEquivalence == null) {
+                return NullableObjects.equals(aVal, bVal);
+            } else {
+                return valueEquivalence.nullableEquivalent(aVal, bVal);
+            }
+        }
+
+        @Override
+        public int hash(@Nonnull Map.Entry<K, V> entry) {
+            Equivalence<K> keyEquivalence = keyEquivalence();
+            int keyHash = keyEquivalence == null ?
+                    NullableObjects.hashCode(entry.getKey()) :
+                    keyEquivalence.nullableHash(entry.getKey());
+            Equivalence<V> valueEquivalence = valueEquivalence();
+            int valHash = valueEquivalence == null ?
+                    NullableObjects.hashCode(entry.getValue()) :
+                    valueEquivalence.nullableHash(entry.getValue());
+            return keyHash ^ valHash;
+        }
+    }
+
     private static final Equivalence<Object> IDENTITY = new Identity();
 
-    private static class Identity extends Equivalence<Object> {
+    private static class Identity extends StatelessEquivalence<Object> {
 
         @Override
         public boolean nullableEquivalent(@Nullable Object a, @Nullable Object b) {
@@ -52,98 +111,21 @@ public abstract class Equivalence<T> {
         public int hash(@Nonnull Object o) {
             return System.identityHashCode(o);
         }
-
-        @Override
-        public boolean equals(Object o) {
-            return o instanceof Identity;
-        }
-
-        @Override
-        public int hashCode() {
-            return Identity.class.hashCode();
-        }
-
-        @Override
-        public String toString() {
-            return "Identity";
-        }
     }
 
-    private static class EntryEquivalence<K, V> extends Equivalence<Map.Entry<K, V>> {
+    private static final Equivalence<String> CASE_INSENSITIVE = new CaseInsensitive();
 
-        private final Equivalence<K> keyEquivalence;
-        private final Equivalence<V> valueEquivalence;
+    private static class CaseInsensitive extends StatelessEquivalence<String> {
 
-        private EntryEquivalence(Equivalence<K> keyEquivalence, Equivalence<V> valueEquivalence) {
-            this.keyEquivalence = keyEquivalence;
-            this.valueEquivalence = valueEquivalence;
+        @Override
+        public boolean equivalent(@Nonnull String a, @Nonnull String b) {
+            return a.equalsIgnoreCase(b);
         }
 
         @Override
-        public boolean equivalent(@Nonnull Map.Entry<K, V> a, @Nonnull Map.Entry<K, V> b) {
-            if (a == b)
-                return true;
-            K aKey = a.getKey();
-            K bKey = b.getKey();
-            if (keyEquivalence == null) {
-                if (!NullableObjects.equals(aKey, bKey))
-                    return false;
-            } else if (!keyEquivalence.nullableEquivalent(aKey, bKey)) {
-                return false;
-            }
-            V aVal = a.getValue();
-            V bVal = b.getValue();
-            if (valueEquivalence == null) {
-                return NullableObjects.equals(aVal, bVal);
-            } else {
-                return valueEquivalence.nullableEquivalent(aVal, bVal);
-            }
+        public int hash(@Nonnull String s) {
+            return s.toLowerCase().hashCode();
         }
-
-        @Override
-        public int hash(@Nonnull Map.Entry<K, V> entry) {
-            int keyHash = keyEquivalence == null ?
-                    NullableObjects.hashCode(entry.getKey()) :
-                    keyEquivalence.nullableHash(entry.getKey());
-            int valHash = valueEquivalence == null ?
-                    NullableObjects.hashCode(entry.getValue()) :
-                    valueEquivalence.nullableHash(entry.getValue());
-            return keyHash ^ valHash;
-        }
-
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o)
-                return true;
-            if (o instanceof EntryEquivalence) {
-                EntryEquivalence eq = (EntryEquivalence) o;
-                return NullableObjects.equals(this.keyEquivalence, eq.keyEquivalence) &&
-                        NullableObjects.equals(this.valueEquivalence, eq.valueEquivalence);
-            } else {
-                return false;
-            }
-        }
-
-
-        @Override
-        public int hashCode() {
-            return NullableObjects.hashCode(keyEquivalence) ^
-                    NullableObjects.hashCode(valueEquivalence);
-        }
-
-        @Override
-        public String toString() {
-            return "EntryEquivalence{keyEquivalence=" + keyEquivalence +
-                    ", valueEquivalence=" + valueEquivalence + "}";
-        }
-    }
-
-    public static <K, V> Equivalence<Map.Entry<K, V>> entryEquivalence(
-            @Nullable Equivalence<K> keyEquivalence, @Nullable Equivalence<V> valueEquivalence) {
-        if (keyEquivalence == null && valueEquivalence == null)
-            return null;
-        return new EntryEquivalence<K, V>(keyEquivalence, valueEquivalence);
     }
 
 
@@ -152,7 +134,6 @@ public abstract class Equivalence<T> {
     }
 
     public abstract boolean equivalent(@Nonnull T a, @Nonnull T b);
-
 
     public int nullableHash(@Nullable T t) {
         return t != null ? hash(t) : 0;
