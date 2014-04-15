@@ -60,7 +60,7 @@ public final class HashCharShortMaps {
     }
 
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(int expectedSize) {
-        return getDefaultFactory().newMutableMap();
+        return getDefaultFactory().newMutableMap(expectedSize);
     }
 
     /* with Mutable|Immutable mutability */
