@@ -36,6 +36,8 @@ subprojects {
         excludeDirs = [file('.gradle')]
         ['docs', 'dependency-cache', 'libs', 'reports', 'resources', 'test-results', 'tmp']
                 .each { excludeDirs << file("$buildDir/$it") }
+        // AutoValue implementations are located there
+        sourceDirs += sourceSets*.output.classesDir
     }
 }
 
