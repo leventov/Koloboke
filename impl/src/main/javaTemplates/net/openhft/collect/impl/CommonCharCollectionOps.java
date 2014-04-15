@@ -70,8 +70,8 @@ public final class CommonCharCollectionOps {
             Collection<? extends Character> another) {
         if (collection == another)
             throw new IllegalArgumentException();
-        int maxPossibleSize = collection.size() + another.size();
-        collection.ensureCapacity(maxPossibleSize >= 0 ? maxPossibleSize : Integer.MAX_VALUE);
+        long maxPossibleSize = collection.sizeAsLong() + Containers.sizeAsLong(another);
+        collection.ensureCapacity(maxPossibleSize);
         if (another instanceof CharCollection) {
             if (another instanceof InternalCharCollectionOps) {
                 return ((InternalCharCollectionOps) another).reverseAddAllTo(collection);

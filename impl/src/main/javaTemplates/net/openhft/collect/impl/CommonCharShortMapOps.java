@@ -77,8 +77,8 @@ public final class CommonCharShortMapOps {
             Map<? extends Character, ? extends Short> another) {
         if (map == another)
             throw new IllegalArgumentException();
-        int maxPossibleSize = map.size() + another.size();
-        map.ensureCapacity(maxPossibleSize >= 0 ? maxPossibleSize : Integer.MAX_VALUE);
+        long maxPossibleSize = map.sizeAsLong() + Containers.sizeAsLong(another);
+        map.ensureCapacity(maxPossibleSize);
         if (another instanceof CharShortMap) {
             if (another instanceof InternalCharShortMapOps) {
                 ((InternalCharShortMapOps) another).reversePutAllTo(map);
