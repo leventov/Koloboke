@@ -145,7 +145,7 @@ public abstract class HashCharSetFactoryGO/*<>*/ extends HashCharSetFactorySO/*<
     @Override
     public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(/*pe*/char/**/[] elements,
             int expectedSize) {
-        final MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
+        MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
         for (/*pe*/char/**/ e : elements) {
             set.add(e);
         }
@@ -161,7 +161,7 @@ public abstract class HashCharSetFactoryGO/*<>*/ extends HashCharSetFactorySO/*<
     @Override
     public MutableDHashCharSetGO newMutableSet(Character[] elements,
             int expectedSize) {
-        final MutableDHashCharSetGO set = newMutableSet(expectedSize);
+        MutableDHashCharSetGO set = newMutableSet(expectedSize);
         for (char e : elements) {
             set.add(e);
         }
