@@ -21,6 +21,7 @@ import net.openhft.collect.*;
 import net.openhft.function.CharConsumer;
 import net.openhft.collect.set.hash.HashCharSetFactory;
 
+import java.util.Collection;
 import java.util.Set;
 
 
@@ -80,13 +81,8 @@ public abstract class HashCharSetFactorySO
                 }
             }
             int size = elements instanceof Set ? ((Set) elements).size() : expectedSize;
-            final MutableDHashCharSetGO set = newMutableSet(size);
-            ((CharCollection) elements).forEach(new CharConsumer() {
-                @Override
-                public void accept(char e) {
-                    set.add(e);
-                }
-            });
+            MutableDHashCharSetGO set = newMutableSet(size);
+            set.addAll((Collection<Character>) elements);
             return set;
         } else {
             int size = elements instanceof Set ? ((Set) elements).size() : expectedSize;

@@ -22,6 +22,7 @@ import net.openhft.collect.set.ObjSet;
 import net.openhft.collect.set.hash.HashObjSetFactory;
 import javax.annotation.Nullable;
 
+import java.util.Collection;
 import java.util.Set;
 
 
@@ -86,14 +87,9 @@ public abstract class HashObjSetFactorySO<E> implements HashObjSetFactory<E> {
             } else {
                 size = expectedSize;
             }
-            final MutableDHashObjSetGO<E2> set = newMutableSet(size);
+            MutableDHashObjSetGO<E2> set = newMutableSet(size);
             // noinspection unchecked
-            ((ObjCollection<? extends E2>) elements).forEach(new Consumer<E2>() {
-                @Override
-                public void accept(E2 e) {
-                    set.add(e);
-                }
-            });
+            set.addAll((Collection<? extends E2>) elements);
             return set;
         } else {
             int size = getEquivalence() == null && elements instanceof Set ?

@@ -108,13 +108,8 @@ public abstract class HashObjShortMapFactorySO<K/* if obj value //, V// endif */
                     return res;
                 }
             }
-            final MutableDHashObjShortMapGO/*p2*/<K2>/**/ res = newMutableMap(expectedSize);
-            objShortMap.forEach(new /*f*/ObjShortConsumer/*p2*/<K2>/**/() {
-                @Override
-                public void accept(K2 k, /*pv*/short/**/ v) {
-                    res.put(k, v);
-                }
-            });
+            MutableDHashObjShortMapGO/*p2*/<K2>/**/ res = newMutableMap(expectedSize);
+            res.putAll(map);
             return res;
         } else {
             MutableDHashObjShortMapGO/*p2*/<K2>/**/ res = newMutableMap(expectedSize);

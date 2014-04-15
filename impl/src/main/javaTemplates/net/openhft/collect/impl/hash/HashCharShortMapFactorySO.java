@@ -101,15 +101,8 @@ public abstract class HashCharShortMapFactorySO/*<>*/
                     return res;
                 }
             }
-            final MutableDHashCharShortMapGO/*p2*/ res = newMutableMap(map.size());
-            // noinspection unchecked
-            ((CharShortMap/* if obj value //<? extends V2>// endif */) map)
-                    .forEach(new /*f*/CharShortConsumer/*p2*/() {
-                        @Override
-                        public void accept(char k, /*pv*/short/**/ v) {
-                            res.put(k, v);
-                        }
-                    });
+            MutableDHashCharShortMapGO/*p2*/ res = newMutableMap(map.size());
+            res.putAll(map);
             return res;
         }
         MutableDHashCharShortMapGO/*p2*/ res = newMutableMap(map.size());
