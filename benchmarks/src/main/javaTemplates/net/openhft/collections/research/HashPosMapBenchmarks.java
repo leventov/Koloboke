@@ -16,19 +16,20 @@
 
 package net.openhft.collections.research;
 
+import net.openhft.benchmarks.DimensionedJmh;
 import net.openhft.collect.set.CharSet;
 import net.openhft.collect.set.hash.HashCharSets;
 import net.openhft.function.IntConsumer;
 import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.logic.results.RunResult;
 import org.openjdk.jmh.runner.*;
 import org.openjdk.jmh.runner.options.*;
-import org.openjdk.jmh.runner.parameters.TimeValue;
-import org.openjdk.jmh.util.internal.Statistics;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
 
 
 @BenchmarkMode(Mode.AverageTime)
@@ -83,7 +84,7 @@ public class HashPosMapBenchmarks {
     }
 
     @GenerateMicroBenchmark
-    public int forEachValueCommonSink_simple_present(SimpleState st) {
+    public int forEachValueCommonSinkIter_simpleFlavor_present(SimpleState st) {
         SinkConsumer sink = new SinkConsumer();
         SimpleVanillaShortShortMultiMap map = st.map;
         for (char key : st.keys) {
@@ -93,7 +94,7 @@ public class HashPosMapBenchmarks {
     }
 
     @GenerateMicroBenchmark
-    public int forEachValueLocalSink_simple_present(SimpleState st) {
+    public int forEachValueLocalSinkIter_simpleFlavor_present(SimpleState st) {
 
         int x = 0;
         SimpleVanillaShortShortMultiMap map = st.map;
@@ -106,27 +107,20 @@ public class HashPosMapBenchmarks {
     }
 
     @GenerateMicroBenchmark
-    public int forEachValueStatelessSink_simple_present(SimpleState st) {
+    public int forEachValueStatelessSinkIter_simpleFlavor_present(SimpleState st) {
         final int[] x = new int[1];
         SimpleVanillaShortShortMultiMap map = st.map;
-        for (char key : st.keys) {
-            SinkConsumer sink = new SinkConsumer();
-            map.forEachValue(key, new IntConsumer() {
-                @Override
-                public void accept(int value) {
-                    x[0] ^= value;
-                }
-            });
-        }
+        for (char key : st.keys)
+            map.forEachValue(key, value -> { x[0] ^= value; });
         return x[0];
     }
 
     @GenerateMicroBenchmark
-    public int searchPos_simple_present(SimpleState st) {
+    public int searchPosIter_simpleFlavor_present(SimpleState st) {
         int x = 0;
         SimpleVanillaShortShortMultiMap map = st.map;
         for (char key : st.keys) {
-            map.startSearch(x);
+            map.startSearch(key);
             int pos;
             while ((pos = map.nextPos()) > 0) {
                 x ^= pos;
@@ -146,62 +140,15 @@ public class HashPosMapBenchmarks {
     }
 
 
-
     public static void main(String[] args) throws RunnerException, CommandLineOptionException {
-        boolean headerPrinted = false;
-        CommandLineOptions commandLineOptions = new CommandLineOptions(args);
-        Locale.setDefault(Locale.ENGLISH);
-        for (int capacity : new int[] {SMALL_CAPACITY, LARGE_CAPACITY}) {
-            for (String loadFactor : new String[] {"0.25", "0.5", "0.75"}) {
-                int n = (int) (capacity * Double.parseDouble(loadFactor));
-                Options opt = new OptionsBuilder()
-                        .parent(commandLineOptions)
-                        .mode(Mode.AverageTime)
-                        .timeUnit(TimeUnit.NANOSECONDS)
-                        .measurementIterations(10)
-                        .measurementTime(TimeValue.seconds(1L))
-                        .warmupIterations(5)
-                        .warmupTime(TimeValue.seconds(1L))
-                        .forks(1)
-                        .threads(1)
-                        .jvmArgs("-Dcapacity=" + capacity, "-DloadFactor=" + loadFactor)
-                        .build();
-
-                SortedMap<BenchmarkRecord, RunResult> results = new Runner(opt).run();
-
-                if (!headerPrinted) {
-                    String[] dims = "capacity loadFactor op algo queryResult"
-                            .split(" ");
-                    for (String dim : dims) {
-                        System.out.printf("%-25s", dim);
-                    }
-                    System.out.printf(":%8s%8s\n", "mean", "std");
-                    headerPrinted = true;
-                }
-
-                for (Map.Entry<BenchmarkRecord, RunResult> e : results.entrySet()) {
-                    String[] parts = e.getKey().getUsername().split("\\.");
-                    String methodName = parts[parts.length - 1];
-                    parts = methodName.split("_");
-                    StringBuilder dims = new StringBuilder();
-                    dims.append(String.format("%-25d", capacity));
-                    dims.append(String.format("%-25s", loadFactor));
-                    for (int i = 0; i < parts.length; i++) {
-                        String[] camelCaseParts = parts[i].split("(?<!^)(?=[A-Z])");
-                        int lastPart = camelCaseParts.length == 1 ? 1 : camelCaseParts.length - 1;
-                        String value = "";
-                        for (int j = 0; j < lastPart; j++) {
-                            value += camelCaseParts[j];
-                        }
-                        dims.append(String.format("%-25s", value));
-                    }
-                    System.out.print(dims.toString());
-                    Statistics stats = e.getValue().getPrimaryResult().getStatistics();
-                    double mean = stats.getMean() / n;
-                    double std = stats.getStandardDeviation() / n;
-                    System.out.printf(":%8.3f%8.3f\n", mean, std);
-                }
-            }
-        }
+        new DimensionedJmh(HashPosMapBenchmarks.class)
+                .addArgDim("loadFactor", "0.25", "0.5", "0.75")
+                .addArgDim("capacity", SMALL_CAPACITY, LARGE_CAPACITY)
+                .withGetOperationCount(options -> {
+                    int capacity = parseInt(options.get("capacity"));
+                    double loadFactor = parseDouble(options.get("loadFactor"));
+                    return (long) (capacity * loadFactor);
+                })
+                .run(args);
     }
 }

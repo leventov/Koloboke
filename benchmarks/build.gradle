@@ -13,9 +13,13 @@ buildscript {
 
 apply plugin: 'shadow'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
+idea.module.iml { withXml {
+    it.asNode().component.find { it.@name == 'NewModuleRootManager' }.@LANGUAGE_LEVEL = 'JDK_1_8'
+} }
 
 dependencies {
+    compile project(':api')
     compile project(':impl')
     compile 'org.openjdk.jmh:jmh-core:0.5.6'
     compile 'org.openjdk.jmh:jmh-generator-annprocess:0.5.6'

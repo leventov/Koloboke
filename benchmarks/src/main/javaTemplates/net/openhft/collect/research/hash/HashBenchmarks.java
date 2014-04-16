@@ -16,19 +16,20 @@
 
 package net.openhft.collect.research.hash;
 
+import net.openhft.benchmarks.DimensionedJmh;
 import net.openhft.collect.impl.hash.*;
 import net.openhft.collect.set.*;
 import net.openhft.collect.set.hash.*;
 import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.logic.results.RunResult;
 import org.openjdk.jmh.runner.*;
 import org.openjdk.jmh.runner.options.*;
-import org.openjdk.jmh.runner.parameters.TimeValue;
-import org.openjdk.jmh.util.internal.Statistics;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+
+import static java.lang.Double.parseDouble;
+import static java.lang.Integer.parseInt;
 
 
 @BenchmarkMode(Mode.AverageTime)
@@ -39,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 10)
 public class HashBenchmarks {
 
-    public static class Config {
+    static class Config {
         public final int powerOf2Capacity, primeCapacity, n;
         Config(int powerOf2Capacity, double loadFactor) {
             this.powerOf2Capacity = powerOf2Capacity;
@@ -48,12 +49,15 @@ public class HashBenchmarks {
         }
     }
 
-    public static final int SMALL_CAPACITY = 1024, LARGE_CAPACITY = (1 << 20);
-    public static final int CAPACITY = Integer.getInteger("capacity", LARGE_CAPACITY);
-    public static final double LOAD_FACTOR =
-            Double.parseDouble(System.getProperty("loadFactor", "0.6"));
-    public static final Config CONF = new Config(CAPACITY, LOAD_FACTOR);
-    public static final int N = (int) (CAPACITY * LOAD_FACTOR);
+    static final int SMALL_CAPACITY = 1024, LARGE_CAPACITY = (1 << 20);
+    static final int CAPACITY = Integer.getInteger("capacity", LARGE_CAPACITY);
+    static final double LOAD_FACTOR = parseDouble(System.getProperty("loadFactor", "0.6"));
+    static final Config CONF = new Config(CAPACITY, LOAD_FACTOR);
+
+    static int n(int capacity, double loadFactor) {
+        return (int) (capacity * loadFactor);
+    }
+    public static final int N = n(CAPACITY, LOAD_FACTOR);
 
 
     static double harmonic(int n, double power) {
@@ -216,7 +220,8 @@ public class HashBenchmarks {
           !(ByteAlong states Simple indexing) */
 
     @GenerateMicroBenchmark
-    public int lookup_binary_lHash_bitStates_present_uniformQueries_charKey_simpleIndexing(
+    public
+    int lookup_binaryArity_lHash_bitStates_presentQueryResult_uniformQueries_charKey_simpleIndexing(
             BitStatesLHashCharsUniformQueries s) {
         int x = 0;
         BitStatesLHashCharSet set = s.set;
@@ -228,7 +233,8 @@ public class HashBenchmarks {
 
     /* if Uniform queries */
     @GenerateMicroBenchmark
-    public int lookup_binary_lHash_bitStates_absent_uniformQueries_charKey_simpleIndexing(
+    public
+    int lookup_binaryArity_lHash_bitStates_absentQueryResult_uniformQueries_charKey_simpleIndexing(
             BitStatesLHashCharsUniformQueries s) {
         int x = 0;
         BitStatesLHashCharSet set = s.set;
@@ -249,69 +255,11 @@ public class HashBenchmarks {
     /* endwith */
 
     public static void main(String[] args) throws RunnerException, CommandLineOptionException {
-        boolean headerPrinted = false;
-        CommandLineOptions commandLineOptions = new CommandLineOptions(args);
-        Locale.setDefault(Locale.ENGLISH);
-        for (int capacity : new int[] {SMALL_CAPACITY, LARGE_CAPACITY}) {
-            for (String loadFactor : new String[] {"0.3", "0.6", "0.9"}) {
-                int n = (int) (capacity * Double.parseDouble(loadFactor));
-                Options opt = new OptionsBuilder()
-                        .parent(commandLineOptions)
-                        .mode(Mode.AverageTime)
-                        .timeUnit(TimeUnit.NANOSECONDS)
-                        .measurementIterations(10)
-                        .measurementTime(TimeValue.seconds(1L))
-                        .warmupIterations(5)
-                        .warmupTime(TimeValue.seconds(1L))
-                        .forks(1)
-                        .threads(1)
-                        .jvmArgs("-Dcapacity=" + capacity, "-DloadFactor=" + loadFactor)
-                        .build();
-
-                SortedMap<BenchmarkRecord, RunResult> results = new Runner(opt).run();
-
-                if (!headerPrinted) {
-                    String[] dims =
-                            "capacity loadFactor arity algo states queryResult queries key indexing"
-                            .split(" ");
-                    for (String dim : dims) {
-                        System.out.print(alignDimString(dim));
-                    }
-                    System.out.printf(":%8s%8s\n", "mean", "std");
-                    headerPrinted = true;
-                }
-
-                for (Map.Entry<BenchmarkRecord, RunResult> e : results.entrySet()) {
-                    String[] parts = e.getKey().getUsername().split("\\.");
-                    String methodName = parts[parts.length - 1];
-                    parts = methodName.split("_");
-                    StringBuilder dims = new StringBuilder();
-                    dims.append(alignDimNumber(capacity));
-                    dims.append(alignDimString(loadFactor));
-                    for (int i = 1; i < parts.length; i++) {
-                        String[] camelCaseParts = parts[i].split("(?<!^)(?=[A-Z])");
-                        int lastPart = camelCaseParts.length == 1 ? 1 : camelCaseParts.length - 1;
-                        String value = "";
-                        for (int j = 0; j < lastPart; j++) {
-                            value += camelCaseParts[j];
-                        }
-                        dims.append(alignDimString(value));
-                    }
-                    System.out.print(dims.toString());
-                    Statistics stats = e.getValue().getPrimaryResult().getStatistics();
-                    double mean = stats.getMean() / n;
-                    double std = stats.getStandardDeviation() / n;
-                    System.out.printf(":%8.3f%8.3f\n", mean, std);
-                }
-            }
-        }
-    }
-
-    private static String alignDimNumber(int n) {
-        return String.format("%-12d", n);
-    }
-
-    private static String alignDimString(String name) {
-        return String.format("%-12s", name);
+        new DimensionedJmh(HashBenchmarks.class)
+                .addArgDim("loadFactor", "0.3", "0.6", "0.9")
+                .addArgDim("capacity", SMALL_CAPACITY, LARGE_CAPACITY)
+                .withGetOperationCount(options -> (long) n(parseInt(options.get("capacity")),
+                        parseDouble(options.get("loadFactor"))))
+                .run(args);
     }
 }

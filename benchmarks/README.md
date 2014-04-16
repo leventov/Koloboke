@@ -1,11 +1,13 @@
-## ```net.openhft.collect.research``` ##
+## Research benchmarks ##
 
-Try
+# `net.openhft.collect.research` #
 
     $ gradle clean build
-    $ java -cp build/libs/microbenchmarks.jar net.openhft.collect.research.hash.HashBenchmarks '.*lookup_binary_lHash_bitStates_present_intKey_simpleIndexing.*' -v SILENT
+    $ java -cp build/libs/microbenchmarks.jar net.openhft.collect.research.hash.HashBenchmarks arity=binary hash=l states=bit queryResult=present key=int indexing=simple queries=uniform,zipf capacity=1048576 loadFactor=0.9 -v SILENT
 
-Or
+# `net.openhft.collections.research` #
 
-    $ java -cp build/libs/microbenchmarks.jar net.openhft.collections.research.HashPosMapBenchmarks '.*HashPosMapBenchmarks.*' -v SILENT
+    $ java -cp build/libs/microbenchmarks.jar net.openhft.collections.research.HashPosMapBenchmarks -v SILENT
+
+`-h`, `--help` supported.
 
