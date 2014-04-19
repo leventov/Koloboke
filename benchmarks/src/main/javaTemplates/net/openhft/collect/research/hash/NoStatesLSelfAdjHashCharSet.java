@@ -18,7 +18,7 @@
 package net.openhft.collect.research.hash;
 
 import net.openhft.collect.impl.Primitives;
-import net.openhft.collect.research.UnsafeConstants;
+import net.openhft.collect.impl.UnsafeConstants;
 
 
 public class NoStatesLSelfAdjHashCharSet extends NoStatesLHashCharSet {

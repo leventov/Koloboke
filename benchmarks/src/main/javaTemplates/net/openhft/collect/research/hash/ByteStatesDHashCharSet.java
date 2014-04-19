@@ -18,12 +18,12 @@
 package net.openhft.collect.research.hash;
 
 import net.openhft.collect.impl.Primitives;
-import net.openhft.collect.research.UnsafeConstants;
+import net.openhft.collect.impl.UnsafeConstants;
 
 import java.util.Arrays;
 
 
-public class ByteStatesDHashCharSet extends UnsafeConstants {
+public class ByteStatesDHashCharSet implements UnsafeConstants {
     public static final int FREE = 0, REMOVED = -1, FULL = 1;
 
     public int size = 0;

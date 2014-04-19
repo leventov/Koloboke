@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package net.openhft.collect.research;
+package net.openhft.collect.impl;
 
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
 
 
-public abstract class UnsafeConstants {
-    public static final Unsafe U;
-    static {
-        try {
-            Field f = Unsafe.class.getDeclaredField("theUnsafe");
-            f.setAccessible(true);
-            U = (Unsafe) f.get(null);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
+public interface UnsafeConstants {
+    public static final Unsafe U = Inner.U;
+    static class Inner {
+        private static final Unsafe U;
+        static {
+            try {
+                Field f = Unsafe.class.getDeclaredField("theUnsafe");
+                f.setAccessible(true);
+                U = (Unsafe) f.get(null);
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
         }
     }
 
@@ -54,8 +57,8 @@ public abstract class UnsafeConstants {
     public static final long DOUBLE_SCALE = 8L;
     public static final int DOUBLE_SCALE_SHIFT = 3;
 
-    public static final long CHAR_BASE = (long) Unsafe.ARRAY_CHAR_BASE_OFFSET;
     public static final long BYTE_BASE = (long) Unsafe.ARRAY_BYTE_BASE_OFFSET;
+    public static final long CHAR_BASE = (long) Unsafe.ARRAY_CHAR_BASE_OFFSET;
     public static final long SHORT_BASE = (long) Unsafe.ARRAY_SHORT_BASE_OFFSET;
     public static final long INT_BASE = (long) Unsafe.ARRAY_INT_BASE_OFFSET;
     public static final long FLOAT_BASE = (long) Unsafe.ARRAY_FLOAT_BASE_OFFSET;

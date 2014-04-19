@@ -18,12 +18,12 @@
 package net.openhft.collect.research.hash;
 
 import net.openhft.collect.impl.Primitives;
-import net.openhft.collect.research.UnsafeConstants;
+import net.openhft.collect.impl.UnsafeConstants;
 
 import java.util.*;
 
 
-public class NoStatesRHoodHashCharSet extends UnsafeConstants {
+public class NoStatesRHoodHashCharSet implements UnsafeConstants {
 
     public int capacityMask;
     public int size = 0;

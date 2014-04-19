@@ -18,12 +18,12 @@
 package net.openhft.collect.research.hash;
 
 import net.openhft.collect.impl.Primitives;
-import net.openhft.collect.research.UnsafeConstants;
+import net.openhft.collect.impl.UnsafeConstants;
 
 import java.util.Arrays;
 
 
-public class BitStatesLHashCharSet extends UnsafeConstants {
+public class BitStatesLHashCharSet implements UnsafeConstants {
 
     public static final int WORD_INDEX_SHIFT = 6;
 
