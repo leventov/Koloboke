@@ -41,11 +41,12 @@ import static java.lang.Integer.parseInt;
 public class HashBenchmarks {
 
     static class Config {
-        public final int powerOf2Capacity, primeCapacity, n;
+        public final int powerOf2Capacity, dHashCapacity, qHashCapacity, n;
         Config(int powerOf2Capacity, double loadFactor) {
             this.powerOf2Capacity = powerOf2Capacity;
             this.n = (int) (powerOf2Capacity * loadFactor);
-            this.primeCapacity = DHashCapacities.bestCapacity(n, loadFactor, 0);
+            this.dHashCapacity = DHashCapacities.bestCapacity(n, loadFactor, 0);
+            this.qHashCapacity = QHashCapacities.getIntCapacity((int) (n / loadFactor) + 1, 0);
         }
     }
 
@@ -101,7 +102,8 @@ public class HashBenchmarks {
             notKeys = new char[N];
             set = new BitStatesLHashCharSet(
                     CONF./* if LHash|LSelfAdjHash|RHoodSimpleHash hash */powerOf2Capacity
-                         /* elif DHash|QHash hash //primeCapacity// endif */);
+                         /* elif DHash hash //dHashCapacity
+                         // elif QHash hash //qHashCapacity// endif */);
         }
 
         @Setup(Level.Iteration)
@@ -145,7 +147,8 @@ public class HashBenchmarks {
             keys = new char[N];
             set = new BitStatesLHashCharSet(
                     CONF./* if LHash|LSelfAdjHash|RHoodSimpleHash hash */powerOf2Capacity
-                         /* elif DHash|QHash hash //primeCapacity// endif */);
+                         /* elif DHash hash //dHashCapacity
+                         // elif QHash hash //qHashCapacity// endif */);
         }
 
         @Setup(Level.Iteration)
