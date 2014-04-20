@@ -58,31 +58,29 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
             if (cur == key) {
                 return index;
             } else {
-                if (cur == free) {
+                if (cur == free)
                     return -1;
-                } else {
-                    int step = 1;
-                    int bIndex = index;
-                    int fIndex = index;
-                    while (true) {
-                        if ((bIndex -= step) < 0) bIndex += capacity;
-                        if ((cur = keys[bIndex]) == key) {
-                            return bIndex;
-                        } else if (cur == free) {
-                            return -1;
-                        }
-                        // This way of wrapping capacity is less clear and a bit slower than
-                        // the method from indexTernaryStateUnsafeIndexing(), but it protects
-                        // from possible int overflow issues
-                        int t;
-                        if ((t = (fIndex += step) - capacity) >= 0) fIndex = t;
-                        if ((cur = keys[fIndex]) == key) {
-                            return fIndex;
-                        } else if (cur == free) {
-                            return -1;
-                        }
-                        step += 2;
+                int step = 1;
+                int bIndex = index;
+                int fIndex = index;
+                while (true) {
+                    if ((bIndex -= step) < 0) bIndex += capacity;
+                    if ((cur = keys[bIndex]) == key) {
+                        return bIndex;
+                    } else if (cur == free) {
+                        return -1;
                     }
+                    // This way of wrapping capacity is less clear and a bit slower than
+                    // the method from indexTernaryStateUnsafeIndexing(), but it protects
+                    // from possible int overflow issues
+                    int t;
+                    if ((t = (fIndex += step) - capacity) >= 0) fIndex = t;
+                    if ((cur = keys[fIndex]) == key) {
+                        return fIndex;
+                    } else if (cur == free) {
+                        return -1;
+                    }
+                    step += 2;
                 }
             }
         } else {
@@ -101,28 +99,26 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
             if (cur == key) {
                 return (int) index;
             } else {
-                if (cur == free) {
+                if (cur == free)
                     return -1;
-                } else {
-                    long step = 1L;
-                    long bIndex = index;
-                    long fIndex = index;
-                    long capacityAsLong = (long) capacity;
-                    while (true) {
-                        if ((bIndex -= step) < 0L) bIndex += capacityAsLong;
-                        if ((cur = U.getChar(keys, CHAR_BASE + (bIndex << CHAR_SCALE_SHIFT))) == key) {
-                            return (int) bIndex;
-                        } else if (cur == free) {
-                            return -1;
-                        }
-                        if ((fIndex += step) >= capacityAsLong) fIndex -= capacityAsLong;
-                        if ((cur = U.getChar(keys, CHAR_BASE + (fIndex << CHAR_SCALE_SHIFT))) == key) {
-                            return (int) fIndex;
-                        } else if (cur == free) {
-                            return -1;
-                        }
-                        step += 2L;
+                long step = 1L;
+                long bIndex = index;
+                long fIndex = index;
+                long capacityAsLong = (long) capacity;
+                while (true) {
+                    if ((bIndex -= step) < 0L) bIndex += capacityAsLong;
+                    if ((cur = U.getChar(keys, CHAR_BASE + (bIndex << CHAR_SCALE_SHIFT))) == key) {
+                        return (int) bIndex;
+                    } else if (cur == free) {
+                        return -1;
                     }
+                    if ((fIndex += step) >= capacityAsLong) fIndex -= capacityAsLong;
+                    if ((cur = U.getChar(keys, CHAR_BASE + (fIndex << CHAR_SCALE_SHIFT))) == key) {
+                        return (int) fIndex;
+                    } else if (cur == free) {
+                        return -1;
+                    }
+                    step += 2L;
                 }
             }
         } else {
@@ -141,29 +137,27 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
             if (cur == key) {
                 return index;
             } else {
-                if (cur == free) {
+                if (cur == free)
                     return -1;
-                } else {
-                    int step = 1;
-                    int bIndex = index;
-                    int fIndex = index;
-                    while (true) {
-                        if ((bIndex -= step) < 0) bIndex += capacity;
-                        if ((cur = keys[bIndex]) == key) {
-                            return bIndex;
-                        } else if (cur == free) {
-                            return -1;
-                        }
-                        // See comment in indexTernaryStateSimpleIndexing()
-                        int t;
-                        if ((t = (fIndex += step) - capacity) >= 0) fIndex = t;
-                        if ((cur = keys[fIndex]) == key) {
-                            return fIndex;
-                        } else if (cur == free) {
-                            return -1;
-                        }
-                        step += 2;
+                int step = 1;
+                int bIndex = index;
+                int fIndex = index;
+                while (true) {
+                    if ((bIndex -= step) < 0) bIndex += capacity;
+                    if ((cur = keys[bIndex]) == key) {
+                        return bIndex;
+                    } else if (cur == free) {
+                        return -1;
                     }
+                    // See comment in indexTernaryStateSimpleIndexing()
+                    int t;
+                    if ((t = (fIndex += step) - capacity) >= 0) fIndex = t;
+                    if ((cur = keys[fIndex]) == key) {
+                        return fIndex;
+                    } else if (cur == free) {
+                        return -1;
+                    }
+                    step += 2;
                 }
             }
         } else {
@@ -182,28 +176,26 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
             if (cur == key) {
                 return (int) index;
             } else {
-                if (cur == free) {
+                if (cur == free)
                     return -1;
-                } else {
-                    long step = 1L;
-                    long bIndex = index;
-                    long fIndex = index;
-                    long capacityAsLong = (long) capacity;
-                    while (true) {
-                        if ((bIndex -= step) < 0L) bIndex += capacityAsLong;
-                        if ((cur = U.getChar(keys, CHAR_BASE + (bIndex << CHAR_SCALE_SHIFT))) == key) {
-                            return (int) bIndex;
-                        } else if (cur == free) {
-                            return -1;
-                        }
-                        if ((fIndex += step) >= capacityAsLong) fIndex -= capacityAsLong;
-                        if ((cur = U.getChar(keys, CHAR_BASE + (fIndex << CHAR_SCALE_SHIFT))) == key) {
-                            return (int) fIndex;
-                        } else if (cur == free) {
-                            return -1;
-                        }
-                        step += 2L;
+                long step = 1L;
+                long bIndex = index;
+                long fIndex = index;
+                long capacityAsLong = (long) capacity;
+                while (true) {
+                    if ((bIndex -= step) < 0L) bIndex += capacityAsLong;
+                    if ((cur = U.getChar(keys, CHAR_BASE + (bIndex << CHAR_SCALE_SHIFT))) == key) {
+                        return (int) bIndex;
+                    } else if (cur == free) {
+                        return -1;
                     }
+                    if ((fIndex += step) >= capacityAsLong) fIndex -= capacityAsLong;
+                    if ((cur = U.getChar(keys, CHAR_BASE + (fIndex << CHAR_SCALE_SHIFT))) == key) {
+                        return (int) fIndex;
+                    } else if (cur == free) {
+                        return -1;
+                    }
+                    step += 2L;
                 }
             }
         } else {
@@ -224,52 +216,50 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
         char cur = keys[index];
         keyAbsentFreeSlot:
         if (cur != free) {
-            if (cur == key) {
+            if (cur == key)
                 return false;
-            } else {
-                int firstRemoved = cur != removed ? -1 : index;
-                int step = 1;
-                int bIndex = index;
-                int fIndex = index;
-                while (true) {
-                    if ((bIndex -= step) < 0) bIndex += capacity;
-                    if ((cur = keys[bIndex]) == free) {
-                        if (firstRemoved < 0) {
-                            index = bIndex;
-                            break keyAbsentFreeSlot;
-                        } else {
-                            // key is absent, removed slot
-                            keys[firstRemoved] = key;
-                            size++;
-                            removedSlots--;
-                            return true;
-                        }
-                    } else if (cur == key) {
-                        return false;
-                    } else if (cur == removed && firstRemoved < 0) {
-                        firstRemoved = bIndex;
+            int firstRemoved = cur != removed ? -1 : index;
+            int step = 1;
+            int bIndex = index;
+            int fIndex = index;
+            while (true) {
+                if ((bIndex -= step) < 0) bIndex += capacity;
+                if ((cur = keys[bIndex]) == free) {
+                    if (firstRemoved < 0) {
+                        index = bIndex;
+                        break keyAbsentFreeSlot;
+                    } else {
+                        // key is absent, removed slot
+                        keys[firstRemoved] = key;
+                        size++;
+                        removedSlots--;
+                        return true;
                     }
-                    fIndex += step;
-                    int t;
-                    if ((t = fIndex - capacity) >= 0) fIndex = t;
-                    if ((cur = keys[fIndex]) == free) {
-                        if (firstRemoved < 0) {
-                            index = fIndex;
-                            break keyAbsentFreeSlot;
-                        } else {
-                            // key is absent, removed slot
-                            keys[firstRemoved] = key;
-                            size++;
-                            removedSlots--;
-                            return true;
-                        }
-                    } else if (cur == key) {
-                        return false;
-                    } else if (cur == removed && firstRemoved < 0) {
-                        firstRemoved = fIndex;
-                    }
-                    step += 2;
+                } else if (cur == key) {
+                    return false;
+                } else if (cur == removed && firstRemoved < 0) {
+                    firstRemoved = bIndex;
                 }
+                fIndex += step;
+                int t;
+                if ((t = fIndex - capacity) >= 0) fIndex = t;
+                if ((cur = keys[fIndex]) == free) {
+                    if (firstRemoved < 0) {
+                        index = fIndex;
+                        break keyAbsentFreeSlot;
+                    } else {
+                        // key is absent, removed slot
+                        keys[firstRemoved] = key;
+                        size++;
+                        removedSlots--;
+                        return true;
+                    }
+                } else if (cur == key) {
+                    return false;
+                } else if (cur == removed && firstRemoved < 0) {
+                    firstRemoved = fIndex;
+                }
+                step += 2;
             }
         }
         // key is absent, free slot
@@ -291,31 +281,29 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
         char cur = keys[index];
         keyAbsent:
         if (cur != free) {
-            if (cur == key) {
+            if (cur == key)
                 return false;
-            } else {
-                int step = 1;
-                int bIndex = index;
-                int fIndex = index;
-                while (true) {
-                    if ((bIndex -= step) < 0) bIndex += capacity;
-                    if ((cur = keys[bIndex]) == free) {
-                        index = bIndex;
-                        break keyAbsent;
-                    } else if (cur == key) {
-                        return false;
-                    }
-                    fIndex += step;
-                    int t;
-                    if ((t = fIndex - capacity) >= 0) fIndex = t;
-                    if ((cur = keys[fIndex]) == free) {
-                        index = fIndex;
-                        break keyAbsent;
-                    } else if (cur == key) {
-                        return false;
-                    }
-                    step += 2;
+            int step = 1;
+            int bIndex = index;
+            int fIndex = index;
+            while (true) {
+                if ((bIndex -= step) < 0) bIndex += capacity;
+                if ((cur = keys[bIndex]) == free) {
+                    index = bIndex;
+                    break keyAbsent;
+                } else if (cur == key) {
+                    return false;
                 }
+                fIndex += step;
+                int t;
+                if ((t = fIndex - capacity) >= 0) fIndex = t;
+                if ((cur = keys[fIndex]) == free) {
+                    index = fIndex;
+                    break keyAbsent;
+                } else if (cur == key) {
+                    return false;
+                }
+                step += 2;
             }
         }
         // key is absent
