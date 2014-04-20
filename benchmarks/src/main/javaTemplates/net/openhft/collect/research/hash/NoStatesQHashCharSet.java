@@ -324,4 +324,53 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
         freeSlots--;
         return true;
     }
+
+    public int addBinaryStateCountingProbes(char key) {
+        char free = freeValue;
+        if (key == free) {
+            return -1;
+        }
+        int probes = 1;
+        char[] keys = set;
+        int capacity = keys.length;
+        int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;
+        int index = hash % capacity;
+        char cur = keys[index];
+        keyAbsent:
+        if (cur != free) {
+            if (cur == key) {
+                return -1;
+            } else {
+                int step = 1;
+                int bIndex = index;
+                int fIndex = index;
+                while (true) {
+                    probes++;
+                    if ((bIndex -= step) < 0) bIndex += capacity;
+                    if ((cur = keys[bIndex]) == free) {
+                        index = bIndex;
+                        break keyAbsent;
+                    } else if (cur == key) {
+                        return -1;
+                    }
+                    probes++;
+                    fIndex += step;
+                    int t;
+                    if ((t = fIndex - capacity) >= 0) fIndex = t;
+                    if ((cur = keys[fIndex]) == free) {
+                        index = fIndex;
+                        break keyAbsent;
+                    } else if (cur == key) {
+                        return -1;
+                    }
+                    step += 2;
+                }
+            }
+        }
+        // key is absent
+        keys[index] = key;
+        size++;
+        freeSlots--;
+        return probes;
+    }
 }
