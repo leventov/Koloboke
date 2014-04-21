@@ -187,8 +187,8 @@ public final class DimensionedJmh {
             if (parts.length == 2) {
                 String dimName = parts[0];
                 List<String> options = splitOptions(parts[1]);
-                if (filterDim(filteredBenchOptions, dimName, options) ||
-                        filterDim(filteredArgOptions, dimName, options)) {
+                if (filterDim(filteredBenchOptions, dimName, options, false) ||
+                        filterDim(filteredArgOptions, dimName, options, true)) {
                     argsIt.remove();
                 }
             }
@@ -206,6 +206,11 @@ public final class DimensionedJmh {
         }
         int argOptionCombinations = filteredArgOptions.values().stream()
                 .mapToInt(Collection::size).reduce(1, (a, b) -> a * b);
+        if (argOptionCombinations == 0) {
+            System.err.println("You must pass options for dimensions without predefined options!");
+            printHelp();
+            return;
+        }
         for (int comb = 0; comb < argOptionCombinations; comb++) {
             Map<String, String> combination = dimMapsFactory.newMutableMap();
             int r = comb;
@@ -219,14 +224,16 @@ public final class DimensionedJmh {
     }
 
     private <T extends Collection<String>> boolean filterDim(Map<String, T> filteredOptions,
-            String dimName, T options) {
+            String dimName, T options, boolean allowUnknownOptions) {
         Collection<String> allDimOptions = filteredOptions.get(dimName);
         if (allDimOptions == null)
             return false;
-        if (!allDimOptions.containsAll(options)) {
+        if (!allowUnknownOptions && !allDimOptions.containsAll(options)) {
             fatal("Wrong option(s) for dim " + dimName +
                     "\nAvailable: " + joinOptions(allDimOptions) + "\nGiven: " + joinOptions(
                     options));
+        } else {
+            options.forEach(option -> maxDimWidths.merge(dimName, option.length(), Math::max));
         }
         filteredOptions.put(dimName, options);
         return true;
@@ -306,7 +313,13 @@ public final class DimensionedJmh {
     }
 
     private void printHelp() {
-        argDimNames.stream().map(dim -> lower(dim) + "=" + joinOptions(argDimOptions.get(dim)))
+        argDimNames.stream()
+                .map(dim -> {
+                    String options = joinOptions(argDimOptions.get(dim));
+                    if (options.isEmpty())
+                        options = "<No predefined options, you must pass some from command line>";
+                    return lower(dim) + "=" + options;
+                })
                 .forEach(System.err::println);
         benchDimNames.stream().filter(DimensionedJmh::isDimension)
                 .map(dim -> lower(dim) + "=" + joinOptions(benchDimOptions.get(dim)))
