@@ -244,4 +244,64 @@ public class NoStatesDHashCharSet implements UnsafeConstants {
         freeSlots--;
         return true;
     }
+
+    public boolean remove(char key) {
+        char free = freeValue;
+        char removed = removedValue;
+        if (key != free && key != removed) {
+            char[] keys = set;
+            int capacity = keys.length;
+            int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;
+            int index = hash % capacity;
+            char cur = keys[index];
+            keyPresent:
+            if (cur != key) {
+                if (cur == free) {
+                    return false;
+                } else {
+                    int step = (hash % (capacity - 2)) + 1;
+                    while (true) {
+                        if ((index -= step) < 0) index += capacity; // nextIndex
+                        if ((cur = keys[index]) == key) {
+                            break keyPresent;
+                        } else if (cur == free) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            // key is present
+            keys[index] = removed;
+            size--;
+            removedSlots++;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void rehash(int capacity) {
+        char free = freeValue;
+        char removed = removedValue;
+        char[] keys = set;
+        char[] newKeys = new char[capacity];
+        Arrays.fill(newKeys, free);
+        for (int i = keys.length - 1; i >= 0; i--) {
+            char key;
+            if ((key = keys[i]) != free && key != removed) {
+                int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;
+                int index = hash % capacity;
+                if (newKeys[index] != free) {
+                    int step = (hash % (capacity - 2)) + 1;
+                    do {
+                        if ((index -= step) < 0) index += capacity; // nextIndex
+                    } while (newKeys[index] != free);
+                }
+                newKeys[index] = key;
+            }
+        }
+        set = newKeys;
+        freeSlots = capacity - size;
+        removedSlots = 0;
+    }
 }

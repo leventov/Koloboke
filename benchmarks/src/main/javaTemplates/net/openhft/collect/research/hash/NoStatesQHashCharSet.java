@@ -361,4 +361,89 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
         freeSlots--;
         return probes;
     }
+
+    public boolean remove(char key) {
+        char free = freeValue;
+        char removed = removedValue;
+        if (key == free || key == removed) {
+            return false;
+        }
+        char[] keys = set;
+        int capacity = keys.length;
+        int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;
+        int index = hash % capacity;
+        char cur = keys[index];
+        keyPresent:
+        if (cur != key) {
+            if (cur == free)
+                return false;
+            int step = 1;
+            int bIndex = index;
+            int fIndex = index;
+            while (true) {
+                if ((bIndex -= step) < 0) bIndex += capacity;
+                if ((cur = keys[bIndex]) == key) {
+                    index = bIndex;
+                    break keyPresent;
+                } else if (cur == free) {
+                    return false;
+                }
+
+                int t;
+                if ((t = (fIndex += step) - capacity) >= 0) fIndex = t;
+                if ((cur = keys[fIndex]) == key) {
+                    index = fIndex;
+                    break keyPresent;
+                } else if (cur == free) {
+                    return false;
+                }
+                step += 2;
+            }
+        }
+        // key is present
+        keys[index] = removed;
+        size--;
+        removedSlots++;
+        return true;
+    }
+
+    public void rehash(int capacity) {
+        char free = freeValue;
+        char removed = removedValue;
+        char[] keys = set;
+        char[] newKeys = new char[capacity];
+        Arrays.fill(newKeys, free);
+        iterKeys:
+        for (int i = keys.length - 1; i >= 0; i--) {
+            char key;
+            if ((key = keys[i]) != free && key != removed) {
+                int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;
+                int index = hash % capacity;
+                if (newKeys[index] == free) {
+                    newKeys[index] = key;
+                } else {
+                    int step = 1;
+                    int bIndex = index;
+                    int fIndex = index;
+                    while (true) {
+                        if ((bIndex -= step) < 0) bIndex += capacity;
+                        if (newKeys[bIndex] == free) {
+                            newKeys[bIndex] = key;
+                            continue iterKeys;
+                        }
+                        int t;
+                        if ((t = (fIndex += step) - capacity) >= 0) fIndex = t;
+                        if (newKeys[fIndex] == free) {
+                            newKeys[fIndex] = key;
+                            continue iterKeys;
+                        }
+                        step += 2;
+                    }
+                }
+            }
+        }
+        set = newKeys;
+        freeSlots = capacity - size;
+        removedSlots = 0;
+    }
 }
