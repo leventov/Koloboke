@@ -4,7 +4,6 @@ buildscript {
         maven { url 'http://repo.springsource.org/plugins-release' }
     }
     dependencies {
-        classpath 'org.batcha.gradle.plugins:git-dependencies:0.1'
         classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.5'
     }
 }
@@ -52,13 +51,10 @@ subprojects {
 project(':api').javadoc.options.links 'http://docs.oracle.com/javase/7/docs/api/'
 
 project(':impl') {
-    apply plugin: 'git-dependencies'
 
     dependencies {
         compile project(':api')
-        testCompile('com.google.guava:guava-testlib:17.0-SNAPSHOT') {
-            ext.git = 'https://code.google.com/p/guava-libraries/'
-        }
+        testCompile 'com.google.guava:guava-testlib:17.0'
         testCompile 'org.apache.mahout:mahout-math:0.9'
     }
 
