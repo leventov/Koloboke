@@ -114,8 +114,8 @@ public abstract class MutableCharDHashSO extends MutableDHash
 
     /* if Mutable mutability */
     private char findNewFreeOrRemoved() {
-        int size = size();
         /* if byte|char|short elem */
+        int size = size();
         if (size >= CHAR_CARDINALITY -
                 /* if Mutable mutability */2/* elif Immutable mutability //1// endif */) {
             throw new HashOverflowException();
