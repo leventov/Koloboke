@@ -9,7 +9,7 @@ Goals in priority order:
  - API quality: consistency, hard to misuse. (I really paid much attention to this.)
    However, I can't say this pretty verbose API is very easy to use.
 
-Bonus: java.uti.Map default methods from JDK8 in the API for Java 6 and 7.
+Bonus: `java.util.Map` default methods from JDK8 in the API for Java 6 and 7.
 
 ---
 
@@ -18,7 +18,10 @@ Bonus: java.uti.Map default methods from JDK8 in the API for Java 6 and 7.
 ---
 
 #### How to build and develop
+Gradle build requires Java 8 compiler, set `JAVA_HOME` environment variable to the JDK8 location, if
+your default `java` is still Java 7.
 
+Then
 
     $ git clone git@github.com:OpenHFT/UntitledCollectionsProject.git collections
     $ cd collections
