@@ -9,10 +9,11 @@ buildscript {
 }
 
 subprojects {
-    apply plugin: 'idea'
     apply plugin: 'java'
-    apply plugin: 'jpsg' // defined in buildSrc
     apply plugin: 'propdeps'
+    apply plugin: 'jpsg' // defined in buildSrc
+    apply plugin: 'findbugs'
+    apply plugin: 'idea'
     apply plugin: 'propdeps-idea'
 
     sourceCompatibility = 1.6
@@ -37,6 +38,19 @@ subprojects {
 
     tasks.withType(net.openhft.jpsg.GeneratorTask).each { gen ->
         gen.addProcessor net.openhft.jpsg.collect.MethodGeneratingProcessor
+    }
+
+    findbugs {
+        toolVersion = '2.0.3'
+        // check (hence build) task don't depend on FindBugs, because
+        // benchmarks subproject requires Java 8 compiler, while FindBugs
+        // crashes on Java 8 - compiled bytecode even with -source 1.6 flag. To find bugs, run
+        // $ JAVA_HOME=<java-7-home> gradle impl:findBugsMain
+        // TODO fix when Java 8 - compatible version of FindBugs is out
+        sourceSets = []
+        effort = 'max'
+        reportLevel = 'high'
+        excludeFilter = file("$rootProject.projectDir/config/findbugs/excludeFilter.xml")
     }
 
     idea.module {
