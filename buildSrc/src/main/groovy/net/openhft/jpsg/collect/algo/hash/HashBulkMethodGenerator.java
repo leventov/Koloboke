@@ -113,7 +113,10 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             String collectionArgName = method.collectionArgName();
             lines(
                     "if (" + collectionArgName + " instanceof " + internalClass + ")",
-                    "    " + method.name() + "((" + internalClass + ") " + collectionArgName + ");"
+                    "    " + method.name() + "(" +
+                            (method.argsBeforeCollection().isEmpty() ? "" :
+                                    method.argsBeforeCollection() + ", ") +
+                            "(" + internalClass + ") " + collectionArgName + ");"
             );
         }
     }

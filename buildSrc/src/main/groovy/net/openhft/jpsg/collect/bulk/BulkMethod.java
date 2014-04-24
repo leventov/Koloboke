@@ -34,6 +34,10 @@ public abstract class BulkMethod implements Method {
         return false;
     }
 
+    public String argsBeforeCollection() {
+        return "";
+    }
+
     public String collectionArgName() {
         return cxt.isMapView() ? "m" : "c";
     }

@@ -129,9 +129,14 @@ public class MutableDHashCharSetGO/*<>*/ extends MutableCharDHashSetSO/*<>*/
                 }
             }
         /* if !(obj elem) */
-            return super.removeAll((CharCollection) c);
+            return removeAll(this, (CharCollection) c);
         }
         /* endif */
-        return super.removeAll(c);
+        return removeAll(this, c);
+    }
+
+    @Override
+    public boolean retainAll(@Nonnull Collection<?> c) {
+        return retainAll(this, c);
     }
 }

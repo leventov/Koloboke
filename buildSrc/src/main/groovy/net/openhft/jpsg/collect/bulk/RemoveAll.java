@@ -16,23 +16,12 @@
 
 package net.openhft.jpsg.collect.bulk;
 
-public class RemoveAll extends BulkMethod {
-
-    @Override
-    public EntryType entryType() {
-        return EntryType.REUSABLE;
-    }
-
-    @Override
-    public boolean withInternalVersion() {
-        return true;
-    }
+public class RemoveAll extends BulkRemoveUsingAnotherCollection {
 
     @Override
     public void beginning() {
+        super.beginning();
         gen.lines(
-                "if (this == c)",
-                "    throw new IllegalArgumentException();",
                 "if (isEmpty() || c.isEmpty())",
                 "    return false;",
                 "boolean changed = false;"
@@ -45,10 +34,5 @@ public class RemoveAll extends BulkMethod {
         gen.remove();
         gen.lines("changed = true;");
         gen.blockEnd();
-    }
-
-    @Override
-    public void end() {
-        gen.ret("changed");
     }
 }

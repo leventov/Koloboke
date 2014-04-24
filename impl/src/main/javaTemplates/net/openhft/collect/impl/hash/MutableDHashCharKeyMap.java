@@ -290,15 +290,15 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
                     }
                 }
             /* if !(obj key) */
-                return MutableDHashCharKeyMap.this.removeAll((CharCollection) c);
+                return MutableDHashCharKeyMap.this.removeAll(this, (CharCollection) c);
             }
             /* endif */
-            return MutableDHashCharKeyMap.this.removeAll(c);
+            return MutableDHashCharKeyMap.this.removeAll(this, c);
         }
 
         @Override
         public boolean retainAll(@Nonnull Collection<?> c) {
-            return MutableDHashCharKeyMap.this.retainAll(c);
+            return MutableDHashCharKeyMap.this.retainAll(this, c);
         }
 
         @Override

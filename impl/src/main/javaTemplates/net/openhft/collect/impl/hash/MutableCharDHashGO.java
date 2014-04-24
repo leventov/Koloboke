@@ -22,6 +22,7 @@ package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
 import net.openhft.collect.impl.InternalCharCollectionOps;
+import net.openhft.collect.set.hash.HashCharSet;
 import net.openhft.function.*;
 import net.openhft.collect.impl.NotGenerated;
 
@@ -138,38 +139,43 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
     }
     /* endif */
 
-    public boolean removeAll(@Nonnull Collection<?> c) {
-        /* template RemoveAll with generic version */ throw new NotGenerated(); /* endtemplate */
+    boolean removeAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull Collection<?> c) {
+        /* template RemoveAll with generic version given this */ throw new NotGenerated();
+        /* endtemplate */
     }
 
     /* if !(obj elem) */
-    boolean removeAll(@Nonnull CharCollection c) {
-        /* template RemoveAll */ throw new NotGenerated(); /* endtemplate */
+    boolean removeAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull CharCollection c) {
+        /* template RemoveAll with given this*/ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if float|double elem */
-    boolean removeAll(@Nonnull InternalCharCollectionOps c) {
-        /* template RemoveAll with internal version */ throw new NotGenerated(); /* endtemplate */
+    boolean removeAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull InternalCharCollectionOps c) {
+        /* template RemoveAll with internal version given this */ throw new NotGenerated();
+        /* endtemplate */
     }
     /* endif */
     /* endif */
 
-    public boolean retainAll(@Nonnull Collection<?> c) {
+    boolean retainAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull Collection<?> c) {
         /* if !(obj elem) */
         if (c instanceof CharCollection)
-            return retainAll((CharCollection) c);
+            return retainAll(thisC, (CharCollection) c);
         /* endif */
-        /* template RetainAll with generic version */ throw new NotGenerated(); /* endtemplate */
+        /* template RetainAll with generic version given this */ throw new NotGenerated();
+        /* endtemplate */
     }
 
     /* if !(obj elem) */
-    private boolean retainAll(@Nonnull CharCollection c) {
-        /* template RetainAll */ throw new NotGenerated(); /* endtemplate */
+    private boolean retainAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull CharCollection c) {
+        /* template RetainAll given this */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if float|double elem */
-    private boolean retainAll(@Nonnull InternalCharCollectionOps c) {
-        /* template RetainAll with internal version */ throw new NotGenerated(); /* endtemplate */
+    private boolean retainAll(@Nonnull HashCharSet/*<>*/ thisC,
+            @Nonnull InternalCharCollectionOps c) {
+        /* template RetainAll with internal version given this */ throw new NotGenerated();
+        /* endtemplate */
     }
     /* endif */
     /* endif */

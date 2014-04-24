@@ -23,6 +23,7 @@ package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
 import net.openhft.collect.impl.*;
+import net.openhft.collect.set.hash.HashCharSet;
 import net.openhft.function.*;
 import net.openhft.collect.map.hash.HashCharObjMap;
 import javax.annotation.Nonnull;
@@ -182,41 +183,45 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     /* endif */
 
     @Override
-    public boolean removeAll(@Nonnull Collection<?> c) {
-        /* template RemoveAll */ throw new NotGenerated(); /* endtemplate */
+    public boolean removeAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull Collection<?> c) {
+        /* template RemoveAll with given this */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if !(obj key) */
     @Override
-    boolean removeAll(@Nonnull CharCollection c) {
-        /* template RemoveAll */ throw new NotGenerated(); /* endtemplate */
+    boolean removeAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull CharCollection c) {
+        /* template RemoveAll with given this */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if float|double key */
     @Override
-    boolean removeAll(@Nonnull InternalCharCollectionOps c) {
-        /* template RemoveAll with internal version */ throw new NotGenerated(); /* endtemplate */
+    boolean removeAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull InternalCharCollectionOps c) {
+        /* template RemoveAll with internal version with given this */ throw new NotGenerated();
+        /* endtemplate */
     }
     /* endif */
     /* endif */
 
     @Override
-    public boolean retainAll(@Nonnull Collection<?> c) {
+    public boolean retainAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull Collection<?> c) {
         /* if !(obj key) */
         if (c instanceof CharCollection)
-            return retainAll((CharCollection) c);
+            return retainAll(thisC, (CharCollection) c);
         /* endif */
-        /* template RetainAll with generic version */ throw new NotGenerated(); /* endtemplate */
+        /* template RetainAll with generic version given this */ throw new NotGenerated();
+        /* endtemplate */
     }
 
     /* if !(obj key) */
-    private boolean retainAll(@Nonnull CharCollection c) {
-        /* template RetainAll */ throw new NotGenerated(); /* endtemplate */
+    private boolean retainAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull CharCollection c) {
+        /* template RetainAll given this */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if float|double key */
-    private boolean retainAll(@Nonnull InternalCharCollectionOps c) {
-        /* template RetainAll with internal version */ throw new NotGenerated(); /* endtemplate */
+    private boolean retainAll(@Nonnull HashCharSet/*<>*/ thisC,
+            @Nonnull InternalCharCollectionOps c) {
+        /* template RetainAll with internal version given this */ throw new NotGenerated();
+        /* endtemplate */
     }
     /* endif */
     /* endif */
