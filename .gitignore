@@ -11,3 +11,8 @@ benchmarks/build/
 *.iws
 out/
 .idea/workspace.xml
+.idea/libraries
+.idea/uiDesigner.xml
+
+# HotSpot logs
+*.log
