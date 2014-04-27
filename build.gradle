@@ -34,6 +34,7 @@ subprojects {
         options.fork = true
         def javac = System.env['JAVA_HOME'] ? System.env['JAVA_HOME'] + '/bin/javac' : 'javac'
         options.forkOptions.executable = javac
+        options.encoding = 'UTF-8'
     }
 
     tasks.withType(net.openhft.jpsg.GeneratorTask).each { gen ->
