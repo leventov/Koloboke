@@ -22,6 +22,8 @@ import net.openhft.collect.impl.UnsafeConstants;
 
 import java.util.*;
 
+import static net.openhft.collect.impl.Primitives.hashCode;
+
 
 public class NoStatesRHoodHashCharSet implements UnsafeConstants {
 
@@ -46,13 +48,14 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
         }
     }
 
-    public boolean addBinaryState(char key) {
+    public boolean addBinaryStateSimpleIndexing(char key) {
         char free = freeValue;
         if (key == free) {
             return false;
         }
         char[] keys = set;
-        int capacityMask = this.capacityMask;
+        int capacity = keys.length;
+        int capacityMask = capacity - 1;
         int index = Primitives.hashCode(key) & capacityMask;
         char cur = keys[index];
         keyAbsent:
@@ -69,7 +72,8 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
                     } else if (cur == key) {
                         return false;
                     } else {
-                        int curDistance = distance(cur, index);
+                        int curDistance =
+                                (index + capacity - Primitives.hashCode(cur)) & capacityMask;
                         if (++distance > curDistance) {
                             keys[index] = key;
                             key = cur;
@@ -83,7 +87,8 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
                     if ((cur = keys[index]) == free) {
                         break keyAbsent;
                     } else {
-                        int curDistance = distance(cur, index);
+                        int curDistance =
+                                (index + capacity - Primitives.hashCode(cur)) & capacityMask;
                         if (++distance > curDistance) {
                             keys[index] = key;
                             key = cur;
@@ -95,6 +100,67 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
         }
         // key is absent
         keys[index] = key;
+        postAdd();
+        return true;
+    }
+
+    public boolean addBinaryStateUnsafeIndexing(char key) {
+        char free = freeValue;
+        if (key == free) {
+            return false;
+        }
+        char[] keys = set;
+        int capacity = keys.length;
+        int capacityMask = capacity - 1;
+        long capacityMaskAsLong = (long) capacityMask;
+        long index = ((long) Primitives.hashCode(key)) & capacityMaskAsLong;
+        long offset = index << CHAR_SCALE_SHIFT;
+        char cur = U.getChar(keys, CHAR_BASE + offset);
+        keyAbsent:
+        if (cur != free) {
+            if (cur == key) {
+                return false;
+            } else {
+                long capacityOffsetMask = capacityMaskAsLong << CHAR_SCALE_SHIFT;
+                int distance = 0;
+                firstLoop:
+                while (true) {
+                    offset = (offset + CHAR_SCALE) & capacityOffsetMask;
+                    if ((cur = U.getChar(keys, CHAR_BASE + offset)) == free) {
+                        break keyAbsent;
+                    } else if (cur == key) {
+                        return false;
+                    } else {
+                        int curDistance =
+                                (((int) (offset >> CHAR_SCALE_SHIFT)) +
+                                        capacity - Primitives.hashCode(cur)) & capacityMask;
+                        if (++distance > curDistance) {
+                            U.putChar(keys, CHAR_BASE + offset, key);
+                            key = cur;
+                            distance = curDistance;
+                            break firstLoop;
+                        }
+                    }
+                }
+                while (true) {
+                    offset = (offset + CHAR_SCALE) & capacityOffsetMask;
+                    if ((cur = U.getChar(keys, CHAR_BASE + offset)) == free) {
+                        break keyAbsent;
+                    } else {
+                        int curDistance =
+                                (((int) (offset >> CHAR_SCALE_SHIFT)) +
+                                        capacity - Primitives.hashCode(cur)) & capacityMask;
+                        if (++distance > curDistance) {
+                            U.putChar(keys, CHAR_BASE + offset, key);
+                            key = cur;
+                            distance = curDistance;
+                        }
+                    }
+                }
+            }
+        }
+        // key is absent
+        U.putChar(keys, CHAR_BASE + offset, key);
         postAdd();
         return true;
     }
@@ -178,7 +244,7 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
         Random r = new Random();
         for (int i = 0; i < repeats; i++) {
             for (int j = 0; j < capacity - 1; j++) {
-                set.addBinaryState((char) r.nextLong());
+                set.addBinaryStateSimpleIndexing((char) r.nextLong());
                 DistanceStats setStats = set.countDistanceStats();
                 stats[j] = stats[j] == null ? setStats : stats[j].plus(setStats);
             }

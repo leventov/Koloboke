@@ -105,7 +105,7 @@ public class NoStatesLHashCharSet implements UnsafeConstants {
         }
     }
 
-    public boolean addBinaryState(char key) {
+    public boolean addBinaryStateSimpleIndexing(char key) {
         char free = freeValue;
         if (key == free) {
             return false;
@@ -132,6 +132,133 @@ public class NoStatesLHashCharSet implements UnsafeConstants {
         // key is absent
         keys[index] = key;
         size++;
+        return true;
+    }
+
+    public boolean addBinaryStateUnsafeIndexing(char key) {
+        char free = freeValue;
+        if (key == free) {
+            return false;
+        }
+        char[] keys = set;
+        long capacityMask = (long) this.capacityMask;
+        long index = ((long) Primitives.hashCode(key)) & capacityMask;
+        long offset = index << CHAR_SCALE_SHIFT;
+        char cur = U.getChar(keys, CHAR_BASE + offset);
+        keyAbsent:
+        if (cur != free) {
+            if (cur == key) {
+                return false;
+            } else {
+                long capacityOffsetMask = capacityMask << CHAR_SCALE_SHIFT;
+                while (true) {
+                    offset = (offset + CHAR_SCALE) & capacityOffsetMask;
+                    if ((cur = U.getChar(keys, CHAR_BASE + offset)) == free) {
+                        break keyAbsent;
+                    } else if (cur == key) {
+                        return false;
+                    }
+                }
+            }
+        }
+        // key is absent
+        U.putChar(keys, CHAR_BASE + offset, key);
+        size++;
+        return true;
+    }
+
+    public boolean removeSimpleIndexing(char key) {
+        char free = freeValue;
+        if (key == free) {
+            return false;
+        }
+        char[] keys = set;
+        int capacity = set.length;
+        int capacityMask = capacity - 1;
+        int index = Primitives.hashCode(key) & capacityMask;
+        char cur = keys[index];
+        keyPresent:
+        if (cur != key) {
+            if (cur == free)
+                return false;
+            while (true) {
+                index = (index + 1) & capacityMask;
+                if ((cur = keys[index]) == key) {
+                    break keyPresent;
+                } else if (cur == free) {
+                    return false;
+                }
+            }
+        }
+        // key is present
+        int indexToRemove = index;
+        int indexToShift = indexToRemove;
+        int shiftDistance = 1;
+        while (true) {
+            indexToShift = (indexToShift + 1) & capacityMask;
+            char keyToShift = keys[indexToShift];
+            if (keyToShift == free) {
+                keys[indexToRemove] = free;
+                return true;
+            }
+            int keyDistance = (indexToShift + capacity - Primitives.hashCode(keyToShift)) &
+                    capacityMask;
+            if (keyDistance >= shiftDistance) {
+                keys[indexToRemove] = keyToShift;
+                indexToRemove = indexToShift;
+                shiftDistance = 1;
+            } else {
+                shiftDistance++;
+            }
+        }
+    }
+
+    public boolean removeUnsafeIndexing(char key) {
+        char free = freeValue;
+        if (key == free) {
+            return false;
+        }
+        char[] keys = set;
+        int capacity = set.length;
+        int capacityMask = capacity - 1;
+        long capacityOffsetMask = ((long) capacityMask) << CHAR_SCALE_SHIFT;
+        long index = (long) (Primitives.hashCode(key) & capacityMask);
+        long offset = index << CHAR_SCALE_SHIFT;
+        char cur = U.getChar(keys, CHAR_BASE + offset);
+        keyPresent:
+        if (cur != key) {
+            if (cur == free)
+                return false;
+            while (true) {
+                offset = (offset + CHAR_SCALE) & capacityOffsetMask;
+                if ((cur = U.getChar(keys, CHAR_BASE + offset)) == key) {
+                    break keyPresent;
+                } else if (cur == free) {
+                    return false;
+                }
+            }
+        }
+        // key is present
+        long offsetToRemove = offset;
+        long offsetToShift = offset;
+        int shiftDistance = 1;
+        while (true) {
+            offsetToShift = (offsetToShift + CHAR_SCALE) & capacityOffsetMask;
+            char keyToShift =  U.getChar(keys, CHAR_BASE + offsetToShift);
+            if (keyToShift == free)
+                break;
+            int indexToShift = (int) (offsetToShift >> CHAR_SCALE_SHIFT);
+            int keyDistance = (indexToShift + capacity - Primitives.hashCode(keyToShift)) &
+                    capacityMask;
+            if (keyDistance >= shiftDistance) {
+                U.putChar(keys, CHAR_BASE + offsetToRemove, keyToShift);
+                offsetToRemove = offsetToShift;
+                shiftDistance = 1;
+            } else {
+                shiftDistance++;
+            }
+        }
+        U.putChar(keys, CHAR_BASE + offsetToRemove, free);
         return true;
     }
 }

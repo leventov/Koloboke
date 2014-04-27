@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
+import static net.openhft.collect.research.hash.LookupBenchmarks.n;
 
 
 @BenchmarkMode(Mode.AverageTime)
@@ -37,22 +38,29 @@ import static java.lang.Integer.parseInt;
 @Fork(1)
 @Warmup(iterations = 5)
 @Measurement(iterations = 10)
-public class AddRemoveWithTombstonesBenchmark {
+public class AddRemoveLookupBenchmarks {
 
-    static final int SMALL_SIZE = 2000, LARGE_SIZE = 20000;
-    static final int SIZE = Integer.getInteger("size", SMALL_SIZE);
+    static final int SMALL_CAPACITY = 1024, LARGE_CAPACITY = SMALL_CAPACITY * 16;
+    static final int CAPACITY = Integer.getInteger("capacity", SMALL_CAPACITY);
     static final int FULL_RENEWALS_PER_INVOCATION =
             Integer.getInteger("fullRenewalsPerInvocation", 100);
     static final int LOOKUPS_PER_INSERTION = Integer.getInteger("lookupsPerInsertion", 4);
 
     static final double LOAD_FACTOR = parseDouble(System.getProperty("loadFactor", "0.5"));
-    static final double REHASH_LOAD = parseDouble(System.getProperty("rehashLoad", "0.75"));
+    static final double QHASH_REHASH_LOAD =
+            0.54 + 0.816 * LOAD_FACTOR - 0.363 * (LOAD_FACTOR * LOAD_FACTOR);
+    static final double DHASH_REHASH_LOAD =
+            0.6 + 0.671 * LOAD_FACTOR - 0.274 * (LOAD_FACTOR * LOAD_FACTOR);
 
-    static final int DHASH_CAPACITY = DHashCapacities.bestCapacity(SIZE, LOAD_FACTOR, 0);
-    static final int QHASH_CAPACITY =
-            QHashCapacities.getIntCapacity(((int)(SIZE / LOAD_FACTOR)) + 1, 0);
+    static final int SIZE = n(CAPACITY, LOAD_FACTOR);
 
-    /* with char|byte|short|int|long key QHash|DHash hash */
+    static final int L_HASH_CAPACITY = CAPACITY;
+    static final int R_HOOD_SIMPLE_HASH_CAPACITY = CAPACITY;
+    static final int D_HASH_CAPACITY = DHashCapacities.bestCapacity(SIZE, LOAD_FACTOR, 0);
+    static final int Q_HASH_CAPACITY =
+            QHashCapacities.getIntCapacity(((int) (SIZE / LOAD_FACTOR)) + 1, 0);
+
+    /* with char|byte|short|int|long key QHash|DHash|LHash|RHoodSimpleHash hash */
 
     @State(Scope.Thread)
     public static class QHashCharSetState {
@@ -66,7 +74,7 @@ public class AddRemoveWithTombstonesBenchmark {
             r = ThreadLocalRandom.current();
             keys = new char[SIZE * (FULL_RENEWALS_PER_INVOCATION + 1)];
             lookupKeys = new char[SIZE * FULL_RENEWALS_PER_INVOCATION * LOOKUPS_PER_INSERTION];
-            set = new NoStatesQHashCharSet(QHASH_CAPACITY);
+            set = new NoStatesQHashCharSet(Q_HASH_CAPACITY);
         }
 
         @Setup(Level.Invocation)
@@ -76,16 +84,16 @@ public class AddRemoveWithTombstonesBenchmark {
             char[] keys = new char[SIZE];
             while (set.size < SIZE) {
                 char key;
-                while (!set.addBinaryState(key = (char) r.nextLong()));
+                while (!set.addBinaryStateSimpleIndexing(key = (char) r.nextLong()));
                 keys[i++] = key;
             }
-            HashBenchmarks.shuffle(keys, r);
+            LookupBenchmarks.shuffle(keys, r);
             System.arraycopy(keys, 0, this.keys, 0, SIZE);
             int j = 0;
             while (i < this.keys.length) {
                 this.keys[i++] = (char) r.nextLong();
                 for (int k = 0; k < LOOKUPS_PER_INSERTION; k++) {
-                    lookupKeys[j++] = this.keys[i - r.nextInt(SIZE)];
+                    lookupKeys[j++] = this.keys[i - 1 - r.nextInt(SIZE)];
                 }
             }
         }
@@ -97,25 +105,12 @@ public class AddRemoveWithTombstonesBenchmark {
         }
     }
 
-    @GenerateMicroBenchmark
-    public int addRemove_qHash_charKey_withoutLookups(QHashCharSetState state) {
-        int freeSlotsRehashThreshold = (int) (QHASH_CAPACITY * (1.0 - REHASH_LOAD));
-        int i = 0, j = SIZE;
-        NoStatesQHashCharSet set = state.set;
-        char[] keys = state.keys;
-        int keysLen = keys.length;
-        while (j < keysLen) {
-            set.remove(keys[i++]);
-            set.addTernaryState(keys[j++]);
-            if (set.freeSlots <= freeSlotsRehashThreshold)
-                set.rehash(QHASH_CAPACITY);
-        }
-        return set.size;
-    }
+    /* with Simple|Unsafe indexing */
+    /* if QHash|DHash hash */
 
     @GenerateMicroBenchmark
-    public int addRemove_qHash_charKey_withLookups(QHashCharSetState state) {
-        int freeSlotsRehashThreshold = (int) (QHASH_CAPACITY * (1.0 - REHASH_LOAD));
+    public int addRemoveLookup_qHash_charKey_simpleIndexing(QHashCharSetState state) {
+        int freeSlotsRehashThreshold = (int) (Q_HASH_CAPACITY * (1.0 - QHASH_REHASH_LOAD));
         int removeI = 0, insertI = SIZE;
         NoStatesQHashCharSet set = state.set;
         char[] keys = state.keys;
@@ -124,29 +119,53 @@ public class AddRemoveWithTombstonesBenchmark {
         int lookupDummy = 0;
         int keysLen = keys.length;
         while (insertI < keysLen) {
-            set.remove(keys[removeI++]);
-            set.addTernaryState(keys[insertI++]);
+            set.removeSimpleIndexing(keys[removeI++]);
+            set.addTernaryStateSimpleIndexing(keys[insertI++]);
             for (int i = 0; i < LOOKUPS_PER_INSERTION; i++) {
-                lookupDummy ^= set.indexTernaryStateUnsafeIndexing(lookupKeys[lookupI++]);
+                lookupDummy ^= set.indexTernaryStateSimpleIndexing(lookupKeys[lookupI++]);
             }
             if (set.freeSlots <= freeSlotsRehashThreshold)
-                set.rehash(QHASH_CAPACITY);
+                set.rehashSimpleIndexing(Q_HASH_CAPACITY);
         }
         return set.size ^ lookupDummy;
     }
 
+    /* elif LHash|RHoodSimpleHash hash */
+
+    @GenerateMicroBenchmark
+    public int addRemoveLookup_qHash_charKey_simpleIndexing(QHashCharSetState state) {
+        int removeI = 0, insertI = SIZE;
+        NoStatesQHashCharSet set = state.set;
+        char[] keys = state.keys;
+        char[] lookupKeys = state.lookupKeys;
+        int lookupI = 0;
+        int lookupDummy = 0;
+        int keysLen = keys.length;
+        while (insertI < keysLen) {
+            set.removeSimpleIndexing(keys[removeI++]);
+            set.addBinaryStateSimpleIndexing(keys[insertI++]);
+            for (int i = 0; i < LOOKUPS_PER_INSERTION; i++) {
+                lookupDummy ^= set.indexBinaryStateSimpleIndexing(lookupKeys[lookupI++]);
+            }
+        }
+        return set.size ^ lookupDummy;
+    }
+
+    /* endif */
+    /* endwith */
     /* endwith */
 
     public static void main(String[] args) throws RunnerException, CommandLineOptionException {
-        new DimensionedJmh(AddRemoveWithTombstonesBenchmark.class)
-                .addArgDim("size", SMALL_SIZE, LARGE_SIZE)
+        new DimensionedJmh(AddRemoveLookupBenchmarks.class)
+                .addArgDim("capacity", SMALL_CAPACITY, LARGE_CAPACITY)
                 .addArgDim("fullRenewalsPerInvocation", 100)
                 .addArgDim("lookupsPerInsertion", 4)
-                .addArgDim("loadFactor")
-                .addArgDim("rehashLoad")
-                .withGetOperationCount(options ->
-                        parseInt(options.get("size")) *
-                                parseInt(options.get("fullRenewalsPerInvocation")))
+                .addArgDim("loadFactor", "0.3", "0.6", "0.9")
+                .withGetOperationCount(options -> {
+                    int size = n(parseInt(options.get("capacity")),
+                            parseDouble(options.get("loadFactor")));
+                    return size * parseInt(options.get("fullRenewalsPerInvocation"));
+                })
                 .run(args);
     }
 }

@@ -167,7 +167,7 @@ public class NoStatesDHashCharSet implements UnsafeConstants {
         }
     }
 
-    public boolean addTernaryState(char key) {
+    public boolean addTernaryStateSimpleIndexing(char key) {
         char free = freeValue;
         char removed = removedValue;
         if (key == free || key == removed) {
@@ -212,7 +212,54 @@ public class NoStatesDHashCharSet implements UnsafeConstants {
         return true;
     }
 
-    public boolean addBinaryState(char key) {
+    public boolean addTernaryStateUnsafeIndexing(char key) {
+        char free = freeValue;
+        char removed = removedValue;
+        if (key == free || key == removed) {
+            return false;
+        }
+        char[] keys = set;
+        int capacity = keys.length;
+        int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;
+        long index = (long) (hash % capacity);
+        long offset = CHAR_BASE + (index << CHAR_SCALE_SHIFT);
+        char cur = U.getChar(keys, offset);
+        keyAbsentFreeSlot:
+        if (cur != free) {
+            if (cur == key) {
+                return false;
+            } else {
+                long firstRemovedOffset = cur != removed ? -1L : offset;
+                long step = ((long) ((hash % (capacity - 2)) + 1)) << CHAR_SCALE_SHIFT;
+                while (true) {
+                    if ((offset -= step) < CHAR_BASE)
+                        offset += ((long) capacity) << CHAR_SCALE_SHIFT; // nextIndex
+                    if ((cur = U.getChar(keys, offset)) == free) {
+                        if (firstRemovedOffset < 0L) {
+                            break keyAbsentFreeSlot;
+                        } else {
+                            // key is absent, removed slot
+                            U.putChar(keys, firstRemovedOffset, key);
+                            size++;
+                            removedSlots--;
+                            return true;
+                        }
+                    } else if (cur == key) {
+                        return false;
+                    } else if (cur == removed && firstRemovedOffset < 0L) {
+                        firstRemovedOffset = offset;
+                    }
+                }
+            }
+        }
+        // key is absent, free slot
+        U.putChar(keys, offset, key);
+        size++;
+        freeSlots--;
+        return true;
+    }
+
+    public boolean addBinaryStateSimpleIndexing(char key) {
         char free = freeValue;
         if (key == free) {
             return false;
@@ -245,7 +292,7 @@ public class NoStatesDHashCharSet implements UnsafeConstants {
         return true;
     }
 
-    public boolean remove(char key) {
+    public boolean removeSimpleIndexing(char key) {
         char free = freeValue;
         char removed = removedValue;
         if (key != free && key != removed) {
@@ -280,7 +327,44 @@ public class NoStatesDHashCharSet implements UnsafeConstants {
         }
     }
 
-    public void rehash(int capacity) {
+    public boolean removeUnsafeIndexing(char key) {
+        char free = freeValue;
+        char removed = removedValue;
+        if (key != free && key != removed) {
+            char[] keys = set;
+            int capacity = keys.length;
+            int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;
+            long index = (long) (hash % capacity);
+            long offset = CHAR_BASE + (index << CHAR_SCALE_SHIFT);
+            char cur = U.getChar(keys, offset);
+            keyPresent:
+            if (cur != key) {
+                if (cur == free) {
+                    return false;
+                } else {
+                    long step = (long) ((hash % (capacity - 2)) + 1) << CHAR_SCALE_SHIFT;
+                    while (true) {
+                        if ((offset -= step) < CHAR_BASE)
+                            offset += ((long) capacity) << CHAR_SCALE_SHIFT; // nextIndex
+                        if ((cur = U.getChar(keys, offset)) == key) {
+                            break keyPresent;
+                        } else if (cur == free) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            // key is present
+            U.putChar(keys, offset, removed);
+            size--;
+            removedSlots++;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void rehashSimpleIndexing(int capacity) {
         char free = freeValue;
         char removed = removedValue;
         char[] keys = set;
@@ -298,6 +382,37 @@ public class NoStatesDHashCharSet implements UnsafeConstants {
                     } while (newKeys[index] != free);
                 }
                 newKeys[index] = key;
+            }
+        }
+        set = newKeys;
+        freeSlots = capacity - size;
+        removedSlots = 0;
+    }
+
+    public void rehashUnsafeIndexing(int capacity) {
+        char free = freeValue;
+        char removed = removedValue;
+        char[] keys = set;
+        char[] newKeys = new char[capacity];
+        Arrays.fill(newKeys, free);
+
+        long CHAR_BASE = UnsafeConstants.CHAR_BASE;
+        int CHAR_SCALE_SHIFT = UnsafeConstants.CHAR_SCALE_SHIFT;
+        long capacityBytes = ((long) capacity) << CHAR_SCALE_SHIFT;
+
+        for (int i = keys.length - 1; i >= 0; i--) {
+            char key;
+            if ((key = keys[i]) != free && key != removed) {
+                int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;
+                long index = (long) (hash % capacity);
+                long offset = CHAR_BASE + (index << CHAR_SCALE_SHIFT);
+                if (U.getChar(newKeys, offset) != free) {
+                    long step = ((long) ((hash % (capacity - 2)) + 1)) << CHAR_SCALE_SHIFT;
+                    do {
+                        if ((offset -= step) < CHAR_BASE) offset += capacityBytes;
+                    } while (U.getChar(newKeys, offset) != free);
+                }
+                U.putChar(newKeys, offset, key);
             }
         }
         set = newKeys;

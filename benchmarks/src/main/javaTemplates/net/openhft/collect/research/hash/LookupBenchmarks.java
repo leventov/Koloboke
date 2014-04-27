@@ -38,7 +38,7 @@ import static java.lang.Integer.parseInt;
 @Fork(1)
 @Warmup(iterations = 5)
 @Measurement(iterations = 10)
-public class HashBenchmarks {
+public class LookupBenchmarks {
 
     static class Config {
         public final int powerOf2Capacity, dHashCapacity, qHashCapacity, n;
@@ -106,6 +106,10 @@ public class HashBenchmarks {
                          // elif QHash hash //qHashCapacity// endif */);
         }
 
+        /* define add */
+        /* if !(ByteAlong states) //addBinaryStateSimpleIndexing
+        // elif ByteAlong states //addBinaryStateUnsafeIndexing// endif *//* enddefine */
+
         @Setup(Level.Iteration)
         public void fill() {
             set.clear();
@@ -113,7 +117,7 @@ public class HashBenchmarks {
             notKeySet.clear();
             while (set.size < N) {
                 char key = (char) r.nextLong();
-                if (set.addBinaryState(key)) {
+                if (set./*add*/addBinaryStateSimpleIndexing/**/(key)) {
                     keySet.add(key);
                 }
             }
@@ -159,7 +163,7 @@ public class HashBenchmarks {
             int i = 0;
             while (i < N) {
                 char key;
-                while (!set.addBinaryState(key = (char) r.nextLong()));
+                while (!set./*add*/addBinaryStateSimpleIndexing/**/(key = (char) r.nextLong()));
                 keySet.add(key);
                 int count = Math.max((int) (count(order) + 0.55), 1);
                 int limit = Math.min(N, i + count);
@@ -171,7 +175,7 @@ public class HashBenchmarks {
             shuffle(keys, r);
             while (set.size < N) {
                 char key = (char) r.nextLong();
-                if (set.addBinaryState(key))
+                if (set./*add*/addBinaryStateSimpleIndexing/**/(key))
                     keySet.add(key);
             }
             // Don't give advantage to early generated keys
@@ -179,7 +183,7 @@ public class HashBenchmarks {
             char[] keys = keySet.toCharArray();
             shuffle(keys, r);
             for (char key : keys) {
-                set.addBinaryState(key);
+                set./*add*/addBinaryStateSimpleIndexing/**/(key);
             }
         }
 
@@ -258,7 +262,7 @@ public class HashBenchmarks {
     /* endwith */
 
     public static void main(String[] args) throws RunnerException, CommandLineOptionException {
-        new DimensionedJmh(HashBenchmarks.class)
+        new DimensionedJmh(LookupBenchmarks.class)
                 .addArgDim("loadFactor", "0.3", "0.6", "0.9")
                 .addArgDim("capacity", SMALL_CAPACITY, LARGE_CAPACITY)
                 .withGetOperationCount(options -> (long) n(parseInt(options.get("capacity")),

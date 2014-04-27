@@ -203,7 +203,7 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
         }
     }
 
-    public boolean addTernaryState(char key) {
+    public boolean addTernaryStateSimpleIndexing(char key) {
         char free = freeValue;
         char removed = removedValue;
         if (key == free || key == removed) {
@@ -240,9 +240,9 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
                 } else if (cur == removed && firstRemoved < 0) {
                     firstRemoved = bIndex;
                 }
-                fIndex += step;
+
                 int t;
-                if ((t = fIndex - capacity) >= 0) fIndex = t;
+                if ((t = (fIndex += step) - capacity) >= 0) fIndex = t;
                 if ((cur = keys[fIndex]) == free) {
                     if (firstRemoved < 0) {
                         index = fIndex;
@@ -269,7 +269,74 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
         return true;
     }
 
-    public boolean addBinaryState(char key) {
+    public boolean addTernaryStateUnsafeIndexing(char key) {
+        char free = freeValue;
+        char removed = removedValue;
+        if (key == free || key == removed) {
+            return false;
+        }
+        char[] keys = set;
+        int capacity = keys.length;
+        int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;
+        long index = (long) (hash % capacity);
+        long offset = (index << CHAR_SCALE_SHIFT);
+        char cur = U.getChar(keys, CHAR_BASE + offset);
+        keyAbsentFreeSlot:
+        if (cur != free) {
+            if (cur == key)
+                return false;
+            long firstRemovedOffset = cur != removed ? -1L : offset;
+            long step = CHAR_SCALE;
+            long bOffset = offset;
+            long fOffset = offset;
+            long capacityBytes = ((long) capacity) << CHAR_SCALE_SHIFT;
+            while (true) {
+                if ((bOffset -= step) < 0L) bOffset += capacityBytes;
+                if ((cur = U.getChar(keys, CHAR_BASE + bOffset)) == free) {
+                    if (firstRemovedOffset < 0L) {
+                        offset = bOffset;
+                        break keyAbsentFreeSlot;
+                    } else {
+                        // key is absent, removed slot
+                        U.putChar(keys, CHAR_BASE + firstRemovedOffset, key);
+                        size++;
+                        removedSlots--;
+                        return true;
+                    }
+                } else if (cur == key) {
+                    return false;
+                } else if (cur == removed && firstRemovedOffset < 0L) {
+                    firstRemovedOffset = bOffset;
+                }
+
+                if ((fOffset += step) >= capacityBytes) fOffset -= capacityBytes;
+                if ((cur = U.getChar(keys, CHAR_BASE + fOffset)) == free) {
+                    if (firstRemovedOffset < 0L) {
+                        offset = fOffset;
+                        break keyAbsentFreeSlot;
+                    } else {
+                        // key is absent, removed slot
+                        U.putChar(keys, CHAR_BASE + firstRemovedOffset, key);
+                        size++;
+                        removedSlots--;
+                        return true;
+                    }
+                } else if (cur == key) {
+                    return false;
+                } else if (cur == removed && firstRemovedOffset < 0L) {
+                    firstRemovedOffset = fOffset;
+                }
+                step += CHAR_SCALE + CHAR_SCALE;
+            }
+        }
+        // key is absent, free slot
+        U.putChar(keys, CHAR_BASE + offset, key);
+        size++;
+        freeSlots--;
+        return true;
+    }
+
+    public boolean addBinaryStateSimpleIndexing(char key) {
         char free = freeValue;
         if (key == free) {
             return false;
@@ -362,7 +429,7 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
         return probes;
     }
 
-    public boolean remove(char key) {
+    public boolean removeSimpleIndexing(char key) {
         char free = freeValue;
         char removed = removedValue;
         if (key == free || key == removed) {
@@ -407,7 +474,53 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
         return true;
     }
 
-    public void rehash(int capacity) {
+    public boolean removeUnsafeIndexing(char key) {
+        char free = freeValue;
+        char removed = removedValue;
+        if (key == free || key == removed) {
+            return false;
+        }
+        char[] keys = set;
+        int capacity = keys.length;
+        int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;
+        long index = (long) (hash % capacity);
+        long offset = (index << CHAR_SCALE_SHIFT);
+        char cur = U.getChar(keys, CHAR_BASE + offset);
+        keyPresent:
+        if (cur != key) {
+            if (cur == free)
+                return false;
+            long step = CHAR_SCALE;
+            long bOffset = offset;
+            long fOffset = offset;
+            long capacityBytes = ((long) capacity) << CHAR_SCALE_SHIFT;
+            while (true) {
+                if ((bOffset -= step) < 0L) bOffset += capacityBytes;
+                if ((cur = U.getChar(keys, CHAR_BASE + bOffset)) == key) {
+                    offset = bOffset;
+                    break keyPresent;
+                } else if (cur == free) {
+                    return false;
+                }
+
+                if ((fOffset += step) >= capacityBytes) fOffset -= capacityBytes;
+                if ((cur = U.getChar(keys, CHAR_BASE + fOffset)) == key) {
+                    offset = fOffset;
+                    break keyPresent;
+                } else if (cur == free) {
+                    return false;
+                }
+                step += CHAR_SCALE + CHAR_SCALE;
+            }
+        }
+        // key is present
+        U.putChar(keys, CHAR_BASE + offset, removed);
+        size--;
+        removedSlots++;
+        return true;
+    }
+
+    public void rehashSimpleIndexing(int capacity) {
         char free = freeValue;
         char removed = removedValue;
         char[] keys = set;
@@ -438,6 +551,54 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
                             continue iterKeys;
                         }
                         step += 2;
+                    }
+                }
+            }
+        }
+        set = newKeys;
+        freeSlots = capacity - size;
+        removedSlots = 0;
+    }
+
+    public void rehashUnsafeIndexing(int capacity) {
+        char free = freeValue;
+        char removed = removedValue;
+        char[] keys = set;
+        char[] newKeys = new char[capacity];
+        Arrays.fill(newKeys, free);
+
+        long CHAR_BASE = UnsafeConstants.CHAR_BASE;
+        long CHAR_SCALE = UnsafeConstants.CHAR_SCALE;
+        int CHAR_SCALE_SHIFT = UnsafeConstants.CHAR_SCALE_SHIFT;
+        long capacityBytes = ((long) capacity) << CHAR_SCALE_SHIFT;
+        long stepStep = CHAR_SCALE + CHAR_SCALE;
+
+        iterKeys:
+        for (int i = keys.length - 1; i >= 0; i--) {
+            char key;
+            if ((key = keys[i]) != free && key != removed) {
+                int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;
+                long index = (long) (hash % capacity);
+                long offset = (index << CHAR_SCALE_SHIFT);
+                if (U.getChar(newKeys, CHAR_BASE + offset) == free) {
+                    U.putChar(newKeys, CHAR_BASE + offset, key);
+                } else {
+                    long step = CHAR_SCALE;
+                    long bOffset = offset;
+                    long fOffset = offset;
+                    while (true) {
+                        if ((bOffset -= step) < 0L) bOffset += capacityBytes;
+                        if (U.getChar(newKeys, CHAR_BASE + bOffset) == free) {
+                            U.putChar(newKeys, CHAR_BASE + bOffset, key);
+                            continue iterKeys;
+                        }
+
+                        if ((fOffset += step) >= capacityBytes) fOffset -= capacityBytes;
+                        if (U.getChar(newKeys, CHAR_BASE + fOffset) == free) {
+                            U.putChar(newKeys, CHAR_BASE + fOffset, key);
+                            continue iterKeys;
+                        }
+                        step += stepStep;
                     }
                 }
             }

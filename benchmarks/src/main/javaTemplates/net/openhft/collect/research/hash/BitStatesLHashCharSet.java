@@ -108,7 +108,7 @@ public class BitStatesLHashCharSet implements UnsafeConstants {
         }
     }
 
-    public boolean addBinaryState(char key) {
+    public boolean addBinaryStateSimpleIndexing(char key) {
         long[] stateBits = this.stateBits;
         char[] keys = set;
         int capacityMask = this.capacityMask;

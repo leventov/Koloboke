@@ -68,9 +68,7 @@ public class NoStatesLSelfAdjHashCharSet extends NoStatesLHashCharSet {
             int capacityMask = this.capacityMask;
             long index = (long) (Primitives.hashCode(key) & capacityMask);
             long offset = index << CHAR_SCALE_SHIFT;
-            long CHAR_BASE = UnsafeConstants.CHAR_BASE;
-            long fullOffset = CHAR_BASE + offset;
-            char cur = U.getChar(keys, fullOffset);
+            char cur = U.getChar(keys, CHAR_BASE + offset);
             if (cur == key) {
                 return (int) index;
             } else {
@@ -80,12 +78,11 @@ public class NoStatesLSelfAdjHashCharSet extends NoStatesLHashCharSet {
                     long capacityOffsetMask = ((long) capacityMask) << CHAR_SCALE_SHIFT;
                     while (true) {
                         char prev = cur;
-                        long fullPrevOffset = fullOffset;
+                        long prevOffset = offset;
                         offset = (offset + CHAR_SCALE) & capacityOffsetMask;
-                        fullOffset = CHAR_BASE + offset;
-                        if ((cur = U.getChar(keys, fullOffset)) == key) {
-                            U.putChar(keys, fullOffset, prev);
-                            U.putChar(keys, fullPrevOffset, key);
+                        if ((cur = U.getChar(keys, CHAR_BASE + offset)) == key) {
+                            U.putChar(keys, CHAR_BASE + offset, prev);
+                            U.putChar(keys, CHAR_BASE + prevOffset, key);
                             return (int) (offset >> CHAR_SCALE_SHIFT);
                         } else if (cur == free) {
                             return -1;

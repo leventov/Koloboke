@@ -109,7 +109,7 @@ public class ByteAlongStatesDHashCharSet implements UnsafeConstants {
         }
     }
 
-    public boolean addTernaryState(char key) {
+    public boolean addTernaryStateUnsafeIndexing(char key) {
         byte[] table = this.table;
         int capacity = this.capacity;
         int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;
@@ -158,7 +158,7 @@ public class ByteAlongStatesDHashCharSet implements UnsafeConstants {
         return true;
     }
 
-    public boolean addBinaryState(char key) {
+    public boolean addBinaryStateUnsafeIndexing(char key) {
         byte[] table = this.table;
         int capacity = this.capacity;
         int hash = Primitives.hashCode(key) & Integer.MAX_VALUE;

@@ -38,7 +38,7 @@ public class NoStatesRHoodSimpleHashCharSet extends NoStatesRHoodHashCharSet {
                 return index;
             } else {
                 if (cur == free) {
-                    return -1;
+                return -1;
                 } else {
                     int distance = 1;
                     while (true) {
@@ -88,6 +88,97 @@ public class NoStatesRHoodSimpleHashCharSet extends NoStatesRHoodHashCharSet {
             }
         } else {
             return -1;
+        }
+    }
+
+    public boolean removeSimpleIndexing(char key) {
+        char free = freeValue;
+        if (key != free) {
+            char[] keys = set;
+            int capacity = keys.length;
+            int capacityMask = this.capacityMask;
+            int index = Primitives.hashCode(key) & capacityMask;
+            char cur = keys[index];
+            keyPresent:
+            if (cur != key) {
+                if (cur == free) {
+                    return false;
+                } else {
+                    int distance = 1;
+                    while (true) {
+                        index = (index + 1) & capacityMask;
+                        if ((cur = keys[index]) == key) {
+                            break keyPresent;
+                        } else if (cur == free || distance >
+                                ((index + capacity - Primitives.hashCode(cur)) & capacityMask)) {
+                            return false;
+                        }
+                        distance++;
+                    }
+                }
+            }
+            int prev = index;
+            while (true) {
+                index = (index + 1) & capacityMask;
+                if ((cur = keys[index]) == free ||
+                        index == (Primitives.hashCode(cur) & capacityMask)) {
+                    break;
+                }
+                keys[prev] = cur;
+                prev = index;
+            }
+            keys[prev] = free;
+            size--;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean removeUnsafeIndexing(char key) {
+        char free = freeValue;
+        if (key != free) {
+            char[] keys = set;
+            int capacity = keys.length;
+            int capacityMask = capacity - 1;
+            long capacityMaskAsLong = (long) capacityMask;
+            long index = ((long) Primitives.hashCode(key)) & capacityMaskAsLong;
+            char cur = U.getChar(keys, CHAR_BASE + (index << CHAR_SCALE_SHIFT));
+            keyPresent:
+            if (cur != key) {
+                if (cur == free) {
+                    return false;
+                } else {
+                    int distance = 1;
+                    while (true) {
+                        index = (index + 1L) & capacityMaskAsLong;
+                        if ((cur = U.getChar(keys,
+                                CHAR_BASE + (index << CHAR_SCALE_SHIFT))) == key) {
+                            break keyPresent;
+                        } else if (cur == free || distance >
+                                ((((int) index) + capacity - Primitives.hashCode(cur)) &
+                                        capacityMask)) {
+                            return false;
+                        }
+                        distance++;
+                    }
+                }
+            }
+            long prevIndex = index;
+            while (true) {
+                index = (index + 1L) & capacityMaskAsLong;
+                if ((cur = U.getChar(keys, CHAR_BASE + (index << CHAR_SCALE_SHIFT))) == free ||
+                        index == (Primitives.hashCode(cur) & capacityMask)) {
+                    break;
+                }
+                U.putChar(keys, CHAR_BASE + (prevIndex << CHAR_SCALE_SHIFT), cur);
+                prevIndex = index;
+            }
+            U.putChar(keys, CHAR_BASE + (prevIndex << CHAR_SCALE_SHIFT), free);
+            size--;
+            return true;
+        } else {
+            return false;
         }
     }
 }

@@ -70,7 +70,7 @@ public class ByteAlongStatesLHashCharSet implements UnsafeConstants {
         }
     }
 
-    public boolean addBinaryState(char key) {
+    public boolean addBinaryStateUnsafeIndexing(char key) {
         byte[] table = this.table;
         int capacityMask = this.capacityMask;
         int index = Primitives.hashCode(key) & capacityMask;

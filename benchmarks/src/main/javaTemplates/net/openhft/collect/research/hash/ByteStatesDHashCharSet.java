@@ -145,7 +145,7 @@ public class ByteStatesDHashCharSet implements UnsafeConstants {
         }
     }
 
-    public boolean addTernaryState(char key) {
+    public boolean addTernaryStateSimpleIndexing(char key) {
         byte[] states = this.states;
         char[] keys = set;
         int capacity = keys.length;
@@ -193,7 +193,7 @@ public class ByteStatesDHashCharSet implements UnsafeConstants {
         return true;
     }
 
-    public boolean addBinaryState(char key) {
+    public boolean addBinaryStateSimpleIndexing(char key) {
         byte[] states = this.states;
         char[] keys = set;
         int capacity = keys.length;
