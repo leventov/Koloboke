@@ -161,7 +161,7 @@ public class AddRemoveLookupBenchmarks {
                 .addArgDim("fullRenewalsPerInvocation", 100)
                 .addArgDim("lookupsPerInsertion", 4)
                 .addArgDim("loadFactor", "0.3", "0.6", "0.9")
-                .withGetOperationCount(options -> {
+                .withGetOperationsPerInvocation(options -> {
                     int size = n(parseInt(options.get("capacity")),
                             parseDouble(options.get("loadFactor")));
                     return size * parseInt(options.get("fullRenewalsPerInvocation"));

@@ -265,8 +265,9 @@ public class LookupBenchmarks {
         new DimensionedJmh(LookupBenchmarks.class)
                 .addArgDim("loadFactor", "0.3", "0.6", "0.9")
                 .addArgDim("capacity", SMALL_CAPACITY, LARGE_CAPACITY)
-                .withGetOperationCount(options -> (long) n(parseInt(options.get("capacity")),
-                        parseDouble(options.get("loadFactor"))))
+                .withGetOperationsPerInvocation(options ->
+                        (long) n(parseInt(options.get("capacity")),
+                                parseDouble(options.get("loadFactor"))))
                 .run(args);
     }
 }

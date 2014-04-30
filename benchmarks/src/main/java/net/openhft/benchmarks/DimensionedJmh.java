@@ -107,7 +107,7 @@ public final class DimensionedJmh {
     private ObjIntMap<String> maxDimWidths =
             HashObjIntMaps.getDefaultFactory().withKeyEquivalence(caseInsensitive())
             .newMutableMap();
-    private ToLongFunction<Map<String, String>> getOperationCount = null;
+    private ToLongFunction<Map<String, String>> getOperationsPerInvocation = null;
     private boolean headerPrinted = false;
 
     public DimensionedJmh(Class<?> benchmarksContainerClass) {
@@ -159,9 +159,9 @@ public final class DimensionedJmh {
         benchDimOptions.put(dimName, options);
     }
 
-    public DimensionedJmh withGetOperationCount(
+    public DimensionedJmh withGetOperationsPerInvocation(
             ToLongFunction<Map<String, String>> getOperationCount) {
-        this.getOperationCount = getOperationCount;
+        this.getOperationsPerInvocation = getOperationCount;
         return this;
     }
 
@@ -300,8 +300,9 @@ public final class DimensionedJmh {
     }
 
     private long operations(Map<String, String> argOptions, Map<String, String> benchOptions) {
-        return getOperationCount != null ?
-                getOperationCount.applyAsLong(newImmutableMap(argOptions, benchOptions)) : 1L;
+        return getOperationsPerInvocation != null ?
+                getOperationsPerInvocation.applyAsLong(newImmutableMap(argOptions, benchOptions)) :
+                1L;
     }
 
     private String alignDim(String dim) {

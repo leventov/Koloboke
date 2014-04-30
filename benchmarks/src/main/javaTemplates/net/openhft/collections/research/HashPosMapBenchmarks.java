@@ -144,7 +144,7 @@ public class HashPosMapBenchmarks {
         new DimensionedJmh(HashPosMapBenchmarks.class)
                 .addArgDim("loadFactor", "0.25", "0.5", "0.75")
                 .addArgDim("capacity", SMALL_CAPACITY, LARGE_CAPACITY)
-                .withGetOperationCount(options -> {
+                .withGetOperationsPerInvocation(options -> {
                     int capacity = parseInt(options.get("capacity"));
                     double loadFactor = parseDouble(options.get("loadFactor"));
                     return (long) (capacity * loadFactor);

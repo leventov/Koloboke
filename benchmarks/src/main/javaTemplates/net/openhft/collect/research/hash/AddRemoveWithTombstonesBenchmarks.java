@@ -144,7 +144,7 @@ public class AddRemoveWithTombstonesBenchmarks {
                 .addArgDim("lookupsPerInsertion", 4)
                 .addArgDim("loadFactor")
                 .addArgDim("rehashLoad")
-                .withGetOperationCount(options ->
+                .withGetOperationsPerInvocation(options ->
                         parseInt(options.get("size")) *
                                 parseInt(options.get("fullRenewalsPerInvocation")))
                 .run(args);
