@@ -21,15 +21,18 @@ import net.openhft.collect.map.ObjObjMapFactory;
 import net.openhft.collect.map.hash.HashObjIntMaps;
 import net.openhft.collect.map.hash.HashObjObjMaps;
 import net.openhft.function.*;
-import org.openjdk.jmh.logic.results.RunResult;
+import org.openjdk.jmh.logic.results.*;
 import org.openjdk.jmh.output.format.OutputFormat;
 import org.openjdk.jmh.output.format.OutputFormatFactory;
 import org.openjdk.jmh.runner.*;
 import org.openjdk.jmh.runner.options.*;
+import org.openjdk.jmh.util.internal.ListStatistics;
 import org.openjdk.jmh.util.internal.Statistics;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -108,6 +111,7 @@ public final class DimensionedJmh {
             HashObjIntMaps.getDefaultFactory().withKeyEquivalence(caseInsensitive())
             .newMutableMap();
     private ToLongFunction<Map<String, String>> getOperationsPerInvocation = null;
+    private boolean dynamicOperationsPerInvocation = false;
     private boolean headerPrinted = false;
 
     public DimensionedJmh(Class<?> benchmarksContainerClass) {
@@ -162,6 +166,11 @@ public final class DimensionedJmh {
     public DimensionedJmh withGetOperationsPerInvocation(
             ToLongFunction<Map<String, String>> getOperationCount) {
         this.getOperationsPerInvocation = getOperationCount;
+        return this;
+    }
+
+    public DimensionedJmh dynamicOperationsPerInvocation() {
+        dynamicOperationsPerInvocation = true;
         return this;
     }
 
@@ -291,12 +300,67 @@ public final class DimensionedJmh {
             benchOptions.put(dimName, option);
             System.out.print(align(dimName, option));
         }
-        Statistics stats = result.getPrimaryResult().getStatistics();
+        Result res = getResult(result);
         long operations = operations(combination, benchOptions);
-        double mean = stats.getMean() / (double) operations;
-        double std = stats.getStandardDeviation() / (double) operations;
+        double mean = res.getScore() / (double) operations;
+        double std = res.getStatistics().getStandardDeviation() / (double) operations;
         // Locale.US for dot instead of comma as separator
         System.out.printf(Locale.US, ":%8.3f%8.3f\n", mean, std);
+    }
+
+    private Result getResult(RunResult result) {
+        if (!dynamicOperationsPerInvocation)
+            return result.getPrimaryResult();
+        Result primaryResult = result.getPrimaryResult();
+        if (!(primaryResult instanceof AverageTimeResult))
+            fatal("Dynamic operations work only in AverageTime benchmark mode");
+        Result operationsPerInvocation =
+                result.getSecondaryResults().get("operationsPerInvocation");
+        try {
+            Field durationNsField = AverageTimeResult.class.getDeclaredField("durationNs");
+            durationNsField.setAccessible(true);
+            long totalDuration = durationNsField.getLong(primaryResult);
+
+            Field operationsField = AverageTimeResult.class.getDeclaredField("operations");
+            operationsField.setAccessible(true);
+            long totalOperations = operationsField.getLong(operationsPerInvocation);
+
+            Field outputTimeUnitField = AverageTimeResult.class.getDeclaredField("outputTimeUnit");
+            outputTimeUnitField.setAccessible(true);
+            TimeUnit outputTimeUnit = (TimeUnit) outputTimeUnitField.get(primaryResult);
+
+            ListStatistics stats = new ListStatistics();
+            result.getRawBenchResults().stream().flatMapToDouble(br ->
+                br.getRawIterationResults().stream().flatMapToDouble(ir -> {
+                    try {
+                        Collection<Result> primaryResults = ir.getRawPrimaryResults();
+                        int iterations = primaryResults.size();
+                        double[] iterationResults = new double[iterations];
+                        Iterator<Result> prI = primaryResults.iterator();
+                        Iterator<Result> opiI = ir.getRawSecondaryResults()
+                                .get("operationsPerInvocation").iterator();
+                        for (int i = 0; i < iterations; i++) {
+                            iterationResults[i] = ((double) durationNsField.getLong(prI.next())) /
+                                    (double) (operationsField.getLong(opiI.next()) *
+                                            outputTimeUnit.toNanos(1L));
+                        }
+                        return Arrays.stream(iterationResults);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+            ).forEach(stats::addValue);
+
+            return new AverageTimeResult(ResultRole.PRIMARY, "", totalOperations, totalDuration,
+                    outputTimeUnit) {
+                @Override
+                public Statistics getStatistics() {
+                    return stats;
+                }
+            };
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private long operations(Map<String, String> argOptions, Map<String, String> benchOptions) {
