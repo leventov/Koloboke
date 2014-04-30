@@ -47,9 +47,9 @@ public class AddRemoveLookupBenchmarks {
     static final int LOOKUPS_PER_INSERTION = Integer.getInteger("lookupsPerInsertion", 4);
 
     static final double LOAD_FACTOR = parseDouble(System.getProperty("loadFactor", "0.5"));
-    static final double QHASH_REHASH_LOAD =
+    static final double Q_HASH_REHASH_LOAD =
             0.54 + 0.816 * LOAD_FACTOR - 0.363 * (LOAD_FACTOR * LOAD_FACTOR);
-    static final double DHASH_REHASH_LOAD =
+    static final double D_HASH_REHASH_LOAD =
             0.6 + 0.671 * LOAD_FACTOR - 0.274 * (LOAD_FACTOR * LOAD_FACTOR);
 
     static final int SIZE = n(CAPACITY, LOAD_FACTOR);
@@ -110,7 +110,7 @@ public class AddRemoveLookupBenchmarks {
 
     @GenerateMicroBenchmark
     public int addRemoveLookup_qHash_charKey_simpleIndexing(QHashCharSetState state) {
-        int freeSlotsRehashThreshold = (int) (Q_HASH_CAPACITY * (1.0 - QHASH_REHASH_LOAD));
+        int freeSlotsRehashThreshold = (int) (Q_HASH_CAPACITY * (1.0 - Q_HASH_REHASH_LOAD));
         int removeI = 0, insertI = SIZE;
         NoStatesQHashCharSet set = state.set;
         char[] keys = state.keys;

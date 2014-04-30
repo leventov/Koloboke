@@ -48,8 +48,8 @@ public class AddRemoveWithTombstonesBenchmarks {
     static final double LOAD_FACTOR = parseDouble(System.getProperty("loadFactor", "0.5"));
     static final double REHASH_LOAD = parseDouble(System.getProperty("rehashLoad", "0.75"));
 
-    static final int DHASH_CAPACITY = DHashCapacities.bestCapacity(SIZE, LOAD_FACTOR, 0);
-    static final int QHASH_CAPACITY =
+    static final int D_HASH_CAPACITY = DHashCapacities.bestCapacity(SIZE, LOAD_FACTOR, 0);
+    static final int Q_HASH_CAPACITY =
             QHashCapacities.getIntCapacity(((int)(SIZE / LOAD_FACTOR)) + 1, 0);
 
     /* with char|byte|short|int|long key QHash|DHash hash */
@@ -66,7 +66,7 @@ public class AddRemoveWithTombstonesBenchmarks {
             r = ThreadLocalRandom.current();
             keys = new char[SIZE * (FULL_RENEWALS_PER_INVOCATION + 1)];
             lookupKeys = new char[SIZE * FULL_RENEWALS_PER_INVOCATION * LOOKUPS_PER_INSERTION];
-            set = new NoStatesQHashCharSet(QHASH_CAPACITY);
+            set = new NoStatesQHashCharSet(Q_HASH_CAPACITY);
         }
 
         @Setup(Level.Invocation)
@@ -99,7 +99,7 @@ public class AddRemoveWithTombstonesBenchmarks {
 
     @GenerateMicroBenchmark
     public int addRemove_qHash_charKey_withoutLookups(QHashCharSetState state) {
-        int freeSlotsRehashThreshold = (int) (QHASH_CAPACITY * (1.0 - REHASH_LOAD));
+        int freeSlotsRehashThreshold = (int) (Q_HASH_CAPACITY * (1.0 - REHASH_LOAD));
         int i = 0, j = SIZE;
         NoStatesQHashCharSet set = state.set;
         char[] keys = state.keys;
@@ -108,14 +108,14 @@ public class AddRemoveWithTombstonesBenchmarks {
             set.removeSimpleIndexing(keys[i++]);
             set.addTernaryStateSimpleIndexing(keys[j++]);
             if (set.freeSlots <= freeSlotsRehashThreshold)
-                set.rehashSimpleIndexing(QHASH_CAPACITY);
+                set.rehashSimpleIndexing(Q_HASH_CAPACITY);
         }
         return set.size;
     }
 
     @GenerateMicroBenchmark
     public int addRemove_qHash_charKey_withLookups(QHashCharSetState state) {
-        int freeSlotsRehashThreshold = (int) (QHASH_CAPACITY * (1.0 - REHASH_LOAD));
+        int freeSlotsRehashThreshold = (int) (Q_HASH_CAPACITY * (1.0 - REHASH_LOAD));
         int removeI = 0, insertI = SIZE;
         NoStatesQHashCharSet set = state.set;
         char[] keys = state.keys;
@@ -130,7 +130,7 @@ public class AddRemoveWithTombstonesBenchmarks {
                 lookupDummy ^= set.indexTernaryStateUnsafeIndexing(lookupKeys[lookupI++]);
             }
             if (set.freeSlots <= freeSlotsRehashThreshold)
-                set.rehashSimpleIndexing(QHASH_CAPACITY);
+                set.rehashSimpleIndexing(Q_HASH_CAPACITY);
         }
         return set.size ^ lookupDummy;
     }
