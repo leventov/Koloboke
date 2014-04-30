@@ -269,7 +269,7 @@ public final class DimensionedJmh {
         argDimNames.stream().map(dim -> alignDim(lower(dim))).forEach(System.out::print);
         benchDimNames.stream().filter(DimensionedJmh::isDimension).map(dim -> alignDim(lower(dim)))
                 .forEach(System.out::print);
-        System.out.printf(":%8s%8s\n", "mean", "std");
+        System.out.printf(": %6s %6s\n", "mean", "std");
         headerPrinted = true;
     }
 
@@ -305,7 +305,7 @@ public final class DimensionedJmh {
         double mean = res.getScore() / (double) operations;
         double std = res.getStatistics().getStandardDeviation() / (double) operations;
         // Locale.US for dot instead of comma as separator
-        System.out.printf(Locale.US, ":%8.3f%8.3f\n", mean, std);
+        System.out.printf(Locale.US, ": %6.2f %6.2f\n", mean, std);
     }
 
     private Result getResult(RunResult result) {
