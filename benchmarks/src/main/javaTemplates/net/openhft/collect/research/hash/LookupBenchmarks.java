@@ -44,9 +44,10 @@ public class LookupBenchmarks {
         public final int powerOf2Capacity, dHashCapacity, qHashCapacity, n;
         Config(int powerOf2Capacity, double loadFactor) {
             this.powerOf2Capacity = powerOf2Capacity;
-            this.n = (int) (powerOf2Capacity * loadFactor);
-            this.dHashCapacity = DHashCapacities.bestCapacity(n, loadFactor, 0);
-            this.qHashCapacity = QHashCapacities.getIntCapacity((int) (n / loadFactor) + 1, 0);
+            this.n = (int) ((double) powerOf2Capacity * loadFactor);
+            this.dHashCapacity = DHashCapacities.bestCapacity((long) n, loadFactor, 0);
+            this.qHashCapacity =
+                    QHashCapacities.getIntCapacity((int) ((double) n / loadFactor) + 1, 0);
         }
     }
 
@@ -56,7 +57,7 @@ public class LookupBenchmarks {
     static final Config CONF = new Config(CAPACITY, LOAD_FACTOR);
 
     static int n(int capacity, double loadFactor) {
-        return (int) (capacity * loadFactor);
+        return (int) ((double) capacity * loadFactor);
     }
     public static final int N = n(CAPACITY, LOAD_FACTOR);
 
@@ -64,7 +65,7 @@ public class LookupBenchmarks {
     static double harmonic(int n, double power) {
         double h = 0.0;
         for (int i = 1; i <= n; i++) {
-            h += 1.0 / Math.pow(i, power);
+            h += 1.0 / Math.pow((double) i, power);
         }
         return h;
     }
@@ -202,10 +203,10 @@ public class LookupBenchmarks {
     @State(Scope.Thread)
     public static class BitStatesLHashCharsZipfQueries
             extends BitStatesLHashCharsDistributedQueries {
-        static final double C = N / harmonic(N, 1.0);
+        static final double C = (double) N / harmonic(N, 1.0);
         @Override
         double count(int order) {
-            return C / order;
+            return C / (double) order;
         }
     }
 
@@ -213,11 +214,11 @@ public class LookupBenchmarks {
     public static class BitStatesLHashCharsParetoQueries
             extends BitStatesLHashCharsDistributedQueries {
         static final double PARETO_THETA = Math.log(0.80) / Math.log(0.20);
-        static final double C = N / harmonic(N, 1.0 - PARETO_THETA);
+        static final double C = (double) N / harmonic(N, 1.0 - PARETO_THETA);
 
         @Override
         double count(int order) {
-            return C / Math.pow(order, 1.0 - PARETO_THETA);
+            return C / Math.pow((double) order, 1.0 - PARETO_THETA);
         }
     }
     // End of TAoCP formulas

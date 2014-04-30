@@ -44,7 +44,7 @@ public class HashPosMapBenchmarks {
     public static final int CAPACITY = Integer.getInteger("capacity", LARGE_CAPACITY);
     public static final double LOAD_FACTOR =
             Double.parseDouble(System.getProperty("loadFactor", "0.6"));
-    public static final int N = (int) (CAPACITY * LOAD_FACTOR);
+    public static final int N = (int) ((double) CAPACITY * LOAD_FACTOR);
 
     /* with Simple|Tiered1|Tiered2 flavor */
 
@@ -59,7 +59,7 @@ public class HashPosMapBenchmarks {
         @Setup(Level.Trial)
         public void allocate() {
             keys = new char[N];
-            map = new SimpleVanillaShortShortMultiMap(CAPACITY);
+            map = new SimpleVanillaShortShortMultiMap((long) CAPACITY);
         }
 
         @Setup(Level.Iteration)
@@ -147,7 +147,7 @@ public class HashPosMapBenchmarks {
                 .withGetOperationsPerInvocation(options -> {
                     int capacity = parseInt(options.get("capacity"));
                     double loadFactor = parseDouble(options.get("loadFactor"));
-                    return (long) (capacity * loadFactor);
+                    return (long) ((double) capacity * loadFactor);
                 })
                 .run(args);
     }
