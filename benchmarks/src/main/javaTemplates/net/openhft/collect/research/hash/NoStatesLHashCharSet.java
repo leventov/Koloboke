@@ -25,7 +25,6 @@ import java.util.Arrays;
 
 public class NoStatesLHashCharSet implements UnsafeConstants {
 
-    public int capacityMask;
     public int size = 0;
     public char freeValue = Character.MIN_VALUE;
     public char[] set;
@@ -36,7 +35,6 @@ public class NoStatesLHashCharSet implements UnsafeConstants {
         }
         set = new char[capacity];
         Arrays.fill(set, freeValue);
-        capacityMask = capacity - 1;
     }
 
     public void clear() {
@@ -50,7 +48,7 @@ public class NoStatesLHashCharSet implements UnsafeConstants {
         char free = freeValue;
         if (key != free) {
             char[] keys = set;
-            int capacityMask = this.capacityMask;
+            int capacityMask = keys.length - 1;
             int index = Primitives.hashCode(key) & capacityMask;
             char cur = keys[index];
             if (cur == key) {
@@ -78,7 +76,7 @@ public class NoStatesLHashCharSet implements UnsafeConstants {
         char free = freeValue;
         if (key != free) {
             char[] keys = set;
-            long capacityMask = (long) this.capacityMask;
+            long capacityMask = (long) (keys.length - 1);
             long index = ((long) Primitives.hashCode(key)) & capacityMask;
             long offset = index << CHAR_SCALE_SHIFT;
             long CHAR_BASE = UnsafeConstants.CHAR_BASE;
@@ -111,7 +109,7 @@ public class NoStatesLHashCharSet implements UnsafeConstants {
             return false;
         }
         char[] keys = set;
-        int capacityMask = this.capacityMask;
+        int capacityMask = keys.length - 1;
         int index = Primitives.hashCode(key) & capacityMask;
         char cur = keys[index];
         keyAbsent:
@@ -141,7 +139,7 @@ public class NoStatesLHashCharSet implements UnsafeConstants {
             return false;
         }
         char[] keys = set;
-        long capacityMask = (long) this.capacityMask;
+        long capacityMask = (long) (keys.length - 1);
         long index = ((long) Primitives.hashCode(key)) & capacityMask;
         long offset = index << CHAR_SCALE_SHIFT;
         char cur = U.getChar(keys, CHAR_BASE + offset);

@@ -26,7 +26,6 @@ import java.util.Arrays;
 public class ByteStatesLHashCharSet implements UnsafeConstants {
     public static final int FREE = 0, FULL = 1;
 
-    public int capacityMask;
     public int size = 0;
     public byte[] states;
     public char[] set;
@@ -37,7 +36,6 @@ public class ByteStatesLHashCharSet implements UnsafeConstants {
         }
         states = new byte[capacity];
         set = new char[capacity];
-        capacityMask = capacity - 1;
     }
 
     public void clear() {
@@ -50,7 +48,7 @@ public class ByteStatesLHashCharSet implements UnsafeConstants {
     public int indexBinaryStateSimpleIndexing(char key) {
         byte[] states = this.states;
         char[] keys = set;
-        int capacityMask = this.capacityMask;
+        int capacityMask = keys.length - 1;
         int index = Primitives.hashCode(key) & capacityMask;
         if (states[index] > 0) {
             if (keys[index] == key)
@@ -72,7 +70,7 @@ public class ByteStatesLHashCharSet implements UnsafeConstants {
     public int indexBinaryStateUnsafeIndexing(char key) {
         byte[] states = this.states;
         char[] keys = set;
-        long capacityMask = (long) this.capacityMask;
+        long capacityMask = (long) (keys.length - 1);
         long index = ((long) Primitives.hashCode(key)) & capacityMask;
         if ((int) U.getByte(states, BYTE_BASE + index) > 0) {
             long offset = index << CHAR_SCALE_SHIFT;
@@ -97,7 +95,7 @@ public class ByteStatesLHashCharSet implements UnsafeConstants {
     public boolean addBinaryStateSimpleIndexing(char key) {
         byte[] states = this.states;
         char[] keys = set;
-        int capacityMask = this.capacityMask;
+        int capacityMask = keys.length;
         int index = Primitives.hashCode(key) & capacityMask;
         keyAbsent:
         if (states[index] != FREE) {

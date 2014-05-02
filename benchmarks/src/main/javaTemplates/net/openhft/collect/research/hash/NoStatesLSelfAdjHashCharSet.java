@@ -32,7 +32,7 @@ public class NoStatesLSelfAdjHashCharSet extends NoStatesLHashCharSet {
         char free = freeValue;
         if (key != free) {
             char[] keys = set;
-            int capacityMask = this.capacityMask;
+            int capacityMask = keys.length - 1;
             int index = Primitives.hashCode(key) & capacityMask;
             char cur = keys[index];
             if (cur == key) {
@@ -65,7 +65,7 @@ public class NoStatesLSelfAdjHashCharSet extends NoStatesLHashCharSet {
         char free = freeValue;
         if (key != free) {
             char[] keys = set;
-            int capacityMask = this.capacityMask;
+            int capacityMask = keys.length - 1;
             long index = (long) (Primitives.hashCode(key) & capacityMask);
             long offset = index << CHAR_SCALE_SHIFT;
             char cur = U.getChar(keys, CHAR_BASE + offset);

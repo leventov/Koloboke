@@ -31,7 +31,7 @@ public class NoStatesRHoodSimpleHashCharSet extends NoStatesRHoodHashCharSet {
         if (key != free) {
             char[] keys = set;
             int capacity = keys.length;
-            int capacityMask = this.capacityMask;
+            int capacityMask = capacity - 1;
             int index = Primitives.hashCode(key) & capacityMask;
             char cur = keys[index];
             if (cur == key) {
@@ -62,7 +62,7 @@ public class NoStatesRHoodSimpleHashCharSet extends NoStatesRHoodHashCharSet {
         char free = freeValue;
         if (key != free) {
             char[] keys = set;
-            long capacityMask = (long) this.capacityMask;
+            long capacityMask = (long) (keys.length - 1);
             long index = Primitives.hashCode(key) & capacityMask;
             char cur = U.getChar(keys, CHAR_BASE + (index << CHAR_SCALE_SHIFT));
             if (cur == key) {
@@ -96,7 +96,7 @@ public class NoStatesRHoodSimpleHashCharSet extends NoStatesRHoodHashCharSet {
         if (key != free) {
             char[] keys = set;
             int capacity = keys.length;
-            int capacityMask = this.capacityMask;
+            int capacityMask = capacity - 1;
             int index = Primitives.hashCode(key) & capacityMask;
             char cur = keys[index];
             keyPresent:

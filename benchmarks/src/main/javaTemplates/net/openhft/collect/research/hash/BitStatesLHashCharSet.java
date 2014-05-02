@@ -27,7 +27,6 @@ public class BitStatesLHashCharSet implements UnsafeConstants {
 
     public static final int WORD_INDEX_SHIFT = 6;
 
-    public int capacityMask;
     public int size = 0;
     public long[] stateBits;
     public char[] set;
@@ -38,7 +37,6 @@ public class BitStatesLHashCharSet implements UnsafeConstants {
         }
         stateBits = new long[capacity >> WORD_INDEX_SHIFT];
         set = new char[capacity];
-        capacityMask = capacity - 1;
     }
 
     public void clear() {
@@ -78,7 +76,7 @@ public class BitStatesLHashCharSet implements UnsafeConstants {
     public int indexBinaryStateUnsafeIndexing(char key) {
         long[] stateBits = this.stateBits;
         char[] keys = set;
-        int capacityMask = this.capacityMask;
+        int capacityMask = keys.length - 1;
         long index0 = (long) (Primitives.hashCode(key) & capacityMask);
         long curStatesWord = U.getLong(stateBits,
                 LONG_BASE + (index0 >> (WORD_INDEX_SHIFT - LONG_SCALE_SHIFT))) << index0;
@@ -111,7 +109,7 @@ public class BitStatesLHashCharSet implements UnsafeConstants {
     public boolean addBinaryStateSimpleIndexing(char key) {
         long[] stateBits = this.stateBits;
         char[] keys = set;
-        int capacityMask = this.capacityMask;
+        int capacityMask = keys.length - 1;
         int index = Primitives.hashCode(key) & capacityMask;
         long curBitMask = 1L << index;
         int statesWordIndex = index >> WORD_INDEX_SHIFT;

@@ -27,7 +27,6 @@ import static net.openhft.collect.impl.Primitives.hashCode;
 
 public class NoStatesRHoodHashCharSet implements UnsafeConstants {
 
-    public int capacityMask;
     public int size = 0;
     public char freeValue = Character.MIN_VALUE;
     public char[] set;
@@ -38,7 +37,6 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
         }
         set = new char[capacity];
         Arrays.fill(set, freeValue);
-        capacityMask = capacity - 1;
     }
 
     public void clear() {
@@ -166,7 +164,7 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
     }
 
     private int distance(char key, int index) {
-        return (index + capacityMask + 1 - Primitives.hashCode(key)) & capacityMask;
+        return (index + set.length - Primitives.hashCode(key)) & (set.length - 1);
     }
 
     void postAdd() {
