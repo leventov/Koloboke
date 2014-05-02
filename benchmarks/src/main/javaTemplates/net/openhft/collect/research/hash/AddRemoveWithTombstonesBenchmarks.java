@@ -38,7 +38,7 @@ import static java.lang.Double.parseDouble;
 @Measurement(iterations = 10)
 public class AddRemoveWithTombstonesBenchmarks {
 
-    static final int SMALL_SIZE = 2000, LARGE_SIZE = 20000;
+    static final int SMALL_SIZE = 2000, LARGE_SIZE = 1000000;
     static final int SIZE = Integer.getInteger("size", SMALL_SIZE);
     static final int LOOKUPS_PER_INSERTION = Integer.getInteger("lookupsPerInsertion", 4);
 

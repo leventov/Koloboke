@@ -41,7 +41,7 @@ import static net.openhft.collect.research.hash.LookupBenchmarks.n;
 @Measurement(iterations = 10)
 public class AddRemoveLookupBenchmarks {
 
-    static final int SMALL_CAPACITY = 1024, LARGE_CAPACITY = SMALL_CAPACITY * 16;
+    static final int SMALL_CAPACITY = 1024, LARGE_CAPACITY = 1024 * 1024;
     static final int CAPACITY = Integer.getInteger("capacity", SMALL_CAPACITY);
     static final int LOOKUPS_PER_INSERTION = Integer.getInteger("lookupsPerInsertion", 4);
 
