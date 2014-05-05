@@ -28,7 +28,7 @@ public final class HashObjSetFactoryImpl<E> extends HashObjSetFactoryGO<E> {
      * For ServiceLoader
      */
     public HashObjSetFactoryImpl() {
-        this(ObjHashConfig.DEFAULT);
+        this(ObjHashConfig.getDefault());
     }
 
     public HashObjSetFactoryImpl(ObjHashConfig conf) {

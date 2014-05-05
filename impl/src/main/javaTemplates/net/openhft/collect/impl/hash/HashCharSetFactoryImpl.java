@@ -30,7 +30,7 @@ public class HashCharSetFactoryImpl extends HashCharSetFactoryGO {
      * For ServiceLoader
      */
     public HashCharSetFactoryImpl() {
-        this(/* configClass */CharHashConfig/**/.DEFAULT);
+        this(/* configClass */CharHashConfig/**/.getDefault());
     }
 
     public HashCharSetFactoryImpl(/* configClass */CharHashConfig/**/ conf) {

@@ -56,7 +56,7 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
      * For ServiceLoader
      */
     public HashCharShortMapFactoryImpl() {
-        this(/* configClass */CharHashConfig/**/.DEFAULT);
+        this(/* configClass */CharHashConfig/**/.getDefault());
     }
 
     HashCharShortMapFactoryImpl(/* configClass */CharHashConfig/**/ conf) {

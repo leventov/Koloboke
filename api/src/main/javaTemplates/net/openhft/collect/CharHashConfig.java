@@ -27,8 +27,12 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class CharHashConfig {
 
-    public static final CharHashConfig DEFAULT =
-            create(HashConfig.DEFAULT, Character.MIN_VALUE, Character.MAX_VALUE);
+    private static final CharHashConfig DEFAULT =
+            create(HashConfig.getDefault(), Character.MIN_VALUE, Character.MAX_VALUE);
+
+    public static CharHashConfig getDefault() {
+        return DEFAULT;
+    }
 
     private static CharHashConfig create(HashConfig hashConfig,
             char lowerKeyDomainBound, char upperKeyDomainBound) {

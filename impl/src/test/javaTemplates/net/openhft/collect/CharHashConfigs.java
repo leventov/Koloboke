@@ -17,8 +17,6 @@
 
 package net.openhft.collect;
 
-import net.openhft.collect.map.hash.HashCharShortMaps;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,8 +25,8 @@ public final class CharHashConfigs {
 
     public static List<CharHashConfig> all() {
         return Arrays.asList(
-                CharHashConfig.DEFAULT,
-                CharHashConfig.DEFAULT.withKeysDomain(
+                CharHashConfig.getDefault(),
+                CharHashConfig.getDefault().withKeysDomain(
                         /* const t 1 */(char) 1/* endconst */,
                         /* const t max */Character.MAX_VALUE/* endconst*/));
     }

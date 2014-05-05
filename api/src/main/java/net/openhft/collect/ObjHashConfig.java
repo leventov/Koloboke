@@ -21,11 +21,15 @@ package net.openhft.collect;
 /**
  * Immutable config for hash containers with Object keys.
  *
- * @see #DEFAULT
+ * @see #getDefault()
  */
 public final class ObjHashConfig {
 
-    public static final ObjHashConfig DEFAULT = new ObjHashConfig(HashConfig.DEFAULT, true);
+    private static final ObjHashConfig DEFAULT = new ObjHashConfig(HashConfig.getDefault(), true);
+
+    public static ObjHashConfig getDefault() {
+        return DEFAULT;
+    }
 
     private final HashConfig hashConfig;
     private final boolean nullKeyAllowed;

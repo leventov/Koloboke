@@ -26,7 +26,7 @@ public class HashConfigTest {
 
     @Test
     public void testEquals() {
-        HashConfig conf1 = HashConfig.DEFAULT;
+        HashConfig conf1 = HashConfig.getDefault();
         int defaultExpectedSize = conf1.getDefaultExpectedSize();
         HashConfig conf2 = conf1.withDefaultExpectedSize(defaultExpectedSize + 1);
         assertEquals(conf1, conf2.withDefaultExpectedSize(defaultExpectedSize));
@@ -49,7 +49,7 @@ public class HashConfigTest {
     public void testToString() {
         assertEquals(
                 "HashConfig{getLoadFactor=0.5, getShrinkCondition=null, getDefaultExpectedSize=10}",
-                HashConfig.DEFAULT.withLoadFactor(0.5f).withShrinkCondition(null)
+                HashConfig.getDefault().withLoadFactor(0.5f).withShrinkCondition(null)
                         .withDefaultExpectedSize(10).toString()
         );
     }

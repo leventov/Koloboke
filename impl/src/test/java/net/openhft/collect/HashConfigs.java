@@ -23,7 +23,7 @@ import java.util.List;
 public final class HashConfigs {
 
     public static List<HashConfig> all() {
-        return Arrays.asList(HashConfig.DEFAULT);
+        return Arrays.asList(HashConfig.getDefault());
     }
 
     private HashConfigs() {}

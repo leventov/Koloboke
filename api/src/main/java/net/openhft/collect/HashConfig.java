@@ -28,12 +28,15 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class HashConfig {
 
+    private static final HashConfig DEFAULT = create(0.5f, null, 10);
+
     /**
      * Config with {@literal 0.5f} load factor, {@code null} shrink condition,
      * default expected size is 10.
      */
-    public static final HashConfig DEFAULT = create(0.5f, null, 10);
-
+    public static HashConfig getDefault() {
+        return DEFAULT;
+    }
 
     private static HashConfig create(float loadFactor,
             @Nullable Predicate<HashContainer> shrinkCondition, int defaultExpectedSize) {

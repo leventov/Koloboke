@@ -33,7 +33,8 @@ public class ByteKeyHashMapTest {
 
     @Test
     public void test() {
-        ByteHashConfig config = ByteHashConfig.DEFAULT.withKeysDomainComplement((byte) 0, (byte) 0);
+        ByteHashConfig config = ByteHashConfig.getDefault()
+                .withKeysDomainComplement((byte) 0, (byte) 0);
         ByteIntMapFactory factory = getDefaultFactory().withConfig(config);
         for (int i = Byte.MIN_VALUE; i <= Byte.MAX_VALUE; i++) {
             for (int j = Byte.MIN_VALUE; j <= Byte.MAX_VALUE; j++) {

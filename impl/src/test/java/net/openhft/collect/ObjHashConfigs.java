@@ -23,7 +23,7 @@ import java.util.List;
 public final class ObjHashConfigs {
 
     public static List<ObjHashConfig> all() {
-        return Arrays.asList(ObjHashConfig.DEFAULT);
+        return Arrays.asList(ObjHashConfig.getDefault());
     }
 
     private ObjHashConfigs() {}
