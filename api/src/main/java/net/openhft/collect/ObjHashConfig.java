@@ -18,35 +18,36 @@
 package net.openhft.collect;
 
 
+import com.google.auto.value.AutoValue;
+
+
 /**
  * Immutable config for hash containers with Object keys.
  *
  * @see #getDefault()
  */
-public final class ObjHashConfig {
+@AutoValue
+public abstract class ObjHashConfig {
 
-    private static final ObjHashConfig DEFAULT = new ObjHashConfig(HashConfig.getDefault(), true);
+    private static final ObjHashConfig DEFAULT = create(HashConfig.getDefault(), true);
 
     public static ObjHashConfig getDefault() {
         return DEFAULT;
     }
 
-    private final HashConfig hashConfig;
-    private final boolean nullKeyAllowed;
-
-    private ObjHashConfig(HashConfig hashConfig, boolean nullKeyAllowed) {
-        this.hashConfig = hashConfig;
-        this.nullKeyAllowed = nullKeyAllowed;
+    private static ObjHashConfig create(HashConfig hashConfig, boolean nullKeyAllowed) {
+        return new AutoValue_ObjHashConfig(hashConfig, nullKeyAllowed);
     }
 
-    public HashConfig getHashConfig() {
-        return hashConfig;
-    }
+    /**
+     * Package-private constructor to prevent subclassing from outside of the package
+     */
+    ObjHashConfig() {}
+
+    public abstract HashConfig getHashConfig();
 
     public ObjHashConfig withHashConfig(HashConfig config) {
-        if (hashConfig.equals(config))
-            return this;
-        return new ObjHashConfig(config, nullKeyAllowed);
+        return create(config, isNullKeyAllowed());
     }
 
     /**
@@ -59,42 +60,12 @@ public final class ObjHashConfig {
      * @return {@code true} if null key is allowed, {@code false} otherwise
      * @see #withNullKeyAllowed(boolean)
      */
-    public boolean isNullKeyAllowed() {
-        return nullKeyAllowed;
-    }
+    public abstract boolean isNullKeyAllowed();
 
     /**
      * @see #isNullKeyAllowed()
      */
     public ObjHashConfig withNullKeyAllowed(boolean nullKeyAllowed) {
-        if (this.nullKeyAllowed == nullKeyAllowed)
-            return this;
-        return new ObjHashConfig(hashConfig, nullKeyAllowed);
-    }
-
-    @Override
-    public int hashCode() {
-        int hashCode = 17;
-        hashCode = hashCode * 31 + hashConfig.hashCode();
-        return hashCode * 31 + (nullKeyAllowed ? 1 : 0);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-        if (obj == null)
-            return false;
-        if (obj instanceof ObjHashConfig) {
-            ObjHashConfig conf = (ObjHashConfig) obj;
-            return nullKeyAllowed == conf.nullKeyAllowed && hashConfig.equals(conf.hashConfig);
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "ObjHashConfig[hashConfig=" + hashConfig + ",nullKeyAllowed=" + nullKeyAllowed + "]";
+        return create(getHashConfig(), nullKeyAllowed);
     }
 }
