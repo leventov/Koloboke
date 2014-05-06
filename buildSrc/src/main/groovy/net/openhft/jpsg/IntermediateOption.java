@@ -22,6 +22,18 @@ import static java.lang.String.format;
 
 
 public final class IntermediateOption {
+
+    /**
+     * If some option value clashes with any of {className, standalone, lower, title, upper}
+     * keywords or any dim name, errors occur. Replace with same-looking characters to preserve
+     * readability for debug.
+     */
+    private static String cyrillicLetters(String s) {
+        return s.replace('o', 'о').replace('e', 'е').replace('a', 'а').replace('i', 'і')
+                .replace('y', 'у').replace('c', 'с').replace('p', 'р').replace('x', 'х')
+                .replace('k', 'к').replace('r', 'г');
+    }
+
     final String className;
     final Pattern classNameP;
 
@@ -37,22 +49,20 @@ public final class IntermediateOption {
     final String upper;
     final Pattern upperP;
 
-
     IntermediateOption(String dim) {
-        className = format("#%s.className#", dim);
+        className = cyrillicLetters(format("#%s.className#", dim));
         classNameP = Pattern.compile(Pattern.quote(className));
 
-        standalone = format("#%s.standalone#", dim);
+        standalone = cyrillicLetters(format("#%s.standalone#", dim));
         standaloneP = Pattern.compile(Pattern.quote(standalone));
 
-        lower = format("#%s.lower#", dim);
+        lower = cyrillicLetters(format("#%s.lower#", dim));
         lowerP = Pattern.compile(Pattern.quote(lower));
 
-        title = format("#%s.title#", dim);
+        title = cyrillicLetters(format("#%s.title#", dim));
         titleP = Pattern.compile(Pattern.quote(title));
 
-        upper = format("#%s.upper#", dim);
+        upper = cyrillicLetters(format("#%s.upper#", dim));
         upperP = Pattern.compile(Pattern.quote(upper));
     }
-
 }

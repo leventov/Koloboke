@@ -55,7 +55,8 @@ public final class OptionProcessor extends TemplateProcessor {
                     // can't replace immediately, because if source option is long,
                     // generated double -- long bits will be replaced with double back during
                     // regular replace
-                    template = template.replaceAll(bitsP, "#" + dim + ".bits.standalone#");
+                    template = template.replaceAll(bitsP,
+                            new IntermediateOption(dim + ".bits").standalone);
                 }
             }
         }
