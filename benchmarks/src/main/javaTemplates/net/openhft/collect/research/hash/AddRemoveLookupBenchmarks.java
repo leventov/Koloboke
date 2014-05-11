@@ -55,14 +55,14 @@ public class AddRemoveLookupBenchmarks {
 
     static final int L_HASH_CAPACITY = CAPACITY;
     static final int R_HOOD_SIMPLE_HASH_CAPACITY = CAPACITY;
-    static final int D_HASH_CAPACITY = DHashCapacities.bestCapacity((long) SIZE, LOAD_FACTOR, 0);
-    static final int Q_HASH_CAPACITY =
-            QHashCapacities.getIntCapacity(((int) ((double) SIZE / LOAD_FACTOR)) + 1, 0);
 
+    /* with QHash|DHash hash */
+    static final int Q_HASH_CAPACITY =
+            QHashCapacities.nearestGreaterCapacity(((int) ((double) SIZE / LOAD_FACTOR)) + 1, 0);
     static final int Q_HASH_ADD_REMOVES =
             addRemovesToRehashOnce(LOAD_FACTOR, Q_HASH_REHASH_LOAD, Q_HASH_CAPACITY);
-    static final int D_HASH_ADD_REMOVES =
-            addRemovesToRehashOnce(LOAD_FACTOR, D_HASH_REHASH_LOAD, D_HASH_CAPACITY);
+    /* endwith */
+
     static final int L_HASH_ADD_REMOVES = Q_HASH_ADD_REMOVES;
     static final int R_HOOD_SIMPLE_HASH_ADD_REMOVES = Q_HASH_ADD_REMOVES;
 

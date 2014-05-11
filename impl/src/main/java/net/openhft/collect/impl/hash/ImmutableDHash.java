@@ -25,19 +25,19 @@ public abstract class ImmutableDHash extends AbstractContainer implements DHash 
     ////////////////////////////
     // Fields
 
-    private HashConfig hashConfig;
+    private HashConfigWrapper configWrapper;
 
     /** The current number of occupied slots in the hash. */
     private int size;
 
 
     final void copy(DHash hash) {
-        this.hashConfig = hash.hashConfig();
+        this.configWrapper = hash.configWrapper();
         this.size = hash.size();
     }
 
-    final void init(HashConfig hashConfig, int size) {
-        this.hashConfig = hashConfig;
+    final void init(HashConfigWrapper configWrapper, int size) {
+        this.configWrapper = configWrapper;
         this.size = size;
     }
 
@@ -52,10 +52,14 @@ public abstract class ImmutableDHash extends AbstractContainer implements DHash 
 
 
     @Override
-    public HashConfig hashConfig() {
-        return hashConfig;
+    public final HashConfig hashConfig() {
+        return configWrapper.config();
     }
 
+    @Override
+    public final HashConfigWrapper configWrapper() {
+        return configWrapper;
+    }
 
     @Override
     public final float currentLoad() {

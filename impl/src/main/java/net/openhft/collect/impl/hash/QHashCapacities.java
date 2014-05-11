@@ -25,10 +25,88 @@ import static java.lang.Math.abs;
 
 public final class QHashCapacities {
 
-    public static int getIntCapacity(int desiredCapacity, int currentSize) {
-        assert currentSize >= 0 : "currentSize must be positive";
+    /**
+     * For initial hash table construction and rehash to target load (shrink, tombstones purge).
+     */
+    public static int capacity(HashConfigWrapper conf, int size) {
+        assert size >= 0 : "size must be non-negative";
+        return capacity(conf, size, conf.targetCapacity(size));
+    }
+
+    private static int capacity(HashConfigWrapper conf, int size, int desiredCapacity) {
+        int lesserCapacity, greaterCapacity;
+        if (desiredCapacity <= MAX_LOOKUP_CAPACITY) {
+            int smallTableIndex = SMALL_LOOKUP_TABLE_INDICES[desiredCapacity];
+            greaterCapacity = SMALL_LOOKUP_TABLE_CAPACITIES[smallTableIndex];
+            if (greaterCapacity == desiredCapacity || smallTableIndex == 0)
+                return greaterCapacity;
+            lesserCapacity = SMALL_LOOKUP_TABLE_CAPACITIES[smallTableIndex - 1];
+        }
+        else if (desiredCapacity <= MAX_REGULAR_CHAR_CAPACITY) {
+            int capIndex = Arrays.binarySearch(REGULAR_CHAR_CAPACITIES, (char) desiredCapacity);
+            if (capIndex >= 0) // desiredCapacity is found in REGULAR_CHAR_CAPACITIES
+                return desiredCapacity;
+            capIndex = ~capIndex;
+            lesserCapacity = capIndex > 0 ?
+                    (int) REGULAR_CHAR_CAPACITIES[capIndex - 1] : MAX_LOOKUP_CAPACITY;
+            greaterCapacity = REGULAR_CHAR_CAPACITIES[capIndex];
+        }
+        else if (desiredCapacity <= MAX_REGULAR_INT_CAPACITY) {
+            int capIndex = Arrays.binarySearch(REGULAR_INT_CAPACITIES, desiredCapacity);
+            if (capIndex >= 0) // desiredCapacity is found in REGULAR_INT_CAPACITIES
+                return desiredCapacity;
+            capIndex = ~capIndex;
+            lesserCapacity = capIndex > 0 ?
+                    REGULAR_INT_CAPACITIES[capIndex - 1] : MAX_REGULAR_CHAR_CAPACITY;
+            greaterCapacity = REGULAR_INT_CAPACITIES[capIndex];
+        }
+        else {
+            // overflow-aware
+            if (size - MAX_INT_CAPACITY < 0)
+                return MAX_INT_CAPACITY;
+            if (size - Integer.MAX_VALUE < 0) {
+                // Integer.MAX_VALUE is also a qHash prime, but likely will cause OutOfMemoryError
+                return Integer.MAX_VALUE;
+            } else {
+                // QHash must have at least 1 free slot
+                throw new OutOfMemoryError();
+            }
+        }
+        if (greaterCapacity - desiredCapacity <= desiredCapacity - lesserCapacity &&
+                greaterCapacity <= conf.maxCapacity(size)) {
+            return greaterCapacity;
+        }
+        return lesserCapacity >= conf.minCapacity(size) ? lesserCapacity : greaterCapacity;
+    }
+
+    public static long capacity(HashConfigWrapper conf, long size) {
+        assert size >= 0L : "size must be non-negative";
+        long desiredCapacity = conf.targetCapacity(size);
+        if (desiredCapacity <= (long) MAX_REGULAR_INT_CAPACITY)
+            return (long) capacity(conf, (int) size, (int) desiredCapacity);
+        if (desiredCapacity <= MAX_REGULAR_LONG_CAPACITY) {
+            int capIndex = Arrays.binarySearch(REGULAR_LONG_CAPACITIES, desiredCapacity);
+            if (capIndex >= 0)
+                return desiredCapacity;
+            long lesserCapacity = capIndex > 0 ?
+                    REGULAR_LONG_CAPACITIES[capIndex - 1] : (long) MAX_REGULAR_INT_CAPACITY;
+            long greaterCapacity = REGULAR_CHAR_CAPACITIES[capIndex];
+            if (greaterCapacity - desiredCapacity <= desiredCapacity - lesserCapacity &&
+                    greaterCapacity <= conf.maxCapacity(size)) {
+                return greaterCapacity;
+            }
+            return lesserCapacity >= conf.minCapacity(size) ? lesserCapacity : greaterCapacity;
+        }
+        return extraLargeCapacity(desiredCapacity);
+    }
+
+    /**
+     * For grow rehash.
+     */
+    public static int nearestGreaterCapacity(int desiredCapacity, int currentSize) {
+        assert currentSize >= 0 : "currentSize must be non-negative";
         if (desiredCapacity <= MAX_LOOKUP_CAPACITY)
-            return SMALL_CAPACITY_LOOKUP_TABLE[desiredCapacity];
+            return SMALL_LOOKUP_TABLE_CAPACITIES[SMALL_LOOKUP_TABLE_INDICES[desiredCapacity]];
         if (desiredCapacity <= MAX_REGULAR_CHAR_CAPACITY) {
             int capIndex = Arrays.binarySearch(REGULAR_CHAR_CAPACITIES, (char) desiredCapacity);
             // if capIndex >= 0 desiredCapacity IS a regular capacity
@@ -50,14 +128,18 @@ public final class QHashCapacities {
         }
     }
 
-    public static long getLongCapacity(long desiredCapacity, long currentSize) {
-        assert desiredCapacity >= 0L : "desiredCapacity must be positive";
+    public static long nearestGreaterCapacity(long desiredCapacity, long currentSize) {
+        assert desiredCapacity >= 0L : "desiredCapacity must be non-negative";
         if (desiredCapacity <= MAX_REGULAR_INT_CAPACITY)
-            return (long) getIntCapacity((int) desiredCapacity, (int) currentSize);
+            return (long) nearestGreaterCapacity((int) desiredCapacity, (int) currentSize);
         if (desiredCapacity <= MAX_REGULAR_LONG_CAPACITY) {
             int capIndex = Arrays.binarySearch(REGULAR_LONG_CAPACITIES, desiredCapacity);
             return capIndex < 0 ? REGULAR_LONG_CAPACITIES[~capIndex] : desiredCapacity;
         }
+        return extraLargeCapacity(desiredCapacity);
+    }
+
+    private static long extraLargeCapacity(long desiredCapacity) {
         for (long c = desiredCapacity; c < Long.MAX_VALUE; c++) {
             if (isQHashPrime(c))
                 return c;
@@ -66,112 +148,121 @@ public final class QHashCapacities {
                 "There isn't long qHash capacities higher than " + desiredCapacity);
     }
 
-    /**
-     * Accounts all "qHash" primes below 2^10 without exceptions.
-     */
-    private static final char[] SMALL_CAPACITY_LOOKUP_TABLE = new char[] {
-            7, 7, 7, 7, 7, 7, 7, 7, 11, 11,
-            11, 11, 19, 19, 19, 19, 19, 19, 19, 19,
-            23, 23, 23, 23, 31, 31, 31, 31, 31, 31,
-            31, 31, 43, 43, 43, 43, 43, 43, 43, 43,
-            43, 43, 43, 43, 47, 47, 47, 47, 59, 59,
-            59, 59, 59, 59, 59, 59, 59, 59, 59, 59,
-            67, 67, 67, 67, 67, 67, 67, 67, 71, 71,
-            71, 71, 79, 79, 79, 79, 79, 79, 79, 79,
-            83, 83, 83, 83, 103, 103, 103, 103, 103, 103,
-            103, 103, 103, 103, 103, 103, 103, 103, 103, 103,
-            103, 103, 103, 103, 107, 107, 107, 107, 127, 127,
-            127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
-            127, 127, 127, 127, 127, 127, 127, 127, 131, 131,
-            131, 131, 139, 139, 139, 139, 139, 139, 139, 139,
-            151, 151, 151, 151, 151, 151, 151, 151, 151, 151,
-            151, 151, 163, 163, 163, 163, 163, 163, 163, 163,
-            163, 163, 163, 163, 167, 167, 167, 167, 179, 179,
-            179, 179, 179, 179, 179, 179, 179, 179, 179, 179,
-            191, 191, 191, 191, 191, 191, 191, 191, 191, 191,
-            191, 191, 199, 199, 199, 199, 199, 199, 199, 199,
-            211, 211, 211, 211, 211, 211, 211, 211, 211, 211,
-            211, 211, 223, 223, 223, 223, 223, 223, 223, 223,
-            223, 223, 223, 223, 227, 227, 227, 227, 239, 239,
-            239, 239, 239, 239, 239, 239, 239, 239, 239, 239,
-            251, 251, 251, 251, 251, 251, 251, 251, 251, 251,
-            251, 251, 263, 263, 263, 263, 263, 263, 263, 263,
-            263, 263, 263, 263, 271, 271, 271, 271, 271, 271,
-            271, 271, 283, 283, 283, 283, 283, 283, 283, 283,
-            283, 283, 283, 283, 307, 307, 307, 307, 307, 307,
-            307, 307, 307, 307, 307, 307, 307, 307, 307, 307,
-            307, 307, 307, 307, 307, 307, 307, 307, 311, 311,
-            311, 311, 331, 331, 331, 331, 331, 331, 331, 331,
-            331, 331, 331, 331, 331, 331, 331, 331, 331, 331,
-            331, 331, 347, 347, 347, 347, 347, 347, 347, 347,
-            347, 347, 347, 347, 347, 347, 347, 347, 359, 359,
-            359, 359, 359, 359, 359, 359, 359, 359, 359, 359,
-            367, 367, 367, 367, 367, 367, 367, 367, 379, 379,
-            379, 379, 379, 379, 379, 379, 379, 379, 379, 379,
-            383, 383, 383, 383, 419, 419, 419, 419, 419, 419,
-            419, 419, 419, 419, 419, 419, 419, 419, 419, 419,
-            419, 419, 419, 419, 419, 419, 419, 419, 419, 419,
-            419, 419, 419, 419, 419, 419, 419, 419, 419, 419,
-            431, 431, 431, 431, 431, 431, 431, 431, 431, 431,
-            431, 431, 439, 439, 439, 439, 439, 439, 439, 439,
-            443, 443, 443, 443, 463, 463, 463, 463, 463, 463,
-            463, 463, 463, 463, 463, 463, 463, 463, 463, 463,
-            463, 463, 463, 463, 467, 467, 467, 467, 479, 479,
-            479, 479, 479, 479, 479, 479, 479, 479, 479, 479,
-            487, 487, 487, 487, 487, 487, 487, 487, 491, 491,
-            491, 491, 499, 499, 499, 499, 499, 499, 499, 499,
-            503, 503, 503, 503, 523, 523, 523, 523, 523, 523,
-            523, 523, 523, 523, 523, 523, 523, 523, 523, 523,
-            523, 523, 523, 523, 547, 547, 547, 547, 547, 547,
-            547, 547, 547, 547, 547, 547, 547, 547, 547, 547,
-            547, 547, 547, 547, 547, 547, 547, 547, 563, 563,
-            563, 563, 563, 563, 563, 563, 563, 563, 563, 563,
-            563, 563, 563, 563, 571, 571, 571, 571, 571, 571,
-            571, 571, 587, 587, 587, 587, 587, 587, 587, 587,
-            587, 587, 587, 587, 587, 587, 587, 587, 599, 599,
-            599, 599, 599, 599, 599, 599, 599, 599, 599, 599,
-            607, 607, 607, 607, 607, 607, 607, 607, 619, 619,
-            619, 619, 619, 619, 619, 619, 619, 619, 619, 619,
-            631, 631, 631, 631, 631, 631, 631, 631, 631, 631,
-            631, 631, 643, 643, 643, 643, 643, 643, 643, 643,
-            643, 643, 643, 643, 647, 647, 647, 647, 659, 659,
-            659, 659, 659, 659, 659, 659, 659, 659, 659, 659,
-            683, 683, 683, 683, 683, 683, 683, 683, 683, 683,
-            683, 683, 683, 683, 683, 683, 683, 683, 683, 683,
-            683, 683, 683, 683, 691, 691, 691, 691, 691, 691,
-            691, 691, 719, 719, 719, 719, 719, 719, 719, 719,
-            719, 719, 719, 719, 719, 719, 719, 719, 719, 719,
-            719, 719, 719, 719, 719, 719, 719, 719, 719, 719,
-            727, 727, 727, 727, 727, 727, 727, 727, 739, 739,
-            739, 739, 739, 739, 739, 739, 739, 739, 739, 739,
-            743, 743, 743, 743, 751, 751, 751, 751, 751, 751,
-            751, 751, 787, 787, 787, 787, 787, 787, 787, 787,
-            787, 787, 787, 787, 787, 787, 787, 787, 787, 787,
-            787, 787, 787, 787, 787, 787, 787, 787, 787, 787,
-            787, 787, 787, 787, 787, 787, 787, 787, 811, 811,
-            811, 811, 811, 811, 811, 811, 811, 811, 811, 811,
-            811, 811, 811, 811, 811, 811, 811, 811, 811, 811,
-            811, 811, 823, 823, 823, 823, 823, 823, 823, 823,
-            823, 823, 823, 823, 827, 827, 827, 827, 839, 839,
-            839, 839, 839, 839, 839, 839, 839, 839, 839, 839,
-            859, 859, 859, 859, 859, 859, 859, 859, 859, 859,
-            859, 859, 859, 859, 859, 859, 859, 859, 859, 859,
-            863, 863, 863, 863, 883, 883, 883, 883, 883, 883,
-            883, 883, 883, 883, 883, 883, 883, 883, 883, 883,
-            883, 883, 883, 883, 887, 887, 887, 887, 907, 907,
-            907, 907, 907, 907, 907, 907, 907, 907, 907, 907,
-            907, 907, 907, 907, 907, 907, 907, 907, 911, 911,
-            911, 911, 919, 919, 919, 919, 919, 919, 919, 919,
-            947, 947, 947, 947, 947, 947, 947, 947, 947, 947,
-            947, 947, 947, 947, 947, 947, 947, 947, 947, 947,
-            947, 947, 947, 947, 947, 947, 947, 947, 967, 967,
-            967, 967, 967, 967, 967, 967, 967, 967, 967, 967,
-            967, 967, 967, 967, 967, 967, 967, 967, 971, 971,
-            971, 971, 983, 983, 983, 983, 983, 983, 983, 983,
-            983, 983, 983, 983, 991, 991, 991, 991, 991, 991,
-            991, 991, 1019, 1019, 1019, 1019, 1019, 1019, 1019, 1019,
-            1019, 1019, 1019, 1019, 1019, 1019, 1019, 1019, 1019, 1019,
-            1019, 1019, 1019, 1019, 1019, 1019, 1019, 1019, 1019, 1019
+    private static final char[] SMALL_LOOKUP_TABLE_CAPACITIES = new char[] {
+            7, 11, 19, 23, 31, 43, 47, 59, 67, 71,
+            79, 83, 103, 107, 127, 131, 139, 151, 163, 167,
+            179, 191, 199, 211, 223, 227, 239, 251, 263, 271,
+            283, 307, 311, 331, 347, 359, 367, 379, 383, 419,
+            431, 439, 443, 463, 467, 479, 487, 491, 499, 503,
+            523, 547, 563, 571, 587, 599, 607, 619, 631, 643,
+            647, 659, 683, 691, 719, 727, 739, 743, 751, 787,
+            811, 823, 827, 839, 859, 863, 883, 887, 907, 911,
+            919, 947, 967, 971, 983, 991, 1019
+    };
+
+    private static final byte[] SMALL_LOOKUP_TABLE_INDICES = new byte[] {
+            0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+            1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
+            3, 3, 3, 3, 4, 4, 4, 4, 4, 4,
+            4, 4, 5, 5, 5, 5, 5, 5, 5, 5,
+            5, 5, 5, 5, 6, 6, 6, 6, 7, 7,
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+            8, 8, 8, 8, 8, 8, 8, 8, 9, 9,
+            9, 9, 10, 10, 10, 10, 10, 10, 10, 10,
+            11, 11, 11, 11, 12, 12, 12, 12, 12, 12,
+            12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+            12, 12, 12, 12, 13, 13, 13, 13, 14, 14,
+            14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 14, 14, 14, 14, 14, 14, 14, 15, 15,
+            15, 15, 16, 16, 16, 16, 16, 16, 16, 16,
+            17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+            17, 17, 18, 18, 18, 18, 18, 18, 18, 18,
+            18, 18, 18, 18, 19, 19, 19, 19, 20, 20,
+            20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
+            21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
+            21, 21, 22, 22, 22, 22, 22, 22, 22, 22,
+            23, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+            23, 23, 24, 24, 24, 24, 24, 24, 24, 24,
+            24, 24, 24, 24, 25, 25, 25, 25, 26, 26,
+            26, 26, 26, 26, 26, 26, 26, 26, 26, 26,
+            27, 27, 27, 27, 27, 27, 27, 27, 27, 27,
+            27, 27, 28, 28, 28, 28, 28, 28, 28, 28,
+            28, 28, 28, 28, 29, 29, 29, 29, 29, 29,
+            29, 29, 30, 30, 30, 30, 30, 30, 30, 30,
+            30, 30, 30, 30, 31, 31, 31, 31, 31, 31,
+            31, 31, 31, 31, 31, 31, 31, 31, 31, 31,
+            31, 31, 31, 31, 31, 31, 31, 31, 32, 32,
+            32, 32, 33, 33, 33, 33, 33, 33, 33, 33,
+            33, 33, 33, 33, 33, 33, 33, 33, 33, 33,
+            33, 33, 34, 34, 34, 34, 34, 34, 34, 34,
+            34, 34, 34, 34, 34, 34, 34, 34, 35, 35,
+            35, 35, 35, 35, 35, 35, 35, 35, 35, 35,
+            36, 36, 36, 36, 36, 36, 36, 36, 37, 37,
+            37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+            38, 38, 38, 38, 39, 39, 39, 39, 39, 39,
+            39, 39, 39, 39, 39, 39, 39, 39, 39, 39,
+            39, 39, 39, 39, 39, 39, 39, 39, 39, 39,
+            39, 39, 39, 39, 39, 39, 39, 39, 39, 39,
+            40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
+            40, 40, 41, 41, 41, 41, 41, 41, 41, 41,
+            42, 42, 42, 42, 43, 43, 43, 43, 43, 43,
+            43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
+            43, 43, 43, 43, 44, 44, 44, 44, 45, 45,
+            45, 45, 45, 45, 45, 45, 45, 45, 45, 45,
+            46, 46, 46, 46, 46, 46, 46, 46, 47, 47,
+            47, 47, 48, 48, 48, 48, 48, 48, 48, 48,
+            49, 49, 49, 49, 50, 50, 50, 50, 50, 50,
+            50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
+            50, 50, 50, 50, 51, 51, 51, 51, 51, 51,
+            51, 51, 51, 51, 51, 51, 51, 51, 51, 51,
+            51, 51, 51, 51, 51, 51, 51, 51, 52, 52,
+            52, 52, 52, 52, 52, 52, 52, 52, 52, 52,
+            52, 52, 52, 52, 53, 53, 53, 53, 53, 53,
+            53, 53, 54, 54, 54, 54, 54, 54, 54, 54,
+            54, 54, 54, 54, 54, 54, 54, 54, 55, 55,
+            55, 55, 55, 55, 55, 55, 55, 55, 55, 55,
+            56, 56, 56, 56, 56, 56, 56, 56, 57, 57,
+            57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+            58, 58, 58, 58, 58, 58, 58, 58, 58, 58,
+            58, 58, 59, 59, 59, 59, 59, 59, 59, 59,
+            59, 59, 59, 59, 60, 60, 60, 60, 61, 61,
+            61, 61, 61, 61, 61, 61, 61, 61, 61, 61,
+            62, 62, 62, 62, 62, 62, 62, 62, 62, 62,
+            62, 62, 62, 62, 62, 62, 62, 62, 62, 62,
+            62, 62, 62, 62, 63, 63, 63, 63, 63, 63,
+            63, 63, 64, 64, 64, 64, 64, 64, 64, 64,
+            64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+            64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+            65, 65, 65, 65, 65, 65, 65, 65, 66, 66,
+            66, 66, 66, 66, 66, 66, 66, 66, 66, 66,
+            67, 67, 67, 67, 68, 68, 68, 68, 68, 68,
+            68, 68, 69, 69, 69, 69, 69, 69, 69, 69,
+            69, 69, 69, 69, 69, 69, 69, 69, 69, 69,
+            69, 69, 69, 69, 69, 69, 69, 69, 69, 69,
+            69, 69, 69, 69, 69, 69, 69, 69, 70, 70,
+            70, 70, 70, 70, 70, 70, 70, 70, 70, 70,
+            70, 70, 70, 70, 70, 70, 70, 70, 70, 70,
+            70, 70, 71, 71, 71, 71, 71, 71, 71, 71,
+            71, 71, 71, 71, 72, 72, 72, 72, 73, 73,
+            73, 73, 73, 73, 73, 73, 73, 73, 73, 73,
+            74, 74, 74, 74, 74, 74, 74, 74, 74, 74,
+            74, 74, 74, 74, 74, 74, 74, 74, 74, 74,
+            75, 75, 75, 75, 76, 76, 76, 76, 76, 76,
+            76, 76, 76, 76, 76, 76, 76, 76, 76, 76,
+            76, 76, 76, 76, 77, 77, 77, 77, 78, 78,
+            78, 78, 78, 78, 78, 78, 78, 78, 78, 78,
+            78, 78, 78, 78, 78, 78, 78, 78, 79, 79,
+            79, 79, 80, 80, 80, 80, 80, 80, 80, 80,
+            81, 81, 81, 81, 81, 81, 81, 81, 81, 81,
+            81, 81, 81, 81, 81, 81, 81, 81, 81, 81,
+            81, 81, 81, 81, 81, 81, 81, 81, 82, 82,
+            82, 82, 82, 82, 82, 82, 82, 82, 82, 82,
+            82, 82, 82, 82, 82, 82, 82, 82, 83, 83,
+            83, 83, 84, 84, 84, 84, 84, 84, 84, 84,
+            84, 84, 84, 84, 85, 85, 85, 85, 85, 85,
+            85, 85, 86, 86, 86, 86, 86, 86, 86, 86,
+            86, 86, 86, 86, 86, 86, 86, 86, 86, 86,
+            86, 86, 86, 86, 86, 86, 86, 86, 86, 86
     };
 
     /**
@@ -180,10 +271,10 @@ public final class QHashCapacities {
     private static final int MAX_LOOKUP_CAPACITY = 1019;
     static {
         if (MAX_LOOKUP_CAPACITY !=
-                SMALL_CAPACITY_LOOKUP_TABLE[SMALL_CAPACITY_LOOKUP_TABLE.length - 1])
+                SMALL_LOOKUP_TABLE_CAPACITIES[SMALL_LOOKUP_TABLE_CAPACITIES.length - 1]) {
             throw new AssertionError();
+        }
     }
-
 
     /**
      * These capacities and other regular capacities from {@link #REGULAR_INT_CAPACITIES}

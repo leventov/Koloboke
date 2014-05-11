@@ -58,14 +58,14 @@ public abstract class MutableCharDHashSO extends MutableDHash
         set = hash.keys();
     }
 
-    final void init(HashConfig hashConfig, int size,
+    final void init(HashConfigWrapper configWrapper, int size,
             char freeValue/* if Mutable mutability */, char removedValue/* endif */) {
         this.freeValue = freeValue;
         /* if Mutable mutability */
         this.removedValue = removedValue;
         /* endif */
         // calls allocateArrays, fill keys with this.freeValue => assign it before
-        super.init(hashConfig, size);
+        super.init(configWrapper, size);
     }
 
 

@@ -21,6 +21,8 @@ import net.openhft.collect.HashContainer;
 
 public interface Hash extends HashContainer {
 
+    HashConfigWrapper configWrapper();
+
     int capacity();
 
     int freeSlots();

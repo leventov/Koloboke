@@ -20,70 +20,29 @@ import net.openhft.collect.HashConfig;
 import net.openhft.collect.HashOverflowException;
 import net.openhft.collect.impl.AbstractContainer;
 
-import static net.openhft.collect.impl.hash.DHashCapacities.bestCapacity;
-
 import static java.lang.Math.max;
 
 
-/**
- * <p><a name="rehash-logic"/><b>Rehash logic</b>
- *
- * <p></>We are targeting the following major hash use-patterns:
- * <ul>
- * <li>keys could be inserted, but never removed: caches, aggregating stats,
- * removing duplicates from list, ...</li>
- * <li>keys are inserted and removed so that the size remains nearly the same:
- * fixed-size caches, e. g. LRU.</li>
- * </ul>
- *
- * <hr/>
- *
- * <p>If the hash has {@code R} removed slots and {@code F} free slots,
- * probability of consuming free slot by inserting the new key is
- * {@code (F / (F + R)) ^ 2}.
- *
- * <p>Therefore, if we have the hash with {@code S} keys and capacity {@code C},
- * and {@code F = C - S} free slots, expected number of removed slots after
- * {@code IRP} insert-remove pairs is {@code R(IRP) = F * IRP / (F + IRP)}.
- *
- * <p>Suppose we have the hash with the size {@code S} and load factor
- * {@code LF}. We want to choose capacity C so that during endless insertions
- * and removals (2nd pattern) rehash will occur every {@code IRP}
- * insert-remove pairs, i. e. {@code R(IRP) + S = LF * C}.
- *
- * <p>Let {@code K = IRP / S}, then<br/>
- * {@code S = C * (K + LF + 1 - K * LF - sqrt((K * LF - K - LF - 1) ^ 2 - 4LF)) / 2}<br/>
- * if {@code K = 1} ( we want to rehash every {@code S} insertions and {@code S}
- * removals), {@code C = S / (1 - sqrt(1 - LF))}.
- *
- * <hr/>
- *
- * <p>Decided not to shrink automatically on removals, because
- * <ul>
- * <li>{@link java.util.HashMap}/{@code std::unordered_map} doesn't do this</li>
- * <li>{@link java.util.ArrayList}/{@code std::vector} doesn't do this</li>
- * </ul>
- * and for a good reason.
- *
- * <p>If someone want to leave in the hash only few
- * elements, he should create a new collection and pick selected elements
- * during iteration through the original one rather than remove the rest
- * elements from it.
- *
- * <p>However, adaptive rehash from the previous section causes compaction if
- * {@code S / (C - S) < (1 - sqrt(1 - LF)) / LF}.
- */
 public abstract class MutableDHash extends AbstractContainer implements DHash {
+
+    private static int minFreeSlots(int capacity, int size) {
+        // See "Tombstones purge from hashtable: theory and practice" wiki page
+        double load = (double) size / (double) capacity;
+        double rehashLoad = 0.49 + 0.866 * load - 0.363 * load * load;
+        // Need at least one free slot for open addressing
+        return max(1, (int) ((double) capacity * (1.0 - rehashLoad)));
+    }
 
     ////////////////////////////
     // Fields
 
-    private HashConfig hashConfig;
+    private HashConfigWrapper configWrapper;
 
 
     /** The current number of occupied slots in the hash. */
     private int size;
 
+    private int maxSize;
 
     /** The current number of free slots in the hash. */
     private int freeSlots;
@@ -103,11 +62,12 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
 
     @Override
     public final HashConfig hashConfig() {
-        return hashConfig;
+        return configWrapper.config();
     }
 
-    private float loadFactor() {
-        return hashConfig().getLoadFactor();
+    @Override
+    public final HashConfigWrapper configWrapper() {
+        return configWrapper;
     }
 
     @Override
@@ -145,7 +105,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     @Override
     public final float currentLoad() {
         // Division in double to minimize precision loss
-        return (float) (((double) (size + removedSlots)) / capacity());
+        return (float) (((double) (size + removedSlots)) / (double) capacity());
     }
 
 
@@ -158,12 +118,14 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
      * @param hash Mutable or Immutable DHash instance
      */
     final void copy(DHash hash) {
-        this.hashConfig = hash.hashConfig();
-        this.size = hash.size();
+        this.configWrapper = hash.configWrapper();
+        int size = this.size = hash.size();
+        int capacity = hash.capacity();
+        this.maxSize = configWrapper.maxSize(capacity);
         int freeSlots = this.freeSlots = hash.freeSlots();
-        int minFreeSlots = this.minFreeSlots = max(1, (int) (hash.capacity() * (1 - loadFactor())));
+        int minFreeSlots = this.minFreeSlots = minFreeSlots(capacity, size);
         // see #initSlotCounts()
-        if (freeSlots < minFreeSlots) this.minFreeSlots = (freeSlots + 1) >> 1;
+        if (freeSlots < minFreeSlots) this.minFreeSlots = (freeSlots + 1) / 2;
         this.removedSlots = hash.removedSlots();
     }
 
@@ -172,13 +134,12 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
      * needed to hold {@code size} elements without triggering a rehash.
      *
      * <p>Should be called only in constructors and externalization code.
-     * If {@code justExpected} is false, MutableDHash setups itself as if there are
-     * already {@code size} elements in the hash (useful for externalization).
      */
-    final void init(HashConfig hashConfig, int size) {
-        this.hashConfig = hashConfig;
+    final void init(HashConfigWrapper configWrapper, int size) {
+        this.configWrapper = configWrapper;
         this.size = 0;
-        int capacity = bestCapacity(size, loadFactor(), 0);
+        int capacity = DHashCapacities.capacity(configWrapper, size);
+        minFreeSlots = minFreeSlots(capacity, size);
         internalInit(capacity);
     }
 
@@ -199,9 +160,8 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     abstract void allocateArrays(int capacity);
 
     private void initSlotCounts(int capacity) {
+        maxSize = configWrapper.maxSize(capacity);
         int freeSlots = this.freeSlots = capacity - size;
-        // Need at least one free slot for open addressing
-        int minFreeSlots = this.minFreeSlots = max(1, (int) (capacity * (1 - loadFactor())));
         // free could be less than minFreeSlots only in case when capacity
         // is not sufficient to comply load factor (due to saturation with
         // Java array size limit). Set minFreeSlots to a half of free to avoid
@@ -260,7 +220,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
 
     @Override
     public boolean shrink() {
-        int newCapacity = bestCapacity(size, loadFactor(), size);
+        int newCapacity = DHashCapacities.capacity(configWrapper, size);
         if (removedSlots > 0 || newCapacity < capacity()) {
             rehash(newCapacity);
             return true;
@@ -269,8 +229,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
         }
     }
 
-    private boolean tryRehashForExpansion(long desiredSize) {
-        int newCapacity = bestCapacity(desiredSize, loadFactor(), size);
+    private boolean tryRehashForExpansion(int newCapacity) {
         // No sense in rehashing for expansion if we already reached Java array
         // size limit.
         if (newCapacity > capacity() || removedSlots > 0) {
@@ -307,8 +266,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
             lowFreeEstimate = (int) ((nonFull - additionalSize) * freeFraction);
         }
         if (lowFreeEstimate < minFreeSlots) {
-            tryRehashForExpansion(minSize);
-            return true;
+            return tryRehashForExpansion(DHashCapacities.capacity(configWrapper, intMinSize));
         } else {
             return false;
         }
@@ -319,31 +277,34 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
         size--;
         removedSlots++;
     }
-
-    /**
-     * After insertion, this hook is called to adjust the size/free
-     * values of the hash and to perform rehashing if necessary.
-     *
-     * @param usedFreeSlot the slot
-     */
-    final void postInsertHook( boolean usedFreeSlot ) {
-        modCount++;
-        size++;
-        if ( usedFreeSlot ) {
-            if ( --freeSlots < minFreeSlots) {
-                if (!tryRehashIfTooFewFreeSlots() && freeSlots == 0) {
-                    throw new HashOverflowException();
-                }
-            }
-        } else {
-            removedSlots--;
-        }
-    }
+//
+//    /**
+//     * After insertion, this hook is called to adjust the size/free
+//     * values of the hash and to perform rehashing if necessary.
+//     *
+//     * @param usedFreeSlot the slot
+//     */
+//    final void postInsertHook(boolean usedFreeSlot) {
+//        modCount++;
+//        size++;
+//        if (usedFreeSlot) {
+//            if (--freeSlots < minFreeSlots) {
+//                if (!tryRehashIfTooFewFreeSlots() && freeSlots == 0) {
+//                    throw new HashOverflowException();
+//                }
+//            }
+//        } else {
+//            removedSlots--;
+//        }
+//    }
 
     final void postFreeSlotInsertHook() {
         modCount++;
-        size++;
-        if ( --freeSlots < minFreeSlots) {
+        if (++size > maxSize) {
+            if (tryRehashForExpansion(grownCapacity()))
+                return;
+        }
+        if (--freeSlots < minFreeSlots) {
             if (!tryRehashIfTooFewFreeSlots() && freeSlots == 0) {
                 throw new HashOverflowException();
             }
@@ -352,20 +313,23 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
 
     final void postRemovedSlotInsertHook() {
         modCount++;
-        size++;
+        if (++size > maxSize) {
+            if (tryRehashForExpansion(grownCapacity()))
+                return;
+        }
         removedSlots--;
     }
 
-    /**
-     * See <a href="#rehash-logic">Rehash logic</a>.
-     */
     private boolean tryRehashIfTooFewFreeSlots() {
-        if ( removedSlots > 0 ) {
-            double k = 1 - Math.sqrt(1 - loadFactor());
-            rehash(bestCapacity(size, k, size));
+        if (removedSlots > 0) {
+            rehash(DHashCapacities.capacity(configWrapper, size));
             return true;
         } else {
-            return tryRehashForExpansion(size * 2L); // 2L to prevent overflow
+            return tryRehashForExpansion(configWrapper.grow(capacity()));
         }
+    }
+
+    private int grownCapacity() {
+        return DHashCapacities.nearestGreaterCapacity(configWrapper.grow(capacity()), size);
     }
 }

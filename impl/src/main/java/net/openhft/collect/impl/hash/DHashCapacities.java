@@ -23,33 +23,70 @@ import static java.lang.Math.abs;
 
 public final class DHashCapacities {
 
+    public static int capacity(HashConfigWrapper conf, int size) {
+        assert size >= 0 : "size must be non-negative";
+        int desiredCapacity = conf.targetCapacity(size);
+        int lesserCapacity, greaterCapacity;
+        if (desiredCapacity <= SMALL_CAPACITY_LOOKUP_TABLE.length) {
+            greaterCapacity = SMALL_CAPACITY_LOOKUP_TABLE[desiredCapacity];
+            if (greaterCapacity == desiredCapacity || greaterCapacity == 5)
+                return greaterCapacity;
+            for (int i = desiredCapacity - 1; ; i--) {
+                if (SMALL_CAPACITY_LOOKUP_TABLE[i] != greaterCapacity) {
+                    lesserCapacity = SMALL_CAPACITY_LOOKUP_TABLE[i];
+                    break;
+                }
+            }
+        }
+        else if (desiredCapacity <= MAX_REGULAR_CAPACITY) {
+            int capIndex = Arrays.binarySearch(REGULAR_CAPACITIES, desiredCapacity);
+            if (capIndex >= 0) // desiredCapacity is found in REGULAR_INT_CAPACITIES
+                return desiredCapacity;
+            capIndex = ~capIndex;
+            lesserCapacity = REGULAR_CAPACITIES[capIndex - 1];
+            greaterCapacity = REGULAR_CAPACITIES[capIndex];
+        }
+        else {
+            // overflow-aware
+            if (size - MAX_CAPACITY < 0)
+                return MAX_CAPACITY;
+            if (size - Integer.MAX_VALUE < 0) {
+                // Integer.MAX_VALUE is also a prime, but likely will cause OutOfMemoryError
+                return Integer.MAX_VALUE;
+            } else {
+                // QHash must have at least 1 free slot
+                throw new OutOfMemoryError();
+            }
+        }
+        if (greaterCapacity - desiredCapacity <= desiredCapacity - lesserCapacity &&
+                greaterCapacity <= conf.maxCapacity(size)) {
+            return greaterCapacity;
+        }
+        return lesserCapacity >= conf.minCapacity(size) ? lesserCapacity : greaterCapacity;
+    }
+
     /**
-     * @param desiredSize must be non-negative
-     * @param loadFactor must be in (0.0, 1.0) range
-     * @param currentSize could be negative because of overflow
      * @return best capacity for DHash
      */
-    public static int bestCapacity(long desiredSize, double loadFactor, int currentSize) {
-        long desiredCapacity = ((long) (desiredSize / loadFactor)) + 1;
-        if (0 < desiredCapacity) {
-            if (desiredCapacity < SMALL_CAPACITY_LOOKUP_TABLE.length) {
-                return SMALL_CAPACITY_LOOKUP_TABLE[(int) desiredCapacity];
-            }
-            else if (desiredCapacity <= MAX_REGULAR_CAPACITY) {
-                int desiredCap = (int) desiredCapacity;
-                int capIndex = Arrays.binarySearch(REGULAR_CAPACITIES, desiredCap);
-                if (capIndex < 0) {
-                    capIndex = -capIndex - 1;
-                    return REGULAR_CAPACITIES[capIndex];
-                } else {
-                    // desiredCap is regular capacity
-                    return desiredCap;
-                }
+    public static int nearestGreaterCapacity(int desiredCapacity, int currentSize) {
+        assert currentSize >= 0 : "currentSize must be non-negative";
+        if (desiredCapacity < SMALL_CAPACITY_LOOKUP_TABLE.length) {
+            return SMALL_CAPACITY_LOOKUP_TABLE[(int) desiredCapacity];
+        }
+        else if (desiredCapacity <= MAX_REGULAR_CAPACITY) {
+            int desiredCap = (int) desiredCapacity;
+            int capIndex = Arrays.binarySearch(REGULAR_CAPACITIES, desiredCap);
+            if (capIndex < 0) {
+                capIndex = -capIndex - 1;
+                return REGULAR_CAPACITIES[capIndex];
+            } else {
+                // desiredCap is regular capacity
+                return desiredCap;
             }
         }
         // 100000 much greater than MAX_CAPACITY - MAX_HIGH_TWIN_PRIME_CAPACITY.
         // Advantage of high prime twin capacity over simply prime is quite small.
-        if (desiredSize < MAX_HIGH_TWIN_PRIME_CAPACITY - 100000) {
+        if (currentSize < MAX_HIGH_TWIN_PRIME_CAPACITY - 100000) {
             return MAX_HIGH_TWIN_PRIME_CAPACITY;
         }
 
@@ -557,7 +594,7 @@ public final class DHashCapacities {
             2042495071, 2052758821, 2063074129, 2073441199, 2083860043, 2094331663, 2104854991, 2115431809, 2126062051, 2136745621
     };
 
-    private static final long MAX_REGULAR_CAPACITY =
+    private static final int MAX_REGULAR_CAPACITY =
             REGULAR_CAPACITIES[REGULAR_CAPACITIES.length - 1];
 
 

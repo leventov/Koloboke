@@ -45,19 +45,18 @@ public class AddRemoveWithTombstonesBenchmarks {
     static final double LOAD_FACTOR = parseDouble(System.getProperty("loadFactor", "0.5"));
     static final double REHASH_LOAD = parseDouble(System.getProperty("rehashLoad", "0.75"));
 
-    static final int D_HASH_CAPACITY = DHashCapacities.bestCapacity((long) SIZE, LOAD_FACTOR, 0);
-    static final int Q_HASH_CAPACITY =
-            QHashCapacities.getIntCapacity(((int)((double) SIZE / LOAD_FACTOR)) + 1, 0);
-
     static int addRemovesToRehashOnce(double targetLoad, double rehashLoad, int capacity) {
         // Expected theoretical number of add-remove pairs to reach rehash load
         // is (1 - lf) / (1 - rl), x2 for reliability :)
         return (int) ((1.0 - targetLoad) / (1.0 - rehashLoad) * 2.0 * (double) capacity);
     }
-    static final int D_HASH_ADD_REMOVES =
-            addRemovesToRehashOnce(LOAD_FACTOR, REHASH_LOAD, D_HASH_CAPACITY);
+
+    /* with QHash|DHash hash */
+    static final int Q_HASH_CAPACITY =
+            QHashCapacities.nearestGreaterCapacity(((int) ((double) SIZE / LOAD_FACTOR)) + 1, 0);
     static final int Q_HASH_ADD_REMOVES =
             addRemovesToRehashOnce(LOAD_FACTOR, REHASH_LOAD, Q_HASH_CAPACITY);
+    /* endwith */
 
     static int freeSlotsRehashThreshold(double rehashLoad, int capacity) {
         return (int) ((1.0 - rehashLoad) * (double) capacity);

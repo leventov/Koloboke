@@ -180,7 +180,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj key obj value) */
     /**
-     * @deprecated Use specialization {@link #put(char, short)} instead
+     * @deprecated Use specialization {@link #put(// raw //char, // raw //short)} instead
      */
     @Override
     @Deprecated

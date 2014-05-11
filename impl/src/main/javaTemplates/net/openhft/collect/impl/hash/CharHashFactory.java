@@ -28,6 +28,7 @@ public abstract class CharHashFactory<MT> {
 
     final CharHashConfig conf;
     final HashConfig hashConf;
+    final HashConfigWrapper configWrapper;
     private char freeValue;
     private char removedValue;
     private final boolean randomFree;
@@ -36,6 +37,7 @@ public abstract class CharHashFactory<MT> {
     CharHashFactory(CharHashConfig conf) {
         this.conf = conf;
         hashConf = conf.getHashConfig();
+        configWrapper = new HashConfigWrapper(hashConf);
         char lower = conf.getLowerKeyDomainBound();
         char upper = conf.getUpperKeyDomainBound();
         if ((char) (lower - 1) == upper) {
@@ -65,7 +67,8 @@ public abstract class CharHashFactory<MT> {
         return conf;
     }
 
-    abstract MT createNew(HashConfig hashConfig, int expectedSize, char free, char removed);
+    abstract MT createNew(
+            HashConfigWrapper configWrapper, int expectedSize, char free, char removed);
 
     /* define nextIntOrLong */
     /* if !(long elem) //nextInt// elif long elem //nextLong// endif */
@@ -88,6 +91,6 @@ public abstract class CharHashFactory<MT> {
             removed = removedValue;
             free = freeValue;
         }
-        return createNew(hashConf, expectedSize, free, removed);
+        return createNew(configWrapper, expectedSize, free, removed);
     }
 }

@@ -45,9 +45,10 @@ public class LookupBenchmarks {
         Config(int powerOf2Capacity, double loadFactor) {
             this.powerOf2Capacity = powerOf2Capacity;
             this.n = (int) ((double) powerOf2Capacity * loadFactor);
-            this.dHashCapacity = DHashCapacities.bestCapacity((long) n, loadFactor, 0);
+            /* with QHash|DHash hash */
             this.qHashCapacity =
-                    QHashCapacities.getIntCapacity((int) ((double) n / loadFactor) + 1, 0);
+                    QHashCapacities.nearestGreaterCapacity((int) ((double) n / loadFactor) + 1, 0);
+            /* endwith */
         }
     }
 

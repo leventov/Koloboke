@@ -35,7 +35,7 @@ public class QHashProbes {
     }
 
     public static void main(String[] args) {
-        int capacity = QHashCapacities.getIntCapacity(Integer.parseInt(args[0]), 0);
+        int capacity = QHashCapacities.nearestGreaterCapacity(Integer.parseInt(args[0]), 0);
         NoStatesQHashIntSet hash = new NoStatesQHashIntSet(capacity);
         int repeats = Integer.parseInt(args[1]);
         DoubleObjMap<Probes> stats = HashDoubleObjMaps.newMutableMap(capacity);

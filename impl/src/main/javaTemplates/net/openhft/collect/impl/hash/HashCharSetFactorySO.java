@@ -18,7 +18,6 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
-import net.openhft.function.CharConsumer;
 import net.openhft.collect.set.hash.HashCharSetFactory;
 
 import java.util.Collection;
@@ -29,7 +28,10 @@ public abstract class HashCharSetFactorySO
         /* if !(float|double elem) */extends CharHashFactory<MutableDHashCharSetGO>/* endif */
         implements HashCharSetFactory {
 
-    /* if float|double elem */final HashConfig hashConf;/* endif */
+    /* if float|double elem */
+    final HashConfig hashConf;
+    final HashConfigWrapper configWrapper;
+    /* endif */
 
     HashCharSetFactorySO(/* if !(float|double elem) */CharHashConfig
             /* elif float|double elem //HashConfig// endif */ conf) {
@@ -37,14 +39,16 @@ public abstract class HashCharSetFactorySO
         super(conf);
         /* elif float|double elem */
         hashConf = conf;
+        configWrapper = new HashConfigWrapper(conf);
         /* endif */
     }
 
     /* if !(float|double elem) */
     @Override
-    MutableDHashCharSetGO createNew(HashConfig hashConfig, int expectedSize, char free, char removed) {
+    MutableDHashCharSetGO createNew(
+            HashConfigWrapper configWrapper, int expectedSize, char free, char removed) {
         MutableDHashCharSet set = new MutableDHashCharSet();
-        set.init(hashConfig, expectedSize, free, removed);
+        set.init(configWrapper, expectedSize, free, removed);
         return set;
     }
     /* elif float|double elem */
@@ -60,7 +64,7 @@ public abstract class HashCharSetFactorySO
         return newHash(expectedSize);
         /* elif float|double elem */
         MutableDHashCharSetGO set = new MutableDHashCharSet();
-        set.init(hashConf, expectedSize);
+        set.init(configWrapper, expectedSize);
         return set;
         /* endif */
     }
@@ -74,7 +78,7 @@ public abstract class HashCharSetFactorySO
         if (elements instanceof CharCollection) {
             if (elements instanceof CharDHash) {
                 CharDHash hash = (CharDHash) elements;
-                if (hash.hashConfig().getLoadFactor() == hashConf.getLoadFactor()) {
+                if (hash.hashConfig().equals(hashConf)) {
                     MutableDHashCharSet set = new MutableDHashCharSet();
                     set.copy(hash);
                     return set;

@@ -31,25 +31,41 @@ public class HashConfigTest {
         HashConfig conf2 = conf1.withDefaultExpectedSize(defaultExpectedSize + 1);
         assertEquals(conf1, conf2.withDefaultExpectedSize(defaultExpectedSize));
 
-        float loadFactor = conf2.getLoadFactor();
-        HashConfig conf3 = conf2.withLoadFactor(loadFactor + 0.01f);
-        assertEquals(conf2, conf3.withLoadFactor(loadFactor));
+        double minLoad = conf2.getMinLoad();
+        HashConfig conf3 = conf2.withMinLoad(minLoad - 0.01);
+        assertEquals(conf2, conf3.withMinLoad(minLoad));
 
-        Predicate<HashContainer> shrinkCondition = conf3.getShrinkCondition();
-        HashConfig conf4 = conf3.withShrinkCondition(new Predicate<HashContainer>() {
+        double targetLoad = conf3.getTargetLoad();
+        HashConfig conf4 = conf3.withTargetLoad(targetLoad + 0.01);
+        assertEquals(conf3, conf4.withTargetLoad(targetLoad));
+
+        double maxLoad = conf4.getMaxLoad();
+        HashConfig conf5 = conf4.withMaxLoad(maxLoad + 0.01);
+        assertEquals(conf4, conf5.withMaxLoad(maxLoad));
+
+        double growFactor = conf5.getGrowFactor();
+        HashConfig conf6 = conf5.withGrowFactor(growFactor + 0.01);
+        assertEquals(conf5, conf6.withGrowFactor(growFactor));
+
+        Predicate<HashContainer> shrinkCondition = conf6.getShrinkCondition();
+        HashConfig conf7 = conf6.withShrinkCondition(new Predicate<HashContainer>() {
             @Override
             public boolean test(HashContainer hashContainer) {
                 return false;
             }
         });
-        assertEquals(conf3, conf4.withShrinkCondition(shrinkCondition));
+        assertEquals(conf6, conf7.withShrinkCondition(shrinkCondition));
     }
 
     @Test
     public void testToString() {
         assertEquals(
-                "HashConfig{getLoadFactor=0.5, getShrinkCondition=null, getDefaultExpectedSize=10}",
-                HashConfig.getDefault().withLoadFactor(0.5f).withShrinkCondition(null)
+                "HashConfig{" +
+                        "getMinLoad=" + (1.0 / 3.0) + ", getTargetLoad=" + 0.5 + ", " +
+                        "getMaxLoad=" + (2.0 / 3.0) + ", getGrowFactor=" + 2.0 + ", " +
+                        "getShrinkCondition=null, getDefaultExpectedSize=10}",
+                HashConfig.getDefault().withMinLoad(1.0 / 3.0).withTargetLoad(0.5)
+                        .withMaxLoad(2.0 / 3.0).withGrowFactor(2.0).withShrinkCondition(null)
                         .withDefaultExpectedSize(10).toString()
         );
     }

@@ -21,7 +21,6 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
-import net.openhft.function.CharShortConsumer;
 import net.openhft.collect.map.CharShortMap;
 import net.openhft.collect.map.hash.HashCharShortMapFactory;
 
@@ -33,7 +32,10 @@ public abstract class HashCharShortMapFactorySO/*<>*/
         /* endif */
         implements HashCharShortMapFactory/*<>*/ {
 
-    /* if float|double key */final HashConfig hashConf;/* endif */
+    /* if float|double key */
+    final HashConfig hashConf;
+    final HashConfigWrapper configWrapper;
+    /* endif */
 
     HashCharShortMapFactorySO(/* if !(float|double key) */CharHashConfig
             /* elif float|double key //HashConfig// endif */ conf) {
@@ -41,6 +43,7 @@ public abstract class HashCharShortMapFactorySO/*<>*/
         super(conf);
         /* elif float|double key */
         hashConf = conf;
+        configWrapper = new HashConfigWrapper(conf);
         /* endif */
     }
 
@@ -52,10 +55,11 @@ public abstract class HashCharShortMapFactorySO/*<>*/
 
     /* if !(float|double key) */
     @Override
-    MutableDHashCharShortMapGO/*<>*/ createNew(HashConfig hashConfig, int expectedSize, char free,
+    MutableDHashCharShortMapGO/*<>*/ createNew(
+            HashConfigWrapper configWrapper, int expectedSize, char free,
             char removed) {
         MutableDHashCharShortMapGO/*<>*/ map = uninitializedMutableMap();
-        map.init(hashConfig, expectedSize, free, removed);
+        map.init(configWrapper, expectedSize, free, removed);
         return map;
     }
     /* elif float|double key */
@@ -80,7 +84,7 @@ public abstract class HashCharShortMapFactorySO/*<>*/
         return (MutableDHashCharShortMapGO/*p2*/) newHash(expectedSize);
         /* elif float|double key */
         MutableDHashCharShortMapGO/*p2*/ set = uninitializedMutableMap();
-        set.init(hashConf, expectedSize);
+        set.init(configWrapper, expectedSize);
         return set;
         /* endif */
     }
@@ -95,7 +99,7 @@ public abstract class HashCharShortMapFactorySO/*<>*/
         if (map instanceof CharShortMap) {
             if (map instanceof CharShortDHash) {
                 CharShortDHash hash = (CharShortDHash) map;
-                if (hash.hashConfig().getLoadFactor() == hashConf.getLoadFactor()) {
+                if (hash.hashConfig().equals(hashConf)) {
                     MutableDHashCharShortMapGO/*p2*/ res = uninitializedMutableMap();
                     res.copy(hash);
                     return res;

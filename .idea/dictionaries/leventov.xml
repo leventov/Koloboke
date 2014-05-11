@@ -2,13 +2,22 @@
   <dictionary name="leventov">
     <words>
       <w>dhash</w>
+      <w>hashtable</w>
+      <w>haswell</w>
+      <w>inversed</w>
       <w>jpsg</w>
       <w>leventov</w>
       <w>lhash</w>
       <w>lookups</w>
+      <w>megamorphic</w>
       <w>openhft</w>
       <w>qhash</w>
       <w>rhood</w>
+      <w>scaler</w>
+      <w>scalers</w>
+      <w>subclassing</w>
+      <w>tradeoff</w>
+      <w>updatable</w>
       <w>zipf</w>
     </words>
   </dictionary>

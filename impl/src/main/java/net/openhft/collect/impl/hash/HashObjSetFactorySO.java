@@ -17,7 +17,6 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
-import net.openhft.function.Consumer;
 import net.openhft.collect.set.ObjSet;
 import net.openhft.collect.set.hash.HashObjSetFactory;
 import javax.annotation.Nullable;
@@ -30,10 +29,12 @@ public abstract class HashObjSetFactorySO<E> implements HashObjSetFactory<E> {
 
     final ObjHashConfig conf;
     final HashConfig hashConf;
+    final HashConfigWrapper configWrapper;
 
     HashObjSetFactorySO(ObjHashConfig conf) {
         this.conf = conf;
-        this.hashConf = conf.getHashConfig();
+        hashConf = conf.getHashConfig();
+        configWrapper = new HashConfigWrapper(hashConf);
     }
 
     @Override
@@ -58,7 +59,7 @@ public abstract class HashObjSetFactorySO<E> implements HashObjSetFactory<E> {
     @Override
     public <E2 extends E> MutableDHashObjSetGO<E2> newMutableSet(int expectedSize) {
         MutableDHashObjSetGO<E2> set = uninitializedMutableSet();
-        set.init(hashConf, expectedSize);
+        set.init(configWrapper, expectedSize);
         return set;
     }
 
@@ -71,7 +72,7 @@ public abstract class HashObjSetFactorySO<E> implements HashObjSetFactory<E> {
                 ObjSet elemSet = (ObjSet) elements;
                 if (elements instanceof ObjDHash) {
                     ObjDHash hash = (ObjDHash) elements;
-                    if (hash.hashConfig().getLoadFactor() == hashConf.getLoadFactor() &&
+                    if (hash.hashConfig().equals(hashConf) &&
                             NullableObjects.equals(
                                     elemSet.equivalence(), getEquivalence())) {
                         MutableDHashObjSetGO<E2> set = uninitializedMutableSet();

@@ -21,7 +21,6 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
-import net.openhft.function.*;
 import net.openhft.collect.map.ObjShortMap;
 import net.openhft.collect.map.hash.HashObjShortMapFactory;
 import javax.annotation.Nullable;
@@ -34,10 +33,12 @@ public abstract class HashObjShortMapFactorySO<K/* if obj value //, V// endif */
 
     final ObjHashConfig conf;
     final HashConfig hashConf;
+    final HashConfigWrapper configWrapper;
 
     HashObjShortMapFactorySO(ObjHashConfig conf) {
         this.conf = conf;
         this.hashConf = conf.getHashConfig();
+        configWrapper = new HashConfigWrapper(hashConf);
     }
 
     @Override
@@ -89,7 +90,7 @@ public abstract class HashObjShortMapFactorySO<K/* if obj value //, V// endif */
     public /*p1*/<K2 extends K>/**/ MutableDHashObjShortMapGO/*p2*/<K2>/**/ newMutableMap(
             int expectedSize) {
         MutableDHashObjShortMapGO/*p2*/<K2>/**/ map = uninitializedMutableMap();
-        map.init(hashConf, expectedSize);
+        map.init(configWrapper, expectedSize);
         return map;
     }
 
@@ -101,7 +102,7 @@ public abstract class HashObjShortMapFactorySO<K/* if obj value //, V// endif */
             ObjShortMap/*p2*/<K2>/**/ objShortMap = (ObjShortMap/*p2*/<K2>/**/) map;
             if (map instanceof ObjShortDHash) {
                 ObjShortDHash hash = (ObjShortDHash) map;
-                if (hash.hashConfig().getLoadFactor() == hashConf.getLoadFactor() &&
+                if (hash.hashConfig().equals(hashConf) &&
                         NullableObjects.equals(objShortMap.keyEquivalence(), getKeyEquivalence())) {
                     MutableDHashObjShortMapGO/*p2*/<K2>/**/ res = uninitializedMutableMap();
                     res.copy(hash);

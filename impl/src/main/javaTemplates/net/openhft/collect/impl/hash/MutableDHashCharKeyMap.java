@@ -78,6 +78,11 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
         }
 
         @Override
+        public HashConfigWrapper configWrapper() {
+            return MutableDHashCharKeyMap.this.configWrapper();
+        }
+
+        @Override
         public int size() {
             return MutableDHashCharKeyMap.this.size();
         }
