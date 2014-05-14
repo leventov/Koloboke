@@ -16,6 +16,8 @@
 
 package net.openhft.collect.impl.hash;
 
+import net.openhft.collect.HashOverflowException;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,7 +72,7 @@ public final class QHashCapacities {
                 return Integer.MAX_VALUE;
             } else {
                 // QHash must have at least 1 free slot
-                throw new OutOfMemoryError();
+                throw new HashOverflowException();
             }
         }
         return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity);
@@ -117,7 +119,7 @@ public final class QHashCapacities {
             return Integer.MAX_VALUE;
         } else {
             // QHash must have at least 1 free slot
-            throw new OutOfMemoryError();
+            throw new HashOverflowException();
         }
     }
 
