@@ -16,11 +16,8 @@
 
 package net.openhft.collect.impl.hash;
 
-import net.openhft.collect.HashConfig;
-import net.openhft.collect.impl.AbstractContainer;
 
-
-public abstract class ImmutableDHash extends AbstractContainer implements DHash {
+public abstract class ImmutableDHash extends HashWithoutRemovedSlots implements DHash {
 
     ////////////////////////////
     // Fields
@@ -50,41 +47,13 @@ public abstract class ImmutableDHash extends AbstractContainer implements DHash 
         return size;
     }
 
-
-    @Override
-    public final HashConfig hashConfig() {
-        return configWrapper.config();
-    }
-
     @Override
     public final HashConfigWrapper configWrapper() {
         return configWrapper;
     }
 
     @Override
-    public final float currentLoad() {
-        // Division in double to minimize precision loss
-        return ( float ) (((double) size) / capacity());
-    }
-
-
-    @Override
-    public final boolean noRemoved() {
-        return true;
-    }
-
-    @Override
     public final int modCount() {
-        return 0;
-    }
-
-    @Override
-    public final int freeSlots() {
-        return capacity() - size;
-    }
-
-    @Override
-    public final int removedSlots() {
         return 0;
     }
 
