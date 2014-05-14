@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static java.lang.Math.abs;
+import static net.openhft.collect.impl.hash.Capacities.chooseBetter;
 
 
 public final class QHashCapacities {
@@ -72,11 +73,7 @@ public final class QHashCapacities {
                 throw new OutOfMemoryError();
             }
         }
-        if (greaterCapacity - desiredCapacity <= desiredCapacity - lesserCapacity &&
-                greaterCapacity <= conf.maxCapacity(size)) {
-            return greaterCapacity;
-        }
-        return lesserCapacity >= conf.minCapacity(size) ? lesserCapacity : greaterCapacity;
+        return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity);
     }
 
     public static long capacity(HashConfigWrapper conf, long size) {
@@ -91,11 +88,7 @@ public final class QHashCapacities {
             long lesserCapacity = capIndex > 0 ?
                     REGULAR_LONG_CAPACITIES[capIndex - 1] : (long) MAX_REGULAR_INT_CAPACITY;
             long greaterCapacity = REGULAR_CHAR_CAPACITIES[capIndex];
-            if (greaterCapacity - desiredCapacity <= desiredCapacity - lesserCapacity &&
-                    greaterCapacity <= conf.maxCapacity(size)) {
-                return greaterCapacity;
-            }
-            return lesserCapacity >= conf.minCapacity(size) ? lesserCapacity : greaterCapacity;
+            return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity);
         }
         return extraLargeCapacity(desiredCapacity);
     }

@@ -19,6 +19,7 @@ package net.openhft.collect.impl.hash;
 import java.util.*;
 
 import static java.lang.Math.abs;
+import static net.openhft.collect.impl.hash.Capacities.chooseBetter;
 
 
 public final class DHashCapacities {
@@ -58,11 +59,7 @@ public final class DHashCapacities {
                 throw new OutOfMemoryError();
             }
         }
-        if (greaterCapacity - desiredCapacity <= desiredCapacity - lesserCapacity &&
-                greaterCapacity <= conf.maxCapacity(size)) {
-            return greaterCapacity;
-        }
-        return lesserCapacity >= conf.minCapacity(size) ? lesserCapacity : greaterCapacity;
+        return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity);
     }
 
     /**
