@@ -265,7 +265,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
             // This estimate is even lower:
             lowFreeEstimate = (int) ((nonFull - additionalSize) * freeFraction);
         }
-        if (lowFreeEstimate < minFreeSlots) {
+        if (lowFreeEstimate < minFreeSlots || intMinSize > maxSize) {
             return tryRehashForExpansion(DHashCapacities.capacity(configWrapper, intMinSize));
         } else {
             return false;
