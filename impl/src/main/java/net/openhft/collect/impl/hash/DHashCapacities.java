@@ -50,16 +50,8 @@ public final class DHashCapacities {
             greaterCapacity = REGULAR_CAPACITIES[capIndex];
         }
         else {
-            // overflow-aware
-            if (size - MAX_CAPACITY < 0)
-                return MAX_CAPACITY;
-            if (size - Integer.MAX_VALUE < 0) {
-                // Integer.MAX_VALUE is also a prime, but likely will cause OutOfMemoryError
-                return Integer.MAX_VALUE;
-            } else {
-                // QHash must have at least 1 free slot
-                throw new HashOverflowException();
-            }
+            // Since size could be virtual (expected), don't prematurely throw HashOverflowException
+            return MAX_CAPACITY;
         }
         return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity);
     }
