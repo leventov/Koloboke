@@ -277,26 +277,6 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
         size--;
         removedSlots++;
     }
-//
-//    /**
-//     * After insertion, this hook is called to adjust the size/free
-//     * values of the hash and to perform rehashing if necessary.
-//     *
-//     * @param usedFreeSlot the slot
-//     */
-//    final void postInsertHook(boolean usedFreeSlot) {
-//        modCount++;
-//        size++;
-//        if (usedFreeSlot) {
-//            if (--freeSlots < minFreeSlots) {
-//                if (!tryRehashIfTooFewFreeSlots() && freeSlots == 0) {
-//                    throw new HashOverflowException();
-//                }
-//            }
-//        } else {
-//            removedSlots--;
-//        }
-//    }
 
     final void postFreeSlotInsertHook() {
         modCount++;
