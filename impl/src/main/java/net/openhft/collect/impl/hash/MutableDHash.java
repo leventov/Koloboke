@@ -313,7 +313,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
             rehash(DHashCapacities.capacity(configWrapper, size));
             return true;
         } else {
-            return tryRehashForExpansion(configWrapper.grow(capacity()));
+            return tryRehashForExpansion(grownCapacity());
         }
     }
 
