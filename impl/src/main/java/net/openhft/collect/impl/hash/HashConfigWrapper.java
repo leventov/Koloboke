@@ -30,7 +30,9 @@ public final class HashConfigWrapper {
 
     HashConfigWrapper(HashConfig config) {
         this.config = config;
-        minLoadInverse = Scaler.by(1.0 / config.getMinLoad());
+        minLoadInverse = Scaler.by(
+                // minLoad can be 0.0
+                config.getMinLoad() > 0.0 ? 1.0 / config.getMinLoad() : Double.MAX_VALUE);
         targetLoadInverse = Scaler.by(1.0 / config.getTargetLoad());
         maxLoad = Scaler.by(config.getMaxLoad());
         maxLoadInverse = Scaler.by(1.0 / config.getMaxLoad());
