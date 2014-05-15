@@ -51,8 +51,8 @@ public class ScalerTest {
             Scaler.by(Double.MAX_VALUE),
     };
 
-    private static final Collection<Integer> ints = new ArrayList<Integer>();
-    private static final Collection<Long> longs = new ArrayList<Long>();
+    public static final Collection<Integer> ints = new ArrayList<Integer>();
+    public static final Collection<Long> longs = new ArrayList<Long>();
     static {
         for (int i = 1; i < 10000; i++) {
             ints.add(i);

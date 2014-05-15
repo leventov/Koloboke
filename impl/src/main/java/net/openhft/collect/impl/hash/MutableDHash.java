@@ -121,7 +121,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
         this.configWrapper = hash.configWrapper();
         int size = this.size = hash.size();
         int capacity = hash.capacity();
-        this.maxSize = configWrapper.maxSize(capacity);
+        this.maxSize = maxSize(capacity);
         int freeSlots = this.freeSlots = hash.freeSlots();
         int minFreeSlots = this.minFreeSlots = minFreeSlots(capacity, size);
         // see #initSlotCounts()
@@ -160,7 +160,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     abstract void allocateArrays(int capacity);
 
     private void initSlotCounts(int capacity) {
-        maxSize = configWrapper.maxSize(capacity);
+        maxSize = maxSize(capacity);
         int freeSlots = this.freeSlots = capacity - size;
         // free could be less than minFreeSlots only in case when capacity
         // is not sufficient to comply load factor (due to saturation with
@@ -168,6 +168,14 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
         // too often (instant) rehashing in this case.
         if (freeSlots < minFreeSlots) this.minFreeSlots = (freeSlots + 1) / 2;
         removedSlots = 0;
+    }
+
+    private int maxSize(int capacity) {
+        // No sense in trying to rehash after each insertion
+        // if the capacity is already reached the limit.
+        return !DHashCapacities.isMaxCapacity(capacity) ?
+                configWrapper.maxSize(capacity) :
+                capacity - 1;
     }
 
     /**

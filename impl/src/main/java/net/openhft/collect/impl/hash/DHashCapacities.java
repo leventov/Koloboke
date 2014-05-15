@@ -98,6 +98,11 @@ public final class DHashCapacities {
 
     public static final int MAX_CAPACITY = 2147483629;
 
+    public static boolean isMaxCapacity(int capacity) {
+        // MAX_CAPACITY or Integer.MAX_VALUE
+        return capacity >= MAX_CAPACITY;
+    }
+
 
     public static void main(String[] args) {
         int[] a = generateRegularCapacities(0.005);

@@ -18,6 +18,10 @@ package net.openhft.collect.impl;
 
 import java.math.BigDecimal;
 
+import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.valueOf;
+import static java.math.MathContext.DECIMAL128;
+
 
 /**
  * Class for precise and fast scaling non-negative integers by positive doubles.
@@ -40,15 +44,21 @@ public class Scaler {
 
     public static Scaler by(double scale) {
         if (Double.isNaN(scale) || scale <= 0.0 || Double.isInfinite(scale))
-            throw new IllegalArgumentException("Scale should be a finite positive number");
+            throw new IllegalArgumentException(
+                    "Scale should be a finite positive number, " + scale + " is given");
         if (scale == 0.25) return BY_0_25;
-        if (scale == 0.5 ) return BY_0_5 ;
+        // Special "precise" BigDecimal forms for scales which are inversions of custom
+        // scales are needed to preserve inversion consistency
+        if (scale == 1.0 / 3.0) return BY_3_0_INVERSE;
+        if (scale == 0.5) return BY_0_5;
+        if (scale == 1 / 1.5) return BY_1_5_INVERSE;
         if (scale == 0.75) return BY_0_75;
-        if (scale == 1.0 ) return BY_1_0 ;
-        if (scale == 1.5 ) return BY_1_5 ;
-        if (scale == 2.0 ) return BY_2_0 ;
-        if (scale == 3.0 ) return BY_3_0 ;
-        if (scale == 4.0 ) return BY_4_0 ;
+        if (scale == 1.0) return BY_1_0;
+        if (scale == 1.0 / 0.75) return BY_0_75_INVERSE;
+        if (scale == 1.5) return BY_1_5;
+        if (scale == 2.0) return BY_2_0;
+        if (scale == 3.0) return BY_3_0;
+        if (scale == 4.0) return BY_4_0;
         return new Scaler(scale);
     }
 
@@ -59,11 +69,19 @@ public class Scaler {
         @Override public long scaleLower(long n) { check(n); return  n >> 2      ; }
     };
 
+    static final Scaler BY_3_0_INVERSE = new Scaler(1.0 / 3.0) {
+        @Override BigDecimal createBD() { return ONE.divide(valueOf(3L), DECIMAL128); }
+    };
+
     static final Scaler BY_0_5 = new Scaler(0.5) {
         @Override public int  scaleUpper(int  n) { check(n); return (n >> 1) + 1 ; }
         @Override public int  scaleLower(int  n) { check(n); return  n >> 1      ; }
         @Override public long scaleUpper(long n) { check(n); return (n >> 1) + 1L; }
         @Override public long scaleLower(long n) { check(n); return  n >> 1      ; }
+    };
+
+    static final Scaler BY_1_5_INVERSE = new Scaler(1.0 / 1.5) {
+        @Override BigDecimal createBD() { return valueOf(2L).divide(valueOf(3L), DECIMAL128); }
     };
 
     static final Scaler BY_0_75 = new Scaler(0.75) {
@@ -78,6 +96,10 @@ public class Scaler {
         @Override public int  scaleLower(int  n) { check(n); return n                                                 ; }
         @Override public long scaleUpper(long n) { check(n); return n < Long.MAX_VALUE    ? n + 1L : Long.MAX_VALUE   ; }
         @Override public long scaleLower(long n) { check(n); return n                                                 ; }
+    };
+
+    static final Scaler BY_0_75_INVERSE = new Scaler(1.0 / 0.75) {
+        @Override BigDecimal createBD() { return valueOf(4L).divide(valueOf(3L), DECIMAL128); }
     };
 
     static final Scaler BY_1_5 = new Scaler(1.5) {
@@ -116,7 +138,7 @@ public class Scaler {
         assert n >= 0L : "n should be non-negative, otherwise result is undefined";
     }
 
-    private static final BigDecimal LONG_MAX_VALUE = BigDecimal.valueOf(Long.MAX_VALUE);
+    private static final BigDecimal LONG_MAX_VALUE = valueOf(Long.MAX_VALUE);
 
     final double scale;
     private BigDecimal scaleAsBD;
@@ -125,8 +147,13 @@ public class Scaler {
         this.scale = scale;
     }
 
-    private BigDecimal scale() {
-        return scaleAsBD != null ? scaleAsBD : (scaleAsBD = BigDecimal.valueOf(scale));
+    private BigDecimal scaleAsBD() {
+        return scaleAsBD != null ? scaleAsBD : (scaleAsBD = createBD());
+    }
+
+    /** Shouldn't be called from outside of the class. */
+    BigDecimal createBD() {
+        return valueOf(scale);
     }
 
     public int scaleUpper(int n) {
@@ -144,7 +171,7 @@ public class Scaler {
         check(n);
         if (n < Integer.MAX_VALUE && scale < 1.0)
             return (long) scaleUpper((int) n);
-        BigDecimal lower = BigDecimal.valueOf(n).multiply(scale());
+        BigDecimal lower = valueOf(n).multiply(scaleAsBD());
         return lower.compareTo(LONG_MAX_VALUE) < 0 ? lower.longValue() + 1L : Long.MAX_VALUE;
     }
 
@@ -152,7 +179,7 @@ public class Scaler {
         check(n);
         if (n < Integer.MAX_VALUE && scale < 1.0)
             return (long) scaleLower((int) n);
-        BigDecimal lower = BigDecimal.valueOf(n).multiply(scale());
+        BigDecimal lower = valueOf(n).multiply(scaleAsBD());
         return lower.compareTo(LONG_MAX_VALUE) < 0 ? lower.longValue() : Long.MAX_VALUE;
     }
 }

@@ -623,6 +623,11 @@ public final class QHashCapacities {
      */
     private static final int MAX_INT_CAPACITY = 2147483587;
 
+    public static boolean isMaxCapacity(int capacity) {
+        // MAX_INT_CAPACITY or Integer.MAX_VALUE
+        return capacity >= MAX_INT_CAPACITY;
+    }
+
 
     private static final long[] REGULAR_LONG_CAPACITIES = new long[] {
             2151678103L, 2154731503L, 2165559283L, 2176441471L, 2187378343L, 2198370191L, 2209417163L, 2220519727L,
