@@ -70,8 +70,7 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
                     } else if (cur == key) {
                         return false;
                     } else {
-                        int curDistance =
-                                (index + capacity - Primitives.hashCode(cur)) & capacityMask;
+                        int curDistance = (index - Primitives.hashCode(cur)) & capacityMask;
                         if (++distance > curDistance) {
                             keys[index] = key;
                             key = cur;
@@ -85,8 +84,7 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
                     if ((cur = keys[index]) == free) {
                         break keyAbsent;
                     } else {
-                        int curDistance =
-                                (index + capacity - Primitives.hashCode(cur)) & capacityMask;
+                        int curDistance = (index - Primitives.hashCode(cur)) & capacityMask;
                         if (++distance > curDistance) {
                             keys[index] = key;
                             key = cur;

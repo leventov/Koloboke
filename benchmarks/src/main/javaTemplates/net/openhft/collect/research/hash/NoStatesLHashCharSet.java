@@ -199,8 +199,7 @@ public class NoStatesLHashCharSet implements UnsafeConstants {
                 keys[indexToRemove] = free;
                 return true;
             }
-            int keyDistance = (indexToShift + capacity - Primitives.hashCode(keyToShift)) &
-                    capacityMask;
+            int keyDistance = (indexToShift - Primitives.hashCode(keyToShift)) & capacityMask;
             if (keyDistance >= shiftDistance) {
                 keys[indexToRemove] = keyToShift;
                 indexToRemove = indexToShift;
@@ -246,8 +245,7 @@ public class NoStatesLHashCharSet implements UnsafeConstants {
             if (keyToShift == free)
                 break;
             int indexToShift = (int) (offsetToShift >> CHAR_SCALE_SHIFT);
-            int keyDistance = (indexToShift + capacity - Primitives.hashCode(keyToShift)) &
-                    capacityMask;
+            int keyDistance = (indexToShift - Primitives.hashCode(keyToShift)) & capacityMask;
             if (keyDistance >= shiftDistance) {
                 U.putChar(keys, CHAR_BASE + offsetToRemove, keyToShift);
                 offsetToRemove = offsetToShift;

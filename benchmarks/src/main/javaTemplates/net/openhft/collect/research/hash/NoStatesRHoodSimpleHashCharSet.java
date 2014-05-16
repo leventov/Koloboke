@@ -45,8 +45,8 @@ public class NoStatesRHoodSimpleHashCharSet extends NoStatesRHoodHashCharSet {
                         index = (index + 1) & capacityMask;
                         if ((cur = keys[index]) == key) {
                             return index;
-                        } else if (cur == free || distance >
-                                ((index + capacity - Primitives.hashCode(cur)) & capacityMask)) {
+                        } else if (cur == free ||
+                                distance > ((index - Primitives.hashCode(cur)) & capacityMask)) {
                             return -1;
                         }
                         distance++;
@@ -78,8 +78,8 @@ public class NoStatesRHoodSimpleHashCharSet extends NoStatesRHoodHashCharSet {
                         cur = U.getChar(keys, CHAR_BASE + (index << CHAR_SCALE_SHIFT));
                         if (cur == key) {
                             return (int) index;
-                        } else if (cur == free || distance >
-                                ((index + capacity - Primitives.hashCode(cur)) & capacityMask)) {
+                        } else if (cur == free ||
+                                distance > ((index - Primitives.hashCode(cur)) & capacityMask)) {
                             return -1;
                         }
                         distance++;
@@ -109,8 +109,8 @@ public class NoStatesRHoodSimpleHashCharSet extends NoStatesRHoodHashCharSet {
                         index = (index + 1) & capacityMask;
                         if ((cur = keys[index]) == key) {
                             break keyPresent;
-                        } else if (cur == free || distance >
-                                ((index + capacity - Primitives.hashCode(cur)) & capacityMask)) {
+                        } else if (cur == free ||
+                                distance > ((index - Primitives.hashCode(cur)) & capacityMask)) {
                             return false;
                         }
                         distance++;
@@ -156,8 +156,7 @@ public class NoStatesRHoodSimpleHashCharSet extends NoStatesRHoodHashCharSet {
                                 CHAR_BASE + (index << CHAR_SCALE_SHIFT))) == key) {
                             break keyPresent;
                         } else if (cur == free || distance >
-                                ((((int) index) + capacity - Primitives.hashCode(cur)) &
-                                        capacityMask)) {
+                                ((((int) index) - Primitives.hashCode(cur)) & capacityMask)) {
                             return false;
                         }
                         distance++;
