@@ -355,6 +355,17 @@ public class MutableDHashCharShortMapGO/*<>*/
     /* endif */
 
 
+    /* if Mutable mutability */
+    @Override
+    public void clear() {
+        int mc = modCount() + 1;
+        super.clear();
+        if (mc != modCount())
+            throw new ConcurrentModificationException();
+    }
+    /* endif */
+
+
     @Override
     public Short remove(Object key) {
         /* template Remove with generic version */ throw new NotGenerated(); /* endtemplate */
