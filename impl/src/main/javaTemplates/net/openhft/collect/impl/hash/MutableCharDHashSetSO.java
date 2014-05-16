@@ -41,10 +41,14 @@ public abstract class MutableCharDHashSetSO/*<>*/
     void rehash(int newCapacity) {
         /* template Rehash */
     }
-    /* endif */
 
+    @Override
+    void removeAt(int index) {
+        incrementModCount();
+        super.removeAt(index);
+        postRemoveHook();
+    }
 
-    /* if Mutable mutability */
     @Override
     public void clear() {
         int mc = modCount() + 1;

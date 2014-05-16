@@ -94,7 +94,6 @@ public abstract class MutableObjDHashSO<E> extends MutableDHash implements ObjDH
     @Override
     void removeAt(int index) {
         set[index] = REMOVED;
-        postRemoveHook();
     }
 
 

@@ -220,7 +220,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     }
 
     
-    abstract void removeAt( int index );
+    abstract void removeAt(int index);
     
 
     /////////////////////////////
@@ -281,13 +281,11 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     }
 
     final void postRemoveHook() {
-        modCount++;
         size--;
         removedSlots++;
     }
 
     final void postFreeSlotInsertHook() {
-        modCount++;
         if (++size > maxSize) {
             if (tryRehashForExpansion(grownCapacity()))
                 return;
@@ -300,7 +298,6 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     }
 
     final void postRemovedSlotInsertHook() {
-        modCount++;
         if (++size > maxSize) {
             if (tryRehashForExpansion(grownCapacity()))
                 return;

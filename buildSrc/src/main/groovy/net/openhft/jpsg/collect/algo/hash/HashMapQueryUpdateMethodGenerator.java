@@ -72,6 +72,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     public void insert(String value) {
         permissions.add(Permission.INSERT);
         if (method.inline()) {
+            incrementModCount();
             lines("keys[" + index() + "] = " + unwrappedKey() + ";");
             if (cxt.isMapView())
                 lines(values() + "[" + index() + "] = " + unwrapValue(value) + ";");
@@ -381,6 +382,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
 
     @Override
     public MethodGenerator remove() {
+        incrementModCount();
         String keys;
         if (method.inline()) {
             keys = "keys";

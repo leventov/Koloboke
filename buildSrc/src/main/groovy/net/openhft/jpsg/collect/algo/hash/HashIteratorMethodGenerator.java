@@ -104,6 +104,7 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
         lines("int i;");
         ifBlock("(i = index) >= 0");
         ifBlock("expectedModCount++ == " + modCount());
+        incrementModCount();
         String keys = cxt.isObjectKey() ? "((Object[]) keys)" : "keys";
         lines(keys + "[i] = " + removed(cxt) + ";");
         if (cxt.isObjectValue()) {

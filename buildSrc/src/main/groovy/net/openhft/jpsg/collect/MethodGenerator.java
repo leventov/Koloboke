@@ -202,4 +202,8 @@ public abstract class MethodGenerator {
     public void unsupportedOperation() {
         lines("throw new java.lang.UnsupportedOperationException();");
     }
+
+    public void incrementModCount() {
+        lines("incrementModCount();");
+    }
 }

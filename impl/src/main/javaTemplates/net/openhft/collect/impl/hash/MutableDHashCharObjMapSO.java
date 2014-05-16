@@ -160,8 +160,10 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     /* if Mutable mutability */
     @Override
     void removeAt(int index) {
-        values[index] = null;
+        incrementModCount();
         super.removeAt(index);
+        values[index] = null;
+        postRemoveHook();
     }
     /* endif */
 

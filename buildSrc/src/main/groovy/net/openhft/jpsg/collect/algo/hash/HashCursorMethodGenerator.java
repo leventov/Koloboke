@@ -133,6 +133,7 @@ public class HashCursorMethodGenerator extends CursorMethodGenerator {
             ifBlock(isNotFree(cxt, "curKey"));
         }
         ifBlock("expectedModCount++ == " + modCount());
+        incrementModCount();
         if (cxt.isObjectValue())
             lines("int index;");
         String indexAssignment = cxt.isObjectValue() ? "index = this.index" : "index";

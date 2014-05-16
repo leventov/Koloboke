@@ -205,7 +205,6 @@ public abstract class MutableCharDHashSO extends MutableDHash
     @Override
     void removeAt(int index) {
         set[index] = removedValue;
-        postRemoveHook();
     }
     /* endif */
 }

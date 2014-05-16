@@ -101,6 +101,12 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
     }
     /* endif */
 
+    @Override
+    void removeAt(int index) {
+        incrementModCount();
+        super.removeAt(index);
+        postRemoveHook();
+    }
 
     @Override
     void allocateArrays(int capacity) {

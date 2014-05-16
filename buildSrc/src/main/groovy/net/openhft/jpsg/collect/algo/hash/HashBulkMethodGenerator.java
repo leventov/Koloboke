@@ -269,12 +269,13 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
     @Override
     public BulkMethodGenerator remove() {
+        incrementModCount();
+        lines("mc++;");
         lines("keys[i] = " + removed(cxt) + ";");
         if (cxt.isObjectValue()) {
             lines("vals[i] = null;");
         }
         lines("postRemoveHook();");
-        lines("mc++;");
         permissions.add(Permission.REMOVE);
         return this;
     }

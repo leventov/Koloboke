@@ -78,7 +78,6 @@ public abstract class MutableDoubleDHashSO extends MutableDHash implements Doubl
     @Override
     void removeAt(int index) {
         set[index] = REMOVED_BITS;
-        postRemoveHook();
     }
 
     @Override
