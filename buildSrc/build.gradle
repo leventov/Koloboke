@@ -26,3 +26,7 @@ sourceSets {
         }
     }
 }
+
+compileGroovy {
+    options.encoding = 'UTF-8'
+}
