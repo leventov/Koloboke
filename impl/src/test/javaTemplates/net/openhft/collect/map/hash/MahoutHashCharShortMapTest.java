@@ -123,7 +123,7 @@ public class MahoutHashCharShortMapTest {
     }
 
     @Test
-    public void testforEachWhile() {
+    public void testForEachWhile() {
         final List<Pair> pairs = new ArrayList<Pair>();
         HashCharShortMap map = newMutableMap();
         map.put((char) 11, (short) 22);
@@ -239,8 +239,6 @@ public class MahoutHashCharShortMapTest {
         assertEquals(25, values.get(2) /* valueEpsilon */);
     }
 
-    // tests of the code in the abstract class
-
     @Test
     public void testCopy() {
         HashCharShortMap map = newMutableMap();
@@ -252,9 +250,6 @@ public class MahoutHashCharShortMapTest {
 
     @Test
     public void testEquals() {
-        // since there are no other subclasses of
-        // Abstractxxx available, we have to just test the
-        // obvious.
         HashCharShortMap map = newMutableMap();
         map.put((char) 11, (short) 22);
         map.put((char) 12, (short) 23);

@@ -51,7 +51,7 @@ public final class ObjectType implements Option {
 
     @Override
     public String intermediateReplace(String content, String dim) {
-        log.info("Object type doesn't templating");
+        log.info("Object type can't be template source");
         return content;
     }
 

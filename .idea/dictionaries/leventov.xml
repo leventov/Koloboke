@@ -1,23 +1,47 @@
 <component name="ProjectDictionaryState">
   <dictionary name="leventov">
     <words>
+      <w>antlr</w>
+      <w>cond</w>
       <w>dhash</w>
+      <w>elems</w>
+      <w>elif</w>
+      <w>endconst</w>
+      <w>enddefine</w>
+      <w>endif</w>
+      <w>endtemplate</w>
+      <w>endwith</w>
+      <w>fdiv</w>
+      <w>fild</w>
+      <w>fmul</w>
       <w>hashtable</w>
       <w>haswell</w>
+      <w>inlined</w>
+      <w>ints</w>
       <w>inversed</w>
+      <w>iter</w>
+      <w>iterables</w>
       <w>jpsg</w>
       <w>leventov</w>
       <w>lhash</w>
+      <w>lookahead</w>
+      <w>lookbehind</w>
       <w>lookups</w>
       <w>megamorphic</w>
+      <w>memoized</w>
       <w>openhft</w>
       <w>qhash</w>
+      <w>repl</w>
       <w>rhood</w>
+      <w>scalarization</w>
       <w>scaler</w>
       <w>scalers</w>
       <w>subclassing</w>
       <w>tradeoff</w>
+      <w>unary</w>
+      <w>unbox</w>
       <w>updatable</w>
+      <w>vals</w>
       <w>zipf</w>
     </words>
   </dictionary>

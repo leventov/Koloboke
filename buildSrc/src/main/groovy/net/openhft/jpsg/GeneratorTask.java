@@ -402,7 +402,7 @@ public class GeneratorTask extends ConventionTask {
                 if (permissiveCondition.checkAsCondition(target))
                     break checkPermissive;
             }
-            // context doesn't permitted by any condition
+            // context isn't permitted by any condition
             return false;
         }
         if (!prohibitingConditions.isEmpty()) {
