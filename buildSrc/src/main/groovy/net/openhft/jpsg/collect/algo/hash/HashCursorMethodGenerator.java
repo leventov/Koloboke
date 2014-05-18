@@ -77,6 +77,7 @@ public class HashCursorMethodGenerator extends CursorMethodGenerator {
         lines("return true;");
         blockEnd().blockEnd();
         lines(
+                "curKey = " + free(cxt) + ";",
                 "index = -1;",
                 "return false;"
         );
