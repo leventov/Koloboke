@@ -38,7 +38,7 @@ public class Rehash extends BulkMethod {
     public void loopBody() {
         String key = gen.unwrappedKey();
         gen.lines("int hash, index;");
-        gen.ifBlock(isNotFree(cxt, firstKey(cxt, "newKeys", key, true)));
+        gen.ifBlock(isNotFree(cxt, firstKey(cxt, "newKeys", key, true, false)));
         gen.lines(step());
         gen.lines("do").block();
         gen.lines(nextIndex());

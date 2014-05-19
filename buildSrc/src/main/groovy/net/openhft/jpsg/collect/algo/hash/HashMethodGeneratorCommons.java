@@ -27,17 +27,17 @@ public final class HashMethodGeneratorCommons {
 
     static String curAssignment(MethodContext cxt, String keys, String key,
             boolean capacityAssigned) {
-        return "(cur = " + firstKey(cxt, keys, key, capacityAssigned) + ")";
+        return "(cur = " + firstKey(cxt, keys, key, capacityAssigned, true) + ")";
     }
 
     static String firstKey(MethodContext cxt, String keys, String key,
-            boolean capacityAssigned) {
+            boolean capacityAssigned, boolean distinctNullKey) {
         String indexAssignment;
         if (!cxt.isNullKey()) {
             String capacityAssignment = capacityAssigned ?
                     "capacity" :
                     ("(capacity = " + keys + ".length)");
-            String hashAssignment = "(hash = " + positiveKeyHash(cxt, key) + ")";
+            String hashAssignment = "(hash = " + positiveKeyHash(cxt, key, distinctNullKey) + ")";
             indexAssignment = "index = " + hashAssignment + " % " + capacityAssignment;
         } else {
             indexAssignment = "index = 0";
@@ -53,11 +53,12 @@ public final class HashMethodGeneratorCommons {
         return "if ((index -= step) < 0) index += capacity; // nextIndex";
     }
 
-    private static String positiveKeyHash(MethodContext cxt, String key) {
-        if (cxt.isObjectKey()) {
-            return "keyHashCode(" + key + ") & Integer.MAX_VALUE";
-        } else if (cxt.isNullKey()) {
+    static String keyHash(MethodContext cxt, String key, boolean distinctNullKey) {
+        if (distinctNullKey && cxt.isNullKey()) {
             return "0";
+        } if (cxt.isObjectKey() || cxt.isNullKey()) {
+            return (distinctNullKey ? "keyHashCode" : "nullableKeyHashCode") +
+                    "(" + key + ") & Integer.MAX_VALUE";
         } else {
             PrimitiveType keyOption = (PrimitiveType) cxt.keyOption();
             switch (keyOption) {
