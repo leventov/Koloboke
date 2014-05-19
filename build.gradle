@@ -29,6 +29,10 @@ subprojects {
         provided 'com.google.auto.value:auto-value:1.0-rc1'
     }
 
+    tasks.withType(net.openhft.jpsg.GeneratorTask).each { gen ->
+        gen.addProcessor net.openhft.jpsg.collect.MethodGeneratingProcessor
+    }
+
     compileJava {
         // To suppress warnings about usages of sun.misc.Unsafe API
         options.compilerArgs << '-XDignore.symbol.file'
@@ -38,8 +42,8 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    tasks.withType(net.openhft.jpsg.GeneratorTask).each { gen ->
-        gen.addProcessor net.openhft.jpsg.collect.MethodGeneratingProcessor
+    test {
+        maxParallelForks Math.max((int) (Runtime.runtime.availableProcessors() / 2), 1)
     }
 
     findbugs {
