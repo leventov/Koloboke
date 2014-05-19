@@ -160,7 +160,7 @@ public enum PrimitiveType implements Option {
 
     @Override
     public String intermediateReplace(String content, String dim) {
-        IntermediateOption intermediate = new IntermediateOption(dim);
+        IntermediateOption intermediate = IntermediateOption.of(dim);
         content = classNameP.matcher(content).replaceAll(intermediate.className);
         content = standaloneP.matcher(content).replaceAll(intermediate.standalone);
         content = lowerP.matcher(content).replaceAll(intermediate.lower);
@@ -172,7 +172,7 @@ public enum PrimitiveType implements Option {
 
     @Override
     public String finalReplace(String content, String dim) {
-        IntermediateOption intermediate = new IntermediateOption(dim);
+        IntermediateOption intermediate = IntermediateOption.of(dim);
         content = intermediate.classNameP.matcher(content).replaceAll(className);
         content = intermediate.standaloneP.matcher(content).replaceAll(standalone);
         content = intermediate.lowerP.matcher(content).replaceAll(lower);

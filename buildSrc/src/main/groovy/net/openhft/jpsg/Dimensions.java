@@ -118,12 +118,16 @@ public final class Dimensions {
         }
 
         private static Option parseOption(String opt, ObjectType.IdentifierStyle objectIdStyle) {
-            try {
-                return PrimitiveType.valueOf(opt.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                if (opt.equalsIgnoreCase("obj") || opt.equalsIgnoreCase("object"))
-                    return ObjectType.get(objectIdStyle);
-                return new SimpleOption(opt);
+            switch (opt.toUpperCase()) {
+                case "INT": return PrimitiveType.INT;
+                case "LONG": return PrimitiveType.LONG;
+                case "FLOAT": return PrimitiveType.FLOAT;
+                case "DOUBLE": return PrimitiveType.DOUBLE;
+                case "OBJ": case "OBJECT": return ObjectType.get(objectIdStyle);
+                case "BYTE": return PrimitiveType.BYTE;
+                case "CHAR": return PrimitiveType.CHAR;
+                case "SHORT": return PrimitiveType.SHORT;
+                default: return new SimpleOption(opt);
             }
         }
     }

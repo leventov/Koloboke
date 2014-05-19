@@ -16,12 +16,24 @@
 
 package net.openhft.jpsg;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 
 
 public final class IntermediateOption {
+
+    private static final Map<String, IntermediateOption> cache = new HashMap<>();
+
+    public static IntermediateOption of(String dim) {
+        IntermediateOption opt;
+        if ((opt = cache.get(dim)) == null) {
+            cache.put(dim, opt = new IntermediateOption(dim));
+        }
+        return opt;
+    }
 
     /**
      * If some option value clashes with any of {className, standalone, lower, title, upper}
@@ -49,7 +61,7 @@ public final class IntermediateOption {
     final String upper;
     final Pattern upperP;
 
-    IntermediateOption(String dim) {
+    private IntermediateOption(String dim) {
         className = cyrillicLetters(format("#%s.className#", dim));
         classNameP = Pattern.compile(Pattern.quote(className));
 

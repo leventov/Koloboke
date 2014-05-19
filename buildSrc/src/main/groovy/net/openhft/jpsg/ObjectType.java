@@ -62,7 +62,7 @@ public final class ObjectType implements Option {
 
     @Override
     public String finalReplace(String content, String dim) {
-        IntermediateOption intermediate = new IntermediateOption(dim);
+        IntermediateOption intermediate = IntermediateOption.of(dim);
         String genericParamName = genericParamName(dim);
         content = intermediate.classNameP.matcher(content).replaceAll(genericParamName);
         content = intermediate.standaloneP.matcher(content).replaceAll(genericParamName);

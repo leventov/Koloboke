@@ -74,7 +74,7 @@ public final class SimpleOption implements Option {
     public String intermediateReplace(String content, String dim) {
         if (contextOption)
             return content;
-        IntermediateOption intermediate = new IntermediateOption(dim);
+        IntermediateOption intermediate = IntermediateOption.of(dim);
         content = lowerP.matcher(content).replaceAll(intermediate.lower);
         content = titleP.matcher(content).replaceAll(intermediate.title);
         content = upperP.matcher(content).replaceAll(intermediate.upper);
@@ -86,7 +86,7 @@ public final class SimpleOption implements Option {
     public String finalReplace(String content, String dim) {
         if (contextOption)
             return content;
-        IntermediateOption intermediate = new IntermediateOption(dim);
+        IntermediateOption intermediate = IntermediateOption.of(dim);
         content = intermediate.lowerP.matcher(content).replaceAll(lower);
         content = intermediate.titleP.matcher(content).replaceAll(title);
         content = intermediate.upperP.matcher(content).replaceAll(upper);

@@ -50,10 +50,12 @@ public class GeneratorTask extends ConventionTask {
         return compile(format("^\\s*%s[^\\S\\n]*?\\n|%s", block, block));
     }
 
-    private static String getBlockGroup(String block, String insideBlockRegex, String group) {
-        Matcher m =
-                compile("(^\\s*)?/[\\*/]\\s*" + insideBlockRegex + "\\s*[\\*/]/([^\\S\\n]*?\\n)?")
-                        .matcher(block);
+    private static Pattern wrapBlock(String insideBlockRegex) {
+        return compile("(^\\s*)?/[\\*/]\\s*" + insideBlockRegex + "\\s*[\\*/]/([^\\S\\n]*?\\n)?");
+    }
+
+    private static String getBlockGroup(String block, Pattern pattern, String group) {
+        Matcher m = pattern.matcher(block);
         if (m.matches()) {
             return m.group(group);
         }  else {
@@ -64,6 +66,7 @@ public class GeneratorTask extends ConventionTask {
     public static final String DIMENSIONS = format("(?<dimensions>(\\s*%s\\s*)+)", DIMENSION);
 
     private static final String COND_START = format("if\\s*(?<condition>%s)", CONDITION);
+    private static final Pattern COND_START_BLOCK_P = wrapBlock(COND_START);
     private static final Pattern COND_START_P = compileBlock(COND_START);
 
     private static final String COND_END = "endif";
@@ -71,9 +74,11 @@ public class GeneratorTask extends ConventionTask {
 
     private static final String COND_PART =
             format("((el)?if\\s*(?<condition>%s)|%s)", CONDITION, COND_END);
+    private static final Pattern COND_PART_BLOCK_P = wrapBlock(COND_PART);
     private static final Pattern COND_PART_P = compileBlock(COND_PART);
 
     private static final String CONTEXT_START = format("with%s", DIMENSIONS);
+    private static final Pattern CONTEXT_START_BLOCK_P = wrapBlock(CONTEXT_START);
     private static final Pattern CONTEXT_START_P = compileBlock(CONTEXT_START);
 
     private static final String CONTEXT_END = "endwith";
@@ -347,14 +352,14 @@ public class GeneratorTask extends ConventionTask {
         Matcher fileDimsM = CONTEXT_START_P.matcher(content);
         if (fileDimsM.find() && fileDimsM.start() == 0) {
             targetDims = dimensionsParser.parse(
-                    getBlockGroup(fileDimsM.group(), CONTEXT_START, "dimensions"));
+                    getBlockGroup(fileDimsM.group(), CONTEXT_START_BLOCK_P, "dimensions"));
             content = content.substring(fileDimsM.end()).trim() + "\n";
         }
         Matcher fileCondM = COND_START_P.matcher(content);
         Condition fileCond = null;
         if (fileCondM.find() && fileCondM.start() == 0) {
             fileCond = Condition.parse(
-                    getBlockGroup(fileCondM.group(), COND_START, "condition"),
+                    getBlockGroup(fileCondM.group(), COND_START_BLOCK_P, "condition"),
                     dimensionsParser);
             content = content.substring(fileCondM.end()).trim() + "\n";
         }
@@ -435,7 +440,7 @@ public class GeneratorTask extends ConventionTask {
                 Matcher condM = COND_START_P.matcher(blockStart);
                 if (condM.matches()) {
                     Condition branchCond = Condition.parse(
-                            getBlockGroup(condM.group(), COND_PART, "condition"),
+                            getBlockGroup(condM.group(), COND_PART_BLOCK_P, "condition"),
                             getDimensionsParser());
                     int branchStartPos = blockStartMatcher.end();
                     int nest = 0;
@@ -484,7 +489,8 @@ public class GeneratorTask extends ConventionTask {
                                     continue blockSearch;
                                 } else {
                                     branchCond = Condition.parse(
-                                            getBlockGroup(condM.group(), COND_PART, "condition"),
+                                            getBlockGroup(condM.group(), COND_PART_BLOCK_P,
+                                                    "condition"),
                                             getDimensionsParser());
                                     branchStartPos = condM.end();
                                 }
@@ -499,7 +505,8 @@ public class GeneratorTask extends ConventionTask {
                     Matcher contextM = CONTEXT_START_P.matcher(blockStart);
                     if (contextM.matches()) {
                         Dimensions additionalDims = getDimensionsParser().parse(
-                                getBlockGroup(contextM.group(), CONTEXT_START, "dimensions"));
+                                getBlockGroup(contextM.group(), CONTEXT_START_BLOCK_P,
+                                        "dimensions"));
                         int blockStartPos = blockStartMatcher.end();
                         int nest = 0;
                         contextM = CONTEXT_PART_P.matcher(template);
