@@ -87,7 +87,7 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
         checkModCount(this, cxt, true);
         if (cxt.mutable())
             lines("index = nextI;");
-        copyArrays(this, cxt);
+        copyKeys(this, cxt);
         copySpecials(this, cxt);
         lines(elemType() + " prev = next;");
         loop();

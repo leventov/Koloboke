@@ -156,8 +156,12 @@ public final class HashIterMethodGeneratorCommons {
     }
 
     static void copyArrays(MethodGenerator g, MethodContext cxt) {
-        g.lines(cxt.keyUnwrappedRawType() + "[] keys = this.keys;");
+        copyKeys(g, cxt);
         if (!cxt.isKeyView())
             g.lines(cxt.valueUnwrappedType() + "[] vals = this.vals;");
+    }
+
+    static void copyKeys(MethodGenerator g, MethodContext cxt) {
+        g.lines(cxt.keyUnwrappedRawType() + "[] keys = this.keys;");
     }
 }

@@ -64,7 +64,7 @@ public class HashCursorMethodGenerator extends CursorMethodGenerator {
     @Override
     public void generateMoveNext() {
         checkModCount(this, cxt, false);
-        copyArrays(this, cxt);
+        copyKeys(this, cxt);
         copySpecials(this, cxt);
         lines("for (int i = index - 1; i >= 0; i--)").block();
         ifKeyNotFreeOrRemoved(this, cxt, "i", true);
