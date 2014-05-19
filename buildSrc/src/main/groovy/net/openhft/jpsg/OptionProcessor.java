@@ -69,7 +69,7 @@ public final class OptionProcessor extends TemplateProcessor {
     }
 
     @Override
-    protected void process(Context source, Context target, String template) {
+    protected void process(StringBuilder sb, Context source, Context target, String template) {
         template = processRaw(source, target, template);
         template = processBits(source, target, template);
 
@@ -87,6 +87,6 @@ public final class OptionProcessor extends TemplateProcessor {
             Option option = target.getOption(dim);
             template = option.finalReplace(template, dim);
         }
-        postProcess(source, target, template);
+        postProcess(sb, source, target, template);
     }
 }

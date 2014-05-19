@@ -98,7 +98,7 @@ public class FunctionProcessor extends TemplateProcessor {
     }
 
     @Override
-    protected void process(Context source, Context target, String template) {
+    protected void process(StringBuilder sb, Context source, Context target, String template) {
         Map<String, String> titleToDim = new HashMap<>();
         for (Map.Entry<String, Option> e : source) {
             Option opt = e.getValue();
@@ -153,12 +153,12 @@ public class FunctionProcessor extends TemplateProcessor {
             Matcher templateStartM = TEMPLATE_START.matcher(template.substring(m.end()));
             boolean noTemplateAhead = !templateStartM.find() || templateStartM.start() != 0;
 
-            postProcess(source, target, template.substring(prevEnd, m.start()));
+            postProcess(sb, source, target, template.substring(prevEnd, m.start()));
             String generatedName = generateName(
                     argDims, outDim, baseName, allowOperatorCollapse, noTemplateAhead, target);
             sb.append(generatedName);
             prevEnd = m.end();
         }
-        postProcess(source, target, template.substring(prevEnd));
+        postProcess(sb, source, target, template.substring(prevEnd));
     }
 }

@@ -145,7 +145,7 @@ public class MethodGeneratingProcessor extends TemplateProcessor {
     }
 
     @Override
-    protected void process(Context source, Context target, String template) {
+    protected void process(StringBuilder builder, Context source, Context target, String template) {
         Matcher matcher = METHOD_BODY_P.matcher(template);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
@@ -171,6 +171,6 @@ public class MethodGeneratingProcessor extends TemplateProcessor {
 
         }
         matcher.appendTail(sb);
-        postProcess(source, target, sb.toString());
+        postProcess(builder, source, target, sb.toString());
     }
 }

@@ -24,14 +24,14 @@ public abstract class TemplateProcessor {
 
     private Dimensions.Parser dimensionsParser;
     private TemplateProcessor next = null;
-    StringBuilder sb;
 
     /**
      * @param source template context
      * @param target context to generate code for
      * @param template source template
      */
-    protected abstract void process(Context source, Context target, String template);
+    protected abstract void process(StringBuilder sb,
+            Context source, Context target, String template);
 
     protected int priority() {
         return DEFAULT_PRIORITY;
@@ -41,13 +41,14 @@ public abstract class TemplateProcessor {
         return dimensionsParser;
     }
 
-    protected final void postProcess(Context source, Context target, String template) {
+    protected final void postProcess(StringBuilder sb,
+            Context source, Context target, String template) {
         sb.append(next != null ? next.generate(source, target, template) : template);
     }
 
     final String generate(Context source, Context target, String template) {
-        sb = new StringBuilder();
-        process(source, target, template);
+        StringBuilder sb = new StringBuilder();
+        process(sb, source, target, template);
         return sb.toString();
     }
 

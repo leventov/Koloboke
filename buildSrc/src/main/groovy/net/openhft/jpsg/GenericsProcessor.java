@@ -47,7 +47,7 @@ public final class GenericsProcessor extends TemplateProcessor {
     private static final Pattern UNBOUND_P = RegexpUtils.compile("/[\\*/]<\\?>[\\*/]/");
 
     @Override
-    protected void process(Context source, Context target, String template) {
+    protected void process(StringBuilder sb, Context source, Context target, String template) {
         List<Map.Entry<String, Option>> targetOptions = getViewOptions(target);
 
         String simpleG = "", superG = "", extendsG = "", unboundG = "";
@@ -71,6 +71,6 @@ public final class GenericsProcessor extends TemplateProcessor {
         template = SUPER_P.matcher(template).replaceAll(superG);
         template = EXTENDS_P.matcher(template).replaceAll(extendsG);
         template = UNBOUND_P.matcher(template).replaceAll(unboundG);
-        postProcess(source, target, template);
+        postProcess(sb, source, target, template);
     }
 }

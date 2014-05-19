@@ -27,7 +27,7 @@ public class FloatingWrappingProcessor extends TemplateProcessor {
             "((?<closed>(?<closedBody>[^/]+)/[\\*/][\\*/]/)|(?<openBody>[^\\s\\{\\};/\\*]+))");
 
     @Override
-    protected void process(Context source, Context target, String template) {
+    protected void process(StringBuilder builder, Context source, Context target, String template) {
         StringBuffer sb = new StringBuffer();
         Matcher m = WRAPPING_P.matcher(template);
         while (m.find()) {
@@ -44,6 +44,6 @@ public class FloatingWrappingProcessor extends TemplateProcessor {
             m.appendReplacement(sb, repl);
         }
         m.appendTail(sb);
-        postProcess(source, target, sb.toString());
+        postProcess(builder, source, target, sb.toString());
     }
 }

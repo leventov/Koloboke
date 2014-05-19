@@ -26,20 +26,22 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static net.openhft.jpsg.Condition.CONDITION;
 import static net.openhft.jpsg.Dimensions.DIMENSION;
 import static net.openhft.jpsg.Dimensions.Parser.parseOptions;
 import static net.openhft.jpsg.ObjectType.IdentifierStyle.SHORT;
 import static net.openhft.jpsg.RegexpUtils.compile;
 import static net.openhft.jpsg.RegexpUtils.removeSubGroupNames;
-import static java.lang.String.format;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.nio.file.FileVisitResult.CONTINUE;
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 
 public class GeneratorTask extends ConventionTask {
@@ -259,32 +261,64 @@ public class GeneratorTask extends ConventionTask {
         }
         init();
         if (Files.isDirectory(source)) {
-            Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
-                        throws IOException {
-                    Path targetDir = target.resolve(source.relativize(dir));
-                    try {
-                        Files.copy(dir, targetDir);
-                    } catch (FileAlreadyExistsException e) {
-                        if (!Files.isDirectory(targetDir))
-                            throw e;
-                    }
-                    return CONTINUE;
+            class DirGeneration extends RecursiveAction {
+                final Path dir;
+
+                public DirGeneration(Path dir) {
+                    this.dir = dir;
                 }
 
                 @Override
-                public FileVisitResult visitFile(Path sourceFile, BasicFileAttributes attrs)
-                        throws IOException {
-                    Path targetFile = target.resolve(source.relativize(sourceFile));
-                    if (sourceFile.toFile().lastModified() < targetFile.toFile().lastModified()) {
-                        log.info("File {} is up to date, not processing source", targetFile);
-                        return CONTINUE;
+                protected void compute() {
+                    try {
+                        final Collection<ForkJoinTask<?>> subTasks = new ArrayList<>();
+                        Path targetDir = target.resolve(source.relativize(dir));
+                        try {
+                            Files.copy(dir, targetDir);
+                        } catch (FileAlreadyExistsException e) {
+                            if (!Files.isDirectory(targetDir))
+                                throw e;
+                        }
+                        Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
+                            @Override
+                            public FileVisitResult preVisitDirectory(Path dir,
+                                    BasicFileAttributes attrs) throws IOException {
+                                if (!DirGeneration.this.dir.equals(dir)) {
+                                    subTasks.add(new DirGeneration(dir));
+                                    return SKIP_SUBTREE;
+                                } else {
+                                    return CONTINUE;
+                                }
+                            }
+
+                            @Override
+                            public FileVisitResult visitFile(final Path sourceFile,
+                                    BasicFileAttributes attrs) throws IOException {
+                                final Path targetFile =
+                                        target.resolve(source.relativize(sourceFile));
+                                if (sourceFile.toFile().lastModified() <
+                                        targetFile.toFile().lastModified()) {
+                                    log.info("File {} is up to date, not processing source",
+                                            targetFile);
+                                    return CONTINUE;
+                                }
+                                subTasks.add(ForkJoinTask.adapt(new Callable<Void>() {
+                                    @Override
+                                    public Void call() throws IOException {
+                                        doGenerate(sourceFile, targetFile.getParent());
+                                        return null;
+                                    }
+                                }));
+                                return CONTINUE;
+                            }
+                        });
+                        ForkJoinTask.invokeAll(subTasks);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                    doGenerate(sourceFile, targetFile.getParent());
-                    return CONTINUE;
                 }
-            });
+            }
+            new DirGeneration(source).compute();
         } else {
             doGenerate(source, target);
         }
@@ -348,48 +382,57 @@ public class GeneratorTask extends ConventionTask {
         log.info("Processing file: {}", sourceFile);
         String sourceFileName = sourceFile.toFile().getName();
         Dimensions targetDims = dimensionsParser.parseClassName(sourceFileName);
-        String content = new String(Files.readAllBytes(sourceFile));
-        Matcher fileDimsM = CONTEXT_START_P.matcher(content);
+        String rawContent = new String(Files.readAllBytes(sourceFile));
+        Matcher fileDimsM = CONTEXT_START_P.matcher(rawContent);
         if (fileDimsM.find() && fileDimsM.start() == 0) {
             targetDims = dimensionsParser.parse(
                     getBlockGroup(fileDimsM.group(), CONTEXT_START_BLOCK_P, "dimensions"));
-            content = content.substring(fileDimsM.end()).trim() + "\n";
+            rawContent = rawContent.substring(fileDimsM.end()).trim() + "\n";
         }
-        Matcher fileCondM = COND_START_P.matcher(content);
+        Matcher fileCondM = COND_START_P.matcher(rawContent);
         Condition fileCond = null;
         if (fileCondM.find() && fileCondM.start() == 0) {
             fileCond = Condition.parse(
                     getBlockGroup(fileCondM.group(), COND_START_BLOCK_P, "condition"),
                     dimensionsParser);
-            content = content.substring(fileCondM.end()).trim() + "\n";
+            rawContent = rawContent.substring(fileCondM.end()).trim() + "\n";
         }
+        final String content = rawContent;
         log.info("Target dimensions: {}", targetDims);
         List<Context> targetContexts = targetDims.generateContexts();
-        Context mainContext = targetContexts.get(0);
-        for (Context target : targetContexts) {
-            if (!checkContext(target)) {
-                log.info("Context filtered by generator: {}", target);
+        final Context mainContext = targetContexts.get(0);
+        List<ForkJoinTask<?>> contextGenerationTasks = new ArrayList<>();
+        for (Context tc : targetContexts) {
+            if (!checkContext(tc)) {
+                log.info("Context filtered by generator: {}", tc);
                 continue;
             }
-            target = defaultContext.join(target);
+            final Context target = defaultContext.join(tc);
             if (fileCond != null && !fileCond.check(target)) {
                 log.info("Context filtered by file condition: {}", target);
                 continue;
             }
-            String generatedContent = generate(mainContext, target, content);
-            String generatedFileName = generate(mainContext, target, sourceFileName);
-            Path generatedFile = targetDir.resolve(generatedFileName);
-            if (Files.exists(generatedFile)) {
-                String targetContent = new String(Files.readAllBytes(generatedFile));
-                if (generatedContent.equals(targetContent)) {
-                    log.warn("Already generated: {}", generatedFileName);
-                    continue;
+            final String generatedFileName = generate(mainContext, target, sourceFileName);
+            final Path generatedFile = targetDir.resolve(generatedFileName);
+            contextGenerationTasks.add(ForkJoinTask.adapt(new Callable<Void>() {
+                @Override
+                public Void call() throws IOException {
+                    String generatedContent = generate(mainContext, target, content);
+                    if (Files.exists(generatedFile)) {
+                        String targetContent = new String(Files.readAllBytes(generatedFile));
+                        if (generatedContent.equals(targetContent)) {
+                            log.warn("Already generated: {}", generatedFileName);
+                            return null;
+                        }
+                    }
+                    Files.write(generatedFile, Arrays.asList(generatedContent), UTF_8,
+                            TRUNCATE_EXISTING, CREATE);
+                    log.info("Wrote: {}", generatedFileName);
+                    return null;
                 }
-            }
-            Files.write(generatedFile, Arrays.asList(generatedContent), UTF_8,
-                    TRUNCATE_EXISTING, CREATE);
-            log.info("Wrote: {}", generatedFileName);
+            }));
         }
+        ForkJoinTask.invokeAll(contextGenerationTasks);
     }
 
     private String generate(Context source, Context target, String template) {
@@ -428,14 +471,14 @@ public class GeneratorTask extends ConventionTask {
         }
 
         @Override
-        protected void process(Context source, Context target, String template) {
+        protected void process(StringBuilder sb, Context source, Context target, String template) {
             Matcher blockStartMatcher = BLOCK_START_P.matcher(template);
             int prevBlockEndPos = 0;
             blockSearch:
             while (blockStartMatcher.find()) {
                 int blockDefPos = blockStartMatcher.start();
                 String linearBlock = template.substring(prevBlockEndPos, blockDefPos);
-                postProcess(source, target, linearBlock);
+                postProcess(sb, source, target, linearBlock);
                 String blockStart = blockStartMatcher.group();
                 Matcher condM = COND_START_P.matcher(blockStart);
                 if (condM.matches()) {
@@ -459,7 +502,7 @@ public class GeneratorTask extends ConventionTask {
                             if (branchCond.check(target)) {
                                 int branchEndPos = condM.start();
                                 String block = template.substring(branchStartPos, branchEndPos);
-                                process(source, target, block);
+                                process(sb, source, target, block);
                                 if (COND_END_P.matcher(condPart).matches()) {
                                     prevBlockEndPos = condM.end();
                                     blockStartMatcher.region(prevBlockEndPos, template.length());
@@ -528,7 +571,7 @@ public class GeneratorTask extends ConventionTask {
                                         // always int /*endwith*/ generated int 2 /*endwith*/
                                         // -- for example. We don't filter such contexts.
                                         if (addContexts.size() == 1 || checkContext(newTarget)) {
-                                            process(newSource, newTarget, block);
+                                            process(sb, newSource, newTarget, block);
                                         }
                                     }
                                     prevBlockEndPos = contextM.end();
@@ -551,7 +594,7 @@ public class GeneratorTask extends ConventionTask {
                 }
             }
             String tail = template.substring(prevBlockEndPos);
-            postProcess(source, target, tail);
+            postProcess(sb, source, target, tail);
         }
     }
 }

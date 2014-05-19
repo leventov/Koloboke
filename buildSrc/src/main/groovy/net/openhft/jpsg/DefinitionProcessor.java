@@ -37,7 +37,7 @@ public class DefinitionProcessor extends TemplateProcessor {
     }
 
     @Override
-    protected void process(Context source, Context target, String template) {
+    protected void process(StringBuilder builder, Context source, Context target, String template) {
         Matcher matcher = DEF_P.matcher(template);
         StringBuffer sb = new StringBuffer();
         Map<String, String> definitions = new HashMap<>();
@@ -46,7 +46,7 @@ public class DefinitionProcessor extends TemplateProcessor {
             matcher.appendReplacement(sb, "");
         }
         matcher.appendTail(sb);
-        postProcess(source, target, replaceDefinitions(definitions, sb.toString()));
+        postProcess(builder, source, target, replaceDefinitions(definitions, sb.toString()));
     }
 
     private static String replaceDefinitions(Map<String, String> definitions, String template) {

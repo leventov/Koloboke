@@ -41,7 +41,7 @@ public final class ConstProcessor extends TemplateProcessor {
     }
 
     @Override
-    protected void process(Context source, Context target, String template) {
+    protected void process(StringBuilder builder, Context source, Context target, String template) {
         for (Map.Entry<String, Option> e : target) {
             String dim = e.getKey();
             Option option = e.getValue();
@@ -55,7 +55,7 @@ public final class ConstProcessor extends TemplateProcessor {
             valueM.appendTail(sb);
             template = sb.toString();
         }
-        postProcess(source, target, template);
+        postProcess(builder, source, target, template);
     }
 
     @Override
