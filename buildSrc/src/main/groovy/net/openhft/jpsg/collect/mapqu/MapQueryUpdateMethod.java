@@ -38,6 +38,11 @@ public abstract class MapQueryUpdateMethod implements Method {
         this.cxt = c;
     }
 
+    @Override
+    public Class<? extends MethodGenerator> generatorBase() {
+        return MapQueryUpdateMethodGenerator.class;
+    }
+
     public void beginning() {
     }
 

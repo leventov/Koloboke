@@ -93,6 +93,26 @@ public class MethodGeneratingProcessor extends TemplateProcessor {
                 }
             };
 
+    private static final
+    Map<String, Map<Class, Class<? extends MethodGenerator>>> GENERATORS_BY_ALGO_FAMILY =
+            new HashMap<String, Map<Class, Class<? extends MethodGenerator>>>() {{
+                put(
+                        "hash",
+                        new HashMap<Class, Class<? extends MethodGenerator>>() {
+                            {
+                                put(HashBulkMethodGenerator.class);
+                                put(HashMapQueryUpdateMethodGenerator.class);
+                            }
+
+                            private void put(Class<? extends MethodGenerator> c) {
+                                Class key = MethodGenerator.class.equals(c.getSuperclass()) ?
+                                        c : c.getSuperclass();
+                                put(key, c);
+                            }
+                        }
+                );
+            }};
+
     private static String generate(String methodName, Context cxt, String indent) {
         Method method;
         MethodGenerator generator;
@@ -109,13 +129,9 @@ public class MethodGeneratingProcessor extends TemplateProcessor {
             }
             try {
                 method = methodClass.newInstance();
-                if (method instanceof BulkMethod) {
-                    generator = new HashBulkMethodGenerator();
-                } else if (method instanceof MapQueryUpdateMethod) {
-                    generator = new HashMapQueryUpdateMethodGenerator();
-                } else {
-                    throw new RuntimeException();
-                }
+                Class<? extends MethodGenerator> generatorClass =
+                        GENERATORS_BY_ALGO_FAMILY.get("hash").get(method.generatorBase());
+                generator = generatorClass.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }

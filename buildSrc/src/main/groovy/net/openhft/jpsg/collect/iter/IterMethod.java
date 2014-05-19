@@ -37,4 +37,9 @@ public enum IterMethod implements Method {
     @Override
     public void init(MethodGenerator g, MethodContext c) {
     }
+
+    @Override
+    public Class<? extends MethodGenerator> generatorBase() {
+        throw new UnsupportedOperationException();
+    }
 }

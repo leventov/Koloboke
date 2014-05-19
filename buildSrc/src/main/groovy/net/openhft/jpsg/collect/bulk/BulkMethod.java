@@ -52,6 +52,11 @@ public abstract class BulkMethod implements Method {
         this.cxt = c;
     }
 
+    @Override
+    public Class<? extends MethodGenerator> generatorBase() {
+        return BulkMethodGenerator.class;
+    }
+
     public void beginning() {
     }
 

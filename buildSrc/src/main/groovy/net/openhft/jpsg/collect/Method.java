@@ -20,4 +20,6 @@ package net.openhft.jpsg.collect;
 public interface Method {
 
     void init(MethodGenerator g, MethodContext c);
+
+    Class<? extends MethodGenerator> generatorBase();
 }
