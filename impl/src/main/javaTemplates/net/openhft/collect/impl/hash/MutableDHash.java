@@ -109,6 +109,11 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
         modCount++;
     }
 
+    /** For tests */
+    public final int maxSize() {
+        return maxSize;
+    }
+
     @Override
     public final float currentLoad() {
         // Division in double to minimize precision loss

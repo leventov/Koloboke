@@ -127,6 +127,7 @@ public abstract class MutableCharDHashSO extends MutableDHash
     /* if Mutable mutability */
     private char findNewFreeOrRemoved() {
         /* if byte|char|short elem */
+        int mc = modCount();
         int size = size();
         if (size >= CHAR_CARDINALITY -
                 /* if Mutable mutability */2/* elif Immutable mutability //1// endif */) {
@@ -159,7 +160,34 @@ public abstract class MutableCharDHashSO extends MutableDHash
                         break searchForFree;
                 }
             }
-            throw new RuntimeException("Impossible state");
+            newFree = (char) (free + capacity);
+            if (newFree != free /* if Mutable mutability */&& newFree != removed/* endif */
+                    && index(newFree) < 0) {
+                break searchForFree;
+            }
+            /* if Mutable mutability */
+            newFree = (char) (removed + capacity);
+            if (newFree != free && newFree != removed && index(newFree) < 0) {
+                break searchForFree;
+            }
+            /* endif */
+            if (mc != modCount())
+                throw new ConcurrentModificationException();
+            // Will fail on tests which are executed with assertions enabled.
+            assert false : "Impossible state";
+            // As I see it's already impossible state. But if the above implementation has bugs
+            // (as it was already twice), try ALL char values for being 146% sure.
+            for (int i = 0; i < CHAR_CARDINALITY; i++) {
+                newFree = (char) i;
+                if (newFree != free &&
+                        /* if Mutable mutability */newFree != removed &&/* endif */
+                        index(newFree) < 0) {
+                    break searchForFree;
+                }
+            }
+            if (mc != modCount())
+                throw new ConcurrentModificationException();
+            throw new AssertionError("Surely impossible state");
         }
         else /* endif */ {
             do {

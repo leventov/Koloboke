@@ -17,7 +17,9 @@
 package net.openhft.collect.map.hash;
 
 import net.openhft.collect.ByteHashConfig;
+import net.openhft.collect.HashConfig;
 import net.openhft.collect.impl.hash.ByteIntDHash;
+import net.openhft.collect.impl.hash.MutableDHash;
 import net.openhft.collect.map.ByteIntMap;
 import net.openhft.collect.map.ByteIntMapFactory;
 import org.junit.Test;
@@ -25,14 +27,14 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
 import static net.openhft.collect.map.hash.HashByteIntMaps.getDefaultFactory;
+import static org.junit.Assert.*;
 
 
 public class ByteKeyHashMapTest {
 
     @Test
-    public void test() {
+    public void testCorrectFreeAndRemovedValuesReplacement() {
         ByteHashConfig config = ByteHashConfig.getDefault()
                 .withKeysDomainComplement((byte) 0, (byte) 0);
         ByteIntMapFactory factory = getDefaultFactory().withConfig(config);
@@ -68,6 +70,46 @@ public class ByteKeyHashMapTest {
                 }
             }
         }
+    }
+
+    @Test
+    public void testAbilityToReplaceFreeOnAlmostFullHash() {
+        ByteHashConfig config = ByteHashConfig.getDefault()
+                .withHashConfig(HashConfig.getDefault().withMaxLoad(0.999))
+                .withKeysDomainComplement((byte) 0, (byte) 1);
+        ByteIntMapFactory factory = getDefaultFactory().withConfig(config);
+
+        ByteIntMap map;
+        ByteIntDHash asDHash;
+        for (int i = 0; ; i++) {
+            map = factory.newMutableMap(i);
+            asDHash = (ByteIntDHash) map;
+            if (asDHash.capacity() > 128) {
+                break;
+            }
+        }
+
+        int capacity = asDHash.capacity();
+        assertEquals(capacity - 1, ((MutableDHash) map).maxSize());
+        assertTrue(asDHash.freeValue() == 0 && asDHash.removedValue() == 1 ||
+                asDHash.freeValue() == 1 && asDHash.removedValue() == 0);
+
+        for (int i = 2; i < capacity; i++) {
+            map.put((byte) i, 0);
+        }
+
+        assertTrue(asDHash.freeValue() == 0 && asDHash.removedValue() == 1 ||
+                asDHash.freeValue() == 1 && asDHash.removedValue() == 0);
+        assertEquals(capacity, asDHash.capacity());
+
+        map.put((byte) 0, 0);
+
+        assertEquals(capacity, asDHash.capacity());
+        assertEquals(capacity - 1, sizeByValueIterator(map));
+        assertTrue(asDHash.freeValue() != 0 && asDHash.removedValue() == 1 ||
+                asDHash.freeValue() == 1 && asDHash.removedValue() != 0);
+        assertTrue(map.containsKey((byte) 0));
+        assertFalse(map.containsKey((byte) 1));
     }
 
     private static String toString(String prefix, ByteIntDHash hash) {
