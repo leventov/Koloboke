@@ -25,12 +25,19 @@ import static java.lang.Math.max;
 
 public abstract class MutableDHash extends AbstractContainer implements DHash {
 
-    private static int minFreeSlots(int capacity, int size) {
+    private static int minFreeSlots(int capacity, int size, double maxLoad, int maxSize) {
         // See "Tombstones purge from hashtable: theory and practice" wiki page
         double load = (double) size / (double) capacity;
         double rehashLoad = 0.49 + 0.866 * load - 0.363 * load * load;
+        int minFreeSlots;
+        // minFreeSlots shouldn't be less than `capacity - maxSize`
+        if (rehashLoad > maxLoad) {
+            minFreeSlots = (int) ((double) capacity * (1.0 - rehashLoad));
+        } else {
+            minFreeSlots = capacity - maxSize;
+        }
         // Need at least one free slot for open addressing
-        return max(1, (int) ((double) capacity * (1.0 - rehashLoad)));
+        return minFreeSlots > 0 ? minFreeSlots : 1;
     }
 
     ////////////////////////////
@@ -123,7 +130,8 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
         int capacity = hash.capacity();
         this.maxSize = maxSize(capacity);
         int freeSlots = this.freeSlots = hash.freeSlots();
-        int minFreeSlots = this.minFreeSlots = minFreeSlots(capacity, size);
+        int minFreeSlots = this.minFreeSlots =
+                minFreeSlots(capacity, size, hashConfig().getMaxLoad(), maxSize);
         // see #initSlotCounts()
         if (freeSlots < minFreeSlots) this.minFreeSlots = (freeSlots + 1) / 2;
         this.removedSlots = hash.removedSlots();
@@ -138,9 +146,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     final void init(HashConfigWrapper configWrapper, int size) {
         this.configWrapper = configWrapper;
         this.size = 0;
-        int capacity = DHashCapacities.capacity(configWrapper, size);
-        minFreeSlots = minFreeSlots(capacity, size);
-        internalInit(capacity);
+        internalInit(DHashCapacities.capacity(configWrapper, size));
     }
 
     private void internalInit(int capacity) {
@@ -161,6 +167,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
 
     private void initSlotCounts(int capacity) {
         maxSize = maxSize(capacity);
+        minFreeSlots = minFreeSlots(capacity, size, hashConfig().getMaxLoad(), maxSize);
         int freeSlots = this.freeSlots = capacity - size;
         // free could be less than minFreeSlots only in case when capacity
         // is not sufficient to comply load factor (due to saturation with
