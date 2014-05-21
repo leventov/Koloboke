@@ -37,6 +37,22 @@ import java.util.*;
 public class MutableDHashCharShortMapGO/*<>*/
         extends MutableDHashCharShortMapSO/*<>*/ {
 
+    @Override
+    final void copy(CharShortDHash hash) {
+        int myMC = modCount(), hashMC = hash.modCount();
+        super.copy(hash);
+        if (myMC != modCount() || hashMC != hash.modCount())
+            throw new ConcurrentModificationException();
+    }
+
+    @Override
+    final void move(CharShortDHash hash) {
+        int myMC = modCount(), hashMC = hash.modCount();
+        super.move(hash);
+        if (myMC != modCount() || hashMC != hash.modCount())
+            throw new ConcurrentModificationException();
+    }
+
     /* if obj value */
     @Override
     public Equivalence<Short> valueEquivalence() {

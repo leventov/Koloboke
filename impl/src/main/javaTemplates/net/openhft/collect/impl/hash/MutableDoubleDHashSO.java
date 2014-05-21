@@ -30,12 +30,12 @@ public abstract class MutableDoubleDHashSO extends MutableDHash implements Doubl
 
     long[] set;
 
-    final void copy(DoubleDHash hash) {
+    void copy(DoubleDHash hash) {
         super.copy(hash);
         set = hash.keys().clone();
     }
 
-    final void move(DoubleDHash hash) {
+    void move(DoubleDHash hash) {
         super.copy(hash);
         set = hash.keys();
     }

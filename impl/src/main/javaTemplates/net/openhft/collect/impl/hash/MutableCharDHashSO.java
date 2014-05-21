@@ -38,7 +38,7 @@ public abstract class MutableCharDHashSO extends MutableDHash
     /* endif */
     char[] set;
 
-    final void copy(CharDHash hash) {
+    void copy(CharDHash hash) {
         super.copy(hash);
         freeValue = hash.freeValue();
         /* if Mutable mutability */
@@ -46,9 +46,15 @@ public abstract class MutableCharDHashSO extends MutableDHash
             removedValue = hash.removedValue();
         /* endif */
         set = hash.keys().clone();
+        /* if Mutable mutability */
+        if (!hash.supportRemoved()) {
+            removedValue = freeValue;
+            removedValue = findNewFreeOrRemoved();
+        }
+        /* endif */
     }
 
-    final void move(CharDHash hash) {
+    void move(CharDHash hash) {
         super.copy(hash);
         freeValue = hash.freeValue();
         /* if Mutable mutability */
@@ -56,6 +62,12 @@ public abstract class MutableCharDHashSO extends MutableDHash
             removedValue = hash.removedValue();
         /* endif */
         set = hash.keys();
+        /* if Mutable mutability */
+        if (!hash.supportRemoved()) {
+            removedValue = freeValue;
+            removedValue = findNewFreeOrRemoved();
+        }
+        /* endif */
     }
 
     final void init(HashConfigWrapper configWrapper, int size,

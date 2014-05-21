@@ -40,13 +40,13 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     V[] values;
 
 
-    final void copy(CharObjDHash hash) {
+    void copy(CharObjDHash hash) {
         super.copy(hash);
         // noinspection unchecked
         values = (V[]) hash.valueArray().clone();
     }
 
-    final void move(CharObjDHash hash) {
+    void move(CharObjDHash hash) {
         super.move(hash);
         // noinspection unchecked
         values = (V[]) hash.valueArray();

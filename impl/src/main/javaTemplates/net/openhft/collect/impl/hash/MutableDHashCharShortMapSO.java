@@ -33,12 +33,12 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
     /* bits */short[] values;
 
 
-    final void copy(CharShortDHash hash) {
+    void copy(CharShortDHash hash) {
         super.copy(hash);
         values = hash.valueArray().clone();
     }
 
-    final void move(CharShortDHash hash) {
+    void move(CharShortDHash hash) {
         super.move(hash);
         values = hash.valueArray();
     }

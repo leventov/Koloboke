@@ -31,6 +31,22 @@ import java.util.*;
 public class MutableDHashCharSetGO/*<>*/ extends MutableCharDHashSetSO/*<>*/
         implements HashCharSet/*<>*/, InternalCharCollectionOps/*<>*/ {
 
+    @Override
+    final void copy(CharDHash hash) {
+        int myMC = modCount(), hashMC = hash.modCount();
+        super.copy(hash);
+        if (myMC != modCount() || hashMC != hash.modCount())
+            throw new ConcurrentModificationException();
+    }
+
+    @Override
+    final void move(CharDHash hash) {
+        int myMC = modCount(), hashMC = hash.modCount();
+        super.move(hash);
+        if (myMC != modCount() || hashMC != hash.modCount())
+            throw new ConcurrentModificationException();
+    }
+
     public int hashCode() {
         return setHashCode();
     }

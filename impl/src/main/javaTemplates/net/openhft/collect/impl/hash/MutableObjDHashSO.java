@@ -32,12 +32,12 @@ public abstract class MutableObjDHashSO<E> extends MutableDHash implements ObjDH
 
     Object[] set;
 
-    final void copy(ObjDHash hash) {
+    void copy(ObjDHash hash) {
         super.copy(hash);
         set = hash.keys().clone();
     }
 
-    final void move(ObjDHash hash) {
+    void move(ObjDHash hash) {
         super.copy(hash);
         set = hash.keys();
     }
