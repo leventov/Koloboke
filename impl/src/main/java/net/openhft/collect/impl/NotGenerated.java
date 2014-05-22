@@ -17,4 +17,5 @@
 package net.openhft.collect.impl;
 
 public class NotGenerated extends RuntimeException {
+    private static final long serialVersionUID = 0L;
 }

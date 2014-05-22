@@ -21,4 +21,6 @@ package net.openhft.collect;
  * Thrown when element or entry couldn't be inserted into the hash container
  * due to implementation limitations.
  */
-public class HashOverflowException extends IllegalStateException {}
+public class HashOverflowException extends IllegalStateException {
+    private static final long serialVersionUID = 0L;
+}
