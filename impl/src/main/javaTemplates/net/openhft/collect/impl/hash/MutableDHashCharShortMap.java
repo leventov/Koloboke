@@ -1,4 +1,5 @@
 /* with
+ DHash|LHash hash
  char|byte|short|int|long|float|double|object key
  short|byte|char|int|long|float|double|object value
  Mutable|Immutable mutability

@@ -16,12 +16,7 @@
 
 package net.openhft.jpsg.collect.mapqu;
 
-public class RemoveEntry extends MapQueryUpdateMethod {
-
-    @Override
-    public BasicMapQueryUpdateOp baseOp() {
-        return BasicMapQueryUpdateOp.GET;
-    }
+public class RemoveEntry extends RemoveLike {
 
     @Override
     public void ifPresent() {
@@ -36,11 +31,6 @@ public class RemoveEntry extends MapQueryUpdateMethod {
     @Override
     public void ifAbsent() {
         gen.ret(false);
-    }
-
-    @Override
-    public boolean inline() {
-        return true;
     }
 
     @Override

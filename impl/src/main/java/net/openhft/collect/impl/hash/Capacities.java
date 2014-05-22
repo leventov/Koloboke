@@ -27,7 +27,7 @@ final class Capacities {
      * max capacity bounds for the given {@code size} and hash config.
      *
      * <p>If both {@code lesserCapacity} and {@code greaterCapacity} are out of these bounds,
-     * {@code greaterCapacity} is returned.
+     * {@code onFail} value is returned.
      *
      * @param conf the {@code HashConfigWrapper}
      * @param size should be non-negative
@@ -35,11 +35,14 @@ final class Capacities {
      * @param lesserCapacity should be greater than the {@code size} but lesser
      *        than the {@code desiredCapacity}
      * @param greaterCapacity should be greater than the {@code desiredCapacity}
+     * @param onFail the value to return if both {@code lesserCapacity} and {@code greaterCapacity}
+     *        are lesser than min size and greater than max size respectively
+     *        for the given hash config and size
      * @return {@code lesserCapacity} or {@code greaterCapacity}
-     * @see #chooseBetter(HashConfigWrapper, long, long, long, long)
+     * @see #chooseBetter(HashConfigWrapper, long, long, long, long, long)
      */
     static int chooseBetter(HashConfigWrapper conf, int size,
-            int desiredCapacity, int lesserCapacity, int greaterCapacity) {
+            int desiredCapacity, int lesserCapacity, int greaterCapacity, int onFail) {
         assert 0 <= size;
         assert size < lesserCapacity && lesserCapacity < desiredCapacity;
         assert desiredCapacity < greaterCapacity;
@@ -47,16 +50,16 @@ final class Capacities {
                 greaterCapacity <= conf.maxCapacity(size)) {
             return greaterCapacity;
         }
-        return lesserCapacity >= conf.minCapacity(size) ? lesserCapacity : greaterCapacity;
+        return lesserCapacity >= conf.minCapacity(size) ? lesserCapacity : onFail;
     }
 
     /**
-     * Same as {@link #chooseBetter(HashConfigWrapper, int, int, int, int)}.
+     * Same as {@link #chooseBetter(HashConfigWrapper, int, int, int, int, int)}.
      *
-     * @see #chooseBetter(HashConfigWrapper, int, int, int, int)
+     * @see #chooseBetter(HashConfigWrapper, int, int, int, int, int)
      */
     static long chooseBetter(HashConfigWrapper conf, long size,
-            long desiredCapacity, long lesserCapacity, long greaterCapacity) {
+            long desiredCapacity, long lesserCapacity, long greaterCapacity, long onFail) {
         assert 0L <= size;
         assert size < lesserCapacity && lesserCapacity < desiredCapacity;
         assert desiredCapacity < greaterCapacity;
@@ -64,7 +67,7 @@ final class Capacities {
                 greaterCapacity <= conf.maxCapacity(size)) {
             return greaterCapacity;
         }
-        return lesserCapacity >= conf.minCapacity(size) ? lesserCapacity : greaterCapacity;
+        return lesserCapacity >= conf.minCapacity(size) ? lesserCapacity : onFail;
     }
 
     private Capacities() {}

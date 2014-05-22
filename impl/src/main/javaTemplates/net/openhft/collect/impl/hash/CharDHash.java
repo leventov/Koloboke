@@ -1,3 +1,7 @@
+/* with
+ DHash|LHash hash
+ char|byte|short|int|long|float|double elem
+*/
 /*
  * Copyright 2014 the original author or authors.
  *

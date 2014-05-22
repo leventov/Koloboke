@@ -17,18 +17,25 @@
 
 package net.openhft.collect;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public final class CharHashConfigs {
 
     public static List<CharHashConfig> all() {
-        return Arrays.asList(
+        List<CharHashConfig> configs = Arrays.asList(
                 CharHashConfig.getDefault(),
                 CharHashConfig.getDefault().withKeysDomain(
                         /* const t 1 */(char) 1/* endconst */,
-                        /* const t max */Character.MAX_VALUE/* endconst*/));
+                        /* const t max */Character.MAX_VALUE/* endconst*/)
+        );
+        List<CharHashConfig> all = new ArrayList<CharHashConfig>();
+        for (CharHashConfig config : configs) {
+            for (HashConfig hashConfig : HashConfigs.all()) {
+                all.add(config.withHashConfig(hashConfig));
+            }
+        }
+        return all;
     }
 
     private CharHashConfigs() {}

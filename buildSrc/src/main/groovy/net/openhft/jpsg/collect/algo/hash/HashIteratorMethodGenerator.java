@@ -20,8 +20,7 @@ import net.openhft.jpsg.collect.*;
 import net.openhft.jpsg.collect.iter.IteratorMethodGenerator;
 
 import static net.openhft.jpsg.collect.algo.hash.HashIterMethodGeneratorCommons.*;
-import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.free;
-import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.removed;
+import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
 
 
 public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
@@ -60,12 +59,13 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
         } else {
             this.lines(cxt.keyUnwrappedType() + "[] keys = this.keys = set;");
         }
-        if (cxt.isValueView() || cxt.isEntryView()) {
+        if (needCapacityMask(cxt))
+            lines("capacityMask = keys.length - 1;");
+        if (cxt.isValueView() || cxt.isEntryView())
             this.lines(cxt.valueUnwrappedType() + "[] vals = this.vals = values;");
-        }
         if (cxt.isIntegralKey()) {
             this.lines(cxt.keyType() + " " + free(cxt) + " = this." + free(cxt) + " = freeValue;");
-            if (cxt.mutable()) {
+            if (possibleRemovedSlots(cxt)) {
                 this.lines(
                         (noRemoved(cxt) ? "" : cxt.keyType() + " " + removed(cxt) + " = ") +
                         "this." + removed(cxt) + " = removedValue;");
@@ -101,19 +101,50 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
     @Override
     public void generateRemove() {
         permissions.add(Permission.REMOVE);
-        lines("int i;");
-        ifBlock("(i = index) >= 0");
+        lines("int index;");
+        ifBlock("(index = this.index) >= 0");
         ifBlock("expectedModCount++ == " + modCount());
-        incrementModCount();
-        String keys = cxt.isObjectKey() ? "((Object[]) keys)" : "keys";
-        lines(keys + "[i] = " + removed(cxt) + ";");
-        if (cxt.isObjectValue()) {
-            lines("vals[i] = null;");
+        lines("this.index = -1;");
+        if (isLHash(cxt)) {
+            shiftRemove();
+        } else {
+            tombstoneRemove();
         }
-        lines("postRemoveHook();");
-        lines("index = -1;");
         endOfModCountCheck(this, cxt);
         endOfIllegalStateCheck(this, cxt);
+    }
+
+    private void tombstoneRemove() {
+        incrementModCount();
+        eraseSlot(this, cxt, "index", "index");
+        lines("postRemoveHook();");
+    }
+
+    private void shiftRemove() {
+        new IterShiftRemove(this, cxt) {
+            @Override
+            String slotsToCopy() {
+                // `nextIndex + 1`, because if remove() is called
+                // on the next iteration, the key is removed from the original table
+                // by `justRemove(keys[index])` call, i. e. if we will copy just `nextIndex`
+                // entries, `keys[index]` indexing will be out of `keys` array bounds.
+                return "nextIndex + 1";
+            }
+
+            @Override
+            void onInitialSlotSubstitution() {
+                lines("this.nextIndex = index;");
+                ifBlock("indexToShift < index - 1"); {
+                    lines("this.next = " +
+                            makeNext(cxt, modCount(), "keyToShift", "indexToShift", false) + ";");
+                } blockEnd();
+            }
+
+            @Override
+            String keyToRemoveFromTheOriginalTable() {
+                return "keys[index]";
+            }
+        }.generate();
     }
 
     @Override

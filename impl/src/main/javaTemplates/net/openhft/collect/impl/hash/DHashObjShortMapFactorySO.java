@@ -1,4 +1,5 @@
 /* with
+ DHash|LHash hash
  obj key
  short|byte|char|int|long|float|double|obj value
 */
@@ -28,14 +29,14 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 
-public abstract class HashObjShortMapFactorySO<K/* if obj value //, V// endif */>
+public abstract class DHashObjShortMapFactorySO<K/* if obj value //, V// endif */>
          implements HashObjShortMapFactory<K/* if obj value //, V// endif */> {
 
     final ObjHashConfig conf;
     final HashConfig hashConf;
     final HashConfigWrapper configWrapper;
 
-    HashObjShortMapFactorySO(ObjHashConfig conf) {
+    DHashObjShortMapFactorySO(ObjHashConfig conf) {
         this.conf = conf;
         this.hashConf = conf.getHashConfig();
         configWrapper = new HashConfigWrapper(hashConf);

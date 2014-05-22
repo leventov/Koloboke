@@ -53,7 +53,8 @@ public final class DHashCapacities {
             // Since size could be virtual (expected), don't prematurely throw HashOverflowException
             return MAX_CAPACITY;
         }
-        return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity);
+        return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity,
+                greaterCapacity);
     }
 
     /**

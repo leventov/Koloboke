@@ -1,4 +1,7 @@
-/* with char|byte|short|int|long elem */
+/* with
+ DHash|LHash hash
+ char|byte|short|int|long elem
+ */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -23,18 +26,15 @@ import net.openhft.collect.HashConfig;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-
-public abstract class CharHashFactory<MT> {
+abstract class CharDHashFactory/* if !(LHash hash) */<MT>/* endif */ {
 
     final CharHashConfig conf;
     final HashConfig hashConf;
     final HashConfigWrapper configWrapper;
-    private char freeValue;
-    private char removedValue;
-    private final boolean randomFree;
-    private final boolean randomRemoved;
+    private final boolean randomFree, randomRemoved;
+    private final char freeValue, removedValue;
 
-    CharHashFactory(CharHashConfig conf) {
+    CharDHashFactory(CharHashConfig conf) {
         this.conf = conf;
         hashConf = conf.getHashConfig();
         configWrapper = new HashConfigWrapper(hashConf);
@@ -42,6 +42,7 @@ public abstract class CharHashFactory<MT> {
         char upper = conf.getUpperKeyDomainBound();
         if ((char) (lower - 1) == upper) {
             randomFree = randomRemoved = true;
+            freeValue = removedValue = /* const elem 0 */0;
         } else {
             randomFree = false;
             if ((lower < upper && (lower > 0 || upper < 0)) ||
@@ -52,6 +53,7 @@ public abstract class CharHashFactory<MT> {
             }
             if ((char) (lower - 2) == upper) {
                 randomRemoved = true;
+                removedValue = /* const elem 0 */0;
             } else {
                 randomRemoved = false;
                 if (upper + 1 != 0) {
@@ -67,8 +69,8 @@ public abstract class CharHashFactory<MT> {
         return conf;
     }
 
-    abstract MT createNew(
-            HashConfigWrapper configWrapper, int expectedSize, char free, char removed);
+    /* if !(LHash hash) */
+    abstract MT createNew(int expectedSize, char free, char removed);
 
     /* define nextIntOrLong */
     /* if !(long elem) //nextInt// elif long elem //nextLong// endif */
@@ -91,6 +93,18 @@ public abstract class CharHashFactory<MT> {
             removed = removedValue;
             free = freeValue;
         }
-        return createNew(configWrapper, expectedSize, free, removed);
+        return createNew(expectedSize, free, removed);
     }
+
+    /* elif LHash hash */
+
+    char getFree() {
+        if (randomFree) {
+            Random random = ThreadLocalRandom.current();
+            return (char) random./* nextIntOrLong */nextInt/**/();
+        } else {
+            return freeValue;
+        }
+    }
+    /* endif */
 }

@@ -1,4 +1,7 @@
-/* with char|byte|short|int|long|float|double elem */
+/* with
+ DHash|LHash hash
+ char|byte|short|int|long|float|double elem
+*/
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -24,8 +27,10 @@ import java.util.Collection;
 import java.util.Set;
 
 
-public abstract class HashCharSetFactorySO
-        /* if !(float|double elem) */extends CharHashFactory<MutableDHashCharSetGO>/* endif */
+public abstract class DHashCharSetFactorySO
+        /* if !(float|double elem) */
+        extends CharDHashFactory/* if !(LHash hash) */<MutableDHashCharSetGO>/* endif */
+        /* endif */
         implements HashCharSetFactory {
 
     /* if float|double elem */
@@ -33,7 +38,7 @@ public abstract class HashCharSetFactorySO
     final HashConfigWrapper configWrapper;
     /* endif */
 
-    HashCharSetFactorySO(/* if !(float|double elem) */CharHashConfig
+    DHashCharSetFactorySO(/* if !(float|double elem) */CharHashConfig
             /* elif float|double elem //HashConfig// endif */ conf) {
         /* if !(float|double elem) */
         super(conf);
@@ -43,10 +48,9 @@ public abstract class HashCharSetFactorySO
         /* endif */
     }
 
-    /* if !(float|double elem) */
+    /* if !(float|double elem) && !(LHash hash) */
     @Override
-    MutableDHashCharSetGO createNew(
-            HashConfigWrapper configWrapper, int expectedSize, char free, char removed) {
+    MutableDHashCharSetGO createNew(int expectedSize, char free, char removed) {
         MutableDHashCharSet set = new MutableDHashCharSet();
         set.init(configWrapper, expectedSize, free, removed);
         return set;
@@ -60,11 +64,15 @@ public abstract class HashCharSetFactorySO
 
     @Override
     public MutableDHashCharSetGO newMutableSet(int expectedSize) {
-        /* if !(float|double elem) */
-        return newHash(expectedSize);
-        /* elif float|double elem */
+        /* if float|double elem */
         MutableDHashCharSetGO set = new MutableDHashCharSet();
         set.init(configWrapper, expectedSize);
+        return set;
+        /* elif !(float|double elem) && !(LHash hash) */
+        return newHash(expectedSize);
+        /* elif LHash hash */
+        MutableDHashCharSetGO set = new MutableDHashCharSet();
+        set.init(configWrapper, expectedSize, getFree());
         return set;
         /* endif */
     }

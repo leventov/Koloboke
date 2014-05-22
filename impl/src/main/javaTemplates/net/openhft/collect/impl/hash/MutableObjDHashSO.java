@@ -1,4 +1,5 @@
 /* with
+ DHash|LHash hash
  object elem
  Mutable|Immutable mutability
 */
@@ -90,12 +91,12 @@ public abstract class MutableObjDHashSO<E> extends MutableDHash implements ObjDH
         Arrays.fill(set, FREE);
     }
 
-
+    /* if !(LHash hash) */
     @Override
     void removeAt(int index) {
         set[index] = REMOVED;
     }
-
+    /* endif */
 
     @Override
     public void clear() {

@@ -1,4 +1,5 @@
 /* with
+ DHash|LHash hash
  char|byte|short|int|long|float|double|obj elem
  Mutable|Immutable mutability
 */
@@ -83,14 +84,14 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
 
 
     public CharIterator/*<>*/ iterator() {
-        /* if Mutable mutability //
+        /* if Mutable mutability && !(LHash hash) //
         if (!noRemoved()) return new SomeRemovedIterator();
         // endif */
         return new NoRemovedIterator();
     }
 
     public CharCursor/*<>*/ setCursor() {
-        /* if Mutable mutability //
+        /* if Mutable mutability && !(LHash hash) //
         if (!noRemoved()) return new SomeRemovedCursor();
         // endif */
         return new NoRemovedCursor();
@@ -128,6 +129,8 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
         /* template ToString */ throw new NotGenerated(); /* endtemplate */
     }
 
+
+    abstract boolean justRemove(/* bits */char key);
 
     public boolean removeIf(Predicate<? super Character> filter) {
         /* template RemoveIf */ throw new NotGenerated(); /* endtemplate */
@@ -182,7 +185,7 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
 
 
     /* with No|Some removed */
-    /* if !(Immutable mutability Some removed) */
+    /* if !(Immutable mutability Some removed) && !(LHash hash Some removed) */
 
     class NoRemovedIterator implements CharIterator/*<>*/ {
         /* template Iterator.fields */

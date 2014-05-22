@@ -1,4 +1,5 @@
 /* with
+ DHash|LHash hash
  char|byte|short|int|long|float|double|obj key
  short|byte|char|int|long|float|double|obj value
  Mutable|Immutable mutability
@@ -127,7 +128,7 @@ public class MutableDHashCharShortMapGO/*<>*/
     @Nonnull
     @Override
     public CharShortCursor/*<>*/ cursor() {
-        /* if Mutable mutability //
+        /* if Mutable mutability && !(LHash hash) //
         if (!noRemoved()) return new SomeRemovedMapCursor();
         // endif */
         return new NoRemovedMapCursor();
@@ -525,7 +526,7 @@ public class MutableDHashCharShortMapGO/*<>*/
         @Override
         @Nonnull
         public Iterator<Map.Entry<Character, Short>> iterator() {
-            /* if Mutable mutability //
+            /* if Mutable mutability && !(LHash hash) //
             if (!noRemoved()) return new SomeRemovedEntryIterator();
             // endif */
             return new NoRemovedEntryIterator();
@@ -534,7 +535,7 @@ public class MutableDHashCharShortMapGO/*<>*/
         @Nonnull
         @Override
         public ObjCursor<Map.Entry<Character, Short>> cursor() {
-            /* if Mutable mutability //
+            /* if Mutable mutability && !(LHash hash) //
             if (!noRemoved()) return new SomeRemovedEntryCursor();
             // endif */
             return new NoRemovedEntryCursor();
@@ -676,7 +677,7 @@ public class MutableDHashCharShortMapGO/*<>*/
     class MutableEntry extends CharShortEntry {
         int modCount;
         private final int index;
-        private final /* bits */char key;
+        final /* bits */char key;
         private /* bits */short value;
 
         MutableEntry(int modCount, int index, /* bits */char key, /* bits */short value) {
@@ -701,8 +702,14 @@ public class MutableDHashCharShortMapGO/*<>*/
             if (modCount != modCount())
                 throw new IllegalStateException();
             short oldValue = /* wrap value */value;
-            value = values[index] = /* unwrap value */newValue;
+            /* bits */short unwrappedNewValue = /* unwrap value */newValue;
+            value = unwrappedNewValue;
+            updateValueInTable(unwrappedNewValue);
             return oldValue;
+        }
+
+        void updateValueInTable(/* bits */short newValue) {
+            values[index] = newValue;
         }
     }
 
@@ -849,7 +856,7 @@ public class MutableDHashCharShortMapGO/*<>*/
         @Override
         @Nonnull
         public ShortIterator/*<>*/ iterator() {
-        /* if Mutable mutability //
+        /* if Mutable mutability && !(LHash hash) //
         if (!noRemoved()) return new SomeRemovedValueIterator();
         // endif */
             return new NoRemovedValueIterator();
@@ -858,7 +865,7 @@ public class MutableDHashCharShortMapGO/*<>*/
         @Nonnull
         @Override
         public ShortCursor/*<>*/ cursor() {
-        /* if Mutable mutability //
+        /* if Mutable mutability && !(LHash hash) //
         if (!noRemoved()) return new SomeRemovedValueCursor();
         // endif */
             return new NoRemovedValueCursor();
@@ -983,7 +990,7 @@ public class MutableDHashCharShortMapGO/*<>*/
 
 
     /* with entry view No|Some removed */
-    /* if !(Immutable mutability Some removed) */
+    /* if !(Immutable mutability Some removed) && !(LHash hash Some removed) */
 
     class NoRemovedEntryIterator implements ObjIterator<Map.Entry<Character, Short>> {
         /* template Iterator.fields */
@@ -1047,7 +1054,7 @@ public class MutableDHashCharShortMapGO/*<>*/
 
 
     /* with value view No|Some removed */
-    /* if !(Immutable mutability Some removed) */
+    /* if !(Immutable mutability Some removed) && !(LHash hash Some removed) */
 
     class NoRemovedValueIterator implements ShortIterator/*<>*/ {
         /* template Iterator.fields */
@@ -1128,7 +1135,7 @@ public class MutableDHashCharShortMapGO/*<>*/
     /* endwith */
 
     /* with No|Some removed */
-    /* if !(Immutable mutability Some removed) */
+    /* if !(Immutable mutability Some removed) && !(LHash hash Some removed) */
 
     class NoRemovedMapCursor implements CharShortCursor/*<>*/ {
         /* template Cursor.fields */

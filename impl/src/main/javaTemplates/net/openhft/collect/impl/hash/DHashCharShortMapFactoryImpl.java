@@ -1,6 +1,7 @@
 /* with
-  char|byte|short|int|long|float|double|obj key
-  short|byte|char|int|long|float|double|obj value
+ DHash|LHash hash
+ char|byte|short|int|long|float|double|obj key
+ short|byte|char|int|long|float|double|obj value
 */
 /*
  * Copyright 2014 the original author or authors.
@@ -24,12 +25,14 @@ import net.openhft.collect.*;
 import net.openhft.collect.map.hash.*;
 import javax.annotation.Nullable;
 
+import static net.openhft.collect.impl.hash.LHashCapacities.configIsSuitableForMutableLHash;
+
 
 /**
  * TODO recheck
  * high probability of copy-paste mistake
  */
-public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFactoryGO/*<>*/ {
+public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapFactoryGO/*<>*/ {
 
     /* define p1 */
     /* if obj key obj value //<K2 extends K, V2 extends V>// elif obj key //<K2 extends K>
@@ -52,14 +55,16 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
     /* if !(float|double key) //CharHashConfig// elif float|double key //HashConfig// endif */
     /* enddefine */
 
-    /**
-     * For ServiceLoader
-     */
-    public HashCharShortMapFactoryImpl() {
+    /* define getHashConfig */
+    /* if !(float|double key) //config.getHashConfig()// elif float|double key //config// endif */
+    /* enddefine */
+
+    /** For ServiceLoader */
+    public DHashCharShortMapFactoryImpl() {
         this(/* configClass */CharHashConfig/**/.getDefault());
     }
 
-    HashCharShortMapFactoryImpl(/* configClass */CharHashConfig/**/ conf) {
+    DHashCharShortMapFactoryImpl(/* configClass */CharHashConfig/**/ conf) {
         super(conf);
     }
 
@@ -97,14 +102,14 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
 
     @Override
     public HashCharShortMapFactory/*<>*/ withConfig(/* configClass */CharHashConfig/**/ config) {
-        if (getConfig().equals(config))
-            return this;
-        return new HashCharShortMapFactoryImpl/*<>*/(config);
+        if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/))
+            return new LHashCharShortMapFactoryImpl/*<>*/(config);
+        return /* with DHash hash */new DHashCharShortMapFactoryImpl/*<>*/(config);/* endwith */
     }
 
 
     /* if obj key */
-    static class WithCustomKeyEquivalence<K/*andV*/> extends HashObjShortMapFactoryGO<K/*andV*/> {
+    static class WithCustomKeyEquivalence<K/*andV*/> extends DHashObjShortMapFactoryGO<K/*andV*/> {
 
         private final Equivalence<K> keyEquivalence;
 
@@ -139,7 +144,7 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
         public <KE> HashObjShortMapFactory<KE/*andV*/> withKeyEquivalence(
                 @Nullable Equivalence<KE> keyEquivalence) {
             if (keyEquivalence == null)
-                return new HashObjShortMapFactoryImpl<KE/*andV*/>(conf);
+                return new DHashObjShortMapFactoryImpl<KE/*andV*/>(conf);
             if (keyEquivalence.equals(this.keyEquivalence)) {
                 // noinspection unchecked
                 return (HashObjShortMapFactory<KE/*andV*/>) this;
@@ -169,15 +174,20 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
 
         @Override
         public HashObjShortMapFactory<K/*andV*/> withConfig(ObjHashConfig config) {
-            if (getConfig().equals(config))
-                return this;
-            return new WithCustomKeyEquivalence<K/*andV*/>(config, keyEquivalence);
+            if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/)) {
+                return new LHashCharShortMapFactoryImpl.WithCustomKeyEquivalence<K/*andV*/>(
+                        config, keyEquivalence);
+            }
+            /* with DHash hash */
+            return new DHashCharShortMapFactoryImpl.WithCustomKeyEquivalence<K/*andV*/>(
+                    config, keyEquivalence);
+            /* endwith */
         }
     }
     /* endif */
 
     /* if !(obj value) */
-    static final class WithCustomDefaultValue/*<>*/ extends HashCharShortMapFactoryGO/*<>*/ {
+    static final class WithCustomDefaultValue/*<>*/ extends DHashCharShortMapFactoryGO/*<>*/ {
         private final short defaultValue;
 
         WithCustomDefaultValue(/* configClass */CharHashConfig/**/ conf, short defaultValue) {
@@ -222,7 +232,7 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
         @Override
         public HashCharShortMapFactory/*<>*/ withDefaultValue(short defaultValue) {
             if (defaultValue == /* const value 0 */0)
-                return new HashCharShortMapFactoryImpl/*<>*/(getConfig());
+                return new DHashCharShortMapFactoryImpl/*<>*/(getConfig());
             if (defaultValue == this.defaultValue)
                 return this;
             return new WithCustomDefaultValue/*<>*/(getConfig(), defaultValue);
@@ -231,14 +241,19 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
         @Override
         public HashCharShortMapFactory/*<>*/ withConfig(
                 /* configClass */CharHashConfig/**/ config) {
-            if (getConfig().equals(config))
-                return this;
-            return new WithCustomDefaultValue/*<>*/(config, defaultValue);
+            if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/)) {
+                return new LHashCharShortMapFactoryImpl.WithCustomDefaultValue/*<>*/(
+                        config, defaultValue);
+            }
+            /* with DHash hash */
+            return new DHashCharShortMapFactoryImpl.WithCustomDefaultValue/*<>*/(
+                    config, defaultValue);
+            /* endwith */
         }
     }
     /* elif obj value */
     static final class WithCustomValueEquivalence</*kAnd*/V>
-            extends HashCharObjMapFactoryGO</*kAnd*/V> {
+            extends DHashCharObjMapFactoryGO</*kAnd*/V> {
 
         private final Equivalence<V> valueEquivalence;
         WithCustomValueEquivalence(/* configClass */CharHashConfig/**/ conf,
@@ -285,7 +300,7 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
         public <VE> HashCharObjMapFactory</*kAnd*/VE> withValueEquivalence(
                 @Nullable Equivalence<VE> valueEquivalence) {
             if (valueEquivalence == null)
-                return new HashCharObjMapFactoryImpl</*kAnd*/VE>(getConfig());
+                return new DHashCharObjMapFactoryImpl</*kAnd*/VE>(getConfig());
             if (valueEquivalence.equals(this.valueEquivalence))
                 // noinspection unchecked
                 return (HashCharObjMapFactory</*kAnd*/VE>) this;
@@ -296,16 +311,21 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
         @Override
         public HashCharObjMapFactory</*kAnd*/V> withConfig(
                 /* configClass */CharHashConfig/**/ config) {
-            if (getConfig().equals(config))
-                return this;
-            return new WithCustomValueEquivalence</*kAnd*/V>(config, valueEquivalence);
+            if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/)) {
+                return new LHashCharShortMapFactoryImpl.WithCustomValueEquivalence</*kAnd*/V>(
+                        config, valueEquivalence);
+            }
+            /* with DHash hash */
+            return new DHashCharShortMapFactoryImpl.WithCustomValueEquivalence</*kAnd*/V>(
+                    config, valueEquivalence);
+            /* endwith */
         }
     }
     /* endif */
 
     /* if obj key && !(obj value) */
     static final class WithCustomKeyEquivalenceAndDefaultValue<K>
-            extends HashObjShortMapFactoryGO<K> {
+            extends DHashObjShortMapFactoryGO<K> {
         private final Equivalence<K> keyEquivalence;
         private final short defaultValue;
 
@@ -369,15 +389,19 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
 
         @Override
         public HashObjShortMapFactory<K> withConfig(ObjHashConfig config) {
-            if (getConfig().equals(config))
-                return this;
-            return new WithCustomKeyEquivalenceAndDefaultValue<K>(
+            if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/)) {
+                return new LHashCharShortMapFactoryImpl.WithCustomKeyEquivalenceAndDefaultValue<K>(
+                        config, keyEquivalence, defaultValue);
+            }
+            /* with DHash hash */
+            return new DHashCharShortMapFactoryImpl.WithCustomKeyEquivalenceAndDefaultValue<K>(
                     config, keyEquivalence, defaultValue);
+            /* endwith */
         }
     }
     /* elif obj key obj value */
     static final class WithCustomEquivalences<K, V>
-            extends HashObjObjMapFactoryGO<K, V> {
+            extends DHashObjObjMapFactoryGO<K, V> {
         private final Equivalence<K> keyEquivalence;
         private final Equivalence<V> valueEquivalence;
 
@@ -443,9 +467,14 @@ public final class HashCharShortMapFactoryImpl/*<>*/ extends HashCharShortMapFac
 
         @Override
         public HashObjObjMapFactory<K, V> withConfig(ObjHashConfig config) {
-            if (getConfig().equals(config))
-                return this;
-            return new WithCustomEquivalences<K, V>(config, keyEquivalence, valueEquivalence);
+            if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/)) {
+                return new LHashCharShortMapFactoryImpl.WithCustomEquivalences<K, V>(
+                        config, keyEquivalence, valueEquivalence);
+            }
+            /* with DHash hash */
+            return new DHashCharShortMapFactoryImpl.WithCustomEquivalences<K, V>(
+                    config, keyEquivalence, valueEquivalence);
+            /* endwith */
         }
     }
     /* endif */

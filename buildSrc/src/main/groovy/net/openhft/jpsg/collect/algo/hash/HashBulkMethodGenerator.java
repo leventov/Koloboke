@@ -17,14 +17,14 @@
 package net.openhft.jpsg.collect.algo.hash;
 
 import net.openhft.jpsg.PrimitiveType;
-import net.openhft.jpsg.collect.*;
+import net.openhft.jpsg.collect.Method;
+import net.openhft.jpsg.collect.Permission;
 import net.openhft.jpsg.collect.bulk.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.free;
-import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.removed;
+import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
 
 
 public class HashBulkMethodGenerator extends BulkMethodGenerator {
@@ -52,7 +52,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         }
         if (cxt.isIntegralKey()) {
             lines(cxt.keyType() + " free = freeValue;");
-            if (cxt.mutable()) {
+            if (possibleRemovedSlots(cxt)) {
                 lines(cxt.keyType() + " removed = removedValue;");
             }
         }
@@ -61,7 +61,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
         method.rightBeforeLoop();
 
-        boolean splitLoops = cxt.mutable() && !cxt.isFloatingKey();
+        boolean splitLoops = possibleRemovedSlots(cxt) && !cxt.isFloatingKey();
         if (splitLoops) {
             lines("if (noRemoved()) {");
             indent();

@@ -1,4 +1,5 @@
 /* with
+ DHash|LHash hash
  char|byte|short|int|long|float|double|obj key
  Mutable|Immutable mutability
 */
@@ -59,6 +60,7 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
     abstract boolean justRemove(/* raw */char key);
 
     /* if float|double key */
+    @Override
     abstract boolean justRemove(/* bits */char key);
     /* endif */
 

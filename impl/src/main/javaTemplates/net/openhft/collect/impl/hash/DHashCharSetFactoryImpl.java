@@ -1,4 +1,7 @@
-/* with char|byte|short|int|long|float|double elem */
+/* with
+ DHash|LHash hash
+ char|byte|short|int|long|float|double elem
+*/
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -18,29 +21,30 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
+import net.openhft.collect.set.hash.HashCharSetFactory;
 
 
-public class HashCharSetFactoryImpl extends HashCharSetFactoryGO {
+public class DHashCharSetFactoryImpl extends DHashCharSetFactoryGO {
 
     /* define configClass */
     /* if !(float|double elem) //CharHashConfig// elif float|double elem //HashConfig// endif */
     /* enddefine */
 
-    /**
-     * For ServiceLoader
-     */
-    public HashCharSetFactoryImpl() {
+    /** For ServiceLoader */
+    public DHashCharSetFactoryImpl() {
         this(/* configClass */CharHashConfig/**/.getDefault());
     }
 
-    public HashCharSetFactoryImpl(/* configClass */CharHashConfig/**/ conf) {
+    public DHashCharSetFactoryImpl(/* configClass */CharHashConfig/**/ conf) {
         super(conf);
     }
 
     @Override
-    public HashCharSetFactoryImpl withConfig(/* configClass */CharHashConfig/**/ config) {
-        if (getConfig().equals(config))
-            return this;
-        return new HashCharSetFactoryImpl(config);
+    public HashCharSetFactory withConfig(/* configClass */CharHashConfig/**/ config) {
+        if (LHashCapacities.configIsSuitableForMutableLHash(
+                /* if !(float|double elem) */config.getHashConfig()
+                /* elif float|double elem //config// endif */))
+            return new LHashCharSetFactoryImpl(config);
+        return /* with DHash hash */new DHashCharSetFactoryImpl(config);/* endwith */
     }
 }

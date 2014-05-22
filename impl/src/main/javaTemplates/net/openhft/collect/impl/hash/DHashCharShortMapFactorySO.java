@@ -1,4 +1,5 @@
 /* with
+ DHash|LHash hash
  char|byte|short|int|long|float|double key
  short|byte|char|int|long|float|double|obj value
 */
@@ -27,8 +28,9 @@ import net.openhft.collect.map.hash.HashCharShortMapFactory;
 import java.util.Map;
 
 
-public abstract class HashCharShortMapFactorySO/*<>*/
-        /* if !(float|double key) */extends CharHashFactory<MutableDHashCharShortMapGO/*<>*/>
+public abstract class DHashCharShortMapFactorySO/*<>*/
+        /* if !(float|double key) */
+        extends CharDHashFactory/* if !(LHash hash) */<MutableDHashCharShortMapGO/*<>*/>/* endif */
         /* endif */
         implements HashCharShortMapFactory/*<>*/ {
 
@@ -37,7 +39,7 @@ public abstract class HashCharShortMapFactorySO/*<>*/
     final HashConfigWrapper configWrapper;
     /* endif */
 
-    HashCharShortMapFactorySO(/* if !(float|double key) */CharHashConfig
+    DHashCharShortMapFactorySO(/* if !(float|double key) */CharHashConfig
             /* elif float|double key //HashConfig// endif */ conf) {
         /* if !(float|double key) */
         super(conf);
@@ -53,11 +55,9 @@ public abstract class HashCharShortMapFactorySO/*<>*/
 
     /* define pv *//* if !(obj value) //short// elif obj value //V2// endif *//* enddefine */
 
-    /* if !(float|double key) */
+    /* if !(float|double key) && !(LHash hash) */
     @Override
-    MutableDHashCharShortMapGO/*<>*/ createNew(
-            HashConfigWrapper configWrapper, int expectedSize, char free,
-            char removed) {
+    MutableDHashCharShortMapGO/*<>*/ createNew(int expectedSize, char free, char removed) {
         MutableDHashCharShortMapGO/*<>*/ map = uninitializedMutableMap();
         map.init(configWrapper, expectedSize, free, removed);
         return map;
@@ -79,13 +79,17 @@ public abstract class HashCharShortMapFactorySO/*<>*/
 
     @Override
     public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(int expectedSize) {
-        /* if !(float|double key) */
+        /* if float|double key */
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.init(configWrapper, expectedSize);
+        return map;
+        /* elif !(float|double key) && !(LHash hash) */
         // noinspection unchecked
         return (MutableDHashCharShortMapGO/*p2*/) newHash(expectedSize);
-        /* elif float|double key */
-        MutableDHashCharShortMapGO/*p2*/ set = uninitializedMutableMap();
-        set.init(configWrapper, expectedSize);
-        return set;
+        /* elif LHash hash */
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.init(configWrapper, expectedSize, getFree());
+        return map;
         /* endif */
     }
 

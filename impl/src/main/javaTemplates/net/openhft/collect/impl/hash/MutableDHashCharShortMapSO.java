@@ -1,4 +1,5 @@
 /* with
+ DHash|LHash hash
  char|byte|short|int|long|float|double|obj key
  short|byte|char|int|long|float|double value
  Mutable|Immutable mutability
@@ -103,9 +104,13 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
 
     @Override
     void removeAt(int index) {
+        // if !(LHash hash) */
         incrementModCount();
         super.removeAt(index);
         postRemoveHook();
+        /* elif LHash hash //
+        /* template RemoveAt */
+        // endif */
     }
 
     @Override

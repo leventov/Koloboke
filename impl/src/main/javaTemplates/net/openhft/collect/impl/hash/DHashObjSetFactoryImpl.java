@@ -1,3 +1,4 @@
+/* with DHash|LHash hash */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -22,16 +23,14 @@ import net.openhft.collect.set.hash.HashObjSetFactory;
 import javax.annotation.Nullable;
 
 
-public final class HashObjSetFactoryImpl<E> extends HashObjSetFactoryGO<E> {
+public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
 
-    /**
-     * For ServiceLoader
-     */
-    public HashObjSetFactoryImpl() {
+    /** For ServiceLoader */
+    public DHashObjSetFactoryImpl() {
         this(ObjHashConfig.getDefault());
     }
 
-    public HashObjSetFactoryImpl(ObjHashConfig conf) {
+    public DHashObjSetFactoryImpl(ObjHashConfig conf) {
         super(conf);
     }
 
@@ -46,12 +45,12 @@ public final class HashObjSetFactoryImpl<E> extends HashObjSetFactoryGO<E> {
 
     @Override
     public HashObjSetFactory<E> withConfig(ObjHashConfig config) {
-        if (conf.equals(config))
-            return this;
-        return new HashObjSetFactoryImpl<E>(config);
+        if (LHashCapacities.configIsSuitableForMutableLHash(config.getHashConfig()))
+            return new LHashObjSetFactoryImpl<E>(config);
+        return /* with DHash hash */new DHashObjSetFactoryImpl<E>(config)/* endwith */;
     }
 
-    static final class WithCustomEquivalence<E> extends HashObjSetFactoryGO<E> {
+    static final class WithCustomEquivalence<E> extends DHashObjSetFactoryGO<E> {
         final Equivalence<E> equivalence;
 
         public WithCustomEquivalence(ObjHashConfig conf, Equivalence<E> equivalence) {
@@ -83,7 +82,7 @@ public final class HashObjSetFactoryImpl<E> extends HashObjSetFactoryGO<E> {
         @Override
         public <E2> HashObjSetFactory<E2> withEquivalence(@Nullable Equivalence<E2> equivalence) {
             if (equivalence == null)
-                return new HashObjSetFactoryImpl<E2>(conf);
+                return new DHashObjSetFactoryImpl<E2>(conf);
             if (this.equivalence.equals(equivalence)) {
                 // noinspection unchecked
                 return (HashObjSetFactory<E2>) this;
@@ -93,9 +92,11 @@ public final class HashObjSetFactoryImpl<E> extends HashObjSetFactoryGO<E> {
 
         @Override
         public HashObjSetFactory<E> withConfig(ObjHashConfig config) {
-            if (conf.equals(config))
-                return this;
-            return new WithCustomEquivalence<E>(config, equivalence);
+            if (LHashCapacities.configIsSuitableForMutableLHash(config.getHashConfig()))
+                return new LHashObjSetFactoryImpl.WithCustomEquivalence<E>(config, equivalence);
+            /* with DHash hash */
+            return new DHashObjSetFactoryImpl.WithCustomEquivalence<E>(config, equivalence);
+            /* endwith */
         }
     }
 }

@@ -81,6 +81,10 @@ public class MethodContext {
         return NULL.equals(keyOption());
     }
 
+    public boolean isObjectOrNullKey() {
+        return isObjectKey() || isNullKey();
+    }
+
     public boolean isPrimitiveKey() {
         return keyOption() instanceof PrimitiveType;
     }
@@ -110,12 +114,10 @@ public class MethodContext {
 
     /** @return K or char..long, floating bits */
     public String keyUnwrappedType() {
-        if (isObjectKey()) {
+        if (isObjectKey() || isNullKey()) {
             return ObjectType.genericParamName(keyDim());
         } else if (isPrimitiveKey()) {
             return primitiveBitsType(keyOption());
-        } else if (isNullKey()) {
-            return "Object";
         } else {
             throw new IllegalStateException();
         }
@@ -222,6 +224,10 @@ public class MethodContext {
 
     public Option mapValueOption() {
         return getOption("value");
+    }
+
+    public boolean hasValues() {
+        return mapValueOption() != null;
     }
 
     public Option getOption(String dim) {

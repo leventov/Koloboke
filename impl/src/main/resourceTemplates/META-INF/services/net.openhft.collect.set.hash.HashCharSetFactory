@@ -1,1 +1,2 @@
-net.openhft.collect.impl.hash.HashCharSetFactoryImpl
+/* with char|byte|short|int|long|float|double|obj elem */
+net.openhft.collect.impl.hash.LHashCharSetFactoryImpl

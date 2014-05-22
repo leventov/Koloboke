@@ -1,4 +1,7 @@
-/* with char|byte|short|int|long|float|double|obj elem */
+/* with
+ DHash|LHash hash
+ char|byte|short|int|long|float|double|obj elem
+*/
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -28,9 +31,9 @@ import java.util.Iterator;
 import static net.openhft.collect.impl.Containers.sizeAsInt;
 
 
-public abstract class HashCharSetFactoryGO/*<>*/ extends HashCharSetFactorySO/*<>*/ {
+public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/*<>*/ {
 
-    public HashCharSetFactoryGO(/* if !(float|double elem) */CharHashConfig
+    public DHashCharSetFactoryGO(/* if !(float|double elem) */CharHashConfig
             /* elif float|double elem //HashConfig// endif */ conf) {
         super(conf);
     }

@@ -1,3 +1,4 @@
+/* with DHash hash */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -19,8 +20,6 @@ package net.openhft.collect.impl.hash;
 import net.openhft.collect.HashConfig;
 import net.openhft.collect.HashOverflowException;
 import net.openhft.collect.impl.AbstractContainer;
-
-import static java.lang.Math.max;
 
 
 public abstract class MutableDHash extends AbstractContainer implements DHash {

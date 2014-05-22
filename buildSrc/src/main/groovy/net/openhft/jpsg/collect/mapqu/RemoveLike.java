@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package net.openhft.collect;
+package net.openhft.jpsg.collect.mapqu;
 
-import java.util.Arrays;
-import java.util.List;
+abstract class RemoveLike extends MapQueryUpdateMethod {
 
-
-public final class HashConfigs {
-
-    public static List<HashConfig> all() {
-        return Arrays.asList(
-                HashConfig.getDefault(),
-                HashConfig.getDefault().withGrowFactor(1.999)
-        );
+    @Override
+    public final BasicMapQueryUpdateOp baseOp() {
+        return BasicMapQueryUpdateOp.GET;
     }
 
-    private HashConfigs() {}
+    @Override
+    public final boolean removeIsHighlyProbable() {
+        return true;
+    }
+
+    @Override
+    public boolean inline() {
+        return true;
+    }
 }

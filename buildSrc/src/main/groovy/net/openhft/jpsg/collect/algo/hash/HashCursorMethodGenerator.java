@@ -41,22 +41,24 @@ public class HashCursorMethodGenerator extends CursorMethodGenerator {
     public void generateConstructor() {
         commonConstructorOps(this, cxt, false);
         if (cxt.isObjectKey()) {
-            this.lines(
+            lines(
                     "// noinspection unchecked",
-                    "this.keys = (" + cxt.keyUnwrappedType() + "[]) set;"
+                    (needCapacityMask(cxt) ? cxt.keyType() + "[] keys = " : "") +
+                            "this.keys = (" + cxt.keyUnwrappedType() + "[]) set;"
             );
         } else {
-            this.lines("this.keys = set;");
+            lines((needCapacityMask(cxt) ? cxt.keyUnwrappedType() + "[] keys = " : "") +
+                    "this.keys = set;");
         }
-        if (!cxt.isKeyView()) {
+        if (needCapacityMask(cxt))
+            lines("capacityMask = keys.length - 1;");
+        if (!cxt.isKeyView())
             this.lines("vals = values;");
-        }
         if (cxt.isIntegralKey()) {
             this.lines(cxt.keyUnwrappedType() + " " + free(cxt) +
                     " = this." + free(cxt) + " = freeValue;");
-            if (cxt.mutable()) {
+            if (possibleRemovedSlots(cxt))
                 this.lines("this." + removed(cxt) + " = removedValue;");
-            }
         }
         lines("curKey = " + free(cxt) + ";");
     }
@@ -106,6 +108,11 @@ public class HashCursorMethodGenerator extends CursorMethodGenerator {
         ifBlock(isNotFree(cxt, "curKey"));
         checkModCount(this, cxt, false);
         lines("vals[index] = " + unwrapValue("value") + ";");
+        if (possibleArrayCopyOnRemove(cxt)) {
+            ifBlock("vals != values"); {
+                lines("values[index] = " + unwrapValue("value") + ";");
+            } blockEnd();
+        }
         endOfModCountCheck(this, cxt);
         endOfIllegalStateCheck(this, cxt);
     }
@@ -127,26 +134,60 @@ public class HashCursorMethodGenerator extends CursorMethodGenerator {
     @Override
     public void generateRemove() {
         permissions.add(Permission.REMOVE);
+        lines(cxt.keyUnwrappedRawType() + " curKey;");
+        String curKeyAssignment = "(curKey = this.curKey)";
         if (cxt.isIntegralKey()) {
             lines(cxt.keyType() + " " + free(cxt) + ";");
-            ifBlock("curKey != (" + free(cxt) +" = this." + free(cxt) + ")");
+            ifBlock(curKeyAssignment + " != (" + free(cxt) +" = this." + free(cxt) + ")");
         } else {
-            ifBlock(isNotFree(cxt, "curKey"));
+            ifBlock(isNotFree(cxt, curKeyAssignment));
         }
         ifBlock("expectedModCount++ == " + modCount());
+        // Local copy still holds the current key (could be used in shiftRemove())
+        lines("this.curKey = " + free(cxt) + ";");
+        if (isLHash(cxt)) {
+            shiftRemove();
+        } else {
+            tombstoneRemove();
+        }
+        endOfModCountCheck(this, cxt);
+        endOfIllegalStateCheck(this, cxt);
+    }
+
+    private void tombstoneRemove() {
         incrementModCount();
         if (cxt.isObjectValue())
             lines("int index;");
         String indexAssignment = cxt.isObjectValue() ? "index = this.index" : "index";
-        String keys = cxt.isObjectKey() ? "((Object[]) keys)" : "keys";
-        lines(keys + "[" + indexAssignment + "] = " + removed(cxt) + ";");
-        if (cxt.isObjectValue()) {
-            lines("vals[index] = null;");
-        }
+        eraseSlot(this, cxt, indexAssignment, "index");
         lines("postRemoveHook();");
-        lines("curKey = " + free(cxt) + ";");
-        endOfModCountCheck(this, cxt);
-        endOfIllegalStateCheck(this, cxt);
+    }
+
+    private void shiftRemove() {
+        lines("int index = this.index;");
+        new IterShiftRemove(this, cxt) {
+            @Override
+            String slotsToCopy() {
+                return "index";
+            }
+
+            @Override
+            void onInitialSlotSubstitution() {
+                // Step `index` back, because moveNext() starts from `index` - 1 and won't see
+                // the entry shifted to the slot at `index`.
+                // Update the local copy too, because this variable could be used
+                // later in the table copying (see IterShiftRemove.beforeShift()).
+                lines("this.index = ++index;");
+            }
+
+            @Override
+            String keyToRemoveFromTheOriginalTable() {
+                String key = "curKey";
+                if (cxt.isObjectKey())
+                    key = "(" + cxt.keyType() + ") " + key;
+                return key;
+            }
+        }.generate();
     }
 
     @Override

@@ -1,1 +1,5 @@
-net.openhft.collect.impl.hash.HashCharShortMapFactoryImpl
+/* with
+ char|byte|short|int|long|float|double|obj key
+ short|byte|char|int|long|float|double|obj value
+*/
+net.openhft.collect.impl.hash.LHashCharShortMapFactoryImpl

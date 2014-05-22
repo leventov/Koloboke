@@ -1,3 +1,4 @@
+/* with DHash|LHash hash */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -25,13 +26,13 @@ import java.util.Collection;
 import java.util.Set;
 
 
-public abstract class HashObjSetFactorySO<E> implements HashObjSetFactory<E> {
+public abstract class DHashObjSetFactorySO<E> implements HashObjSetFactory<E> {
 
     final ObjHashConfig conf;
     final HashConfig hashConf;
     final HashConfigWrapper configWrapper;
 
-    HashObjSetFactorySO(ObjHashConfig conf) {
+    DHashObjSetFactorySO(ObjHashConfig conf) {
         this.conf = conf;
         hashConf = conf.getHashConfig();
         configWrapper = new HashConfigWrapper(hashConf);

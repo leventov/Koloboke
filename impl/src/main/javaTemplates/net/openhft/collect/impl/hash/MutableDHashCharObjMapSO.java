@@ -1,4 +1,5 @@
 /* with
+ DHash|LHash hash
  char|byte|short|int|long|float|double|obj key
  obj value
  Mutable|Immutable mutability
@@ -79,7 +80,7 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     /* with key view */
     @Override
     public CharIterator/*<>*/ iterator() {
-        /* if Mutable mutability //
+        /* if Mutable mutability && !(LHash hash) //
         if (!noRemoved()) return new SomeRemovedKeyIterator();
         // endif */
         return new NoRemovedKeyIterator();
@@ -87,7 +88,7 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
 
     @Override
     public CharCursor/*<>*/ setCursor() {
-        /* if Mutable mutability //
+        /* if Mutable mutability && !(LHash hash) //
         if (!noRemoved()) return new SomeRemovedKeyCursor();
         // endif */
         return new NoRemovedKeyCursor();
@@ -160,10 +161,14 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     /* if Mutable mutability */
     @Override
     void removeAt(int index) {
+        // if !(LHash hash) */
         incrementModCount();
         super.removeAt(index);
         values[index] = null;
         postRemoveHook();
+        /* elif LHash hash //
+        /* template RemoveAt */
+        // endif */
     }
     /* endif */
 
@@ -233,10 +238,10 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
 
 
     /* with key view No|Some removed */
-    /* if !(Immutable mutability Some removed) */
+    /* if !(Immutable mutability Some removed) && !(LHash hash Some removed) */
 
     class NoRemovedKeyIterator extends NoRemovedIterator {
-        final V[] vals;
+        /* if !(Mutable mutability) || !(LHash hash) */final/* endif */ V[] vals;
 
         private NoRemovedKeyIterator() {
             super();
@@ -251,7 +256,7 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
 
 
     class NoRemovedKeyCursor extends NoRemovedCursor{
-        final V[] vals;
+        /* if !(Mutable mutability) || !(LHash hash) */final/* endif */ V[] vals;
 
         private NoRemovedKeyCursor() {
             super();

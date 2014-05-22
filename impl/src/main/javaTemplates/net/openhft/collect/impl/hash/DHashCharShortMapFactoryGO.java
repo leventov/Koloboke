@@ -1,4 +1,5 @@
 /* with
+ DHash|LHash hash
  char|byte|short|int|long|float|double|obj key
  short|byte|char|int|long|float|double|obj value
 */
@@ -31,9 +32,9 @@ import java.util.*;
 import static net.openhft.collect.impl.Containers.sizeAsInt;
 
 
-public abstract class HashCharShortMapFactoryGO/*<>*/ extends HashCharShortMapFactorySO/*<>*/ {
+public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMapFactorySO/*<>*/ {
 
-    HashCharShortMapFactoryGO(/* if !(float|double key) */CharHashConfig
+    DHashCharShortMapFactoryGO(/* if !(float|double key) */CharHashConfig
             /* elif float|double key //HashConfig// endif */ conf) {
         super(conf);
     }

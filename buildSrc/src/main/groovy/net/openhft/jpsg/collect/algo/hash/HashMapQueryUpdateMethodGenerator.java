@@ -53,6 +53,8 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     // if values copy should be lifted from branches
     boolean commonValuesCopy;
 
+    boolean commonCapacityMaskCopy = false;
+
     @Override
     public String defaultValue() {
         if (cxt.isObjectValue() || cxt.genericVersion()) return "null";
@@ -79,7 +81,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
             if (removedSlot) {
                 lines("postRemovedSlotInsertHook();");
             } else {
-                lines("postFreeSlotInsertHook();");
+                lines(isLHash(cxt) ? "postInsertHook();" : "postFreeSlotInsertHook();");
             }
         } else {
             lines("insertAt(insertionIndex, " + unwrappedKey() + ", " + value + ");");
@@ -244,7 +246,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     private void generateAbsent(boolean removedSlot, boolean replaceValues) {
         String time = method.baseOp() == INSERT && !method.inline() ? "was" : "is";
         String comment = "// key " + time + " absent";
-        if (cxt.mutable() && method.inline()) {
+        if (cxt.mutable() && method.inline() && !isLHash(cxt)) {
             comment += removedSlot ? ", removed slot" : ", free slot";
         }
         lines(comment);
@@ -341,13 +343,16 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
         return valUsages;
     }
 
-    private int countValuesUsages(int branchStart) {
-        int valArrayUsages = 0;
-        for (int i = branchStart; i < lines.size(); i++) {
-            String line = lines.get(i);
-            valArrayUsages += countOccurrences(line, VALUES_SUB);
+    private int countUsages(int fromLine, String s) {
+        int usages = 0;
+        for (int i = fromLine; i < lines.size(); i++) {
+            usages += countOccurrences(lines.get(i), s);
         }
-        return valArrayUsages;
+        return usages;
+    }
+
+    private int countValuesUsages(int branchStart) {
+        return countUsages(branchStart, VALUES_SUB);
     }
 
     String removedValue() {
@@ -382,22 +387,32 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
 
     @Override
     public MethodGenerator remove() {
-        incrementModCount();
-        String keys;
-        if (method.inline()) {
-            keys = "keys";
-            if (cxt.isObjectKey()) {
-                keys = "((Object[]) " + keys + ")";
-            }
-        } else {
-            keys = "set";
-        }
-        lines(keys + "[index] = " + removedValue() + ";");
-        if (cxt.isObjectValue()) {
-            lines(values() + "[index] = null;");
-        }
-        lines("postRemoveHook();");
         permissions.add(REMOVE);
+        if (isLHash(cxt) && !method.removeIsHighlyProbable()) {
+            lines("removeAt(index);");
+        } else if (isLHash(cxt)) {
+            if (!method.inline() || !commonCapacityMaskCopy)
+                lines("int capacityMask = keys.length - 1;");
+            if (method.inline())
+                commonCapacityMaskCopy = true;
+            new ShiftRemove(this, cxt, VALUES_SUB).generate();
+        } else {
+            incrementModCount();
+            String keys;
+            if (method.inline()) {
+                keys = "keys";
+                if (cxt.isObjectOrNullKey()) {
+                    keys = "((Object[]) " + keys + ")";
+                }
+            } else {
+                keys = "set";
+            }
+            lines(keys + "[index] = " + removedValue() + ";");
+            if (cxt.isObjectValue()) {
+                lines(values() + "[index] = null;");
+            }
+            lines("postRemoveHook();");
+        }
         return this;
     }
 
@@ -412,7 +427,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     private void generateInline() {
         inlineBeginning();
         inlineLocals();
-        String curAssignment = curAssignment(cxt, "keys", unwrappedKey(), false);
+        String curAssignment = curAssignment(cxt, "keys", unwrappedKey(), commonCapacityMaskCopy);
         if (method.mostProbableBranch() == KEY_ABSENT) {
             firstIndexFreeCheck(curAssignment);
             if (separatePresent) {
@@ -468,11 +483,11 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     }
 
     private void innerInline() {
-        if (cxt.mutable() && (cxt.isObjectKey() || method.baseOp() != GET)) {
+        if (possibleRemovedSlots(cxt) && (cxt.isObjectKey() || method.baseOp() != GET)) {
             if (method.baseOp() != GET)
                 lines("int firstRemoved;");
             if (!cxt.isObjectKey()) {
-                countStep();
+                computeStep(this, cxt);
             }
             ifBlock(isNotRemoved(cxt, "cur"));
             if (cxt.isObjectKey()) {
@@ -486,7 +501,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
             }
             ifBlock("noRemoved()");
             if (cxt.isObjectKey())
-                countStep();
+                computeStep(this, cxt);
             keySearchLoop(true);
             if (method.baseOp() != GET) {
                 elseBlock();
@@ -506,27 +521,37 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
             }
             blockEnd();
             if (cxt.isObjectKey())
-                countStep();
+                computeStep(this, cxt);
             if (method.baseOp() == GET) {
                 keySearchLoop(false);
             } else {
                 keySearchLoopDifferentRemovedHandling();
             }
         } else {
-            countStep();
+            if (isLHash(cxt) && cxt.isNullKey() && !commonCapacityMaskCopy)
+                lines("capacityMask = keys.length - 1;");
+            computeStep(this, cxt);
             keySearchLoop(true);
         }
     }
 
     private void inlineLocals() {
-        if (cxt.isObjectKey())
-            lines("// noinspection unchecked");
-        lines(cxt.keyUnwrappedType() + "[] keys = " +
-                        (cxt.isObjectKey() ? "(" + cxt.keyUnwrappedType() + "[]) " : "") + "set;");
+        copyUnwrappedKeys(this, cxt);
         if (commonValuesCopy)
             copyValues();
+        String locals;
+        if (isLHash(cxt)) {
+            if (commonCapacityMaskCopy) {
+                lines("int capacityMask = keys.length - 1;");
+                locals = "";
+            } else {
+                locals = "capacityMask, ";
+            }
+        } else {
+            locals = (!cxt.isNullKey() ? "capacity, hash, " : "");
+        }
         lines(
-                "int " + (cxt.isNullKey() ? "" : "capacity, hash, ") + "index;",
+                "int " + locals + "index;",
                 cxt.keyUnwrappedType() + " cur;"
         );
     }
@@ -558,14 +583,15 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
 
                 String removed = isRemoveOp ? "(removed = removedValue)" : "removedValue";
                 ifBlock(unwrappedKey() + " != (free = freeValue)" +
-                        (cxt.mutable() ? " && " + unwrappedKey() + " != " + removed : ""));
+                        (possibleRemovedSlots(cxt) ? " && " + unwrappedKey() + " != " + removed :
+                                ""));
             } else {
                 lines(cxt.keyType() + " free;");
-                if (cxt.mutable())
+                if (possibleRemovedSlots(cxt))
                     lines(cxt.keyType() + " removed = removedValue;");
                 ifBlock(unwrappedKey() + " == (free = freeValue)");
                 lines("free = changeFree();");
-                if (cxt.mutable()) {
+                if (possibleRemovedSlots(cxt)) {
                     elseIf(unwrappedKey() + " == removed");
                     lines("removed = changeRemoved();");
                 }
@@ -605,15 +631,9 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
         }
     }
 
-    private void countStep() {
-        if (!cxt.isNullKey()) {
-            lines(step());
-        }
-    }
-
     private void keySearchLoop(boolean noRemoved) {
         lines("while (true)").block();
-        nextIndex();
+        nextIndex(this, cxt);
         if (method.mostProbableBranch() == KEY_PRESENT) {
             ifBlock("(cur = keys[index]) == " + unwrappedKey());
             generateOrGoToPresent();
@@ -639,17 +659,10 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
         blockEnd();
     }
 
-    private void nextIndex() {
-        if (!cxt.isNullKey()) {
-            lines(HashMethodGeneratorCommons.nextIndex());
-        } else {
-            lines("index++;");
-        }
-    }
 
     private void keySearchLoopDifferentRemovedHandling() {
         lines("while (true)").block();
-        nextIndex();
+        nextIndex(this, cxt);
         if (method.mostProbableBranch() == KEY_PRESENT) {
             ifBlock("(cur = keys[index]) == " + unwrappedKey());
             generateOrGoToPresent();
@@ -684,7 +697,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     }
 
     private String objectKeyEqualsCond(boolean noRemoved) {
-        return (cxt.mutable() && !noRemoved ? "cur != REMOVED && " : "") +
+        return (possibleRemovedSlots(cxt) && !noRemoved ? "cur != REMOVED && " : "") +
                 "keyEquals(" + unwrappedKey() + ", cur)";
     }
 
@@ -723,7 +736,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     }
 
     private String absentLabel() {
-        if (method.baseOp() != GET && cxt.mutable()) {
+        if (method.baseOp() != GET && possibleRemovedSlots(cxt)) {
             return "keyAbsentFreeSlot";
         } else {
             return "keyAbsent";

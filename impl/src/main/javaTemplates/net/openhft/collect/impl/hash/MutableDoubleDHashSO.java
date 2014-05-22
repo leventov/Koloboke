@@ -1,4 +1,5 @@
 /* with
+ DHash|LHash hash
  double|float elem
  Mutable|Immutable mutability
 */
@@ -75,10 +76,12 @@ public abstract class MutableDoubleDHashSO extends MutableDHash implements Doubl
         Arrays.fill(set, FREE_BITS);
     }
 
+    /* if !(LHash hash) */
     @Override
     void removeAt(int index) {
         set[index] = REMOVED_BITS;
     }
+    /* endif */
 
     @Override
     public void clear() {

@@ -52,6 +52,10 @@ public abstract class MapQueryUpdateMethod implements Method {
         return baseOp() == INSERT ? KEY_ABSENT : KEY_PRESENT;
     }
 
+    public boolean removeIsHighlyProbable() {
+        return false;
+    }
+
     public boolean inline() {
         return baseOp() == CUSTOM_INSERT;
     }

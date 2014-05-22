@@ -69,7 +69,8 @@ public final class QHashCapacities {
             // version accepting long size should be used.
             return MAX_INT_CAPACITY;
         }
-        return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity);
+        return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity,
+                greaterCapacity);
     }
 
     public static long capacity(HashConfigWrapper conf, long size) {
@@ -84,7 +85,8 @@ public final class QHashCapacities {
             long lesserCapacity = capIndex > 0 ?
                     REGULAR_LONG_CAPACITIES[capIndex - 1] : (long) MAX_REGULAR_INT_CAPACITY;
             long greaterCapacity = REGULAR_CHAR_CAPACITIES[capIndex];
-            return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity);
+            return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity,
+                    greaterCapacity);
         }
         return extraLargeCapacity(desiredCapacity);
     }

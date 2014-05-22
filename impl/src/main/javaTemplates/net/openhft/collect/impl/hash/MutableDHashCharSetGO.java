@@ -1,4 +1,5 @@
 /* with
+ DHash|LHash hash
  char|byte|short|int|long|float|double|obj elem
  Mutable|Immutable mutability
 */
@@ -56,6 +57,7 @@ public class MutableDHashCharSetGO/*<>*/ extends MutableCharDHashSetSO/*<>*/
         return setToString();
     }
 
+    @Override
     public boolean equals(Object obj) {
         return CommonSetOps.equals(this, obj);
     }
@@ -114,6 +116,11 @@ public class MutableDHashCharSetGO/*<>*/ extends MutableCharDHashSetSO/*<>*/
         /* template Remove with null elem */ throw new NotGenerated(); /* endtemplate */
     }
     /* endif */
+
+    @Override
+    boolean justRemove(/* bits */char key) {
+        return /* if !(obj elem) */removeChar(key)/* elif obj elem //remove(key)// endif */;
+    }
 
     /* if !(obj elem) */
     @Override

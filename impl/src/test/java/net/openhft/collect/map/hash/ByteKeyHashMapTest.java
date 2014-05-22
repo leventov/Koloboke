@@ -36,6 +36,8 @@ public class ByteKeyHashMapTest {
     @Test
     public void testCorrectFreeAndRemovedValuesReplacement() {
         ByteHashConfig config = ByteHashConfig.getDefault()
+                // to ensure DHash will be created
+                .withHashConfig(HashConfig.getDefault().withGrowFactor(1.999))
                 .withKeysDomainComplement((byte) 0, (byte) 0);
         ByteIntMapFactory factory = getDefaultFactory().withConfig(config);
         for (int i = Byte.MIN_VALUE; i <= Byte.MAX_VALUE; i++) {
@@ -75,7 +77,9 @@ public class ByteKeyHashMapTest {
     @Test
     public void testAbilityToReplaceFreeOnAlmostFullHash() {
         ByteHashConfig config = ByteHashConfig.getDefault()
-                .withHashConfig(HashConfig.getDefault().withMaxLoad(0.999))
+                .withHashConfig(HashConfig.getDefault().withMaxLoad(0.999)
+                        // to ensure DHash will be created
+                        .withGrowFactor(1.999))
                 .withKeysDomainComplement((byte) 0, (byte) 1);
         ByteIntMapFactory factory = getDefaultFactory().withConfig(config);
 

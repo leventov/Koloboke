@@ -16,14 +16,20 @@
 
 package net.openhft.collect;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public final class ObjHashConfigs {
 
     public static List<ObjHashConfig> all() {
-        return Arrays.asList(ObjHashConfig.getDefault());
+        List<ObjHashConfig> configs = Arrays.asList(ObjHashConfig.getDefault());
+        List<ObjHashConfig> all = new ArrayList<ObjHashConfig>();
+        for (ObjHashConfig config : configs) {
+            for (HashConfig hashConfig : HashConfigs.all()) {
+                all.add(config.withHashConfig(hashConfig));
+            }
+        }
+        return all;
     }
 
     private ObjHashConfigs() {}
