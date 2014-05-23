@@ -1,1 +1,3 @@
-include 'api', 'impl', 'benchmarks'
+include 'jpsg:core', 'jpsg:gradle-plugin', 'jpsg:cli'
+include 'lib:api', 'lib:impl-generator', 'lib:impl'
+include 'benchmarks:dimensioned-jmh', 'benchmarks:research'

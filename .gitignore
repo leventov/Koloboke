@@ -1,9 +1,6 @@
 # Gradle
 .gradle
-buildSrc/build/
-api/build/
-impl/build/
-benchmarks/build/
+build/
 
 # IntelliJ
 *.iml

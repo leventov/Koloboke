@@ -1,35 +1,8 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            name 'Shadow'
-            url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
-        }
-    }
+subprojects {
+    setSourceCompatibility(1.8)
+
     dependencies {
-        classpath 'org.gradle.plugins:shadow:0.7.4'
+        compile 'org.openjdk.jmh:jmh-core:0.5.6'
+        compile (project(':lib:api'), project(':lib:impl'))
     }
-}
-
-apply plugin: 'shadow'
-
-sourceCompatibility = 1.8
-idea.module.iml { withXml {
-    it.asNode().component.find { it.@name == 'NewModuleRootManager' }.@LANGUAGE_LEVEL = 'JDK_1_8'
-} }
-
-dependencies {
-    compile project(':api')
-    compile project(':impl')
-    compile 'org.openjdk.jmh:jmh-core:0.5.6'
-    compile 'org.openjdk.jmh:jmh-generator-annprocess:0.5.6'
-    compile 'net.openhft:lang:6.3.3'
-}
-
-jar.manifest.attributes 'Main-Class': 'org.openjdk.jmh.Main'
-
-shadow.outputFile = new File(libsDir, 'microbenchmarks.jar')
-
-build.doLast {
-    tasks.shadow.execute()
 }

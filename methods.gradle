@@ -1,0 +1,21 @@
+def setSourceCompatibility(level) {
+    sourceCompatibility = level
+    def langLevel = 'JDK_' + level.toString().replace('.', '_')
+    idea.module.iml { withXml {
+        it.asNode().component.find {
+            it.@name == 'NewModuleRootManager'
+        }.@LANGUAGE_LEVEL = langLevel
+    } }
+}
+
+def applyJpsg() {
+    apply plugin: 'jpsg'
+    idea.module {
+        excludeDirs = [file('.gradle')]
+        ['classes', 'dependency-cache', 'docs', 'java-compiler', 'libs', 'reports', 'resources',
+         'test-results', 'tmp'].each { excludeDirs << file("$buildDir/$it") }
+    }
+}
+
+ext.setSourceCompatibility = this.&setSourceCompatibility
+ext.applyJpsg = this.&applyJpsg

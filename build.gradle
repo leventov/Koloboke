@@ -1,22 +1,18 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'http://repo.springsource.org/plugins-release' }
+allprojects {
+    apply plugin: 'idea'
+
+    task idea(overwrite: true) {
+        dependsOn ideaModule
     }
-    dependencies {
-        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.5'
+
+    task cleanIdea(overwrite: true) {
+        dependsOn cleanIdeaModule
     }
 }
 
-subprojects {
+def leafProjects = subprojects.findAll { it.subprojects.empty }
+configure(leafProjects) {
     apply plugin: 'java'
-    apply plugin: 'propdeps'
-    apply plugin: 'jpsg' // defined in buildSrc
-    apply plugin: 'findbugs'
-    apply plugin: 'idea'
-    apply plugin: 'propdeps-idea'
-
-    sourceCompatibility = 1.6
 
     repositories {
         mavenCentral()
@@ -26,61 +22,38 @@ subprojects {
         compile 'com.google.code.findbugs:jsr305:2.0.3'
         testCompile 'junit:junit:4.11'
         testCompile 'org.hamcrest:hamcrest-all:1.3'
-        provided 'com.google.auto.value:auto-value:1.0-rc1'
     }
 
-    tasks.withType(net.openhft.jpsg.GeneratorTask).each { gen ->
-        gen.addProcessor net.openhft.jpsg.collect.MethodGeneratingProcessor
-    }
-
-    compileJava {
-        // To suppress warnings about usages of sun.misc.Unsafe API
-        options.compilerArgs << '-XDignore.symbol.file'
-        options.compilerArgs += ['-Xlint:all', '-Xlint:-unchecked', '-Xlint:-rawtypes',
-                                 '-Xlint:-cast', '-Xlint:-deprecation']
-        options.fork = true
-        def javac = System.env['JAVA_HOME'] ? System.env['JAVA_HOME'] + '/bin/javac' : 'javac'
-        options.forkOptions.executable = javac
+    configure(tasks.withType(AbstractCompile)) {
         options.encoding = 'UTF-8'
     }
 
-    test {
-        maxParallelForks Math.max((int) (Runtime.runtime.availableProcessors() / 2), 1)
-    }
-
-    findbugs {
-        toolVersion = '2.0.3'
-        // check (hence build) task don't depend on FindBugs, because
-        // benchmarks subproject requires Java 8 compiler, while FindBugs
-        // crashes on Java 8 - compiled bytecode even with -source 1.6 flag. To find bugs, run
-        // $ JAVA_HOME=<java-7-home> gradle impl:findBugsMain
-        // TODO fix when Java 8 - compatible version of FindBugs is out
-        sourceSets = []
-        effort = 'max'
-        reportLevel = 'high'
-        excludeFilter = file("$rootProject.projectDir/config/findbugs/excludeFilter.xml")
-    }
-
-    idea.module {
-        excludeDirs = [file('.gradle')]
-        ['docs', 'dependency-cache', 'libs', 'reports', 'resources', 'test-results', 'tmp']
-                .each { excludeDirs << file("$buildDir/$it") }
-        // AutoValue implementations are located there
-        sourceDirs += sourceSets*.output.classesDir
-    }
+    apply from: "$rootProject.projectDir/methods.gradle"
 }
 
-project(':api').javadoc.options.links 'http://docs.oracle.com/javase/7/docs/api/'
+def metaProjects = [':jpsg:core', ':jpsg:gradle-plugin', ':lib:impl-generator']
+        .collect(this.&project)
+metaProjects.each { p -> evaluationDependsOn(p.path) }
+task buildMeta { dependsOn metaProjects*.build }
+task cleanMeta { dependsOn metaProjects*.clean }
 
-project(':impl') {
+def mainProjects = leafProjects - metaProjects - project(':jpsg').subprojects
+configure(mainProjects) {
+    task buildMain { dependsOn build }
+    task cleanMain { dependsOn clean }
+}
 
-    dependencies {
-        compile project(':api')
-        testCompile 'com.google.guava:guava-testlib:17.0'
-        testCompile 'org.apache.mahout:mahout-math:0.9'
+tasks.idea.dependsOn ideaProject
+tasks.idea << {
+    copy {
+        from '.'
+        into '.idea/'
+        include '*.ipr'
+        rename { 'modules.xml' }
     }
+    cleanIdeaProject.execute()
+}
 
-    test {
-        jvmArgs '-XX:MaxJavaStackTraceDepth=-1'
-    }
+cleanIdea << {
+    delete '.idea/modules.xml'
 }

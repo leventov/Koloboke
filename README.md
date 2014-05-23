@@ -25,15 +25,24 @@ Then
 
     $ git clone git@github.com:OpenHFT/UntitledCollectionsProject.git collections
     $ cd collections
+    $ gradle :buildMeta
+    $ gradle buildMain -x test
     $ gradle idea
-    $ cd buildSrc
-    $ gradle idea
 
-Then you can open the project in IntelliJ IDEA. To build, run
+Then you can open the project in IntelliJ IDEA.
 
-    $ gradle build
+To rebuild meta projects (code generators), run from the project root dir:
 
+    $ gradle --stop
+    $ gradle :cleanMeta :buildMeta
+
+To rebuild either the lib, benchmarks or both, run
+
+    $ gradle cleanMain buildMain
+
+from the `lib`, `benchmarks` subdir or the root project dir respectively.
+ 
 ---
 
-Project started as [Trove fork](https://bitbucket.org/leventov/trove) in June 2013.
+Project started as [Trove fork](https://bitbucket.org/leventov/trove) in July 2013.
 

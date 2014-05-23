@@ -1,0 +1,16 @@
+evaluationDependsOn("$parent.path")
+
+generateJavaSpecializations {
+    addProcessor 'net.openhft.jpsg.collect.MethodGeneratingProcessor'
+}
+
+dependencies {
+    compile project("$parent.path:api")
+    testCompile 'com.google.guava:guava-testlib:17.0'
+    testCompile 'org.apache.mahout:mahout-math:0.9'
+}
+
+test {
+    maxParallelForks Math.max((int) (Runtime.runtime.availableProcessors() / 2), 1)
+    jvmArgs '-XX:MaxJavaStackTraceDepth=-1'
+}
