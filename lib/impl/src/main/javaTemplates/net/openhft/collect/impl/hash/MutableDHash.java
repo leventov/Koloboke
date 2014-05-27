@@ -270,21 +270,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
         int additionalSize = intMinSize - size;
         if (additionalSize <= 0)
             return false;
-        int lowFreeEstimate;
-        if (removedSlots == 0) {
-            lowFreeEstimate = freeSlots - additionalSize;
-        } else {
-            int nonFull = freeSlots + removedSlots;
-            float freeFraction =  ((float) freeSlots) / nonFull;
-            // Precise free estimate = free * (nonFull - addSize) /
-            //                        (nonFull - (1 - freeFraction) * addSize)
-            // Because freeEstimate'(addSize) =
-            //            - (freeEstimate(addSize) / (nonFull - addSize)) ^ 2
-            //
-            // This estimate is even lower:
-            lowFreeEstimate = (int) ((nonFull - additionalSize) * freeFraction);
-        }
-        if (lowFreeEstimate < minFreeSlots || intMinSize > maxSize) {
+        if (intMinSize > maxSize || freeSlots - additionalSize < minFreeSlots) {
             return tryRehashForExpansion(DHashCapacities.capacity(configWrapper, intMinSize));
         } else {
             return false;
