@@ -35,7 +35,7 @@ public final class SimpleOption implements Option {
         return !hasLow || !hasUp;
     }
     // for options used only to enrich context, not for replacing
-    final boolean contextOption;
+    private final boolean contextOption;
     final String title;
     Pattern titleP;
 
@@ -108,7 +108,7 @@ public final class SimpleOption implements Option {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        return obj instanceof SimpleOption && title.equals(((SimpleOption) obj).title);
+        return this == obj ||
+                obj instanceof SimpleOption && title.equals(((SimpleOption) obj).title);
     }
 }

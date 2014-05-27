@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.algo.hash;
 
-import net.openhft.jpsg.collect.*;
+import net.openhft.jpsg.collect.Permission;
 import net.openhft.jpsg.collect.iter.IteratorMethodGenerator;
 
 import static net.openhft.jpsg.collect.algo.hash.HashIterMethodGeneratorCommons.*;
@@ -26,7 +26,7 @@ import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
 public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
 
     @Override
-    public void generateFields() {
+    protected void generateFields() {
         commonFields(this, cxt);
         if (cxt.mutable()) {
             lines("int index = -1;");
@@ -49,7 +49,7 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
     }
 
     @Override
-    public void generateConstructor() {
+    protected void generateConstructor() {
         commonConstructorOps(this, cxt, true);
         if (cxt.isObjectKey()) {
             this.lines(
@@ -76,12 +76,12 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
     }
 
     @Override
-    public void generateHasNext() {
+    protected void generateHasNext() {
         ret("nextIndex >= 0");
     }
 
     @Override
-    public void generateNext() {
+    protected void generateNext() {
         lines("int nextI;");
         ifBlock("(nextI = nextIndex) >= 0");
         checkModCount(this, cxt, true);
@@ -99,7 +99,7 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
     }
 
     @Override
-    public void generateRemove() {
+    protected void generateRemove() {
         permissions.add(Permission.REMOVE);
         lines("int index;");
         ifBlock("(index = this.index) >= 0");
@@ -148,7 +148,7 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
     }
 
     @Override
-    public void generateForEachRemaining() {
+    protected void generateForEachRemaining() {
         if (cxt.mutable()) {
             lines("int mc = expectedModCount;");
         }

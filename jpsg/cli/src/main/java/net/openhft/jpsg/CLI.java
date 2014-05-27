@@ -16,7 +16,8 @@
 
 package net.openhft.jpsg;
 
-import com.beust.jcommander.*;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import com.beust.jcommander.converters.IParameterSplitter;
 
 import java.io.IOException;

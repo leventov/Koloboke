@@ -16,9 +16,7 @@
 
 package net.openhft.jpsg.collect.iter;
 
-import net.openhft.jpsg.collect.MethodContext;
-import net.openhft.jpsg.collect.Method;
-import net.openhft.jpsg.collect.MethodGenerator;
+import net.openhft.jpsg.collect.*;
 
 
 public enum IterMethod implements Method {

@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 
 public final class ObjectType implements Option {
-    private static Logger log = LoggerFactory.getLogger(ObjectType.class);
+    private static final Logger log = LoggerFactory.getLogger(ObjectType.class);
 
     public static enum IdentifierStyle {
         LONG("object", "Object", "OBJECT"),

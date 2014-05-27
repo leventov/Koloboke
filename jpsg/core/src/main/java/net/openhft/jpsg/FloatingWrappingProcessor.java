@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class FloatingWrappingProcessor extends TemplateProcessor {
+public final class FloatingWrappingProcessor extends TemplateProcessor {
 
     private static final Pattern WRAPPING_P = RegexpUtils.compile(
             "/[\\*/]\\s*(?<op>wrap|unwrap)\\s+(?<dim>[a-z0-9]+)\\s*[\\*/]/" +

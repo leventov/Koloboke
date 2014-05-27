@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.bulk;
 
-public class RemoveIf extends BulkMethod {
+public final class RemoveIf extends BulkMethod {
 
     @Override
     public void beginning() {

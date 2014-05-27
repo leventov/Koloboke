@@ -19,7 +19,7 @@ package net.openhft.jpsg.collect.bulk;
 import net.openhft.jpsg.PrimitiveType;
 
 
-public class ReverseRemoveAllFrom extends BulkMethod {
+public final class ReverseRemoveAllFrom extends BulkMethod {
 
     @Override
     public EntryType entryType() {

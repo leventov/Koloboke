@@ -47,15 +47,15 @@ public abstract class IteratorMethodGenerator extends MethodGenerator {
         }
     }
 
-    public abstract void generateFields();
+    protected abstract void generateFields();
 
-    public abstract void generateConstructor();
+    protected abstract void generateConstructor();
 
-    public abstract void generateHasNext();
+    protected abstract void generateHasNext();
 
-    public abstract void generateNext();
+    protected abstract void generateNext();
 
-    public abstract void generateRemove();
+    protected abstract void generateRemove();
 
-    public abstract void generateForEachRemaining();
+    protected abstract void generateForEachRemaining();
 }

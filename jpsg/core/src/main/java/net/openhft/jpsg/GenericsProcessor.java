@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 public final class GenericsProcessor extends TemplateProcessor {
 
-    public static List<Map.Entry<String, Option>> getViewOptions(Context context) {
+    private static List<Map.Entry<String, Option>> getViewOptions(Context context) {
         List<Map.Entry<String, Option>> options = new ArrayList<>();
         for (Map.Entry<String, Option> e : context) {
             options.add(e);

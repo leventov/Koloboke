@@ -24,7 +24,8 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.RecursiveAction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ import static net.openhft.jpsg.RegexpUtils.removeSubGroupNames;
 
 
 public class Generator {
-    private static Logger log = LoggerFactory.getLogger(Generator.class);
+    private static final Logger log = LoggerFactory.getLogger(Generator.class);
 
     private static Pattern compileBlock(String insideBlockRegex) {
         String block = "/[\\*/]\\s*" + removeSubGroupNames(insideBlockRegex) + "\\s*[\\*/]/";
@@ -112,16 +113,16 @@ public class Generator {
         add(new FloatingWrappingProcessor());
     }};
 
-    private List<String> with = new ArrayList<>();
+    private final List<String> with = new ArrayList<>();
     private Context defaultContext = null;
 
-    private List<String> never = new ArrayList<>();
+    private final List<String> never = new ArrayList<>();
     private List<Option> excludedTypes;
 
-    private List<String> included = new ArrayList<>();
+    private final List<String> included = new ArrayList<>();
     private List<Dimensions> permissiveConditions;
 
-    private List<String> excluded = new ArrayList<>();
+    private final List<String> excluded = new ArrayList<>();
     private List<Dimensions> prohibitingConditions;
 
     private TemplateProcessor firstProcessor;

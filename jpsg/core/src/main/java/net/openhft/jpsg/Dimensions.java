@@ -131,7 +131,7 @@ public final class Dimensions {
     }
 
 
-    private LinkedHashMap<String, List<Option>> dimensions;
+    private final LinkedHashMap<String, List<Option>> dimensions;
 
     private Dimensions(LinkedHashMap<String, List<Option>> dimensions) {
         this.dimensions = dimensions;

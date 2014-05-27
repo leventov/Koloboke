@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.mapqu;
 
-public class PutIfAbsent extends MapQueryUpdateMethod {
+public final class PutIfAbsent extends MapQueryUpdateMethod {
 
     @Override
     public BasicMapQueryUpdateOp baseOp() {

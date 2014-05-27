@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.mapqu;
 
-public class Add extends MapQueryUpdateMethod {
+public final class Add extends MapQueryUpdateMethod {
 
     @Override
     public BasicMapQueryUpdateOp baseOp() {

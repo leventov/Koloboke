@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class DefinitionProcessor extends TemplateProcessor {
+public final class DefinitionProcessor extends TemplateProcessor {
     public static final int PRIORITY = Generator.BlocksProcessor.PRIORITY + 10;
 
     private static final Pattern DEF_P = RegexpUtils.compile(

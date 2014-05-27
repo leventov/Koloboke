@@ -16,8 +16,6 @@
 
 package net.openhft.jpsg.collect.bulk;
 
-import net.openhft.jpsg.PrimitiveType;
-
 
 public class ToString extends BulkMethod {
 

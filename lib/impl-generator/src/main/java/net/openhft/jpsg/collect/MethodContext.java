@@ -20,38 +20,38 @@ package net.openhft.jpsg.collect;
 import net.openhft.jpsg.*;
 
 
-public class MethodContext {
+public final class MethodContext {
 
-    static final SimpleOption IMMUTABLE = new SimpleOption("Immutable");
-    static final SimpleOption MUTABLE = new SimpleOption("Mutable");
+    private static final SimpleOption IMMUTABLE = new SimpleOption("Immutable");
+    private static final SimpleOption MUTABLE = new SimpleOption("Mutable");
 
-    static final SimpleOption NULL = new SimpleOption("null");
+    private static final SimpleOption NULL = new SimpleOption("null");
 
-    private static SimpleOption keyView = new SimpleOption("key");
-    private static SimpleOption valueView = new SimpleOption("value");
-    private static SimpleOption mapView = new SimpleOption("map");
-    private static SimpleOption entryView = new SimpleOption("entry");
+    private static final SimpleOption KEY_VIEW = new SimpleOption("key");
+    private static final SimpleOption VALUE_VIEW = new SimpleOption("value");
+    private static final SimpleOption MAP_VIEW = new SimpleOption("map");
+    private static final SimpleOption ENTRY_VIEW = new SimpleOption("entry");
 
-    static final SimpleOption GENERIC = new SimpleOption("generic");
-    static final SimpleOption INTERNAL = new SimpleOption("internal");
+    private static final SimpleOption GENERIC = new SimpleOption("generic");
+    private static final SimpleOption INTERNAL = new SimpleOption("internal");
 
     private final SimpleOption view;
 
-    private Context context;
+    private final Context context;
 
     public MethodContext(Context context) {
         this.context = context;
 
         Option vt = context.getOption("view");
-        if ( keyView.equals(vt)) view = keyView;
-        else if ( valueView.equals(vt)) view = valueView;
-        else if ( mapView.equals(vt)) view = mapView;
-        else if ( entryView.equals(vt)) view = entryView;
+        if (KEY_VIEW.equals(vt)) view = KEY_VIEW;
+        else if (VALUE_VIEW.equals(vt)) view = VALUE_VIEW;
+        else if (MAP_VIEW.equals(vt)) view = MAP_VIEW;
+        else if (ENTRY_VIEW.equals(vt)) view = ENTRY_VIEW;
         else {
             if (context.getOption("value") != null) {
-                view = mapView;
+                view = MAP_VIEW;
             } else {
-                view = keyView;
+                view = KEY_VIEW;
             }
         }
     }
@@ -195,19 +195,19 @@ public class MethodContext {
     }
 
     public final boolean isKeyView() {
-        return view == keyView;
+        return view == KEY_VIEW;
     }
 
     public final boolean isValueView() {
-        return view == valueView;
+        return view == VALUE_VIEW;
     }
 
     public final boolean isEntryView() {
-        return view == entryView;
+        return view == ENTRY_VIEW;
     }
 
     public final boolean isMapView() {
-        return view == mapView;
+        return view == MAP_VIEW;
     }
 
     public final boolean isPrimitiveView() {

@@ -24,7 +24,7 @@ import static net.openhft.jpsg.PrimitiveType.*;
 public class IncrementValue extends MapQueryUpdateMethod {
 
     @Override
-    public BasicMapQueryUpdateOp baseOp() {
+    public final BasicMapQueryUpdateOp baseOp() {
         return BasicMapQueryUpdateOp.INSERT;
     }
 
@@ -33,7 +33,7 @@ public class IncrementValue extends MapQueryUpdateMethod {
     }
 
     @Override
-    public void ifPresent() {
+    public final void ifPresent() {
         String newValue = gen.value() + " + " + toAdd();
         Option mvo = cxt.mapValueOption();
         if (mvo == BYTE || mvo == CHAR || mvo == SHORT) {

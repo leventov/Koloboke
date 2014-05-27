@@ -16,10 +16,7 @@
 
 package net.openhft.jpsg;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 
 public final class Context implements Iterable<Map.Entry<String, Option>> {
@@ -29,7 +26,7 @@ public final class Context implements Iterable<Map.Entry<String, Option>> {
     }
 
     static class Builder {
-        private LinkedHashMap<String, Option> options = new LinkedHashMap<>();
+        private final LinkedHashMap<String, Option> options = new LinkedHashMap<>();
 
         Builder put(String dim, Option option) {
             options.put(dim, option);
@@ -43,7 +40,7 @@ public final class Context implements Iterable<Map.Entry<String, Option>> {
     }
 
 
-    private LinkedHashMap<String, Option> options;
+    private final LinkedHashMap<String, Option> options;
 
     private Context(LinkedHashMap<String, Option> options) {
         this.options = options;

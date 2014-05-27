@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.bulk;
 
-public class RetainAll extends BulkRemoveUsingAnotherCollection {
+public final class RetainAll extends BulkRemoveUsingAnotherCollection {
 
     @Override
     public void beginning() {

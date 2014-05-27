@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.bulk;
 
-public class ForEach extends BulkMethod {
+public final class ForEach extends BulkMethod {
 
     @Override
     public void beginning() {

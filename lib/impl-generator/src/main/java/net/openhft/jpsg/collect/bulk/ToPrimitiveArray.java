@@ -19,7 +19,7 @@ package net.openhft.jpsg.collect.bulk;
 import net.openhft.jpsg.PrimitiveType;
 
 
-public class ToPrimitiveArray extends BulkMethod {
+public final class ToPrimitiveArray extends BulkMethod {
 
     @Override
     public void beginning() {

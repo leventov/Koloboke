@@ -99,7 +99,7 @@ public abstract class MethodGenerator {
         return Pattern.compile(Pattern.quote(sub)).matcher(s).replaceFirst(repl);
     }
 
-    protected List<String> lines = new ArrayList<>();
+    protected final List<String> lines = new ArrayList<>();
     protected String indent = "";
 
     public final MethodGenerator lines(String... lines) {
@@ -110,7 +110,7 @@ public abstract class MethodGenerator {
     }
 
 
-    protected EnumSet<Permission> permissions = EnumSet.noneOf(Permission.class);
+    protected final EnumSet<Permission> permissions = EnumSet.noneOf(Permission.class);
     protected MethodContext cxt;
 
     public final String generate(MethodContext cxt, String indent, Method method) {
@@ -191,19 +191,19 @@ public abstract class MethodGenerator {
         ret(ret + "");
     }
 
-    public void concurrentMod() {
+    public final void concurrentMod() {
         lines("throw new java.util.ConcurrentModificationException();");
     }
 
-    public void illegalState() {
+    public final void illegalState() {
         lines("throw new java.lang.IllegalStateException();");
     }
 
-    public void unsupportedOperation() {
+    public final void unsupportedOperation() {
         lines("throw new java.lang.UnsupportedOperationException();");
     }
 
-    public void incrementModCount() {
+    public final void incrementModCount() {
         lines("incrementModCount();");
     }
 }

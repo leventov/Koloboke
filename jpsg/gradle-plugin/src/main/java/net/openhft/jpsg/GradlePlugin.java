@@ -34,7 +34,7 @@ import java.io.File;
 /**
  * Copied Gradle 1.10 Antlr plugin
  */
-public class GradlePlugin  implements Plugin<ProjectInternal> {
+public final class GradlePlugin implements Plugin<ProjectInternal> {
     public static final String JPSG_CONFIGURATION_NAME = "jpsg";
 
     private enum Flavor {

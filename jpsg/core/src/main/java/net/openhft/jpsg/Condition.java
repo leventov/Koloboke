@@ -63,8 +63,8 @@ public final class Condition {
     }
 
     private Op op;
-    private List<Dimensions> allDims = new ArrayList<>();
-    private List<Boolean> negated = new ArrayList<>();
+    private final List<Dimensions> allDims = new ArrayList<>();
+    private final List<Boolean> negated = new ArrayList<>();
 
     boolean dimsResult(int i, Context target) {
         boolean res = allDims.get(i).checkAsCondition(target);

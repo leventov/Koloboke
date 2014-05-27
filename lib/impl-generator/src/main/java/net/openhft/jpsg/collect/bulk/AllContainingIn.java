@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.bulk;
 
-public class AllContainingIn extends BulkMethod {
+public final class AllContainingIn extends BulkMethod {
 
     @Override
     public EntryType entryType() {

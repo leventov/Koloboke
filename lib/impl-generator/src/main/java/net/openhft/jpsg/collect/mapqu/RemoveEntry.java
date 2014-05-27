@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.mapqu;
 
-public class RemoveEntry extends RemoveLike {
+public final class RemoveEntry extends RemoveLike {
 
     @Override
     public void ifPresent() {

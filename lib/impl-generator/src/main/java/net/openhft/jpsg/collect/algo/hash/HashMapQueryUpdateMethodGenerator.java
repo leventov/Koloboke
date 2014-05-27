@@ -18,17 +18,17 @@ package net.openhft.jpsg.collect.algo.hash;
 
 import net.openhft.jpsg.PrimitiveType;
 import net.openhft.jpsg.collect.*;
-import net.openhft.jpsg.collect.mapqu.*;
+import net.openhft.jpsg.collect.mapqu.MapQueryUpdateMethod;
+import net.openhft.jpsg.collect.mapqu.MapQueryUpdateMethodGenerator;
 
-import static net.openhft.jpsg.collect.Permission.*;
-import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
-import static net.openhft.jpsg.collect.mapqu.BasicMapQueryUpdateOp.GET;
-import static net.openhft.jpsg.collect.mapqu.BasicMapQueryUpdateOp.INSERT;
-import static net.openhft.jpsg.collect.mapqu.BasicMapQueryUpdateOp.CUSTOM_INSERT;
-import static net.openhft.jpsg.collect.mapqu.Branch.KEY_ABSENT;
-import static net.openhft.jpsg.collect.mapqu.Branch.KEY_PRESENT;
 import static java.lang.Math.min;
 import static java.lang.StrictMath.max;
+import static net.openhft.jpsg.collect.Permission.REMOVE;
+import static net.openhft.jpsg.collect.Permission.SET_VALUE;
+import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
+import static net.openhft.jpsg.collect.mapqu.BasicMapQueryUpdateOp.*;
+import static net.openhft.jpsg.collect.mapqu.Branch.KEY_ABSENT;
+import static net.openhft.jpsg.collect.mapqu.Branch.KEY_PRESENT;
 
 
 public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGenerator {
@@ -44,16 +44,16 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
 
     // inline index/insert state
 
-    int presentBranchSize, absentBranchSize;
-    boolean separatePresent, separateAbsent;
+    private int presentBranchSize, absentBranchSize;
+    private boolean separatePresent, separateAbsent;
     // for generating key absent branch
-    boolean removedSlot;
-    boolean earlyAbsentLabel;
+    private boolean removedSlot;
+    private boolean earlyAbsentLabel;
 
     // if values copy should be lifted from branches
-    boolean commonValuesCopy;
+    private boolean commonValuesCopy;
 
-    boolean commonCapacityMaskCopy = false;
+    private boolean commonCapacityMaskCopy = false;
 
     @Override
     public String defaultValue() {

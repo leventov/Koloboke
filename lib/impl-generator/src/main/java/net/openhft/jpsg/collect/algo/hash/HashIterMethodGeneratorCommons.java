@@ -22,7 +22,7 @@ import net.openhft.jpsg.collect.MethodGenerator;
 import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
 
 
-public final class HashIterMethodGeneratorCommons {
+final class HashIterMethodGeneratorCommons {
 
     private HashIterMethodGeneratorCommons() {}
 
@@ -156,7 +156,7 @@ public final class HashIterMethodGeneratorCommons {
         }
     }
 
-    static void generateMutableEntryClassAwareOfPossibleCopyOnRemove(
+    private static void generateMutableEntryClassAwareOfPossibleCopyOnRemove(
             MethodGenerator g, MethodContext cxt) {
         if (!possibleArrayCopyOnRemove(cxt) || !cxt.isEntryView())
             return;
@@ -192,7 +192,7 @@ public final class HashIterMethodGeneratorCommons {
         copyRemoved(g, cxt);
     }
 
-    static void copyRemoved(MethodGenerator g, MethodContext cxt) {
+    private static void copyRemoved(MethodGenerator g, MethodContext cxt) {
         if (cxt.isIntegralKey() && possibleRemovedSlots(cxt) && !noRemoved(cxt)) {
             g.lines(cxt.keyType() + " " + removed(cxt) + " = this." + removed(cxt) + ";");
         }

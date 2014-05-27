@@ -16,13 +16,10 @@
 
 package net.openhft.jpsg.collect.mapqu;
 
-import net.openhft.jpsg.*;
-import net.openhft.jpsg.collect.MethodContext;
-import net.openhft.jpsg.collect.Method;
-import net.openhft.jpsg.collect.MethodGenerator;
+import net.openhft.jpsg.collect.*;
 
-import static net.openhft.jpsg.collect.mapqu.BasicMapQueryUpdateOp.INSERT;
 import static net.openhft.jpsg.collect.mapqu.BasicMapQueryUpdateOp.CUSTOM_INSERT;
+import static net.openhft.jpsg.collect.mapqu.BasicMapQueryUpdateOp.INSERT;
 import static net.openhft.jpsg.collect.mapqu.Branch.KEY_ABSENT;
 import static net.openhft.jpsg.collect.mapqu.Branch.KEY_PRESENT;
 

@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.bulk;
 
-public class ListHashCode extends HashCode {
+public final class ListHashCode extends HashCode {
 
     @Override
     int initialValue() {

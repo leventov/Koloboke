@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.bulk;
 
-public class ReversePutAllTo extends BulkMethod {
+public final class ReversePutAllTo extends BulkMethod {
 
     @Override
     public boolean withInternalVersion() {

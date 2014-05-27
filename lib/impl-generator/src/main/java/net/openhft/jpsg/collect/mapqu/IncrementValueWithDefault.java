@@ -18,12 +18,10 @@ package net.openhft.jpsg.collect.mapqu;
 
 import net.openhft.jpsg.Option;
 
-import static net.openhft.jpsg.PrimitiveType.BYTE;
-import static net.openhft.jpsg.PrimitiveType.CHAR;
-import static net.openhft.jpsg.PrimitiveType.SHORT;
+import static net.openhft.jpsg.PrimitiveType.*;
 
 
-public class IncrementValueWithDefault extends IncrementValue {
+public final class IncrementValueWithDefault extends IncrementValue {
 
     @Override
     public void beginning() {

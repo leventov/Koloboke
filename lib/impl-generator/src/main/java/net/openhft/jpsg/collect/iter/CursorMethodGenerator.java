@@ -65,21 +65,21 @@ public abstract class CursorMethodGenerator extends MethodGenerator {
         }
     }
 
-    public abstract void generateFields();
+    protected abstract void generateFields();
 
-    public abstract void generateConstructor();
+    protected abstract void generateConstructor();
 
-    public abstract void generateMoveNext();
+    protected abstract void generateMoveNext();
 
-    public abstract void generateKey();
+    protected abstract void generateKey();
 
-    public abstract void generateValue();
+    protected abstract void generateValue();
 
-    public abstract void generateSetValue();
+    protected abstract void generateSetValue();
 
-    public abstract void generateEntry();
+    protected abstract void generateEntry();
 
-    public abstract void generateRemove();
+    protected abstract void generateRemove();
 
-    public abstract void generateForEachForward();
+    protected abstract void generateForEachForward();
 }

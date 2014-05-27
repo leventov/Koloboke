@@ -17,7 +17,7 @@
 package net.openhft.jpsg.collect.bulk;
 
 
-public class ReplaceAll extends BulkMethod {
+public final class ReplaceAll extends BulkMethod {
 
     @Override
     public void beginning() {

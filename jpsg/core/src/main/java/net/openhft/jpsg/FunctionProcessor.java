@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
-public class FunctionProcessor extends TemplateProcessor {
+public final class FunctionProcessor extends TemplateProcessor {
     // after blocks processor, before options processor
     public static final int PRIORITY =
             (Generator.BlocksProcessor.PRIORITY + OptionProcessor.PRIORITY) / 2;

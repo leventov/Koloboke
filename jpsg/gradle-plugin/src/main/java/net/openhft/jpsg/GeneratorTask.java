@@ -26,7 +26,7 @@ import java.nio.file.Path;
 
 public class GeneratorTask extends ConventionTask {
 
-    private Generator g = new Generator();
+    private final Generator g = new Generator();
 
     public GeneratorTask setObjectIdStyle(ObjectType.IdentifierStyle objectIdStyle) {
         g.setObjectIdStyle(objectIdStyle);

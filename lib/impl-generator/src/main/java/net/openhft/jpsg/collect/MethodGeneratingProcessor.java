@@ -26,11 +26,11 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.openhft.jpsg.Generator.DIMENSIONS;
 import static java.lang.String.format;
+import static net.openhft.jpsg.Generator.DIMENSIONS;
 
 
-public class MethodGeneratingProcessor extends TemplateProcessor {
+public final class MethodGeneratingProcessor extends TemplateProcessor {
     private static final int PRIORITY = DEFAULT_PRIORITY - 10;
 
     private static final Pattern METHOD_BODY_P = RegexpUtils.compile(

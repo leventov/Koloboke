@@ -69,7 +69,7 @@ final class HashMethodGeneratorCommons {
         }
     }
 
-    static String keyHash(MethodContext cxt, String key, boolean distinctNullKey) {
+    private static String keyHash(MethodContext cxt, String key, boolean distinctNullKey) {
         if (distinctNullKey && cxt.isNullKey()) {
             return "0";
         } else if (cxt.isObjectOrNullKey()) {
@@ -159,8 +159,8 @@ final class HashMethodGeneratorCommons {
         }
     }
 
-    static final SimpleOption DHASH = new SimpleOption("DHash");
-    static final SimpleOption LHASH = new SimpleOption("LHash");
+    private static final SimpleOption DHASH = new SimpleOption("DHash");
+    private static final SimpleOption LHASH = new SimpleOption("LHash");
 
     static boolean isDHash(MethodContext cxt) {
         return DHASH.equals(cxt.getOption("hash"));
@@ -175,9 +175,9 @@ final class HashMethodGeneratorCommons {
     }
 
     static class ShiftRemove {
-        MethodGenerator g;
-        MethodContext cxt;
-        String values;
+        final MethodGenerator g;
+        final MethodContext cxt;
+        final String values;
 
         ShiftRemove(MethodGenerator g, MethodContext cxt, String values) {
             this.g = g;
@@ -219,15 +219,10 @@ final class HashMethodGeneratorCommons {
 
     static void eraseSlot(MethodGenerator g, MethodContext cxt,
             String indexForKeys, String indexForValues) {
-        eraseSlot(g, cxt, indexForKeys, indexForValues, true);
+        eraseSlot(g, cxt, indexForKeys, indexForValues, true, "vals");
     }
 
-    static void eraseSlot(MethodGenerator g, MethodContext cxt,
-            String indexForKeys, String indexForValues, boolean genericKeys) {
-        eraseSlot(g, cxt, indexForKeys, indexForValues, genericKeys, "vals");
-    }
-
-    static void eraseSlot(MethodGenerator g, MethodContext cxt,
+    private static void eraseSlot(MethodGenerator g, MethodContext cxt,
             String indexForKeys, String indexForValues, boolean genericKeys, String values) {
         String keys = cxt.isObjectOrNullKey() && genericKeys ? "((Object[]) keys)" : "keys";
         g.lines(keys + "[" + indexForKeys + "] = " + removed(cxt) + ";");

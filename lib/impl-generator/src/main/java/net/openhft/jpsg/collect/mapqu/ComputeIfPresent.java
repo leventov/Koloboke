@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.mapqu;
 
-public class ComputeIfPresent extends Compute {
+public final class ComputeIfPresent extends Compute {
 
     @Override
     public BasicMapQueryUpdateOp baseOp() {

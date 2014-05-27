@@ -18,9 +18,7 @@ package net.openhft.jpsg;
 
 import java.util.regex.Pattern;
 
-import static java.util.regex.Pattern.CASE_INSENSITIVE;
-import static java.util.regex.Pattern.DOTALL;
-import static java.util.regex.Pattern.MULTILINE;
+import static java.util.regex.Pattern.*;
 
 
 public final class RegexpUtils {

@@ -42,7 +42,7 @@ public abstract class BulkRemoveUsingAnotherCollection extends BulkMethod  {
     }
 
     @Override
-    public String argsBeforeCollection() {
+    public final String argsBeforeCollection() {
         return givenThis() ? "thisC" : "";
     }
 

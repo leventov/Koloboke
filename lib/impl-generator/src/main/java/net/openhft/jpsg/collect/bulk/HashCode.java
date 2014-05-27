@@ -26,14 +26,14 @@ public abstract class HashCode extends BulkMethod {
     abstract int initialValue();
 
     @Override
-    public void beginning() {
+    public final void beginning() {
         gen.lines("int hashCode = " + initialValue() + ";");
     }
 
     abstract String aggregate(String elemHash);
 
     @Override
-    public void loopBody() {
+    public final void loopBody() {
         String key = gen.unwrappedKey(), keyHash;
         if (cxt.isPrimitiveKey()) {
             keyHash = primitiveHash((PrimitiveType) cxt.keyOption(), key);
@@ -57,7 +57,7 @@ public abstract class HashCode extends BulkMethod {
     }
 
     @Override
-    public void end() {
+    public final void end() {
         gen.ret("hashCode");
     }
 }
