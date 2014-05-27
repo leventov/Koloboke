@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 public class FunctionProcessor extends TemplateProcessor {
@@ -41,10 +42,7 @@ public class FunctionProcessor extends TemplateProcessor {
             String baseName, boolean allowOperatorCollapse, boolean withParams, Context target) {
         if (argDims.isEmpty())
             throw new IllegalArgumentException();
-        List<Option> args = new ArrayList<>();
-        for (String argDim : argDims) {
-            args.add(target.getOption(argDim));
-        }
+        List<Option> args = argDims.stream().map(target::getOption).collect(Collectors.toList());
         Option out = outDim != null ? target.getOption(outDim) : null;
         if (out instanceof PrimitiveType &&
                 (argDims.size() == 1 && args.get(0) == out ||

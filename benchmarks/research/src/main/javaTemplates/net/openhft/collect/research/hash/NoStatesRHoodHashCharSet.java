@@ -173,7 +173,7 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
         List<Long> counts;
 
         DistanceStats() {
-            counts = new ArrayList<Long>();
+            counts = new ArrayList<>();
         }
 
         DistanceStats(List<Long> counts) {
@@ -205,7 +205,7 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
                 shorter = counts;
                 longer = stats.counts;
             }
-            List<Long> newCounts = new ArrayList<Long>(longer);
+            List<Long> newCounts = new ArrayList<>(longer);
             for (int i = 0; i < shorter.size(); i++) {
                 newCounts.set(i, newCounts.get(i) + shorter.get(i));
             }

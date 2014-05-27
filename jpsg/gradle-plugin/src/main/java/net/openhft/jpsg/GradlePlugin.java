@@ -16,7 +16,6 @@
 
 package net.openhft.jpsg;
 
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.SourceDirectorySet;
@@ -149,12 +148,9 @@ public class GradlePlugin  implements Plugin<ProjectInternal> {
         projectConf.getByName(JavaPlugin.COMPILE_CONFIGURATION_NAME).extendsFrom(jpsgConfiguration);
 
         project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().all(
-                new Action<SourceSet>() {
-                    @Override
-                    public void execute(SourceSet sourceSet) {
-                        setupTask(project, sourceSet, Flavor.JAVA);
-                        setupTask(project, sourceSet, Flavor.RESOURCES);
-                    }
+                sourceSet -> {
+                    setupTask(project, sourceSet, Flavor.JAVA);
+                    setupTask(project, sourceSet, Flavor.RESOURCES);
                 });
     }
 }

@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -297,12 +298,9 @@ public class Generator {
                                             targetFile);
                                     return CONTINUE;
                                 }
-                                subTasks.add(ForkJoinTask.adapt(new Callable<Void>() {
-                                    @Override
-                                    public Void call() throws IOException {
-                                        doGenerate(sourceFile, targetFile.getParent());
-                                        return null;
-                                    }
+                                subTasks.add(ForkJoinTask.adapt(() -> {
+                                    doGenerate(sourceFile, targetFile.getParent());
+                                    return null;
                                 }));
                                 return CONTINUE;
                             }
@@ -339,31 +337,21 @@ public class Generator {
             defaultContext = defaultContext.join(contexts.get(0));
         }
 
-        excludedTypes = new ArrayList<>();
-        for (String options : never) {
-            excludedTypes.addAll(dimensionsParser.parseOptions(options));
-        }
+        excludedTypes = never.stream()
+                .flatMap(options -> dimensionsParser.parseOptions(options).stream())
+                .collect(Collectors.toList());
 
-        permissiveConditions = new ArrayList<>();
-        for (String cond : included) {
-            permissiveConditions.add(dimensionsParser.parseCLI(cond));
-        }
+        permissiveConditions = included.stream().map(dimensionsParser::parseCLI)
+                .collect(Collectors.toList());
 
-        prohibitingConditions = new ArrayList<>();
-        for (String cond : excluded) {
-            prohibitingConditions.add(dimensionsParser.parseCLI(cond));
-        }
+        prohibitingConditions = excluded.stream().map(dimensionsParser::parseCLI)
+                .collect(Collectors.toList());
 
         initProcessors();
     }
 
     private void initProcessors() {
-        Collections.sort(processors, new Comparator<TemplateProcessor>() {
-            @Override
-            public int compare(TemplateProcessor p1, TemplateProcessor p2) {
-                return p1.priority() - p2.priority();
-            }
-        });
+        Collections.sort(processors, (p1, p2) -> p1.priority() - p2.priority());
         TemplateProcessor prev = null;
         for (TemplateProcessor processor : processors) {
             processor.setDimensionsParser(dimensionsParser);
@@ -409,22 +397,19 @@ public class Generator {
             }
             final String generatedFileName = generate(mainContext, target, sourceFileName);
             final Path generatedFile = targetDir.resolve(generatedFileName);
-            contextGenerationTasks.add(ForkJoinTask.adapt(new Callable<Void>() {
-                @Override
-                public Void call() throws IOException {
-                    String generatedContent = generate(mainContext, target, content);
-                    if (Files.exists(generatedFile)) {
-                        String targetContent = new String(Files.readAllBytes(generatedFile));
-                        if (generatedContent.equals(targetContent)) {
-                            log.warn("Already generated: {}", generatedFileName);
-                            return null;
-                        }
+            contextGenerationTasks.add(ForkJoinTask.adapt(() -> {
+                String generatedContent = generate(mainContext, target, content);
+                if (Files.exists(generatedFile)) {
+                    String targetContent = new String(Files.readAllBytes(generatedFile));
+                    if (generatedContent.equals(targetContent)) {
+                        log.warn("Already generated: {}", generatedFileName);
+                        return null;
                     }
-                    Files.write(generatedFile, Arrays.asList(generatedContent), UTF_8,
-                            TRUNCATE_EXISTING, CREATE);
-                    log.info("Wrote: {}", generatedFileName);
-                    return null;
                 }
+                Files.write(generatedFile, Arrays.asList(generatedContent), UTF_8,
+                        TRUNCATE_EXISTING, CREATE);
+                log.info("Wrote: {}", generatedFileName);
+                return null;
             }));
         }
         ForkJoinTask.invokeAll(contextGenerationTasks);

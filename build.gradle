@@ -29,6 +29,8 @@ configure(leafProjects) {
     }
 
     apply from: "$rootProject.projectDir/methods.gradle"
+
+    setSourceCompatibility(1.8)
 }
 
 def metaProjects = [':jpsg:core', ':jpsg:gradle-plugin', ':lib:impl-generator']

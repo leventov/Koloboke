@@ -102,9 +102,7 @@ public final class CLI {
             return;
         }
         Generator generator = new Generator();
-        for (String processor : parsedArgs.processors) {
-            generator.addProcessor(processor);
-        }
+        parsedArgs.processors.forEach(generator::addProcessor);
         generator.setDefaultTypes(parsedArgs.defaultTypes)
                 .setObjectIdStyle(parsedArgs.objectIdStyle)
                 .never(parsedArgs.never)

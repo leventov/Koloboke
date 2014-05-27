@@ -1,6 +1,4 @@
 subprojects {
-    setSourceCompatibility(1.8)
-
     dependencies {
         compile 'org.openjdk.jmh:jmh-core:0.5.6'
         compile (project(':lib:api'), project(':lib:impl'))

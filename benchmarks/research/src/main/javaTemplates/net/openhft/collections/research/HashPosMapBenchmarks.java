@@ -111,7 +111,7 @@ public class HashPosMapBenchmarks {
         final int[] x = new int[1];
         SimpleVanillaShortShortMultiMap map = st.map;
         for (char key : st.keys)
-            map.forEachValue(key, value -> { x[0] ^= value; });
+            map.forEachValue(key, value -> x[0] ^= value);
         return x[0];
     }
 

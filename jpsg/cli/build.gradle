@@ -1,5 +1,3 @@
-setSourceCompatibility(1.7)
-
 dependencies {
     compile project("$parent.path:core")
     compile 'com.beust:jcommander:1.32'

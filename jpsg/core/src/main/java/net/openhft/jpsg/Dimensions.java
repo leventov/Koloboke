@@ -93,10 +93,8 @@ public final class Dimensions {
                 List<Option>> dimensions, String dim, Option main) {
             List<Option> keyOptions = new ArrayList<>();
             keyOptions.add(main);
-            for (Option type : defaultTypes) {
-                if (!keyOptions.contains(type))
-                    keyOptions.add(type);
-            }
+            defaultTypes.stream().filter(type -> !keyOptions.contains(type))
+                    .forEach(keyOptions::add);
             dimensions.put(dim, keyOptions);
         }
 
