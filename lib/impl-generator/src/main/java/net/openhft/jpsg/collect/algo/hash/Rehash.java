@@ -39,16 +39,18 @@ public class Rehash extends BulkMethod {
     @Override
     public void loopBody() {
         String key = gen.unwrappedKey();
-        if (!isLHash(cxt))
+        if (isDHash(cxt))
             gen.lines("int hash;");
         gen.lines("int index;");
-        gen.ifBlock(isNotFree(cxt, firstKey(cxt, "newKeys", key, true, false)));
-        computeStep(gen, cxt);
-        gen.lines("do").block();
-        nextIndex(gen, cxt);
-        gen.unIndent();
-        gen.lines("} while (" + isNotFree(cxt, "newKeys[index]") + ");");
-        gen.blockEnd();
+        gen.ifBlock(isNotFree(cxt, KeySearch.firstKey(cxt, "newKeys", key, true, false))); {
+            KeySearch.innerLoop(gen, cxt, index -> {
+                gen.ifBlock(isNotFree(cxt, "newKeys[" + index + "]")); {
+                    if (!index.equals("index"))
+                        gen.lines("index = " + index + ";");
+                    gen.lines("break;");
+                } gen.blockEnd();
+            }, false).generate();
+        } gen.blockEnd();
         gen.lines("newKeys[index] = " + key + ";");
         if (cxt.isMapView())
             gen.lines("newVals[index] = " + gen.unwrappedValue() + ";");

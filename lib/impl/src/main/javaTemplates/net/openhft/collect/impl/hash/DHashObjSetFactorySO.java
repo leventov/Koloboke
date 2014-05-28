@@ -1,4 +1,4 @@
-/* with DHash|LHash hash */
+/* with DHash|QHash|LHash hash */
 /*
  * Copyright 2014 the original author or authors.
  *

@@ -1,5 +1,5 @@
 /* with
- DHash|LHash hash
+ DHash|QHash|LHash hash
  char|byte|short|int|long|float|double|obj key
  short|byte|char|int|long|float|double|obj value
 */
@@ -104,7 +104,9 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
     public HashCharShortMapFactory/*<>*/ withConfig(/* configClass */CharHashConfig/**/ config) {
         if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/))
             return new LHashCharShortMapFactoryImpl/*<>*/(config);
-        return /* with DHash hash */new DHashCharShortMapFactoryImpl/*<>*/(config);/* endwith */
+        /* with DHash|QHash hash */
+        return new DHashCharShortMapFactoryImpl/*<>*/(config);
+        /* endwith */
     }
 
 
@@ -178,7 +180,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
                 return new LHashCharShortMapFactoryImpl.WithCustomKeyEquivalence<K/*andV*/>(
                         config, keyEquivalence);
             }
-            /* with DHash hash */
+            /* with DHash|QHash hash */
             return new DHashCharShortMapFactoryImpl.WithCustomKeyEquivalence<K/*andV*/>(
                     config, keyEquivalence);
             /* endwith */
@@ -245,7 +247,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
                 return new LHashCharShortMapFactoryImpl.WithCustomDefaultValue/*<>*/(
                         config, defaultValue);
             }
-            /* with DHash hash */
+            /* with DHash|QHash hash */
             return new DHashCharShortMapFactoryImpl.WithCustomDefaultValue/*<>*/(
                     config, defaultValue);
             /* endwith */
@@ -315,7 +317,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
                 return new LHashCharShortMapFactoryImpl.WithCustomValueEquivalence</*kAnd*/V>(
                         config, valueEquivalence);
             }
-            /* with DHash hash */
+            /* with DHash|QHash hash */
             return new DHashCharShortMapFactoryImpl.WithCustomValueEquivalence</*kAnd*/V>(
                     config, valueEquivalence);
             /* endwith */
@@ -393,7 +395,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
                 return new LHashCharShortMapFactoryImpl.WithCustomKeyEquivalenceAndDefaultValue<K>(
                         config, keyEquivalence, defaultValue);
             }
-            /* with DHash hash */
+            /* with DHash|QHash hash */
             return new DHashCharShortMapFactoryImpl.WithCustomKeyEquivalenceAndDefaultValue<K>(
                     config, keyEquivalence, defaultValue);
             /* endwith */
@@ -471,7 +473,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
                 return new LHashCharShortMapFactoryImpl.WithCustomEquivalences<K, V>(
                         config, keyEquivalence, valueEquivalence);
             }
-            /* with DHash hash */
+            /* with DHash|QHash hash */
             return new DHashCharShortMapFactoryImpl.WithCustomEquivalences<K, V>(
                     config, keyEquivalence, valueEquivalence);
             /* endwith */

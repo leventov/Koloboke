@@ -1,5 +1,5 @@
 /* with
- DHash|LHash hash
+ DHash|QHash|LHash hash
  double|float elem
  Mutable|Immutable mutability
 */

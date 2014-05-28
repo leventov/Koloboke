@@ -1,4 +1,4 @@
-/* with DHash hash */
+/* with DHash|QHash hash */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -25,9 +25,12 @@ import net.openhft.collect.impl.AbstractContainer;
 public abstract class MutableDHash extends AbstractContainer implements DHash {
 
     private static int minFreeSlots(int capacity, int size, double maxLoad, int maxSize) {
-        // See "Tombstones purge from hashtable: theory and practice" wiki page
         double load = (double) size / (double) capacity;
-        double rehashLoad = 0.49 + 0.866 * load - 0.363 * load * load;
+        // See "Tombstones purge from hashtable: theory and practice" wiki page
+        double rehashLoad =
+                /* if DHash hash */  0.49 + 0.866 * load - 0.363
+                /* elif QHash hash //0.55 + 0.721 * load - 0.274// endif */ * load * load;
+
         int minFreeSlots;
         // minFreeSlots shouldn't be less than `capacity - maxSize`
         if (rehashLoad > maxLoad) {

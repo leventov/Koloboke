@@ -26,6 +26,9 @@ import static java.lang.StrictMath.max;
 import static net.openhft.jpsg.collect.Permission.REMOVE;
 import static net.openhft.jpsg.collect.Permission.SET_VALUE;
 import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
+import static net.openhft.jpsg.collect.algo.hash.KeySearch.curAssignment;
+import static net.openhft.jpsg.collect.algo.hash.KeySearch.innerLoopBodies;
+import static net.openhft.jpsg.collect.algo.hash.KeySearch.tryPrecomputeStep;
 import static net.openhft.jpsg.collect.mapqu.BasicMapQueryUpdateOp.*;
 import static net.openhft.jpsg.collect.mapqu.Branch.KEY_ABSENT;
 import static net.openhft.jpsg.collect.mapqu.Branch.KEY_PRESENT;
@@ -45,7 +48,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     // inline index/insert state
 
     private int presentBranchSize, absentBranchSize;
-    private boolean separatePresent, separateAbsent;
+    private boolean separatePresent, separateAbsentFreeSlot, separateAbsentRemovedSlot;
     // for generating key absent branch
     private boolean removedSlot;
     private boolean earlyAbsentLabel;
@@ -54,6 +57,8 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     private boolean commonValuesCopy;
 
     private boolean commonCapacityMaskCopy = false;
+
+    private String index = "index";
 
     @Override
     public String defaultValue() {
@@ -360,7 +365,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     }
 
     String index() {
-        return removedSlot ? "firstRemoved" : "index";
+        return removedSlot ? "firstRemoved" : index;
     }
 
     @Override
@@ -389,7 +394,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     public MethodGenerator remove() {
         permissions.add(REMOVE);
         if (isLHash(cxt) && !method.removeIsHighlyProbable()) {
-            lines("removeAt(index);");
+            lines("removeAt(" + index() + ");");
         } else if (isLHash(cxt)) {
             if (!method.inline() || !commonCapacityMaskCopy)
                 lines("int capacityMask = keys.length - 1;");
@@ -407,9 +412,9 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
             } else {
                 keys = "set";
             }
-            lines(keys + "[index] = " + removedValue() + ";");
+            lines(keys + "[" + index() + "] = " + removedValue() + ";");
             if (cxt.isObjectValue()) {
-                lines(values() + "[index] = null;");
+                lines(values() + "[" + index() + "] = null;");
             }
             lines("postRemoveHook();");
         }
@@ -418,7 +423,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
 
     @Override
     public MethodGenerator setValue(String newValue) {
-        lines(values() + "[index] = " + unwrapValue(newValue) + ";");
+        lines(values() + "[" + index() + "] = " + unwrapValue(newValue) + ";");
         permissions.add(SET_VALUE);
         return this;
     }
@@ -451,7 +456,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
             if (separatePresent)
                 generatePresent();
             blockEnd();
-            if (separateAbsent && !earlyAbsentLabel)
+            if (separateAbsentFreeSlot && !earlyAbsentLabel)
                 generateAbsent(false);
         } else {
             // most probable branch - key is present
@@ -466,14 +471,14 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
             firstIndexFreeCheck("cur");
             if (cxt.isObjectKey() && cxt.immutable()) {
                 ifBlock("keyEquals(" + unwrappedKey() + ", cur)");
-                generateOrGoToPresent();
+                generateOrGoToPresent(() -> {});
                 elseBlock();
             }
             innerInline();
             if (cxt.isObjectKey() && cxt.immutable())
                 blockEnd();
             blockEnd();
-            if (separateAbsent && !earlyAbsentLabel)
+            if (separateAbsentFreeSlot && !earlyAbsentLabel)
                 generateAbsent(false);
             blockEnd();
             if (separatePresent)
@@ -486,23 +491,19 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
         if (possibleRemovedSlots(cxt) && (cxt.isObjectKey() || method.baseOp() != GET)) {
             if (method.baseOp() != GET)
                 lines("int firstRemoved;");
-            if (!cxt.isObjectKey()) {
-                computeStep(this, cxt);
-            }
+            boolean stepPrecomputed = !cxt.isObjectKey() && tryPrecomputeStep(this, cxt);
             ifBlock(isNotRemoved(cxt, "cur"));
             if (cxt.isObjectKey()) {
                 if (method.mostProbableBranch() == KEY_PRESENT) {
                     ifBlock("keyEquals(" + unwrappedKey() + ", cur)");
-                    generateOrGoToPresent();
+                    generateOrGoToPresent(() -> {});
                     elseBlock();
                 } else {
                     ifBlock("!keyEquals(" + unwrappedKey() + ", cur)");
                 }
             }
             ifBlock("noRemoved()");
-            if (cxt.isObjectKey())
-                computeStep(this, cxt);
-            keySearchLoop(true);
+            keySearchLoop(true, stepPrecomputed);
             if (method.baseOp() != GET) {
                 elseBlock();
                 lines("firstRemoved = -1;");
@@ -511,7 +512,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
             if (cxt.isObjectKey()) {
                 if (method.mostProbableBranch() != KEY_PRESENT) {
                     elseBlock();
-                    generateOrGoToPresent();
+                    generateOrGoToPresent(() -> {});
                 }
                 blockEnd();
             }
@@ -520,18 +521,15 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
                 lines("firstRemoved = index;");
             }
             blockEnd();
-            if (cxt.isObjectKey())
-                computeStep(this, cxt);
             if (method.baseOp() == GET) {
-                keySearchLoop(false);
+                keySearchLoop(false, stepPrecomputed);
             } else {
-                keySearchLoopDifferentRemovedHandling();
+                keySearchLoopDifferentRemovedHandling(stepPrecomputed);
             }
         } else {
             if (isLHash(cxt) && cxt.isNullKey() && !commonCapacityMaskCopy)
                 lines("capacityMask = keys.length - 1;");
-            computeStep(this, cxt);
-            keySearchLoop(true);
+            keySearchLoop(true, false);
         }
     }
 
@@ -547,7 +545,15 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
             } else {
                 locals = "capacityMask, ";
             }
+        } else if (isQHash(cxt)) {
+            if (cxt.isNullKey()) {
+                lines("int capacity = keys.length;");
+                locals = "";
+            } else {
+                locals = "capacity, ";
+            }
         } else {
+            assertHash(cxt, isDHash(cxt));
             locals = (!cxt.isNullKey() ? "capacity, hash, " : "");
         }
         lines(
@@ -576,7 +582,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
             if (method.baseOp() == GET) {
                 boolean isRemoveOp = permissions.contains(Permission.REMOVE);
                 lines(cxt.keyType() + " free" + (isRemoveOp ? ", removed" : "") + ";");
-                if (separateAbsent) {
+                if (separateAbsentFreeSlot) {
                     lines("keyAbsent:");
                     earlyAbsentLabel = true;
                 }
@@ -619,9 +625,9 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     }
 
     private void firstIndexFreeCheck(String cur) {
-        if (separateAbsent) {
+        if (separateAbsentFreeSlot) {
             if (!earlyAbsentLabel) {
-                lines(absentLabel() + ":");
+                lines(absentLabel(false) + ":");
             }
             ifBlock(isNotFree(cxt, cur));
         } else {
@@ -631,69 +637,87 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
         }
     }
 
-    private void keySearchLoop(boolean noRemoved) {
-        lines("while (true)").block();
-        nextIndex(this, cxt);
-        if (method.mostProbableBranch() == KEY_PRESENT) {
-            ifBlock("(cur = keys[index]) == " + unwrappedKey());
-            generateOrGoToPresent();
-            elseIf(isFree(cxt, "cur"));
-            generateOrGoToAbsent(false);
-            blockEnd();
-            if (cxt.isObjectKey()) {
-                lines("else if (" + objectKeyEqualsCond(noRemoved) + ")").block();
-                generateOrGoToPresent();
+    private void keySearchLoop(boolean noRemoved, boolean stepPrecomputed) {
+        KeySearch.innerLoop(this, cxt, index -> {
+            String prevIndex = this.index;
+            this.index = index;
+            Runnable beforeBreak = () -> {
+                if (!index.equals(prevIndex))
+                    lines(prevIndex + " = " + index + ";");
+            };
+            if (method.mostProbableBranch() == KEY_PRESENT) {
+                ifBlock("(cur = keys[" + index + "]) == " + unwrappedKey());
+                generateOrGoToPresent(beforeBreak);
+                elseIf(isFree(cxt, "cur"));
+                generateOrGoToAbsent(false, beforeBreak);
+                blockEnd();
+                if (cxt.isObjectKey()) {
+                    lines("else if (" + objectKeyEqualsCond(noRemoved) + ")").block();
+                    generateOrGoToPresent(beforeBreak);
+                    blockEnd();
+                }
+            } else {
+                ifBlock(isFree(cxt, "(cur = keys[" + index + "])"));
+                generateOrGoToAbsent(false, beforeBreak);
+                String presentCond = "cur == " + unwrappedKey();
+                if (cxt.isObjectKey()) {
+                    presentCond += " || (" + objectKeyEqualsCond(noRemoved) + ")";
+                }
+                elseIf(presentCond);
+                generateOrGoToPresent(beforeBreak);
                 blockEnd();
             }
-        } else {
-            ifBlock(isFree(cxt, "(cur = keys[index])"));
-            generateOrGoToAbsent(false);
-            String presentCond = "cur == " + unwrappedKey();
-            if (cxt.isObjectKey()) {
-                presentCond += " || (" + objectKeyEqualsCond(noRemoved) + ")";
+            this.index = prevIndex;
+        }, stepPrecomputed).generate();
+    }
+
+
+    private void keySearchLoopDifferentRemovedHandling(boolean stepPrecomputed) {
+        if (separateAbsentRemovedSlot)
+            lines(absentLabel(true) + ":").block();
+        KeySearch.innerLoop(this, cxt, index -> {
+            String prevIndex = this.index;
+            this.index = index;
+            Runnable beforeBreak = () -> {
+                if (!index.equals(prevIndex))
+                    lines(prevIndex + " = " + index + ";");
+            };
+            if (method.mostProbableBranch() == KEY_PRESENT) {
+                ifBlock("(cur = keys[" + index + "]) == " + unwrappedKey());
+                generateOrGoToPresent(beforeBreak);
+                elseIf(isFree(cxt, "cur"));
+                generateAbsentDependingOnFirstRemoved(beforeBreak);
+            } else {
+                ifBlock(isFree(cxt, "(cur = keys[" + index + "])"));
+                generateAbsentDependingOnFirstRemoved(beforeBreak);
+                elseIf("cur == " + unwrappedKey());
+                generateOrGoToPresent(beforeBreak);
             }
-            elseIf(presentCond);
-            generateOrGoToPresent();
+            if (cxt.isObjectKey()) {
+                elseIf(isNotRemoved(cxt, "cur"));
+                ifBlock("keyEquals(" + unwrappedKey() + ", cur)");
+                generateOrGoToPresent(beforeBreak);
+                blockEnd();
+                elseIf("firstRemoved < 0");
+            } else {
+                elseIf(isRemoved(cxt, "cur") + " && firstRemoved < 0");
+            }
+            lines("firstRemoved = " + index + ";");
             blockEnd();
+            this.index = prevIndex;
+        }, stepPrecomputed).generate();
+        if (separateAbsentRemovedSlot) {
+            blockEnd();
+            generateAbsent(true);
         }
-        blockEnd();
     }
 
-
-    private void keySearchLoopDifferentRemovedHandling() {
-        lines("while (true)").block();
-        nextIndex(this, cxt);
-        if (method.mostProbableBranch() == KEY_PRESENT) {
-            ifBlock("(cur = keys[index]) == " + unwrappedKey());
-            generateOrGoToPresent();
-            elseIf(isFree(cxt, "cur"));
-            generateAbsentDependingOnFirstRemoved();
-        } else {
-            ifBlock(isFree(cxt, "(cur = keys[index])"));
-            generateAbsentDependingOnFirstRemoved();
-            elseIf("cur == " + unwrappedKey());
-            generateOrGoToPresent();
-        }
-        if (cxt.isObjectKey()) {
-            elseIf(isNotRemoved(cxt, "cur"));
-            ifBlock("keyEquals(" + unwrappedKey() + ", cur)");
-            generateOrGoToPresent();
-            blockEnd();
-            elseIf("firstRemoved < 0");
-        } else {
-            elseIf(isRemoved(cxt, "cur") + " && firstRemoved < 0");
-        }
-        lines("firstRemoved = index;");
-        blockEnd();
-        blockEnd();
-    }
-
-    private void generateAbsentDependingOnFirstRemoved() {
-        ifBlock("firstRemoved < 0");
-        generateOrGoToAbsent(false);
-        elseBlock();
-        generateOrGoToAbsent(true);
-        blockEnd();
+    private void generateAbsentDependingOnFirstRemoved(Runnable beforeBreak) {
+        ifBlock("firstRemoved < 0"); {
+            generateOrGoToAbsent(false, beforeBreak);
+        } elseBlock(); {
+            generateOrGoToAbsent(true, beforeBreak);
+        } blockEnd();
     }
 
     private String objectKeyEqualsCond(boolean noRemoved) {
@@ -705,9 +729,11 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
         generateAbsent(false, false);
         // first line is comment
         absentBranchSize = lines.size() - 1;
-        separateAbsent = absentBranchSize > 1;
+        separateAbsentFreeSlot = absentBranchSize > 1;
         int absentBranchValuesUsages = countValuesUsages(0) + countValUsages(0);
         lines.clear();
+
+        separateAbsentRemovedSlot = separateAbsentFreeSlot && innerLoopBodies(cxt) > 1;
 
         generatePresent(false);
         // first line is comment
@@ -719,25 +745,29 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
         commonValuesCopy = absentBranchValuesUsages > 0 && presentBranchValueUsages > 0;
     }
 
-    private void generateOrGoToPresent() {
+    private void generateOrGoToPresent(Runnable beforeBreak) {
         if (separatePresent) {
+            beforeBreak.run();
             lines("break keyPresent;");
         } else {
             generatePresent();
         }
     }
 
-    private void generateOrGoToAbsent(boolean removedSlot) {
-        if (separateAbsent && !removedSlot) {
-            lines("break " + absentLabel() + ";");
+    private void generateOrGoToAbsent(boolean removedSlot, Runnable beforeBreak) {
+        if (separateAbsentRemovedSlot && removedSlot)  {
+            lines("break " + absentLabel(true) + ";");
+        } else if (separateAbsentFreeSlot && !removedSlot) {
+            beforeBreak.run();
+            lines("break " + absentLabel(false) + ";");
         } else {
             generateAbsent(removedSlot);
         }
     }
 
-    private String absentLabel() {
+    private String absentLabel(boolean removedSlot) {
         if (method.baseOp() != GET && possibleRemovedSlots(cxt)) {
-            return "keyAbsentFreeSlot";
+            return "keyAbsent" + (removedSlot ? "RemovedSlot" : "FreeSlot");
         } else {
             return "keyAbsent";
         }

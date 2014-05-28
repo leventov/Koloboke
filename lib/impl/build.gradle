@@ -2,6 +2,7 @@ evaluationDependsOn("$parent.path")
 
 generateJavaSpecializations {
     addProcessor 'net.openhft.jpsg.collect.MethodGeneratingProcessor'
+    never 'DHash'
 }
 
 dependencies {

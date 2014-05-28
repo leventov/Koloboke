@@ -26,50 +26,7 @@ import static java.lang.String.format;
 final class HashMethodGeneratorCommons {
     private HashMethodGeneratorCommons() {}
 
-    static String curAssignment(MethodContext cxt, String keys, String key,
-            boolean capacityAssigned) {
-        return "(cur = " + firstKey(cxt, keys, key, capacityAssigned, true) + ")";
-    }
-
-    static String firstKey(MethodContext cxt, String keys, String key,
-            boolean capacityAssigned, boolean distinctNullKey) {
-        String indexAssignment;
-        if (!cxt.isNullKey()) {
-            String modulo;
-            if (isLHash(cxt)) {
-                modulo = capacityAssigned ? " & capacityMask" :
-                        (" & (capacityMask = " + keys + ".length - 1)");
-            } else {
-                modulo = capacityAssigned ? " % capacity" :
-                        (" % (capacity = " + keys + ".length)");
-            }
-            String hashAssignment = isLHash(cxt) ? keyHash(cxt, key, distinctNullKey) :
-                    "(hash = " + positiveKeyHash(cxt, key, distinctNullKey) + ")";
-            indexAssignment = "index = " + hashAssignment + modulo;
-        } else {
-            indexAssignment = "index = 0";
-        }
-        return keys + "[" + indexAssignment + "]";
-    }
-
-    static void computeStep(MethodGenerator g, MethodContext cxt) {
-        if (!cxt.isNullKey() && !isLHash(cxt))
-            g.lines("int step = (hash % (capacity - 2)) + 1;");
-    }
-
-    static void nextIndex(MethodGenerator g, MethodContext cxt) {
-        if (isLHash(cxt)) {
-            g.lines("index = (index - 1) & capacityMask;");
-        } else {
-            if (!cxt.isNullKey()) {
-                g.lines("if ((index -= step) < 0) index += capacity; // nextIndex");
-            } else {
-                g.lines("index++;");
-            }
-        }
-    }
-
-    private static String keyHash(MethodContext cxt, String key, boolean distinctNullKey) {
+    static String keyHash(MethodContext cxt, String key, boolean distinctNullKey) {
         if (distinctNullKey && cxt.isNullKey()) {
             return "0";
         } else if (cxt.isObjectOrNullKey()) {
@@ -83,30 +40,6 @@ final class HashMethodGeneratorCommons {
                     return key;
                 case LONG: case DOUBLE:
                     return format("((int) (%s ^ (%s >>> 32)))", key, key);
-                default:
-                    throw new IllegalStateException();
-            }
-        }
-    }
-
-    private static String positiveKeyHash(MethodContext cxt, String key, boolean distinctNullKey) {
-        if (distinctNullKey && cxt.isNullKey()) {
-            return "0";
-        } if (cxt.isObjectOrNullKey()) {
-            return (distinctNullKey ? "keyHashCode" : "nullableKeyHashCode") +
-                    "(" + key + ") & Integer.MAX_VALUE";
-        } else {
-            PrimitiveType keyOption = (PrimitiveType) cxt.keyOption();
-            switch (keyOption) {
-                case BYTE: return key + " & BYTE_MASK";
-                case SHORT: return key + " & SHORT_MASK";
-                case CHAR: return key;
-                case INT:
-                case FLOAT:
-                    return key + " & Integer.MAX_VALUE";
-                case LONG:
-                case DOUBLE:
-                    return format("((int) (%s ^ (%s >>> 32))) & Integer.MAX_VALUE", key, key);
                 default:
                     throw new IllegalStateException();
             }
@@ -160,14 +93,24 @@ final class HashMethodGeneratorCommons {
     }
 
     private static final SimpleOption DHASH = new SimpleOption("DHash");
+    private static final SimpleOption QHASH = new SimpleOption("QHash");
     private static final SimpleOption LHASH = new SimpleOption("LHash");
 
     static boolean isDHash(MethodContext cxt) {
         return DHASH.equals(cxt.getOption("hash"));
     }
 
+    static boolean isQHash(MethodContext cxt) {
+        return QHASH.equals(cxt.getOption("hash"));
+    }
+
     static boolean isLHash(MethodContext cxt) {
         return LHASH.equals(cxt.getOption("hash"));
+    }
+
+    static void assertHash(MethodContext cxt, boolean isHash) {
+        assert isHash : "Unknown hash dimension value: " +
+                cxt.getOption("hash") + ", either LHash, QHash or DHash is expected";
     }
 
     static boolean possibleRemovedSlots(MethodContext cxt) {

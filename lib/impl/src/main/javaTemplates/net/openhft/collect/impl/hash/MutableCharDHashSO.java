@@ -1,5 +1,5 @@
 /* with
- DHash|LHash hash
+ DHash|QHash|LHash hash
  char|byte|short|int|long elem
  Mutable|Immutable mutability
 */

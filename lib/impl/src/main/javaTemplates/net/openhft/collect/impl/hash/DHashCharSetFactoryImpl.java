@@ -1,5 +1,5 @@
 /* with
- DHash|LHash hash
+ DHash|QHash|LHash hash
  char|byte|short|int|long|float|double elem
 */
 /*
@@ -45,6 +45,6 @@ public class DHashCharSetFactoryImpl extends DHashCharSetFactoryGO {
                 /* if !(float|double elem) */config.getHashConfig()
                 /* elif float|double elem //config// endif */))
             return new LHashCharSetFactoryImpl(config);
-        return /* with DHash hash */new DHashCharSetFactoryImpl(config);/* endwith */
+        return /* with DHash|QHash hash */new DHashCharSetFactoryImpl(config);/* endwith */
     }
 }

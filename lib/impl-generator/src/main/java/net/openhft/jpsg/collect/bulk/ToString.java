@@ -56,7 +56,7 @@ public class ToString extends BulkMethod {
             }
             gen.lines("sb.append(' ').append(" + value + ").append(',');");
         }
-        gen.lines("// heuristic to reduce data recopying inside string builder");
+        // heuristic to reduce data recopying inside string builder
         gen.ifBlock("++elementCount == 8");
         gen.lines("int expectedLength = sb.length() * (size() / 8);");
         gen.lines("sb.ensureCapacity(expectedLength + (expectedLength / 2));");

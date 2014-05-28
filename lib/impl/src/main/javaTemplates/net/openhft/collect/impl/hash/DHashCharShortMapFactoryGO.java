@@ -1,5 +1,5 @@
 /* with
- DHash|LHash hash
+ DHash|QHash|LHash hash
  char|byte|short|int|long|float|double|obj key
  short|byte|char|int|long|float|double|obj value
 */

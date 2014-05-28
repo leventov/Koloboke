@@ -1,5 +1,5 @@
 /* with
- DHash|LHash hash
+ DHash|QHash|LHash hash
  char|byte|short|int|long|float|double|obj key
  short|byte|char|int|long|float|double|obj value
  Mutable|Immutable mutability
@@ -594,7 +594,7 @@ public class MutableDHashCharShortMapGO/*<>*/
 
 
         @Override
-        public final boolean removeIf( Predicate<? super Map.Entry<Character, Short>> filter ) {
+        public final boolean removeIf(Predicate<? super Map.Entry<Character, Short>> filter) {
             /* template RemoveIf */ throw new NotGenerated(); /* endtemplate */
         }
 

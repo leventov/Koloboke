@@ -1,4 +1,4 @@
-/* with DHash|LHash hash */
+/* with DHash|QHash|LHash hash */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -47,7 +47,7 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
     public HashObjSetFactory<E> withConfig(ObjHashConfig config) {
         if (LHashCapacities.configIsSuitableForMutableLHash(config.getHashConfig()))
             return new LHashObjSetFactoryImpl<E>(config);
-        return /* with DHash hash */new DHashObjSetFactoryImpl<E>(config)/* endwith */;
+        return /* with DHash|QHash hash */new DHashObjSetFactoryImpl<E>(config)/* endwith */;
     }
 
     static final class WithCustomEquivalence<E> extends DHashObjSetFactoryGO<E> {
@@ -94,7 +94,7 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
         public HashObjSetFactory<E> withConfig(ObjHashConfig config) {
             if (LHashCapacities.configIsSuitableForMutableLHash(config.getHashConfig()))
                 return new LHashObjSetFactoryImpl.WithCustomEquivalence<E>(config, equivalence);
-            /* with DHash hash */
+            /* with DHash|QHash hash */
             return new DHashObjSetFactoryImpl.WithCustomEquivalence<E>(config, equivalence);
             /* endwith */
         }
