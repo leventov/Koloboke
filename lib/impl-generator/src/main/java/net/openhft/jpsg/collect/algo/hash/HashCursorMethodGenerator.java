@@ -134,8 +134,13 @@ public class HashCursorMethodGenerator extends CursorMethodGenerator {
     @Override
     protected void generateRemove() {
         permissions.add(Permission.REMOVE);
-        lines(cxt.keyUnwrappedRawType() + " curKey;");
-        String curKeyAssignment = "(curKey = this.curKey)";
+        String curKeyAssignment;
+        if (isLHash(cxt)) {
+            lines(cxt.keyUnwrappedRawType() + " curKey;");
+            curKeyAssignment = "(curKey = this.curKey)";
+        } else {
+            curKeyAssignment = "curKey";
+        }
         if (cxt.isIntegralKey()) {
             lines(cxt.keyType() + " " + free(cxt) + ";");
             ifBlock(curKeyAssignment + " != (" + free(cxt) +" = this." + free(cxt) + ")");

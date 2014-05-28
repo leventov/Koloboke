@@ -1,7 +1,0 @@
-<FindBugsFilter>
-    <Match>
-        <Class name="net.openhft.collect.impl.*" />
-        <Bug pattern="EI_EXPOSE_REP" />
-        <Priority value="2" />
-    </Match>
-</FindBugsFilter>

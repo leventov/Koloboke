@@ -26,7 +26,7 @@ Then
     $ git clone git@github.com:OpenHFT/UntitledCollectionsProject.git collections
     $ cd collections
     $ gradle :buildMeta
-    $ gradle buildMain -x test
+    $ gradle buildMain -x test -x findbugsMain
     $ gradle idea
 
 Then you can open the project in IntelliJ IDEA.

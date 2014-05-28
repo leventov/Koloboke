@@ -3,6 +3,7 @@
     <words>
       <w>algo</w>
       <w>antlr</w>
+      <w>bytecode</w>
       <w>cond</w>
       <w>dhash</w>
       <w>elems</w>
@@ -14,6 +15,7 @@
       <w>endwith</w>
       <w>fdiv</w>
       <w>fild</w>
+      <w>findbugs</w>
       <w>fmul</w>
       <w>hashtable</w>
       <w>haswell</w>
@@ -40,6 +42,7 @@
       <w>scalers</w>
       <w>subclassing</w>
       <w>subdir</w>
+      <w>subproject</w>
       <w>tradeoff</w>
       <w>unary</w>
       <w>unbox</w>
