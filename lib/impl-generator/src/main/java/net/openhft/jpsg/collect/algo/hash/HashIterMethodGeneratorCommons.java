@@ -55,15 +55,9 @@ final class HashIterMethodGeneratorCommons {
         return possibleArrayCopyOnRemove(cxt);
     }
 
-    static void commonConstructorOps(MethodGenerator g, MethodContext cxt, boolean copyModCount) {
+    static void commonConstructorOps(MethodGenerator g, MethodContext cxt) {
         if (cxt.mutable()) {
-            String mc;
-            if (cxt.isEntryView() && copyModCount) {
-                mc = "int mc = expectedModCount";
-            } else {
-                mc = "expectedModCount";
-            }
-            g.lines(mc + " = " + modCount() + ";");
+            g.lines("expectedModCount = mc;");
         }
     }
 

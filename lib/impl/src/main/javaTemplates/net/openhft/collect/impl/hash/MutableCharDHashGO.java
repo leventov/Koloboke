@@ -84,17 +84,21 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
 
 
     public CharIterator/*<>*/ iterator() {
+        /* if !(Immutable mutability) */int mc = modCount();/* endif */
         /* if Mutable mutability && !(LHash hash) //
-        if (!noRemoved()) return new SomeRemovedIterator();
+        if (!noRemoved())
+            return new SomeRemovedIterator(// if !(Immutable mutability) //mc// endif //);
         // endif */
-        return new NoRemovedIterator();
+        return new NoRemovedIterator(/* if !(Immutable mutability) */mc/* endif */);
     }
 
     public CharCursor/*<>*/ setCursor() {
+        /* if !(Immutable mutability) */int mc = modCount();/* endif */
         /* if Mutable mutability && !(LHash hash) //
-        if (!noRemoved()) return new SomeRemovedCursor();
+        if (!noRemoved())
+            return new SomeRemovedCursor(// if !(Immutable mutability) //mc// endif //);
         // endif */
-        return new NoRemovedCursor();
+        return new NoRemovedCursor(/* if !(Immutable mutability) */mc/* endif */);
     }
 
     @Nonnull
@@ -190,7 +194,7 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
     class NoRemovedIterator implements CharIterator/*<>*/ {
         /* template Iterator.fields */
 
-        NoRemovedIterator() {
+        NoRemovedIterator(/* if !(Immutable mutability) */int mc/* endif */) {
             /* template Iterator.constructor */
         }
 
@@ -237,7 +241,7 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
     class NoRemovedCursor implements CharCursor/*<>*/ {
         /* template Cursor.fields */
 
-        NoRemovedCursor() {
+        NoRemovedCursor(/* if !(Immutable mutability) */int mc/* endif */) {
             /* template Cursor.constructor */
         }
 

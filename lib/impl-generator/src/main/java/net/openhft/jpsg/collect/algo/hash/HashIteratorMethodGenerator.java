@@ -50,7 +50,7 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
 
     @Override
     protected void generateConstructor() {
-        commonConstructorOps(this, cxt, true);
+        commonConstructorOps(this, cxt);
         if (cxt.isObjectKey()) {
             this.lines(
                     "// noinspection unchecked",

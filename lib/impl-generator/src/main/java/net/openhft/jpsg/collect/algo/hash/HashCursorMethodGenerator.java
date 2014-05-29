@@ -39,7 +39,7 @@ public class HashCursorMethodGenerator extends CursorMethodGenerator {
 
     @Override
     protected void generateConstructor() {
-        commonConstructorOps(this, cxt, false);
+        commonConstructorOps(this, cxt);
         if (cxt.isObjectKey()) {
             lines(
                     "// noinspection unchecked",

@@ -80,18 +80,22 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     /* with key view */
     @Override
     public CharIterator/*<>*/ iterator() {
+        /* if !(Immutable mutability) */int mc = modCount();/* endif */
         /* if Mutable mutability && !(LHash hash) //
-        if (!noRemoved()) return new SomeRemovedKeyIterator();
+        if (!noRemoved())
+            return new SomeRemovedKeyIterator(// if !(Immutable mutability) //mc// endif //);
         // endif */
-        return new NoRemovedKeyIterator();
+        return new NoRemovedKeyIterator(/* if !(Immutable mutability) */mc/* endif */);
     }
 
     @Override
     public CharCursor/*<>*/ setCursor() {
+        /* if !(Immutable mutability) */int mc = modCount();/* endif */
         /* if Mutable mutability && !(LHash hash) //
-        if (!noRemoved()) return new SomeRemovedKeyCursor();
+        if (!noRemoved())
+            return new SomeRemovedKeyCursor(// if !(Immutable mutability) //mc// endif //);
         // endif */
-        return new NoRemovedKeyCursor();
+        return new NoRemovedKeyCursor(/* if !(Immutable mutability) */mc/* endif */);
     }
     /* endwith */
 
@@ -243,8 +247,8 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     class NoRemovedKeyIterator extends NoRemovedIterator {
         /* if !(Mutable mutability) || !(LHash hash) */final/* endif */ V[] vals;
 
-        private NoRemovedKeyIterator() {
-            super();
+        private NoRemovedKeyIterator(/* if !(Immutable mutability) */int mc/* endif */) {
+            super(mc);
             vals = values;
         }
 
@@ -258,8 +262,8 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     class NoRemovedKeyCursor extends NoRemovedCursor{
         /* if !(Mutable mutability) || !(LHash hash) */final/* endif */ V[] vals;
 
-        private NoRemovedKeyCursor() {
-            super();
+        private NoRemovedKeyCursor(/* if !(Immutable mutability) */int mc/* endif */) {
+            super(mc);
             vals = values;
         }
 

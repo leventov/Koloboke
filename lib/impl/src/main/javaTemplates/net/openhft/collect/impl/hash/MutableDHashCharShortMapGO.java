@@ -128,10 +128,12 @@ public class MutableDHashCharShortMapGO/*<>*/
     @Nonnull
     @Override
     public CharShortCursor/*<>*/ cursor() {
+        /* if !(Immutable mutability) */int mc = modCount();/* endif */
         /* if Mutable mutability && !(LHash hash) //
-        if (!noRemoved()) return new SomeRemovedMapCursor();
+        if (!noRemoved())
+            return new SomeRemovedMapCursor(// if !(Immutable mutability) //mc// endif //);
         // endif */
-        return new NoRemovedMapCursor();
+        return new NoRemovedMapCursor(/* if !(Immutable mutability) */mc/* endif */);
     }
 
 
@@ -526,19 +528,23 @@ public class MutableDHashCharShortMapGO/*<>*/
         @Override
         @Nonnull
         public Iterator<Map.Entry<Character, Short>> iterator() {
+            /* if !(Immutable mutability) */int mc = modCount();/* endif */
             /* if Mutable mutability && !(LHash hash) //
-            if (!noRemoved()) return new SomeRemovedEntryIterator();
+            if (!noRemoved())
+                return new SomeRemovedEntryIterator(// if !(Immutable mutability) //mc// endif //);
             // endif */
-            return new NoRemovedEntryIterator();
+            return new NoRemovedEntryIterator(/* if !(Immutable mutability) */mc/* endif */);
         }
 
         @Nonnull
         @Override
         public ObjCursor<Map.Entry<Character, Short>> cursor() {
+            /* if !(Immutable mutability) */int mc = modCount();/* endif */
             /* if Mutable mutability && !(LHash hash) //
-            if (!noRemoved()) return new SomeRemovedEntryCursor();
+            if (!noRemoved())
+                return new SomeRemovedEntryCursor(// if !(Immutable mutability) //mc// endif //);
             // endif */
-            return new NoRemovedEntryCursor();
+            return new NoRemovedEntryCursor(/* if !(Immutable mutability) */mc/* endif */);
         }
 
         @Override
@@ -856,19 +862,23 @@ public class MutableDHashCharShortMapGO/*<>*/
         @Override
         @Nonnull
         public ShortIterator/*<>*/ iterator() {
-        /* if Mutable mutability && !(LHash hash) //
-        if (!noRemoved()) return new SomeRemovedValueIterator();
-        // endif */
-            return new NoRemovedValueIterator();
+            /* if !(Immutable mutability) */int mc = modCount();/* endif */
+            /* if Mutable mutability && !(LHash hash) //
+            if (!noRemoved())
+                return new SomeRemovedValueIterator(// if !(Immutable mutability) //mc// endif //);
+            // endif */
+            return new NoRemovedValueIterator(/* if !(Immutable mutability) */mc/* endif */);
         }
 
         @Nonnull
         @Override
         public ShortCursor/*<>*/ cursor() {
-        /* if Mutable mutability && !(LHash hash) //
-        if (!noRemoved()) return new SomeRemovedValueCursor();
-        // endif */
-            return new NoRemovedValueCursor();
+            /* if !(Immutable mutability) */int mc = modCount();/* endif */
+            /* if Mutable mutability && !(LHash hash) //
+            if (!noRemoved())
+                return new SomeRemovedValueCursor(// if !(Immutable mutability) //mc// endif //);
+            // endif */
+            return new NoRemovedValueCursor(/* if !(Immutable mutability) */mc/* endif */);
         }
 
         @Override
@@ -995,7 +1005,7 @@ public class MutableDHashCharShortMapGO/*<>*/
     class NoRemovedEntryIterator implements ObjIterator<Map.Entry<Character, Short>> {
         /* template Iterator.fields */
 
-        NoRemovedEntryIterator() {
+        NoRemovedEntryIterator(/* if !(Immutable mutability) */int mc/* endif */) {
             /* template Iterator.constructor */
         }
 
@@ -1024,7 +1034,7 @@ public class MutableDHashCharShortMapGO/*<>*/
     class NoRemovedEntryCursor implements ObjCursor<Map.Entry<Character, Short>> {
         /* template Cursor.fields */
 
-        NoRemovedEntryCursor() {
+        NoRemovedEntryCursor(/* if !(Immutable mutability) */int mc/* endif */) {
             /* template Cursor.constructor */
         }
 
@@ -1059,7 +1069,7 @@ public class MutableDHashCharShortMapGO/*<>*/
     class NoRemovedValueIterator implements ShortIterator/*<>*/ {
         /* template Iterator.fields */
 
-        NoRemovedValueIterator() {
+        NoRemovedValueIterator(/* if !(Immutable mutability) */int mc/* endif */) {
             /* template Iterator.constructor */
         }
 
@@ -1106,7 +1116,7 @@ public class MutableDHashCharShortMapGO/*<>*/
     class NoRemovedValueCursor implements ShortCursor/*<>*/ {
         /* template Cursor.fields */
 
-        NoRemovedValueCursor() {
+        NoRemovedValueCursor(/* if !(Immutable mutability) */int mc/* endif */) {
             /* template Cursor.constructor */
         }
 
@@ -1140,7 +1150,7 @@ public class MutableDHashCharShortMapGO/*<>*/
     class NoRemovedMapCursor implements CharShortCursor/*<>*/ {
         /* template Cursor.fields */
 
-        NoRemovedMapCursor() {
+        NoRemovedMapCursor(/* if !(Immutable mutability) */int mc/* endif */) {
             /* template Cursor.constructor */
         }
 
