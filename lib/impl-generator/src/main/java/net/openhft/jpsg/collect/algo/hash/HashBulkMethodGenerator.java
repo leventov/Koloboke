@@ -31,7 +31,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
     private static final String KEY_SUB = "#key#";
     private static final String KEY_OBJ_SUB = "#key.obj#";
-
+    private static final String VAL_SUB = "#val#";
 
     private boolean noRemoved = true;
     private BulkMethod method;
@@ -122,41 +122,29 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     }
 
     private void bulkLoop() {
-        lines("for (int i = keys.length - 1; i >= 0; i--)");
-        block();
-        int bodyStart = lines.size();
-        lines("if (" + isFull() + ")").block();
-        method.loopBody();
-        blockEnd();
-        int keyUsages = 0;
-        int keyObjUsages = 0;
-        for (int i = bodyStart; i < lines.size(); i++) {
-            String line = lines.get(i);
-            keyUsages += countOccurrences(line, KEY_SUB);
-            keyObjUsages += countOccurrences(line, KEY_OBJ_SUB);
-        }
+        lines("for (int i = keys.length - 1; i >= 0; i--)").block(); {
+            int bodyStart = lines.size();
+            lines("if (" + isFull() + ")").block(); {
+                method.loopBody();
+            } blockEnd();
+            replaceValue(bodyStart + 1); // after if (isFull) check
+            replaceKey(bodyStart);
+            noInspectionKeyCast(bodyStart);
+        } blockEnd();
+    }
+
+    private void replaceKey(int bodyStart) {
+        int keyUsages = countUsages(bodyStart, KEY_SUB);
+        int keyObjUsages = countUsages(bodyStart, KEY_OBJ_SUB);
         String castedKey = "keys[i]";
         if (cxt.isObjectKey()) {
             castedKey = "(" + cxt.keyType() + ") " + castedKey;
         }
         if (keyUsages + keyObjUsages <= 1) {
-            for (int i = bodyStart; i < lines.size(); i++) {
-                String line = replaceAll(lines.get(i), KEY_SUB, castedKey);
-                lines.set(i, replaceAll(line, KEY_OBJ_SUB, "keys[i]"));
-            }
+            replaceAll(bodyStart, KEY_SUB, castedKey);
+            replaceAll(bodyStart, KEY_OBJ_SUB, "keys[i]");
         } else if (keyUsages == 0) {
-            boolean replacedFirst = false;
-            for (int i = bodyStart; i < lines.size(); i++) {
-                String line = lines.get(i);
-                if (!replacedFirst) {
-                    String newLine = replaceFirst(line, KEY_OBJ_SUB, "(key = keys[i])");
-                    if (!line.equals(newLine)) {
-                        replacedFirst = true;
-                        line = newLine;
-                    }
-                }
-                lines.set(i, replaceAll(line, KEY_OBJ_SUB, "key"));
-            }
+            replaceFirstDifferent(bodyStart, KEY_OBJ_SUB, "(key = keys[i])", "key");
             lines.add(bodyStart, indent + cxt.keyUnwrappedRawType() + " key;");
         } else {
             boolean replacedFirst = false;
@@ -180,6 +168,9 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             }
             lines.add(bodyStart, indent + cxt.keyUnwrappedType() + " key;");
         }
+    }
+
+    private void noInspectionKeyCast(int bodyStart) {
         if (cxt.isObjectKey()) {
             Pattern cast = Pattern.compile(Pattern.quote("(" + cxt.keyType() + ")"));
             for (int i = lines.size(); i-- > bodyStart;) {
@@ -187,14 +178,39 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
                 Matcher m = cast.matcher(line);
                 if (m.find()) {
                     Matcher indentM = Pattern.compile("\\s+").matcher(line);
-                    indentM.find();
+                    boolean foundIndent = indentM.find();
+                    assert foundIndent;
                     String indent = indentM.group();
                     lines.add(i, indent + "// noinspection unchecked");
                 }
             }
         }
+    }
 
-        blockEnd();
+    private void replaceValue(int bodyStart) {
+        int valueUsages = countUsages(bodyStart, VAL_SUB);
+        if (valueUsages > 1) {
+            replaceFirstDifferent(bodyStart, VAL_SUB, "(val = vals[i])", "val");
+            lines.add(bodyStart, indent + cxt.valueUnwrappedType() + " val;");
+        } else if (valueUsages == 1) {
+            replaceAll(bodyStart, VAL_SUB, "vals[i]");
+        }
+    }
+
+    private void replaceFirstDifferent(int bodyStart,
+            String placeholder, String firstReplacement, String restReplacement) {
+        boolean replacedFirst = false;
+        for (int i = bodyStart; i < lines.size(); i++) {
+            String line = lines.get(i);
+            if (!replacedFirst) {
+                String newLine = replaceFirst(line, placeholder, firstReplacement);
+                if (!line.equals(newLine)) {
+                    replacedFirst = true;
+                    line = newLine;
+                }
+            }
+            lines.set(i, replaceAll(line, placeholder, restReplacement));
+        }
     }
 
     private String copyValueArray() {
@@ -260,7 +276,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
     @Override
     public String unwrappedValue() {
-        return "vals[i]";
+        return VAL_SUB;
     }
 
     String index() {

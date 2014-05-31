@@ -206,4 +206,18 @@ public abstract class MethodGenerator {
     public final void incrementModCount() {
         lines("incrementModCount();");
     }
+
+    protected int countUsages(int fromLine, String s) {
+        int usages = 0;
+        for (int i = fromLine; i < lines.size(); i++) {
+            usages += countOccurrences(lines.get(i), s);
+        }
+        return usages;
+    }
+
+    protected void replaceAll(int fromLine, String placeholder, String replacement) {
+        for (int i = fromLine; i < lines.size(); i++) {
+            lines.set(i, replaceAll(lines.get(i), placeholder, replacement));
+        }
+    }
 }

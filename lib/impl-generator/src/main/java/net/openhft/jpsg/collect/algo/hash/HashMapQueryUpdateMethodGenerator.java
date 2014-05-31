@@ -170,9 +170,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
 
     private void replaceKey() {
         if (cxt.isFloatingKey() && !cxt.internalVersion()) {
-            for (int i = 0; i < lines.size(); i++) {
-                lines.set(i, replaceAll(lines.get(i), KEY_SUB, "k"));
-            }
+            replaceAll(0, KEY_SUB, "k");
             String key = "key";
             if (cxt.genericVersion() &&
                     !permissions.contains(Permission.INSERT) &&
@@ -193,9 +191,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
                 // insert or setValue => key couldn't be Object, key is Character/Integer/...
                 // if more than 1 usage, unbox
                 if (keyUsages > 1) {
-                    for (int i = 0; i < lines.size(); i++) {
-                        lines.set(i, replaceAll(lines.get(i), KEY_SUB, "k"));
-                    }
+                    replaceAll(0, KEY_SUB, "k");
                     String keyCopy = indent + cxt.keyType() + " k = key;";
                     lines.add(0, keyCopy);
                 }
@@ -206,15 +202,11 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
                     throw new IllegalStateException();
                 // for this usage, cast the key to Character/Integer/...
                 String key = "(" + keyType.className + ") key";
-                for (int i = 0; i < lines.size(); i++) {
-                    lines.set(i, replaceAll(lines.get(i), KEY_SUB, key));
-                }
+                replaceAll(0, KEY_SUB, key);
             } else {
                 // inlined remove() op
                 // cast & unbox
-                for (int i = 0; i < lines.size(); i++) {
-                    lines.set(i, replaceAll(lines.get(i), KEY_SUB, "k"));
-                }
+                replaceAll(0, KEY_SUB, "k");
                 String keyCopy = indent + cxt.keyType() + " k = (" + keyType.className + ") key;";
                 lines.add(0, keyCopy);
             }
@@ -227,9 +219,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
         } else {
             key = "key";
         }
-        for (int i = 0; i < lines.size(); i++) {
-            lines.set(i, replaceAll(lines.get(i), KEY_SUB, key));
-        }
+        replaceAll(0, KEY_SUB, key);
     }
 
     private void generatePresent() {
@@ -299,33 +289,23 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     }
 
     private void replaceValues(int branchStart) {
-        int valUsages = countValUsages(branchStart);
+        int valUsages = countUsages(branchStart, VAL_SUB);
         if (valUsages >= 2) {
-            for (int i = branchStart; i < lines.size(); i++) {
-                lines.set(i, replaceAll(lines.get(i), VAL_SUB, "val"));
-            }
+            replaceAll(branchStart, VAL_SUB, "val");
             lines.add(branchStart,
                     indent + cxt.valueUnwrappedType() + " val = " + values() + "[" + index() + "];");
         } else {
-            for (int i = branchStart; i < lines.size(); i++) {
-                lines.set(i, replaceAll(lines.get(i), VAL_SUB, values() + "[" + index() + "]"));
-            }
+            replaceAll(branchStart, VAL_SUB, values() + "[" + index() + "]");
         }
         if (commonValuesCopy) {
-            for (int i = branchStart; i < lines.size(); i++) {
-                lines.set(i, replaceAll(lines.get(i), VALUES_SUB, "vals"));
-            }
+            replaceAll(branchStart, VALUES_SUB, "vals");
         } else {
-            int valArrayUsages = countValuesUsages(branchStart);
+            int valArrayUsages = countUsages(branchStart, VALUES_SUB);
             if (valArrayUsages >= 2) {
-                for (int i = branchStart; i < lines.size(); i++) {
-                    lines.set(i, replaceAll(lines.get(i), VALUES_SUB, "vals"));
-                }
+                replaceAll(branchStart, VALUES_SUB, "vals");
                 lines.add(branchStart, indent + cxt.valueUnwrappedType() + "[] vals = values;");
             } else {
-                for (int i = branchStart; i < lines.size(); i++) {
-                    lines.set(i, replaceAll(lines.get(i), VALUES_SUB, "values"));
-                }
+                replaceAll(branchStart, VALUES_SUB, "values");
             }
         }
         if (method.baseOp() == CUSTOM_INSERT && !method.inline()) {
@@ -337,27 +317,6 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
                 }
             }
         }
-    }
-
-    private int countValUsages(int branchStart) {
-        int valUsages = 0;
-        for (int i = branchStart; i < lines.size(); i++) {
-            String line = lines.get(i);
-            valUsages += countOccurrences(line, VAL_SUB);
-        }
-        return valUsages;
-    }
-
-    private int countUsages(int fromLine, String s) {
-        int usages = 0;
-        for (int i = fromLine; i < lines.size(); i++) {
-            usages += countOccurrences(lines.get(i), s);
-        }
-        return usages;
-    }
-
-    private int countValuesUsages(int branchStart) {
-        return countUsages(branchStart, VALUES_SUB);
     }
 
     String removedValue() {
@@ -730,7 +689,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
         // first line is comment
         absentBranchSize = lines.size() - 1;
         separateAbsentFreeSlot = absentBranchSize > 1;
-        int absentBranchValuesUsages = countValuesUsages(0) + countValUsages(0);
+        int absentBranchValuesUsages = countUsages(0, VALUES_SUB) + countUsages(0, VAL_SUB);
         lines.clear();
 
         separateAbsentRemovedSlot = separateAbsentFreeSlot && innerLoopBodies(cxt) > 1;
@@ -739,7 +698,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
         // first line is comment
         presentBranchSize = lines.size() - 1;
         separatePresent = presentBranchSize > 1;
-        int presentBranchValueUsages = countValuesUsages(0) + countValUsages(0);
+        int presentBranchValueUsages = countUsages(0, VALUES_SUB) + countUsages(0, VAL_SUB);
         lines.clear();
 
         commonValuesCopy = absentBranchValuesUsages > 0 && presentBranchValueUsages > 0;
