@@ -84,7 +84,7 @@ public abstract class CharHashConfig {
      * }</pre>
      *
      * @return char hash config with the specified keys domain
-     * @throws java.lang.IllegalArgumentException if minPossibleKey is greater than maxPossibleKey
+     * @throws IllegalArgumentException if minPossibleKey is greater than maxPossibleKey
      */
     public CharHashConfig withKeysDomain(char minPossibleKey, char maxPossibleKey) {
         if (minPossibleKey > maxPossibleKey)

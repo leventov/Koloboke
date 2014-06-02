@@ -43,9 +43,9 @@ public interface Container {
      *
      * <p>If the container is a linked data structure, does nothing and returns {@code false}.
      *
-     * @param minSize the desired minimum size
+     * @param minSize the desired minimum size, which the container is expected to reach soon
      * @return {@code true} if the capacity has been increased, {@code false} if it isn't necessary
-     * @throws java.lang.UnsupportedOperationException if the container doesn't support insertions
+     * @throws UnsupportedOperationException if the container doesn't support insertions
      */
     boolean ensureCapacity(long minSize);
 
@@ -58,7 +58,7 @@ public interface Container {
      * <p>If the container is linked data structure, does nothing and returns {@code false}.
      *
      * @return {@code true} if the container has been actually shrunk, {@code false} otherwise
-     * @throws java.lang.UnsupportedOperationException if the container is immutable
+     * @throws UnsupportedOperationException if the container is immutable
      */
     boolean shrink();
 }

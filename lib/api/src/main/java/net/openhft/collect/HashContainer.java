@@ -30,8 +30,9 @@ public interface HashContainer extends Container {
     HashConfig hashConfig();
 
     /**
-     * Returns fullness of the internal tables, the fraction of taken slots. If current load
-     * reaches load factor of the hash, expansion is triggered.
+     * Returns fullness of the internal tables, the fraction of taken slots. If the current load
+     * exceeds {@link #hashConfig()}.{@link HashConfig#getMaxLoad() getMaxLoad()},
+     * expansion is triggered.
      *
      * @return fullness of the hash
      */
@@ -39,27 +40,29 @@ public interface HashContainer extends Container {
 
 
     /**
-     * Prepares hash for inserting {@code minSize - size()} new elements without
+     * Prepares the hash for insertion of {@code minSize - }{@link #size()} new elements without
      * excessive rehashes. Call of this method is a hint, but not a strict
      * guarantee that the next {@code minSize - size()} insertions will be done in real time.
      *
      * <p>If {@code minSize} is less than the current container size, the method returns
      * {@code false} immediately.
      *
-     * @param minSize the number of additional elements that will be inserted in the hash soon
+     * @param minSize the desired minimum size, which the container is expected to reach soon
      * @return {@code true} if rehash has been actually performed to ensure capacity,
      *         and the next {@code minSize - size()} insertions won't cause rehash for sure.
-     * @throws java.lang.IllegalArgumentException if {@code minSize} is negative
-     * @throws java.lang.UnsupportedOperationException if the container doesn't support insertions
+     * @throws IllegalArgumentException if {@code minSize} is negative
+     * @throws UnsupportedOperationException if the container doesn't support insertions
      */
     @Override
     boolean ensureCapacity(long minSize);
 
     /**
-     * If {@link #currentLoad()} is less than load factor, compaction is performed to fix this.
+     * If {@link #currentLoad()} is less than
+     * {@link #hashConfig()}.{@link HashConfig#getTargetLoad() getTargetLoad()},
+     * compaction is performed to fix this.
      *
      * @return {@code true} if the hash has been actually shrunk
-     * @throws java.lang.UnsupportedOperationException if the container is immutable
+     * @throws UnsupportedOperationException if the container is immutable
      */
     @Override
     boolean shrink();
