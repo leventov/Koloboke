@@ -483,7 +483,7 @@ public class MutableDHashCharShortMapGO/*<>*/
         }
 
         @Override
-        public float currentLoad() {
+        public double currentLoad() {
             return MutableDHashCharShortMapGO.this.currentLoad();
         }
 

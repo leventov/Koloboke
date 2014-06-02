@@ -198,7 +198,7 @@ public abstract class HashConfig {
      *
      * <p>Example:
      * <pre> {@code
-     * conf.withShrinkCondition(h -> h.currentLoad() + 0.1f < h.hashConfig().getTargetLoad());
+     * conf.withShrinkCondition(h -> h.currentLoad() + 0.1 < h.hashConfig().getTargetLoad());
      * }</pre>
      *
      * @param condition shrink condition

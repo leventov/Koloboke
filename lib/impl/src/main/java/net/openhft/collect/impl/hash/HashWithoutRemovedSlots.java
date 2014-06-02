@@ -43,8 +43,7 @@ public abstract class HashWithoutRemovedSlots extends AbstractContainer implemen
     }
 
     @Override
-    public final float currentLoad() {
-        // Division in double to minimize precision loss
-        return (float) (((double) size()) / (double) capacity());
+    public final double currentLoad() {
+        return ((double) size()) / (double) capacity();
     }
 }

@@ -36,7 +36,7 @@ public interface HashContainer extends Container {
      *
      * @return fullness of the hash
      */
-    float currentLoad();
+    double currentLoad();
 
 
     /**

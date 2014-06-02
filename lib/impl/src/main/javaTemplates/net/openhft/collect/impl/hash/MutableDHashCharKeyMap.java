@@ -90,7 +90,7 @@ public abstract class MutableDHashCharKeyMap/*<>*/ extends MutableCharDHashGO/*<
         }
 
         @Override
-        public float currentLoad() {
+        public double currentLoad() {
             return MutableDHashCharKeyMap.this.currentLoad();
         }
 
