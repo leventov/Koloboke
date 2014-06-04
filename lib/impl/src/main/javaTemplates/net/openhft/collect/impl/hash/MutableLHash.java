@@ -158,7 +158,7 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
 
     @Override
     public boolean shrink() {
-        int newCapacity = DHashCapacities.capacity(configWrapper, size);
+        int newCapacity = LHashCapacities.capacity(configWrapper, size);
         if (newCapacity < capacity()) {
             rehash(newCapacity);
             return true;
