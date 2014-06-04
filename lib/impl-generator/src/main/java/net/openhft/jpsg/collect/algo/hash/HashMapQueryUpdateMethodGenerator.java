@@ -236,13 +236,14 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     }
 
     private void generateAbsent(boolean removedSlot) {
-        generateAbsent(removedSlot, true);
+        generateAbsent(removedSlot, true, true);
     }
 
-    private void generateAbsent(boolean removedSlot, boolean replaceValues) {
+    private void generateAbsent(boolean removedSlot, boolean replaceValues,
+            boolean slotTypeComment) {
         String time = method.baseOp() == INSERT && !method.inline() ? "was" : "is";
         String comment = "// key " + time + " absent";
-        if (cxt.mutable() && method.inline() && !isLHash(cxt)) {
+        if (slotTypeComment && cxt.mutable() && method.inline() && !isLHash(cxt)) {
             comment += removedSlot ? ", removed slot" : ", free slot";
         }
         lines(comment);
@@ -541,7 +542,8 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
         if (cxt.isIntegralKey()) {
             if (method.baseOp() == GET) {
                 boolean isRemoveOp = permissions.contains(Permission.REMOVE);
-                lines(cxt.keyType() + " free" + (isRemoveOp ? ", removed" : "") + ";");
+                lines(cxt.keyType() + " free" +
+                        (isRemoveOp && possibleRemovedSlots(cxt) ? ", removed" : "") + ";");
                 if (separateAbsentFreeSlot) {
                     lines("keyAbsent:");
                     earlyAbsentLabel = true;
@@ -573,7 +575,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
                 generateAbsent(false);
             } else if (cxt.isIntegralKey()) {
                 elseBlock();
-                generateAbsent(false);
+                generateAbsent(false, true, false);
                 blockEnd();
             }
         }
@@ -686,7 +688,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
     }
 
     private void determineBranchFeatures() {
-        generateAbsent(false, false);
+        generateAbsent(false, false, false);
         // first line is comment
         absentBranchSize = lines.size() - 1;
         separateAbsentFreeSlot = absentBranchSize > 1;
