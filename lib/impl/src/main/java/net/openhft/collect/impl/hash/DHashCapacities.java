@@ -27,9 +27,14 @@ import static net.openhft.collect.impl.hash.Capacities.chooseBetter;
 public final class DHashCapacities {
 
     public static int capacity(HashConfigWrapper conf, int size) {
+        return capacity(conf, size, false);
+    }
+
+    public static int capacity(HashConfigWrapper conf, int size, boolean doubleSizedArrays) {
         assert size >= 0 : "size must be non-negative";
         int desiredCapacity = conf.targetCapacity(size);
         int lesserCapacity, greaterCapacity;
+        boolean simpleArrays;
         if (desiredCapacity <= SMALL_CAPACITY_LOOKUP_TABLE.length) {
             greaterCapacity = SMALL_CAPACITY_LOOKUP_TABLE[desiredCapacity];
             if (greaterCapacity == desiredCapacity || greaterCapacity == 5)
@@ -41,7 +46,8 @@ public final class DHashCapacities {
                 }
             }
         }
-        else if (desiredCapacity <= MAX_REGULAR_CAPACITY) {
+        else if (desiredCapacity <= ((simpleArrays = !doubleSizedArrays) ? MAX_REGULAR_CAPACITY :
+                MAX_REGULAR_CAPACITY_FOR_DOUBLED_ARRAY)) {
             int capIndex = Arrays.binarySearch(REGULAR_CAPACITIES, desiredCapacity);
             if (capIndex >= 0) // desiredCapacity is found in REGULAR_INT_CAPACITIES
                 return desiredCapacity;
@@ -51,21 +57,25 @@ public final class DHashCapacities {
         }
         else {
             // Since size could be virtual (expected), don't prematurely throw HashOverflowException
-            return MAX_CAPACITY;
+            return simpleArrays ? MAX_CAPACITY : MAX_CAPACITY_FOR_DOUBLED_ARRAY;
         }
         return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity,
                 greaterCapacity);
     }
 
-    /**
-     * @return best capacity for DHash
-     */
     public static int nearestGreaterCapacity(int desiredCapacity, int currentSize) {
+        return nearestGreaterCapacity(desiredCapacity, currentSize, false);
+    }
+
+    public static int nearestGreaterCapacity(int desiredCapacity, int currentSize,
+            boolean doubleSizedArrays) {
         assert currentSize >= 0 : "currentSize must be non-negative";
+        boolean simpleArrays;
         if (desiredCapacity < SMALL_CAPACITY_LOOKUP_TABLE.length) {
             return SMALL_CAPACITY_LOOKUP_TABLE[(int) desiredCapacity];
         }
-        else if (desiredCapacity <= MAX_REGULAR_CAPACITY) {
+        else if (desiredCapacity <= ((simpleArrays = !doubleSizedArrays) ? MAX_REGULAR_CAPACITY :
+                MAX_REGULAR_CAPACITY_FOR_DOUBLED_ARRAY)) {
             int desiredCap = (int) desiredCapacity;
             int capIndex = Arrays.binarySearch(REGULAR_CAPACITIES, desiredCap);
             if (capIndex < 0) {
@@ -76,17 +86,20 @@ public final class DHashCapacities {
                 return desiredCap;
             }
         }
-        // 100000 much greater than MAX_CAPACITY - MAX_HIGH_TWIN_PRIME_CAPACITY.
+        int maxHighTwinPrimeCapacity = simpleArrays ? MAX_HIGH_TWIN_PRIME_CAPACITY :
+                MAX_HIGH_TWIN_CAPACITY_FOR_DOUBLED_ARRAY;
+        // 100000 much greater than maxCapacity - maxHighTwinPrimeCapacity.
         // Advantage of high prime twin capacity over simply prime is quite small.
-        if (currentSize < MAX_HIGH_TWIN_PRIME_CAPACITY - 100000) {
-            return MAX_HIGH_TWIN_PRIME_CAPACITY;
+        if (currentSize < maxHighTwinPrimeCapacity - 100000) {
+            return maxHighTwinPrimeCapacity;
         }
 
-        if (currentSize - MAX_CAPACITY < 0) {
-            return MAX_CAPACITY;
+        int maxCapacity = simpleArrays ? MAX_CAPACITY : MAX_CAPACITY_FOR_DOUBLED_ARRAY;
+        if (currentSize - maxCapacity < 0) {
+            return maxCapacity;
         }
 
-        if (currentSize - Integer.MAX_VALUE < 0) {
+        if (simpleArrays && currentSize - Integer.MAX_VALUE < 0) {
             // Also prime, but likely will cause to OutOfMemoryError
             return Integer.MAX_VALUE;
         } else {
@@ -95,6 +108,11 @@ public final class DHashCapacities {
         }
     }
 
+    /** == 2^30 - 105, 1073741717 is a prime */
+    private static final int MAX_HIGH_TWIN_CAPACITY_FOR_DOUBLED_ARRAY = 1073741719;
+    /** == 2^30 - 35 */
+    private static final int MAX_CAPACITY_FOR_DOUBLED_ARRAY = 1073741789;
+
     private static final int MAX_HIGH_TWIN_PRIME_CAPACITY = 2147482951;
 
     public static final int MAX_CAPACITY = 2147483629;
@@ -102,6 +120,10 @@ public final class DHashCapacities {
     public static boolean isMaxCapacity(int capacity) {
         // MAX_CAPACITY or Integer.MAX_VALUE
         return capacity >= MAX_CAPACITY;
+    }
+
+    public static boolean isMaxCapacity(int capacity, boolean doubleSizedArrays) {
+        return capacity >= (!doubleSizedArrays ? MAX_CAPACITY : MAX_CAPACITY_FOR_DOUBLED_ARRAY);
     }
 
 
@@ -128,7 +150,7 @@ public final class DHashCapacities {
      */
     public static int[] generateRegularCapacities(double maxDiff) {
         int avoidBitsAroundPowersOf2 = 1;
-        while ((1.0 / (1 << avoidBitsAroundPowersOf2)) * 2 > maxDiff) {
+        while ((1.0 / (double) (1 << avoidBitsAroundPowersOf2)) * 2.0 > maxDiff) {
             avoidBitsAroundPowersOf2++;
         }
 
@@ -147,7 +169,7 @@ public final class DHashCapacities {
         }
         int highTwinCount = 0, highTwinNearPowerOf2Count = 0, simplePrimeCount = 0;
         while (true) {
-            int minPrevPrime = ((int) ((1 - maxDiff) * highPrime)) + 1;
+            int minPrevPrime = ((int) ((1.0 - maxDiff) * (double) highPrime)) + 1;
             int lowestSimplePrime = 0;
             int highTwinNearToPowerOf2 = 0;
             int highTwinPrime = 0;
@@ -591,6 +613,7 @@ public final class DHashCapacities {
             2042495071, 2052758821, 2063074129, 2073441199, 2083860043, 2094331663, 2104854991, 2115431809, 2126062051, 2136745621
     };
 
+    private static final int MAX_REGULAR_CAPACITY_FOR_DOUBLED_ARRAY = 107332723;
     private static final int MAX_REGULAR_CAPACITY =
             REGULAR_CAPACITIES[REGULAR_CAPACITIES.length - 1];
 

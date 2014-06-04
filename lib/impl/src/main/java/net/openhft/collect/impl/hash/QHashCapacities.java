@@ -23,21 +23,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static java.lang.Math.abs;
+import static java.util.Arrays.binarySearch;
 import static net.openhft.collect.impl.hash.Capacities.chooseBetter;
 
 
 public final class QHashCapacities {
 
-    /**
-     * For initial hash table construction and rehash to target load (shrink, tombstones purge).
-     */
     public static int capacity(HashConfigWrapper conf, int size) {
-        assert size >= 0 : "size must be non-negative";
-        return capacity(conf, size, conf.targetCapacity(size));
+        return capacity(conf, size, false);
     }
 
-    private static int capacity(HashConfigWrapper conf, int size, int desiredCapacity) {
+    /** For initial hash table construction and rehash to target load (shrink, tombstones purge). */
+    public static int capacity(HashConfigWrapper conf, int size, boolean doubleSizedArrays) {
+        assert size >= 0 : "size must be non-negative";
+        return capacity(conf, size, conf.targetCapacity(size), doubleSizedArrays);
+    }
+
+    private static int capacity(HashConfigWrapper conf, int size, int desiredCapacity,
+            boolean doubleSizedArrays) {
         int lesserCapacity, greaterCapacity;
+        boolean simpleArrays;
         if (desiredCapacity <= MAX_LOOKUP_CAPACITY) {
             int smallTableIndex = SMALL_LOOKUP_TABLE_INDICES[desiredCapacity];
             greaterCapacity = SMALL_LOOKUP_TABLE_CAPACITIES[smallTableIndex];
@@ -46,7 +51,7 @@ public final class QHashCapacities {
             lesserCapacity = SMALL_LOOKUP_TABLE_CAPACITIES[smallTableIndex - 1];
         }
         else if (desiredCapacity <= MAX_REGULAR_CHAR_CAPACITY) {
-            int capIndex = Arrays.binarySearch(REGULAR_CHAR_CAPACITIES, (char) desiredCapacity);
+            int capIndex = binarySearch(REGULAR_CHAR_CAPACITIES, (char) desiredCapacity);
             if (capIndex >= 0) // desiredCapacity is found in REGULAR_CHAR_CAPACITIES
                 return desiredCapacity;
             capIndex = ~capIndex;
@@ -54,8 +59,9 @@ public final class QHashCapacities {
                     (int) REGULAR_CHAR_CAPACITIES[capIndex - 1] : MAX_LOOKUP_CAPACITY;
             greaterCapacity = REGULAR_CHAR_CAPACITIES[capIndex];
         }
-        else if (desiredCapacity <= MAX_REGULAR_INT_CAPACITY) {
-            int capIndex = Arrays.binarySearch(REGULAR_INT_CAPACITIES, desiredCapacity);
+        else if (desiredCapacity <= ((simpleArrays = !doubleSizedArrays) ?
+                MAX_REGULAR_INT_CAPACITY : MAX_REGULAR_CAPACITY_FOR_DOUBLED_ARRAY)) {
+            int capIndex = binarySearch(REGULAR_INT_CAPACITIES, desiredCapacity);
             if (capIndex >= 0) // desiredCapacity is found in REGULAR_INT_CAPACITIES
                 return desiredCapacity;
             capIndex = ~capIndex;
@@ -67,7 +73,7 @@ public final class QHashCapacities {
             // Since size could be virtual (expected), don't prematurely throw
             // HashOverflowException. If sizes near to Integer.MAX_VALUE is the case,
             // version accepting long size should be used.
-            return MAX_INT_CAPACITY;
+            return simpleArrays ? MAX_INT_CAPACITY : MAX_CAPACITY_FOR_DOUBLED_ARRAY;
         }
         return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity,
                 greaterCapacity);
@@ -77,9 +83,9 @@ public final class QHashCapacities {
         assert size >= 0L : "size must be non-negative";
         long desiredCapacity = conf.targetCapacity(size);
         if (desiredCapacity <= (long) MAX_REGULAR_INT_CAPACITY)
-            return (long) capacity(conf, (int) size, (int) desiredCapacity);
+            return (long) capacity(conf, (int) size, (int) desiredCapacity, false);
         if (desiredCapacity <= MAX_REGULAR_LONG_CAPACITY) {
-            int capIndex = Arrays.binarySearch(REGULAR_LONG_CAPACITIES, desiredCapacity);
+            int capIndex = binarySearch(REGULAR_LONG_CAPACITIES, desiredCapacity);
             if (capIndex >= 0)
                 return desiredCapacity;
             long lesserCapacity = capIndex > 0 ?
@@ -91,26 +97,32 @@ public final class QHashCapacities {
         return extraLargeCapacity(desiredCapacity);
     }
 
-    /**
-     * For grow rehash.
-     */
     public static int nearestGreaterCapacity(int desiredCapacity, int currentSize) {
+        return nearestGreaterCapacity(desiredCapacity, currentSize, false);
+    }
+
+    /** For grow rehash. */
+    public static int nearestGreaterCapacity(int desiredCapacity, int currentSize,
+            boolean doubleSizedArrays) {
         assert currentSize >= 0 : "currentSize must be non-negative";
         if (desiredCapacity <= MAX_LOOKUP_CAPACITY)
             return SMALL_LOOKUP_TABLE_CAPACITIES[SMALL_LOOKUP_TABLE_INDICES[desiredCapacity]];
         if (desiredCapacity <= MAX_REGULAR_CHAR_CAPACITY) {
-            int capIndex = Arrays.binarySearch(REGULAR_CHAR_CAPACITIES, (char) desiredCapacity);
+            int capIndex = binarySearch(REGULAR_CHAR_CAPACITIES, (char) desiredCapacity);
             // if capIndex >= 0 desiredCapacity IS a regular capacity
             return capIndex < 0 ? REGULAR_CHAR_CAPACITIES[~capIndex] : desiredCapacity;
         }
-        if (desiredCapacity <= MAX_REGULAR_INT_CAPACITY) {
-            int capIndex = Arrays.binarySearch(REGULAR_INT_CAPACITIES, desiredCapacity);
+        boolean simpleArrays = !doubleSizedArrays;
+        if (desiredCapacity <= (simpleArrays ? MAX_REGULAR_INT_CAPACITY :
+                MAX_REGULAR_CAPACITY_FOR_DOUBLED_ARRAY)) {
+            int capIndex = binarySearch(REGULAR_INT_CAPACITIES, desiredCapacity);
             return capIndex < 0 ? REGULAR_INT_CAPACITIES[~capIndex] : desiredCapacity;
         }
+        int maxCapacity = simpleArrays ? MAX_INT_CAPACITY : MAX_CAPACITY_FOR_DOUBLED_ARRAY;
         // overflow-aware
-        if (currentSize - MAX_INT_CAPACITY < 0)
-            return MAX_INT_CAPACITY;
-        if (currentSize - Integer.MAX_VALUE < 0) {
+        if (currentSize - maxCapacity < 0)
+            return maxCapacity;
+        if (simpleArrays && currentSize - Integer.MAX_VALUE < 0) {
             // Integer.MAX_VALUE is also a qHash prime, but likely will cause OutOfMemoryError
             return Integer.MAX_VALUE;
         } else {
@@ -121,10 +133,10 @@ public final class QHashCapacities {
 
     public static long nearestGreaterCapacity(long desiredCapacity, long currentSize) {
         assert desiredCapacity >= 0L : "desiredCapacity must be non-negative";
-        if (desiredCapacity <= MAX_REGULAR_INT_CAPACITY)
-            return (long) nearestGreaterCapacity((int) desiredCapacity, (int) currentSize);
+        if (desiredCapacity <= (long) MAX_REGULAR_INT_CAPACITY)
+            return (long) nearestGreaterCapacity((int) desiredCapacity, (int) currentSize, false);
         if (desiredCapacity <= MAX_REGULAR_LONG_CAPACITY) {
-            int capIndex = Arrays.binarySearch(REGULAR_LONG_CAPACITIES, desiredCapacity);
+            int capIndex = binarySearch(REGULAR_LONG_CAPACITIES, desiredCapacity);
             return capIndex < 0 ? REGULAR_LONG_CAPACITIES[~capIndex] : desiredCapacity;
         }
         return extraLargeCapacity(desiredCapacity);
@@ -256,9 +268,7 @@ public final class QHashCapacities {
             86, 86, 86, 86, 86, 86, 86, 86, 86, 86
     };
 
-    /**
-     * Compile-time constant expression
-     */
+    /** Compile-time constant expression */
     private static final int MAX_LOOKUP_CAPACITY = 1019;
     static {
         if (MAX_LOOKUP_CAPACITY !=
@@ -386,9 +396,7 @@ public final class QHashCapacities {
             63803, 64123, 64439, 64747, 65063, 65371
     };
 
-    /**
-     * Compile-time constant expression
-     */
+    /** Compile-time constant expression */
     private static final int MAX_REGULAR_CHAR_CAPACITY = 65371;
     static {
         if (MAX_REGULAR_CHAR_CAPACITY !=
@@ -611,23 +619,29 @@ public final class QHashCapacities {
             2130215159, 2140919723,
     };
 
-    /**
-     * Compile-time constant expression
-     */
+
+    // Compile-time constant expressions
+    private static final int MAX_REGULAR_CAPACITY_FOR_DOUBLED_ARRAY = 107325451;
     private static final int MAX_REGULAR_INT_CAPACITY = 2140919723;
     static {
-        if (MAX_REGULAR_INT_CAPACITY != REGULAR_INT_CAPACITIES[REGULAR_INT_CAPACITIES.length - 1])
+        if (MAX_REGULAR_INT_CAPACITY != REGULAR_INT_CAPACITIES[REGULAR_INT_CAPACITIES.length - 1] ||
+                binarySearch(REGULAR_INT_CAPACITIES, MAX_REGULAR_CAPACITY_FOR_DOUBLED_ARRAY) < 0)
             throw new AssertionError();
     }
 
-    /**
-     * The highest qHash prime below Integer.MAX_VALUE (which is a qHash prime too).
-     */
+    /** == 2^30 - 41 */
+    private static final int MAX_CAPACITY_FOR_DOUBLED_ARRAY = 1073741783;
+
+    /** The highest qHash prime below Integer.MAX_VALUE (which is a qHash prime too). */
     private static final int MAX_INT_CAPACITY = 2147483587;
 
     public static boolean isMaxCapacity(int capacity) {
         // MAX_INT_CAPACITY or Integer.MAX_VALUE
         return capacity >= MAX_INT_CAPACITY;
+    }
+
+    public static boolean isMaxCapacity(int capacity, boolean doubleSizedArrays) {
+        return capacity >= (!doubleSizedArrays ? MAX_INT_CAPACITY : MAX_CAPACITY_FOR_DOUBLED_ARRAY);
     }
 
 

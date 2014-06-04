@@ -21,6 +21,8 @@ import net.openhft.collect.HashConfig;
 import net.openhft.collect.HashOverflowException;
 import net.openhft.collect.impl.AbstractContainer;
 
+import static net.openhft.collect.impl.hash.DHashCapacities.nearestGreaterCapacity;
+
 
 public abstract class MutableDHash extends AbstractContainer implements DHash {
 
@@ -152,7 +154,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     final void init(HashConfigWrapper configWrapper, int size) {
         this.configWrapper = configWrapper;
         this.size = 0;
-        internalInit(DHashCapacities.capacity(configWrapper, size));
+        internalInit(targetCapacity(size));
     }
 
     private void internalInit(int capacity) {
@@ -186,9 +188,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     private int maxSize(int capacity) {
         // No sense in trying to rehash after each insertion
         // if the capacity is already reached the limit.
-        return !DHashCapacities.isMaxCapacity(capacity) ?
-                configWrapper.maxSize(capacity) :
-                capacity - 1;
+        return !isMaxCapacity(capacity) ? configWrapper.maxSize(capacity) : capacity - 1;
     }
 
     /**
@@ -225,6 +225,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     /**
      * Empties the hash.
      */
+    @Override
     public void clear() {
         modCount++;
         size = 0;
@@ -241,7 +242,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
 
     @Override
     public boolean shrink() {
-        int newCapacity = DHashCapacities.capacity(configWrapper, size);
+        int newCapacity = targetCapacity(size);
         if (removedSlots > 0 || newCapacity < capacity()) {
             rehash(newCapacity);
             return true;
@@ -265,7 +266,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
 
     @Override
     public final boolean ensureCapacity(long minSize) {
-        int intMinSize = (int) Math.min(minSize, Integer.MAX_VALUE);
+        int intMinSize = (int) Math.min(minSize, (long) Integer.MAX_VALUE);
         if (minSize < 0L)
             throw new IllegalArgumentException(
                     "Min size should be positive, " + minSize + " given.");
@@ -273,7 +274,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
         if (additionalSize <= 0)
             return false;
         if (intMinSize > maxSize || freeSlots - additionalSize < minFreeSlots) {
-            return tryRehashForExpansion(DHashCapacities.capacity(configWrapper, intMinSize));
+            return tryRehashForExpansion(targetCapacity(intMinSize));
         } else {
             return false;
         }
@@ -306,14 +307,27 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
 
     private boolean tryRehashIfTooFewFreeSlots() {
         if (removedSlots > 0) {
-            rehash(DHashCapacities.capacity(configWrapper, size));
+            rehash(targetCapacity(size));
             return true;
         } else {
             return tryRehashForExpansion(grownCapacity());
         }
     }
 
+    /** @see MutableLHash#doubleSizedArrays() */
+    boolean doubleSizedArrays() {
+        return false;
+    }
+
+    private int targetCapacity(int size) {
+        return DHashCapacities.capacity(configWrapper, size, doubleSizedArrays());
+    }
+
+    private boolean isMaxCapacity(int capacity) {
+        return DHashCapacities.isMaxCapacity(capacity, doubleSizedArrays());
+    }
+
     private int grownCapacity() {
-        return DHashCapacities.nearestGreaterCapacity(configWrapper.grow(capacity()), size);
+        return nearestGreaterCapacity(configWrapper.grow(capacity()), size, doubleSizedArrays());
     }
 }

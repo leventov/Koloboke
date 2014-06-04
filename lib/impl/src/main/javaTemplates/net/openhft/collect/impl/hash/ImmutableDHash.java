@@ -63,6 +63,7 @@ public abstract class ImmutableDHash extends HashWithoutRemovedSlots implements 
     // Mutation operations aren't supported
 
 
+    @Override
     public final void clear() {
         throw new UnsupportedOperationException();
     }

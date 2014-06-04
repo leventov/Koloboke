@@ -32,16 +32,37 @@ public final class LHashCapacities {
         return capacity == MAX_INT_CAPACITY;
     }
 
+    public static boolean isMaxCapacity(int capacity, boolean doubleSizedArrays) {
+        int maxCapacity = MAX_INT_CAPACITY;
+        if (doubleSizedArrays)
+            maxCapacity >>= 1;
+        return capacity == maxCapacity;
+    }
+
     public static boolean isMaxCapacity(long capacity) {
         return capacity == MAX_LONG_CAPACITY;
     }
 
+    public static boolean isMaxCapacity(long capacity, boolean doubleSizedArrays) {
+        long maxCapacity = MAX_LONG_CAPACITY;
+        if (doubleSizedArrays)
+            maxCapacity >>= 1L;
+        return capacity == maxCapacity;
+    }
+
     public static int capacity(HashConfigWrapper conf, int size) {
+        return capacity(conf, size, false);
+    }
+
+    public static int capacity(HashConfigWrapper conf, int size, boolean doubleSizedArrays) {
         assert size >= 0 : "size must be non-negative";
         int desiredCapacity = conf.targetCapacity(size);
         if (desiredCapacity <= MIN_CAPACITY)
             return MIN_CAPACITY;
-        if (desiredCapacity < MAX_INT_CAPACITY) {
+        int maxCapacity = MAX_INT_CAPACITY;
+        if (doubleSizedArrays)
+            maxCapacity >>= 1;
+        if (desiredCapacity < maxCapacity) {
             if (isPowerOf2(desiredCapacity))
                 return desiredCapacity;
             int lesserCapacity = highestOneBit(desiredCapacity);
@@ -49,7 +70,7 @@ public final class LHashCapacities {
             return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity,
                     greaterCapacity);
         }
-        return MAX_INT_CAPACITY;
+        return maxCapacity;
     }
 
     static boolean configIsSuitableForImmutableHash(HashConfigWrapper conf, int size) {
@@ -69,11 +90,18 @@ public final class LHashCapacities {
     }
 
     public static long capacity(HashConfigWrapper conf, long size) {
+        return capacity(conf, size, false);
+    }
+
+    public static long capacity(HashConfigWrapper conf, long size, boolean doubleSizedArrays) {
         assert size >= 0L : "size must be non-negative";
         long desiredCapacity = conf.targetCapacity(size);
-        if (desiredCapacity <= MIN_CAPACITY)
-            return MIN_CAPACITY;
-        if (desiredCapacity < MAX_LONG_CAPACITY) {
+        if (desiredCapacity <= (long) MIN_CAPACITY)
+            return (long) MIN_CAPACITY;
+        long maxCapacity = MAX_LONG_CAPACITY;
+        if (doubleSizedArrays)
+            maxCapacity >>= 1L;
+        if (desiredCapacity < maxCapacity) {
             if (isPowerOf2(desiredCapacity))
                 return desiredCapacity;
             long lesserCapacity = highestOneBit(desiredCapacity);
@@ -81,7 +109,7 @@ public final class LHashCapacities {
             return chooseBetter(conf, size, desiredCapacity, lesserCapacity, greaterCapacity,
                     greaterCapacity);
         }
-        return MAX_LONG_CAPACITY;
+        return maxCapacity;
     }
 
     /** Standard highestOneBit is not an intrinsic */

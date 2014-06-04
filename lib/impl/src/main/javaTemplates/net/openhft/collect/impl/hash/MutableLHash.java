@@ -22,6 +22,8 @@ import net.openhft.collect.HashConfig;
 
 import static net.openhft.collect.impl.Maths.isPowerOf2;
 
+import static net.openhft.collect.impl.hash.LHashCapacities.*;
+
 
 public abstract class MutableLHash extends HashWithoutRemovedSlots implements LHash {
 
@@ -80,7 +82,7 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
         /* if LHash hash */verifyConfig(configWrapper.config());/* endif */
         this.configWrapper = configWrapper;
         this.size = 0;
-        internalInit(LHashCapacities.capacity(configWrapper, size));
+        internalInit(targetCapacity(size));
     }
 
     private void internalInit(int capacity) {
@@ -92,9 +94,7 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
     private int maxSize(int capacity) {
         // No sense in trying to rehash after each insertion
         // if the capacity is already reached the limit.
-        return !LHashCapacities.isMaxCapacity(capacity) ?
-                configWrapper.maxSize(capacity) :
-                capacity - 1;
+        return !isMaxCapacity(capacity) ? configWrapper.maxSize(capacity) : capacity - 1;
     }
 
     /**
@@ -158,7 +158,7 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
 
     @Override
     public boolean shrink() {
-        int newCapacity = LHashCapacities.capacity(configWrapper, size);
+        int newCapacity = targetCapacity(size);
         if (newCapacity < capacity()) {
             rehash(newCapacity);
             return true;
@@ -178,12 +178,12 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
 
     @Override
     public final boolean ensureCapacity(long minSize) {
-        int intMinSize = (int) Math.min(minSize, Integer.MAX_VALUE);
+        int intMinSize = (int) Math.min(minSize, (long) Integer.MAX_VALUE);
         if (minSize < 0L)
             throw new IllegalArgumentException(
                     "Min size should be positive, " + minSize + " given.");
         return intMinSize > maxSize &&
-                tryRehashForExpansion(LHashCapacities.capacity(configWrapper, intMinSize));
+                tryRehashForExpansion(targetCapacity(intMinSize));
     }
 
     /* if Mutable mutability */
@@ -194,10 +194,47 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
 
     final void postInsertHook() {
         if (++size > maxSize) {
+            /* if LHash hash */
             int capacity = capacity();
-            if (!LHashCapacities.isMaxCapacity(capacity)) {
+            if (!isMaxCapacity(capacity)) {
                 rehash(capacity << 1);
             }
+            /* elif !(LHash hash) */
+            tryRehashForExpansion(grownCapacity());
+            /* endif */
         }
     }
+
+    /**
+     * LongLong, LongDouble, DoubleDouble and DoubleLong maps might use array of doubled size
+     * as table to layout keys and values in parallel. They should override this method to return
+     * {@code true}.
+     *
+     * <p>IntInt and smaller maps would better use array of larger primitives ({@code long[]} in
+     * this particular case), because it 1) guarantees that each key and value pair lay on the same
+     * cache line and 2) allows higher max capacity.
+     *
+     * <p>It is MutableLHash's concern in order to treat edge cases of capacities near to Java
+     * array size limit correctly.
+     *
+     * @return if the hash is a map which use double sized array to layout keys and values
+     *         in parallel
+     */
+    boolean doubleSizedArrays() {
+        return false;
+    }
+
+    private int targetCapacity(int size) {
+        return LHashCapacities.capacity(configWrapper, size, doubleSizedArrays());
+    }
+
+    private boolean isMaxCapacity(int capacity) {
+        return LHashCapacities.isMaxCapacity(capacity, doubleSizedArrays());
+    }
+
+    /* if !(LHash hash) */
+    private int grownCapacity() {
+        return nearestGreaterCapacity(configWrapper.grow(capacity()), size, doubleSizedArrays());
+    }
+    /* endif */
 }
