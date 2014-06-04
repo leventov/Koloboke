@@ -78,8 +78,9 @@ public class ScalerTest {
         }
         Random r = ThreadLocalRandom.current();
         for (int i = 0; i < 10000; i++) {
-            ints.add(max(1, abs(r.nextInt())));
-            longs.add(max(1L, abs(r.nextLong())));
+            int v = r.nextInt(Integer.MAX_VALUE) + 1;
+            ints.add(v);
+            longs.add((long) v);
         }
     }
 
