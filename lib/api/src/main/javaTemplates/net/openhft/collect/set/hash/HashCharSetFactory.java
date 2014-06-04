@@ -48,14 +48,14 @@ public interface HashCharSetFactory/*<>*/ extends CharSetFactory/*<>*/ {
     /* if obj elem //<? extends E2>// elif !(obj elem) //<Character>// endif */
     /* enddefine */
 
+    /* with Mutable|Updatable|Immutable mutability */
+    /* if !(Immutable mutability) */
     @Override
     /*p1*/ HashCharSet/*p2*/ newMutableSet();
 
     @Override
     /*p1*/ HashCharSet/*p2*/ newMutableSet(int expectedSize);
-
-
-    /* with Mutable|Immutable mutability */
+    /* endif */
 
     /* with with|without expectedSize */
     /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */

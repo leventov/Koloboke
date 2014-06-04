@@ -41,7 +41,7 @@ final class HashIterMethodGeneratorCommons {
         if (needCapacityMask(cxt)) {
             g.lines("final int capacityMask;");
         }
-        if (cxt.mutable()) {
+        if (!cxt.immutable()) {
             g.lines("int expectedModCount;");
         }
         generateMutableEntryClassAwareOfPossibleCopyOnRemove(g, cxt);
@@ -56,13 +56,13 @@ final class HashIterMethodGeneratorCommons {
     }
 
     static void commonConstructorOps(MethodGenerator g, MethodContext cxt) {
-        if (cxt.mutable()) {
+        if (!cxt.immutable()) {
             g.lines("expectedModCount = mc;");
         }
     }
 
     static void checkModCount(MethodGenerator g, MethodContext cxt, boolean copyModCount) {
-        if (cxt.mutable()) {
+        if (!cxt.immutable()) {
             String mc;
             if (cxt.isEntryView() && copyModCount) {
                 g.lines("int mc;");
@@ -75,7 +75,7 @@ final class HashIterMethodGeneratorCommons {
     }
 
     static void endOfModCountCheck(MethodGenerator g, MethodContext cxt) {
-        if (cxt.mutable()) {
+        if (!cxt.immutable()) {
             g.elseBlock();
             g.concurrentMod();
             g.blockEnd();
@@ -140,7 +140,7 @@ final class HashIterMethodGeneratorCommons {
     }
 
     static String entry(MethodContext cxt, String mc, String index, String key, String value) {
-        if (cxt.mutable()) {
+        if (!cxt.immutable()) {
             String mutableEntryClass = "MutableEntry";
             if (possibleArrayCopyOnRemove(cxt)) mutableEntryClass += "2";
             return "new " + mutableEntryClass + "(" +

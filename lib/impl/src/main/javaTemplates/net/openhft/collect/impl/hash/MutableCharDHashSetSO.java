@@ -1,7 +1,7 @@
 /* with
  DHash|QHash|LHash hash
  char|byte|short|int|long|float|double|obj elem
- Mutable|Immutable mutability
+ Mutable|Updatable|Immutable mutability
 */
 /*
  * Copyright 2014 the original author or authors.
@@ -36,13 +36,7 @@ public abstract class MutableCharDHashSetSO/*<>*/
     }
     /* endif */
 
-
     /* if Mutable mutability */
-    @Override
-    void rehash(int newCapacity) {
-        /* template Rehash */
-    }
-
     @Override
     void removeAt(int index) {
         // if !(LHash hash) */
@@ -52,6 +46,13 @@ public abstract class MutableCharDHashSetSO/*<>*/
         /* elif LHash hash //
         /* template RemoveAt */
         // endif */
+    }
+    /* endif */
+
+    /* if !(Immutable mutability) */
+    @Override
+    void rehash(int newCapacity) {
+        /* template Rehash */
     }
 
     @Override

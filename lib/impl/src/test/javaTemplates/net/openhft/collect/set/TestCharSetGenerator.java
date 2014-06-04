@@ -19,6 +19,7 @@ package net.openhft.collect.set;
 
 import com.google.common.collect.testing.SampleElements;
 import com.google.common.collect.testing.TestSetGenerator;
+import net.openhft.collect.Mutability;
 import net.openhft.function.*;
 
 import java.util.List;
@@ -27,23 +28,13 @@ import java.util.Set;
 
 public class TestCharSetGenerator/*<>*/ implements TestSetGenerator<Character> {
 
-    public static /*<>*/ TestCharSetGenerator/*<>*/ mutable(CharSetFactory/*<>*/ factory,
-            SampleElements<? extends Character> elems) {
-        return new TestCharSetGenerator(true, factory, elems);
-    }
-
-    public static /*<>*/ TestCharSetGenerator/*<>*/ immutable(CharSetFactory/*<>*/ factory,
-            SampleElements<? extends Character> elems) {
-        return new TestCharSetGenerator(false, factory, elems);
-    }
-
-    private final boolean mutable;
+    private final Mutability mutability;
     private final CharSetFactory/*<>*/ factory;
     private final SampleElements<? extends Character> elems;
 
-    private TestCharSetGenerator(boolean mutable, CharSetFactory/*<>*/ factory,
+    public TestCharSetGenerator(Mutability mutability, CharSetFactory/*<>*/ factory,
             SampleElements<? extends Character> elems) {
-        this.mutable = mutable;
+        this.mutability = mutability;
         this.factory = factory;
         this.elems = elems;
     }
@@ -58,7 +49,12 @@ public class TestCharSetGenerator/*<>*/ implements TestSetGenerator<Character> {
                 }
             }
         };
-        return mutable ? factory.newMutableSet(supplier) : factory.newImmutableSet(supplier);
+        switch (mutability) {
+            case IMMUTABLE: return factory.newImmutableSet(supplier);
+            case UPDATABLE: return factory.newUpdatableSet(supplier);
+            case MUTABLE: return factory.newMutableSet(supplier);
+            default: throw new AssertionError();
+        }
     }
 
     @Override

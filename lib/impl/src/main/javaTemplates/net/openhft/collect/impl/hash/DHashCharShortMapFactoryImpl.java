@@ -125,6 +125,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
             return keyEquivalence;
         }
 
+        /* with Mutable|Updatable|Immutable mutability */
         @Override
         <K2 extends K/*andP1*/> MutableDHashObjShortMapGO<K2/*andP2*/> uninitializedMutableMap() {
             MutableDHashObjShortMap.WithCustomKeyEquivalence<K2/*andP2*/> map =
@@ -132,15 +133,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
             map.keyEquivalence = keyEquivalence;
             return map;
         }
-
-        @Override
-        <K2 extends K/*andP1*/> ImmutableDHashObjShortMapGO<K2/*andP2*/>
-        uninitializedImmutableMap() {
-            ImmutableDHashObjShortMap.WithCustomKeyEquivalence<K2/*andP2*/> map =
-                    new ImmutableDHashObjShortMap.WithCustomKeyEquivalence<K2/*andP2*/>();
-            map.keyEquivalence = keyEquivalence;
-            return map;
-        }
+        /* endwith */
 
         @Override
         public <KE> HashObjShortMapFactory<KE/*andV*/> withKeyEquivalence(
@@ -202,6 +195,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
             return defaultValue;
         }
 
+        /* with Mutable|Updatable|Immutable mutability */
         @Override
         /*p1*/ MutableDHashCharShortMapGO/*p2*/ uninitializedMutableMap() {
             MutableDHashCharShortMap.WithCustomDefaultValue/*p2*/ map =
@@ -209,14 +203,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
             map.defaultValue = defaultValue;
             return map;
         }
-
-        @Override
-        /*p1*/ ImmutableDHashCharShortMapGO/*p2*/ uninitializedImmutableMap() {
-            ImmutableDHashCharShortMap.WithCustomDefaultValue/*p2*/ map =
-                    new ImmutableDHashCharShortMap.WithCustomDefaultValue/*p2*/();
-            map.defaultValue = defaultValue;
-            return map;
-        }
+        /* endwith */
 
         /* if obj key */
         @Override
@@ -269,6 +256,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
             return valueEquivalence;
         }
 
+        /* with Mutable|Updatable|Immutable mutability */
         @Override
         </*p1And*/V2 extends V> MutableDHashCharObjMapGO</*p2And*/V2> uninitializedMutableMap() {
             MutableDHashCharObjMap.WithCustomValueEquivalence</*p2And*/V2> map =
@@ -276,15 +264,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
             map.valueEquivalence = valueEquivalence;
             return map;
         }
-
-        @Override
-        </*p1And*/V2 extends V> ImmutableDHashCharObjMapGO</*p2And*/V2>
-        uninitializedImmutableMap() {
-            ImmutableDHashCharObjMap.WithCustomValueEquivalence</*p2And*/V2> map =
-                    new ImmutableDHashCharObjMap.WithCustomValueEquivalence</*p2And*/V2>();
-            map.valueEquivalence = valueEquivalence;
-            return map;
-        }
+        /* endwith */
 
         /* if obj key */
         @Override
@@ -348,6 +328,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
             return defaultValue;
         }
 
+        /* with Mutable|Updatable|Immutable mutability */
         @Override
         <K2 extends K> MutableDHashObjShortMapGO<K2> uninitializedMutableMap() {
             MutableDHashObjShortMap.WithCustomKeyEquivalenceAndDefaultValue<K2> map =
@@ -356,15 +337,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
             map.defaultValue = defaultValue;
             return map;
         }
-
-        @Override
-        <K2 extends K> ImmutableDHashObjShortMapGO<K2> uninitializedImmutableMap() {
-            ImmutableDHashObjShortMap.WithCustomKeyEquivalenceAndDefaultValue<K2> map =
-                    new ImmutableDHashObjShortMap.WithCustomKeyEquivalenceAndDefaultValue<K2>();
-            map.keyEquivalence = keyEquivalence;
-            map.defaultValue = defaultValue;
-            return map;
-        }
+        /* endwith */
 
         @Override
         public <KE> HashObjShortMapFactory<KE> withKeyEquivalence(
@@ -424,6 +397,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
             return valueEquivalence;
         }
 
+        /* with Mutable|Updatable|Immutable mutability */
         @Override
         <K2 extends K, V2 extends V> MutableDHashObjObjMapGO<K2, V2> uninitializedMutableMap() {
             MutableDHashObjObjMap.WithCustomEquivalences<K2, V2> map =
@@ -432,16 +406,7 @@ public final class DHashCharShortMapFactoryImpl/*<>*/ extends DHashCharShortMapF
             map.valueEquivalence = valueEquivalence;
             return map;
         }
-
-        @Override
-        <K2 extends K, V2 extends V> ImmutableDHashObjObjMapGO<K2, V2>
-        uninitializedImmutableMap() {
-            ImmutableDHashObjObjMap.WithCustomEquivalences<K2, V2> map =
-                    new ImmutableDHashObjObjMap.WithCustomEquivalences<K2, V2>();
-            map.keyEquivalence = keyEquivalence;
-            map.valueEquivalence = valueEquivalence;
-            return map;
-        }
+        /* endwith */
 
         @Override
         public <KE> HashObjObjMapFactory<KE, V> withKeyEquivalence(

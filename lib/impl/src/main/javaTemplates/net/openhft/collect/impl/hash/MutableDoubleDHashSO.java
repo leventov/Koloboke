@@ -1,7 +1,7 @@
 /* with
  DHash|QHash|LHash hash
  double|float elem
- Mutable|Immutable mutability
+ Mutable|Updatable|Immutable mutability
 */
 /*
  * Copyright 2014 the original author or authors.
@@ -69,24 +69,24 @@ public abstract class MutableDoubleDHashSO extends MutableDHash implements Doubl
     }
 
 
-    /* if Mutable mutability */
+    /* if !(Immutable mutability) */
     @Override
     void allocateArrays(int capacity) {
         set = new long[capacity];
         Arrays.fill(set, FREE_BITS);
     }
 
-    /* if !(LHash hash) */
-    @Override
-    void removeAt(int index) {
-        set[index] = REMOVED_BITS;
-    }
-    /* endif */
-
     @Override
     public void clear() {
         super.clear();
         Arrays.fill(set, FREE_BITS);
+    }
+    /* endif */
+
+    /* if Mutable mutability && !(LHash hash) */
+    @Override
+    void removeAt(int index) {
+        set[index] = REMOVED_BITS;
     }
     /* endif */
 }

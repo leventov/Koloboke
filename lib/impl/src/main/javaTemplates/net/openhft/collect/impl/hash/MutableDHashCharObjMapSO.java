@@ -2,7 +2,7 @@
  DHash|QHash|LHash hash
  char|byte|short|int|long|float|double|obj key
  obj value
- Mutable|Immutable mutability
+ Mutable|Updatable|Immutable mutability
 */
 /*
  * Copyright 2014 the original author or authors.
@@ -77,6 +77,7 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     }
 
 
+    /* if Mutable mutability */
     /* with key view */
     @Override
     public CharIterator/*<>*/ iterator() {
@@ -98,6 +99,7 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
         return new NoRemovedKeyCursor(/* if !(Immutable mutability) */mc/* endif */);
     }
     /* endwith */
+    /* endif */
 
 
     int valueIndex(@Nullable Object value) {
@@ -124,13 +126,13 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
         } else {
             return false;
         }
-        /* elif Immutable mutability //
+        /* elif !(Mutable mutability) //
         throw new UnsupportedOperationException();
         // endif */
     }
 
 
-    /* if Mutable mutability */
+    /* if !(Immutable mutability) */
     @Override
     void rehash(int newCapacity) {
         /* template Rehash */
@@ -174,9 +176,8 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
         /* template RemoveAt */
         // endif */
     }
-    /* endif */
 
-    /* if !(Immutable mutability) */
+
     // removing operations are overridden in order to set value to null on removing
     // (for garbage collection)
     /* with key view */
@@ -238,14 +239,16 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     /* endif */
 
     /* endwith*/
-    /* endif */
 
 
     /* with key view No|Some removed */
-    /* if !(Immutable mutability Some removed) && !(LHash hash Some removed) */
+    /* if !(LHash hash Some removed) */
 
     class NoRemovedKeyIterator extends NoRemovedIterator {
-        /* if !(Mutable mutability) || !(LHash hash) */final/* endif */ V[] vals;
+        /* if just comment */
+        // vals non-final because could be updated in shift-removing procedure
+        /* endif */
+        /* if !(LHash hash) */final/* endif */ V[] vals;
 
         private NoRemovedKeyIterator(/* if !(Immutable mutability) */int mc/* endif */) {
             super(mc);
@@ -259,8 +262,8 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     }
 
 
-    class NoRemovedKeyCursor extends NoRemovedCursor{
-        /* if !(Mutable mutability) || !(LHash hash) */final/* endif */ V[] vals;
+    class NoRemovedKeyCursor extends NoRemovedCursor {
+        /* if !(LHash hash) */final/* endif */ V[] vals;
 
         private NoRemovedKeyCursor(/* if !(Immutable mutability) */int mc/* endif */) {
             super(mc);
@@ -275,4 +278,6 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
 
     /* endif */
     /* endwith */
+
+    /* endif */
 }

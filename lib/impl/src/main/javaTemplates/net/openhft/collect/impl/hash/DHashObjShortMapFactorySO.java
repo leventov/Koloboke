@@ -79,14 +79,13 @@ public abstract class DHashObjShortMapFactorySO<K/* if obj value //, V// endif *
 
     /* define pv *//* if !(obj value) //short// elif obj value //V2// endif *//* enddefine */
 
+    /* with Mutable|Updatable|Immutable mutability */
     /*p1*/<K2 extends K>/**/ MutableDHashObjShortMapGO/*p2*/<K2>/**/ uninitializedMutableMap() {
         return new MutableDHashObjShortMap/*p2*/<K2>/**/();
     }
+    /* endwith */
 
-    /*p1*/<K2 extends K>/**/ ImmutableDHashObjShortMapGO/*p2*/<K2>/**/ uninitializedImmutableMap() {
-        return new ImmutableDHashObjShortMap/*p2*/<K2>/**/();
-    }
-
+    /* with Mutable|Updatable mutability */
     @Override
     public /*p1*/<K2 extends K>/**/ MutableDHashObjShortMapGO/*p2*/<K2>/**/ newMutableMap(
             int expectedSize) {
@@ -95,6 +94,7 @@ public abstract class DHashObjShortMapFactorySO<K/* if obj value //, V// endif *
         return map;
     }
 
+    /* if Updatable mutability */
     @Override
     public /*p1*/<K2 extends K>/**/ MutableDHashObjShortMapGO/*p2*/<K2>/**/ newMutableMap(
             Map/*ep*/<? extends K2, Short>/**/ map, int expectedSize) {
@@ -121,4 +121,6 @@ public abstract class DHashObjShortMapFactorySO<K/* if obj value //, V// endif *
             return res;
         }
     }
+    /* endif */
+    /* endwith */
 }

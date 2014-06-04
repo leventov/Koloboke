@@ -1,4 +1,5 @@
-/* with LHash hash */
+/* with LHash|QHash|DHash hash Mutable|Updatable mutability */
+/* if !(QHash|DHash hash Mutable mutability) */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -24,9 +25,11 @@ import static net.openhft.collect.impl.Maths.isPowerOf2;
 
 public abstract class MutableLHash extends HashWithoutRemovedSlots implements LHash {
 
+    /* if LHash hash */
     static void verifyConfig(HashConfig config) {
         assert config.getGrowFactor() == 2.0;
     }
+    /* endif */
 
     ////////////////////////////
     // Fields
@@ -74,14 +77,14 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
     }
 
     final void init(HashConfigWrapper configWrapper, int size) {
-        verifyConfig(configWrapper.config());
+        /* if LHash hash */verifyConfig(configWrapper.config());/* endif */
         this.configWrapper = configWrapper;
         this.size = 0;
         internalInit(LHashCapacities.capacity(configWrapper, size));
     }
 
     private void internalInit(int capacity) {
-        assert isPowerOf2(capacity);
+        /* if LHash hash */assert isPowerOf2(capacity);/* endif */
         maxSize = maxSize(capacity);
         allocateArrays(capacity);
     }
@@ -139,12 +142,15 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
     /**
      * Empties the hash.
      */
+    @Override
     public void clear() {
         modCount++;
         size = 0;
     }
 
+    /* if Mutable mutability */
     abstract void removeAt(int index);
+    /* endif */
 
 
     /////////////////////////////
@@ -180,9 +186,11 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
                 tryRehashForExpansion(LHashCapacities.capacity(configWrapper, intMinSize));
     }
 
+    /* if Mutable mutability */
     final void postRemoveHook() {
         size--;
     }
+    /* endif */
 
     final void postInsertHook() {
         if (++size > maxSize) {

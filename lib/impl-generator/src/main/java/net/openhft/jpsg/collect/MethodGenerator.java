@@ -23,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
+import static net.openhft.jpsg.collect.Permission.REMOVE;
 
 
 public abstract class MethodGenerator {
@@ -118,7 +119,8 @@ public abstract class MethodGenerator {
         method.init(this, this.cxt);
         this.indent = indent;
         generateLines(method);
-        if (cxt.immutable() && !permissions.isEmpty())
+        if (cxt.immutable() && !permissions.isEmpty() ||
+                cxt.updatable() && permissions.contains(REMOVE))
             return this.indent + "throw new java.lang.UnsupportedOperationException();\n";
         if (!this.indent.equals(indent))
             throw new IllegalStateException(
@@ -199,8 +201,9 @@ public abstract class MethodGenerator {
         lines("throw new java.lang.IllegalStateException();");
     }
 
-    public final void unsupportedOperation() {
-        lines("throw new java.lang.UnsupportedOperationException();");
+    public final void unsupportedOperation(String message) {
+        assert message != null && !message.isEmpty();
+        lines("throw new java.lang.UnsupportedOperationException(\"" + message + "\");");
     }
 
     public final void incrementModCount() {

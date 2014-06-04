@@ -197,7 +197,7 @@ public class HashCursorMethodGenerator extends CursorMethodGenerator {
 
     @Override
     protected void generateForEachForward() {
-        if (cxt.mutable()) {
+        if (!cxt.immutable()) {
             lines("int mc = expectedModCount;");
         }
         copyArrays(this, cxt);
@@ -210,7 +210,7 @@ public class HashCursorMethodGenerator extends CursorMethodGenerator {
         lines("action.accept(" + makeNext(cxt, "i") + ");");
         blockEnd().blockEnd();
         String concurrentModCond = "index != this.index";
-        if (cxt.mutable())
+        if (!cxt.immutable())
             concurrentModCond += " || mc != " + modCount();
         ifBlock(concurrentModCond);
         concurrentMod();

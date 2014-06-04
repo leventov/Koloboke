@@ -21,6 +21,7 @@
 package net.openhft.collect.map;
 
 import com.google.common.collect.testing.*;
+import net.openhft.collect.Mutability;
 import net.openhft.function.*;
 
 import java.util.List;
@@ -50,27 +51,23 @@ public class TestCharShortMapGenerator/*<>*/
             return this;
         }
 
-        public TestCharShortMapGenerator/*<>*/ mutable() {
-            return new TestCharShortMapGenerator(factory, keys, values, true);
-        }
-
-        public TestCharShortMapGenerator/*<>*/ immutable() {
-            return new TestCharShortMapGenerator(factory, keys, values, false);
+        public TestCharShortMapGenerator/*<>*/ withMutability(Mutability mutability) {
+            return new TestCharShortMapGenerator(factory, keys, values, mutability);
         }
     }
 
     private CharShortMapFactory/*<super>*/ factory;
     private SampleElements<? extends Character> keys;
     private SampleElements<? extends Short> values;
-    private boolean mutable;
+    private Mutability mutability;
 
     private TestCharShortMapGenerator(CharShortMapFactory/*<>*/ factory,
             SampleElements<? extends Character> keys,
-            SampleElements<? extends Short> values, boolean mutable) {
+            SampleElements<? extends Short> values, Mutability mutability) {
         this.factory = factory;
         this.keys = keys;
         this.values = values;
-        this.mutable = mutable;
+        this.mutability = mutability;
     }
 
     @Override
@@ -101,7 +98,12 @@ public class TestCharShortMapGenerator/*<>*/
                         }
                     }
                 };
-        return mutable ? factory.newMutableMap(supplier) : factory.newImmutableMap(supplier);
+        switch (mutability) {
+            case IMMUTABLE: return factory.newImmutableMap(supplier);
+            case UPDATABLE: return factory.newUpdatableMap(supplier);
+            case MUTABLE: return factory.newMutableMap(supplier);
+            default: throw new AssertionError();
+        }
     }
 
     @Override

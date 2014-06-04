@@ -129,7 +129,7 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
     /* define gk *//* if !(obj key) //Character// elif obj key //K2// endif *//* enddefine */
     /* define gv *//* if !(obj value) //Short// elif obj value //V2// endif *//* enddefine */
 
-    private /*p1*/ MutableDHashCharShortMapGO/*p2*/ shrunk(MutableDHashCharShortMapGO/*p2*/ map) {
+    private /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ shrunk(UpdatableDHashCharShortMapGO/*p2*/ map) {
         Predicate<HashContainer> shrinkCondition;
         if ((shrinkCondition = hashConf.getShrinkCondition()) != null) {
             if (shrinkCondition.test(map))
@@ -138,53 +138,54 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
         return map;
     }
 
+    /* with Updatable|Mutable mutability */
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap() {
-        return newMutableMap(hashConf.getDefaultExpectedSize());
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap() {
+        return newUpdatableMap(hashConf.getDefaultExpectedSize());
     }
-
+    /* endwith */
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             Map/*ep*/<Character, Short>/**/ map) {
         /* if !(obj key) */
-        return shrunk(super.newMutableMap(map));
+        return shrunk(super.newUpdatableMap(map));
         /* elif obj key //
-        return newMutableMap(map, map.size());
+        return newUpdatableMap(map, map.size());
         // endif */
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             Map/*ep*/<Character, Short>/**/ map1, Map/*ep*/<Character, Short>/**/ map2) {
         long expectedSize = (long) map1.size();
         expectedSize += (long) map2.size();
-        return newMutableMap(map1, map2, sizeAsInt(expectedSize));
+        return newUpdatableMap(map1, map2, sizeAsInt(expectedSize));
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             Map/*ep*/<Character, Short>/**/ map1, Map/*ep*/<Character, Short>/**/ map2,
             Map/*ep*/<Character, Short>/**/ map3) {
         long expectedSize = (long) map1.size();
         expectedSize += (long) map2.size();
         expectedSize += (long) map3.size();
-        return newMutableMap(map1, map2, map3, sizeAsInt(expectedSize));
+        return newUpdatableMap(map1, map2, map3, sizeAsInt(expectedSize));
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             Map/*ep*/<Character, Short>/**/ map1, Map/*ep*/<Character, Short>/**/ map2,
             Map/*ep*/<Character, Short>/**/ map3, Map/*ep*/<Character, Short>/**/ map4) {
         long expectedSize = (long) map1.size();
         expectedSize += (long) map2.size();
         expectedSize += (long) map3.size();
         expectedSize += (long) map4.size();
-        return newMutableMap(map1, map2, map3, map4, sizeAsInt(expectedSize));
+        return newUpdatableMap(map1, map2, map3, map4, sizeAsInt(expectedSize));
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             Map/*ep*/<Character, Short>/**/ map1, Map/*ep*/<Character, Short>/**/ map2,
             Map/*ep*/<Character, Short>/**/ map3, Map/*ep*/<Character, Short>/**/ map4,
             Map/*ep*/<Character, Short>/**/ map5) {
@@ -193,32 +194,32 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
         expectedSize += (long) map3.size();
         expectedSize += (long) map4.size();
         expectedSize += (long) map5.size();
-        return newMutableMap(map1, map2, map3, map4, map5, sizeAsInt(expectedSize));
+        return newUpdatableMap(map1, map2, map3, map4, map5, sizeAsInt(expectedSize));
     }
 
     /* if obj key */
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             Map/*ep*/<Character, Short>/**/ map, int expectedSize) {
-        return shrunk(super.newMutableMap(map, expectedSize));
+        return shrunk(super.newUpdatableMap(map, expectedSize));
     }
     /* endif */
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             Map/*ep*/<Character, Short>/**/ map1, Map/*ep*/<Character, Short>/**/ map2,
             int expectedSize) {
-        MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(expectedSize);
+        UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(expectedSize);
         map.putAll(map1);
         map.putAll(map2);
         return shrunk(map);
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             Map/*ep*/<Character, Short>/**/ map1, Map/*ep*/<Character, Short>/**/ map2,
             Map/*ep*/<Character, Short>/**/ map3, int expectedSize) {
-        MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(expectedSize);
+        UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(expectedSize);
         map.putAll(map1);
         map.putAll(map2);
         map.putAll(map3);
@@ -226,11 +227,11 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             Map/*ep*/<Character, Short>/**/ map1, Map/*ep*/<Character, Short>/**/ map2,
             Map/*ep*/<Character, Short>/**/ map3, Map/*ep*/<Character, Short>/**/ map4,
             int expectedSize) {
-        MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(expectedSize);
+        UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(expectedSize);
         map.putAll(map1);
         map.putAll(map2);
         map.putAll(map3);
@@ -239,11 +240,11 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             Map/*ep*/<Character, Short>/**/ map1, Map/*ep*/<Character, Short>/**/ map2,
             Map/*ep*/<Character, Short>/**/ map3, Map/*ep*/<Character, Short>/**/ map4,
             Map/*ep*/<Character, Short>/**/ map5, int expectedSize) {
-        MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(expectedSize);
+        UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(expectedSize);
         map.putAll(map1);
         map.putAll(map2);
         map.putAll(map3);
@@ -254,15 +255,15 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
 
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier) {
-        return newMutableMap(entriesSupplier, hashConf.getDefaultExpectedSize());
+        return newUpdatableMap(entriesSupplier, hashConf.getDefaultExpectedSize());
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier, int expectedSize) {
-        final MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(expectedSize);
+        final UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(expectedSize);
         entriesSupplier.accept(new /*f*/CharShortConsumer/*p2*/() {
              @Override
              public void accept(/*pk*/char/**/ k, /*pv*/short/**/ v) {
@@ -273,15 +274,15 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(/*pk*/char/**/[] keys,
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(/*pk*/char/**/[] keys,
             /*pv*/short/**/[] values) {
-        return newMutableMap(keys, values, keys.length);
+        return newUpdatableMap(keys, values, keys.length);
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(/*pk*/char/**/[] keys,
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(/*pk*/char/**/[] keys,
             /*pv*/short/**/[] values, int expectedSize) {
-        MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(expectedSize);
+        UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(expectedSize);
         int keysLen = keys.length;
         if (keysLen != values.length)
             throw new IllegalArgumentException("keys and values arrays must have the same size");
@@ -293,15 +294,15 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
 
     /* if !(obj key obj value) */
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             /*gk*/Character/**/[] keys, /*gv*/Short/**/[] values) {
-        return newMutableMap(keys, values, keys.length);
+        return newUpdatableMap(keys, values, keys.length);
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(
             /*gk*/Character/**/[] keys, /*gv*/Short/**/[] values, int expectedSize) {
-        MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(expectedSize);
+        UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(expectedSize);
         int keysLen = keys.length;
         if (keysLen != values.length)
             throw new IllegalArgumentException("keys and values arrays must have the same size");
@@ -313,18 +314,18 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
     /* endif */
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(Iterable</*ek*/Character/**/> keys,
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(Iterable</*ek*/Character/**/> keys,
             Iterable</*ev*/Short/**/> values) {
         int expectedSize = keys instanceof Collection ?
                 ((Collection) keys).size() :
                 hashConf.getDefaultExpectedSize();
-        return newMutableMap(keys, values, expectedSize);
+        return newUpdatableMap(keys, values, expectedSize);
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(Iterable</*ek*/Character/**/> keys,
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMap(Iterable</*ek*/Character/**/> keys,
             Iterable</*ev*/Short/**/> values, int expectedSize) {
-        MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(expectedSize);
+        UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(expectedSize);
         Iterator</*ek*/Character/**/> keysIt = keys.iterator();
         Iterator</*ev*/Short/**/> valuesIt = values.iterator();
         try {
@@ -339,27 +340,27 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMapOf(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMapOf(
             /*pk*/char/**/ k1, /*pv*/short/**/ v1) {
-        MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(1);
+        UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(1);
         map.put(k1, v1);
         return map;
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMapOf(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMapOf(
             /*pk*/char/**/ k1, /*pv*/short/**/ v1, /*pk*/char/**/ k2, /*pv*/short/**/ v2) {
-        MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(2);
+        UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(2);
         map.put(k1, v1);
         map.put(k2, v2);
         return map;
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMapOf(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMapOf(
             /*pk*/char/**/ k1, /*pv*/short/**/ v1, /*pk*/char/**/ k2, /*pv*/short/**/ v2,
             /*pk*/char/**/ k3, /*pv*/short/**/ v3) {
-        MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(3);
+        UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(3);
         map.put(k1, v1);
         map.put(k2, v2);
         map.put(k3, v3);
@@ -367,10 +368,10 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMapOf(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMapOf(
             /*pk*/char/**/ k1, /*pv*/short/**/ v1, /*pk*/char/**/ k2, /*pv*/short/**/ v2,
             /*pk*/char/**/ k3, /*pv*/short/**/ v3, /*pk*/char/**/ k4, /*pv*/short/**/ v4) {
-        MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(4);
+        UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(4);
         map.put(k1, v1);
         map.put(k2, v2);
         map.put(k3, v3);
@@ -379,11 +380,11 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
     }
 
     @Override
-    public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMapOf(
+    public /*p1*/ UpdatableDHashCharShortMapGO/*p2*/ newUpdatableMapOf(
             /*pk*/char/**/ k1, /*pv*/short/**/ v1, /*pk*/char/**/ k2, /*pv*/short/**/ v2,
             /*pk*/char/**/ k3, /*pv*/short/**/ v3, /*pk*/char/**/ k4, /*pv*/short/**/ v4,
             /*pk*/char/**/ k5, /*pv*/short/**/ v5) {
-        MutableDHashCharShortMapGO/*p2*/ map = newMutableMap(5);
+        UpdatableDHashCharShortMapGO/*p2*/ map = newUpdatableMap(5);
         map.put(k1, v1);
         map.put(k2, v2);
         map.put(k3, v3);
@@ -392,160 +393,162 @@ public abstract class DHashCharShortMapFactoryGO/*<>*/ extends DHashCharShortMap
         return map;
     }
 
+    /* with Mutable|Immutable mutability */
     /* with with|without expectedSize */
     /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */
     /* define apply *//* if with expectedSize //, expectedSize// endif *//* enddefine */
 
      /* if obj key || without expectedSize */
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
             Map/*ep*/<Character, Short>/**/ map/*arg*/) {
-        ImmutableDHashCharShortMapGO/*p2*/ res = uninitializedImmutableMap();
-        res.move(newMutableMap(map/*apply*/));
+        MutableDHashCharShortMapGO/*p2*/ res = uninitializedMutableMap();
+        res.move(newUpdatableMap(map/*apply*/));
         return res;
     }
     /* endif */
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(Map/*ep*/<Character, Short>/**/ map1,
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
             Map/*ep*/<Character, Short>/**/ map2/*arg*/) {
-        ImmutableDHashCharShortMapGO/*p2*/ res = uninitializedImmutableMap();
-        res.move(newMutableMap(map1, map2/*apply*/));
+        MutableDHashCharShortMapGO/*p2*/ res = uninitializedMutableMap();
+        res.move(newUpdatableMap(map1, map2/*apply*/));
         return res;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(Map/*ep*/<Character, Short>/**/ map1,
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
             Map/*ep*/<Character, Short>/**/ map2, Map/*ep*/<Character, Short>/**/ map3/*arg*/) {
-        ImmutableDHashCharShortMapGO/*p2*/ res = uninitializedImmutableMap();
-        res.move(newMutableMap(map1, map2, map3/*apply*/));
+        MutableDHashCharShortMapGO/*p2*/ res = uninitializedMutableMap();
+        res.move(newUpdatableMap(map1, map2, map3/*apply*/));
         return res;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(Map/*ep*/<Character, Short>/**/ map1,
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
             Map/*ep*/<Character, Short>/**/ map2, Map/*ep*/<Character, Short>/**/ map3,
             Map/*ep*/<Character, Short>/**/ map4/*arg*/) {
-        ImmutableDHashCharShortMapGO/*p2*/ res = uninitializedImmutableMap();
-        res.move(newMutableMap(map1, map2, map3, map4/*apply*/));
+        MutableDHashCharShortMapGO/*p2*/ res = uninitializedMutableMap();
+        res.move(newUpdatableMap(map1, map2, map3, map4/*apply*/));
         return res;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(Map/*ep*/<Character, Short>/**/ map1,
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
             Map/*ep*/<Character, Short>/**/ map2, Map/*ep*/<Character, Short>/**/ map3,
             Map/*ep*/<Character, Short>/**/ map4, Map/*ep*/<Character, Short>/**/ map5/*arg*/) {
-        ImmutableDHashCharShortMapGO/*p2*/ res = uninitializedImmutableMap();
-        res.move(newMutableMap(map1, map2, map3, map4, map5/*apply*/));
+        MutableDHashCharShortMapGO/*p2*/ res = uninitializedMutableMap();
+        res.move(newUpdatableMap(map1, map2, map3, map4, map5/*apply*/));
         return res;
     }
 
     /* endwith */
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
             Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMap(entriesSupplier));
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMap(entriesSupplier));
         return map;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
             Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier, int expectedSize) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMap(entriesSupplier, expectedSize));
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMap(entriesSupplier, expectedSize));
         return map;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(/*pk*/char/**/[] keys,
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(/*pk*/char/**/[] keys,
             /*pv*/short/**/[] values) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMap(keys, values));
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMap(keys, values));
         return map;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(/*pk*/char/**/[] keys,
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(/*pk*/char/**/[] keys,
             /*pv*/short/**/[] values, int expectedSize) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMap(keys, values, expectedSize));
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMap(keys, values, expectedSize));
         return map;
     }
 
     /* if !(obj key obj value) */
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
             /*gk*/Character/**/[] keys, /*gv*/Short/**/[] values) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMap(keys, values));
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMap(keys, values));
         return map;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
             /*gk*/Character/**/[] keys, /*gv*/Short/**/[] values, int expectedSize) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMap(keys, values, expectedSize));
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMap(keys, values, expectedSize));
         return map;
     }
     /* endif */
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(Iterable</*ek*/Character/**/> keys,
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Iterable</*ek*/Character/**/> keys,
             Iterable</*ev*/Short/**/> values) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMap(keys, values));
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMap(keys, values));
         return map;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMap(Iterable</*ek*/Character/**/> keys,
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Iterable</*ek*/Character/**/> keys,
             Iterable</*ev*/Short/**/> values, int expectedSize) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMap(keys, values, expectedSize));
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMap(keys, values, expectedSize));
         return map;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMapOf(k1, v1));
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1) {
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMapOf(k1, v1));
         return map;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1,
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1,
              /*pk*/char/**/ k2, /*pv*/short/**/ v2) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMapOf(k1, v1, k2, v2));
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMapOf(k1, v1, k2, v2));
         return map;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1,
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1,
              /*pk*/char/**/ k2, /*pv*/short/**/ v2, /*pk*/char/**/ k3, /*pv*/short/**/ v3) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMapOf(k1, v1, k2, v2, k3, v3));
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMapOf(k1, v1, k2, v2, k3, v3));
         return map;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1,
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1,
              /*pk*/char/**/ k2, /*pv*/short/**/ v2, /*pk*/char/**/ k3, /*pv*/short/**/ v3,
              /*pk*/char/**/ k4, /*pv*/short/**/ v4) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMapOf(k1, v1, k2, v2, k3, v3, k4, v4));
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMapOf(k1, v1, k2, v2, k3, v3, k4, v4));
         return map;
     }
 
     @Override
-    public /*p1*/ HashCharShortMap/*p2*/ newImmutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1,
+    public /*p1*/ HashCharShortMap/*p2*/ newMutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1,
              /*pk*/char/**/ k2, /*pv*/short/**/ v2, /*pk*/char/**/ k3, /*pv*/short/**/ v3,
              /*pk*/char/**/ k4, /*pv*/short/**/ v4, /*pk*/char/**/ k5, /*pv*/short/**/ v5) {
-        ImmutableDHashCharShortMapGO/*p2*/ map = uninitializedImmutableMap();
-        map.move(newMutableMapOf(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5));
+        MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
+        map.move(newUpdatableMapOf(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5));
         return map;
     }
+    /* endwith */
 }

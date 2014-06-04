@@ -70,13 +70,13 @@ abstract class CharDHashFactory/* if !(LHash hash) */<MT>/* endif */ {
     }
 
     /* if !(LHash hash) */
-    abstract MT createNew(int expectedSize, char free, char removed);
+    abstract MT createNewMutable(int expectedSize, char free, char removed);
 
     /* define nextIntOrLong */
     /* if !(long elem) //nextInt// elif long elem //nextLong// endif */
     /* enddefine */
 
-    MT newHash(int expectedSize) {
+    MT newMutableHash(int expectedSize) {
         char free, removed;
         if (randomRemoved) {
             Random random = ThreadLocalRandom.current();
@@ -93,10 +93,10 @@ abstract class CharDHashFactory/* if !(LHash hash) */<MT>/* endif */ {
             removed = removedValue;
             free = freeValue;
         }
-        return createNew(expectedSize, free, removed);
+        return createNewMutable(expectedSize, free, removed);
     }
 
-    /* elif LHash hash */
+    /* endif */
 
     char getFree() {
         if (randomFree) {
@@ -106,5 +106,4 @@ abstract class CharDHashFactory/* if !(LHash hash) */<MT>/* endif */ {
             return freeValue;
         }
     }
-    /* endif */
 }

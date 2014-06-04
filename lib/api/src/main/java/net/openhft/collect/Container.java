@@ -61,4 +61,12 @@ public interface Container {
      * @throws UnsupportedOperationException if the container is immutable
      */
     boolean shrink();
+
+    /**
+     * Removes all of the elements (entries) from this container.
+     * The container will be empty after this method returns.
+     *
+     * @throws UnsupportedOperationException if the container is immutable
+     */
+    void clear();
 }

@@ -149,7 +149,7 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
 
     @Override
     protected void generateForEachRemaining() {
-        if (cxt.mutable()) {
+        if (!cxt.immutable()) {
             lines("int mc = expectedModCount;");
         }
         copyArrays(this, cxt);
@@ -183,6 +183,6 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
     }
 
     private String entryType() {
-        return (cxt.mutable() ? "Mutable" : "Immutable") + "Entry";
+        return (cxt.immutable() ? "Immutable" : "Mutable") + "Entry";
     }
 }

@@ -49,14 +49,13 @@ public abstract class DHashObjSetFactorySO<E> implements HashObjSetFactory<E> {
         return null;
     }
 
+    /* with Mutable|Updatable|Immutable mutability */
     <E2 extends E> MutableDHashObjSetGO<E2> uninitializedMutableSet() {
         return new MutableDHashObjSet<E2>();
     }
+    /* endwith */
 
-    <E2 extends E> ImmutableDHashObjSetGO<E2> uninitializedImmutableSet() {
-        return new ImmutableDHashObjSet<E2>();
-    }
-
+    /* with Mutable|Updatable mutability */
     @Override
     public <E2 extends E> MutableDHashObjSetGO<E2> newMutableSet(int expectedSize) {
         MutableDHashObjSetGO<E2> set = uninitializedMutableSet();
@@ -64,6 +63,7 @@ public abstract class DHashObjSetFactorySO<E> implements HashObjSetFactory<E> {
         return set;
     }
 
+    /* if Updatable mutability */
     @Override
     public <E2 extends E> MutableDHashObjSetGO<E2> newMutableSet(Iterable<? extends E2> elements,
             int expectedSize) {
@@ -104,4 +104,6 @@ public abstract class DHashObjSetFactorySO<E> implements HashObjSetFactory<E> {
             return set;
         }
     }
+    /* endif */
+    /* endwith */
 }

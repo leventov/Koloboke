@@ -1,7 +1,7 @@
 /* with
  DHash|QHash|LHash hash
  char|byte|short|int|long|float|double|obj key
- Mutable|Immutable mutability
+ Mutable|Updatable|Immutable mutability
 */
 /*
  * Copyright 2014 the original author or authors.

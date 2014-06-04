@@ -1,7 +1,7 @@
 /* with
  DHash|QHash|LHash hash
  char|byte|short|int|long|float|double|obj elem
- Mutable|Immutable mutability
+ Mutable|Updatable|Immutable mutability
 */
 /*
  * Copyright 2014 the original author or authors.
@@ -189,7 +189,7 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
 
 
     /* with No|Some removed */
-    /* if !(Immutable mutability Some removed) && !(LHash hash Some removed) */
+    /* if !(Updatable|Immutable mutability Some removed) && !(LHash hash Some removed) */
 
     class NoRemovedIterator implements CharIterator/*<>*/ {
         /* template Iterator.fields */

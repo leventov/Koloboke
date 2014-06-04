@@ -79,14 +79,14 @@ public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/
     HashCharShortMapFactory/*<>*/ withConfig(/* if !(float|double key) */CharHashConfig
             /* elif float|double key //HashConfig// endif */ config);
 
+    /* with Mutable|Updatable|Immutable mutability */
+    /* if !(Immutable mutability) */
     @Override
     /*p1*/ HashCharShortMap/*p2*/ newMutableMap();
 
     @Override
     /*p1*/ HashCharShortMap/*p2*/ newMutableMap(int expectedSize);
-
-
-    /* with Mutable|Immutable mutability */
+    /* endif */
 
     /* with with|without expectedSize */
     /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */

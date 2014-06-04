@@ -1,7 +1,7 @@
 /* with
  DHash|QHash|LHash hash
  object elem
- Mutable|Immutable mutability
+ Mutable|Updatable|Immutable mutability
 */
 /*
  * Copyright 2014 the original author or authors.
@@ -84,24 +84,24 @@ public abstract class MutableObjDHashSO<E> extends MutableDHash implements ObjDH
     }
 
 
-    /* if Mutable mutability */
+    /* if !(Immutable mutability) */
     @Override
     void allocateArrays(int capacity) {
         set = new Object[ capacity ];
         Arrays.fill(set, FREE);
     }
 
-    /* if !(LHash hash) */
-    @Override
-    void removeAt(int index) {
-        set[index] = REMOVED;
-    }
-    /* endif */
-
     @Override
     public void clear() {
         super.clear();
         Arrays.fill(set, FREE);
+    }
+    /* endif */
+
+    /* if Mutable mutability && !(LHash hash) */
+    @Override
+    void removeAt(int index) {
+        set[index] = REMOVED;
     }
     /* endif */
 }

@@ -86,7 +86,8 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
             if (removedSlot) {
                 lines("postRemovedSlotInsertHook();");
             } else {
-                lines(isLHash(cxt) ? "postInsertHook();" : "postFreeSlotInsertHook();");
+                lines(possibleRemovedSlots(cxt) ? "postFreeSlotInsertHook();" :
+                        "postInsertHook();");
             }
         } else {
             lines("insertAt(insertionIndex, " + unwrappedKey() + ", " + value + ");");
@@ -397,13 +398,13 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
             if (separatePresent) {
                 lines("keyPresent:");
                 String keyNotEqualsCond = "cur != " + unwrappedKey();
-                if (cxt.isObjectKey() && cxt.immutable()) {
+                if (cxt.isObjectKey() && !cxt.mutable()) {
                     keyNotEqualsCond += " && !keyEquals(" + unwrappedKey() +", cur)";
                 }
                 ifBlock(keyNotEqualsCond);
             } else {
                 String keyEqualsCond = "cur == " + unwrappedKey();
-                if (cxt.isObjectKey() && cxt.immutable()) {
+                if (cxt.isObjectKey() && !cxt.mutable()) {
                     keyEqualsCond += " || keyEquals(" + unwrappedKey() + ", cur)";
                 }
                 ifBlock(keyEqualsCond);
@@ -428,13 +429,13 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
                 elseBlock();
             }
             firstIndexFreeCheck("cur");
-            if (cxt.isObjectKey() && cxt.immutable()) {
+            if (cxt.isObjectKey() && !cxt.mutable()) {
                 ifBlock("keyEquals(" + unwrappedKey() + ", cur)");
                 generateOrGoToPresent(() -> {});
                 elseBlock();
             }
             innerInline();
-            if (cxt.isObjectKey() && cxt.immutable())
+            if (cxt.isObjectKey() && !cxt.mutable())
                 blockEnd();
             blockEnd();
             if (separateAbsentFreeSlot && !earlyAbsentLabel)

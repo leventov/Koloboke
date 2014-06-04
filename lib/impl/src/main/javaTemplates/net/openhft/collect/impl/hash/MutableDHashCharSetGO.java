@@ -1,7 +1,7 @@
 /* with
  DHash|QHash|LHash hash
  char|byte|short|int|long|float|double|obj elem
- Mutable|Immutable mutability
+ Mutable|Updatable|Immutable mutability
 */
 /*
  * Copyright 2014 the original author or authors.
@@ -139,6 +139,7 @@ public class MutableDHashCharSetGO/*<>*/ extends MutableCharDHashSetSO/*<>*/
 
     @Override
     public boolean removeAll(@Nonnull Collection<?> c) {
+        /* if Mutable mutability */
         /* if !(obj elem) */
         if (c instanceof CharCollection) {
         /* endif */
@@ -156,6 +157,9 @@ public class MutableDHashCharSetGO/*<>*/ extends MutableCharDHashSetSO/*<>*/
         }
         /* endif */
         return removeAll(this, c);
+        /* elif !(Mutable mutability) //
+        throw new UnsupportedOperationException();
+        // endif */
     }
 
     @Override

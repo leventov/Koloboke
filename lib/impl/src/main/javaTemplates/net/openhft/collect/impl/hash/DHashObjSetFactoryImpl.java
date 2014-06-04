@@ -63,6 +63,7 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
             return equivalence;
         }
 
+        /* with Mutable|Updatable|Immutable mutability */
         @Override
         <E2 extends E> MutableDHashObjSetGO<E2> uninitializedMutableSet() {
             MutableDHashObjSet.WithCustomEquivalence<E2> set =
@@ -70,14 +71,7 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
             set.equivalence = equivalence;
             return set;
         }
-
-        @Override
-        <E2 extends E> ImmutableDHashObjSetGO<E2> uninitializedImmutableSet() {
-            ImmutableDHashObjSet.WithCustomEquivalence<E2> set =
-                    new ImmutableDHashObjSet.WithCustomEquivalence<E2>();
-            set.equivalence = equivalence;
-            return set;
-        }
+        /* endwith */
 
         @Override
         public <E2> HashObjSetFactory<E2> withEquivalence(@Nullable Equivalence<E2> equivalence) {

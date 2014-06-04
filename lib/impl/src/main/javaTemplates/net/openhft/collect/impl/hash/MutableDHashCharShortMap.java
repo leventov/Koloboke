@@ -2,7 +2,7 @@
  DHash|QHash|LHash hash
  char|byte|short|int|long|float|double|object key
  short|byte|char|int|long|float|double|object value
- Mutable|Immutable mutability
+ Mutable|Updatable|Immutable mutability
 */
 /*
  * Copyright 2014 the original author or authors.

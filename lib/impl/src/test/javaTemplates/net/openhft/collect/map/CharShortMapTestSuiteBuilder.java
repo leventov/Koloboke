@@ -22,7 +22,10 @@ package net.openhft.collect.map;
 
 import com.google.common.collect.testing.*;
 import com.google.common.collect.testing.features.*;
+import com.google.common.collect.testing.testers.CollectionClearTester;
+import com.google.common.collect.testing.testers.MapClearTester;
 import junit.framework.*;
+import net.openhft.collect.Mutability;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -98,17 +101,26 @@ public class CharShortMapTestSuiteBuilder/*<>*/ {
             for (SampleElements<? extends Character> keys : keySamples) {
                 for (SampleElements<? extends Short> values : valueSamples) {
                     builder.setKeys(keys).setValues(values);
-                    Test mutableTests = forEachTestSuiteBuilder(using(builder.mutable()))
-                            .named(subSuiteName(factory, keys.asList(), values.asList(), "mutable"))
-                            .withFeatures(MapFeature.GENERAL_PURPOSE)
-                            .withFeatures(CollectionFeature.REMOVE_OPERATIONS)
-                            .createTestSuite();
-                    suite.addTest(mutableTests);
-                    TestSuite immutableTests = forEachTestSuiteBuilder(using(builder.immutable()))
-                            .named(subSuiteName(factory, keys.asList(), values.asList(),
-                                    "immutable"))
-                            .createTestSuite();
-                    suite.addTest(immutableTests);
+                    for (Mutability mutability : Mutability.values()) {
+                        FeatureSpecificTestSuiteBuilder b =
+                                forEachTestSuiteBuilder(using(builder.withMutability(mutability)))
+                                .named(subSuiteName(factory, keys.asList(), values.asList(),
+                                        mutability.toString()))
+                                .withFeatures(mutability.mapFeatures)
+                                .withFeatures(mutability.mapViewFeatures);
+                        if (mutability == Mutability.UPDATABLE) {
+                            try {
+                                b.suppressing(MapClearTester.class
+                                                .getDeclaredMethod("testClear_unsupported"),
+                                        CollectionClearTester.class
+                                                .getDeclaredMethod("testClear_unsupported"));
+                            } catch (NoSuchMethodException e) {
+                                throw new AssertionError(e);
+                            }
+                        }
+                        Test mutableTests = b.createTestSuite();
+                        suite.addTest(mutableTests);
+                    }
                 }
             }
         }

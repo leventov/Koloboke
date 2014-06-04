@@ -17,11 +17,12 @@
 
 package net.openhft.collect.set;
 
-import com.google.common.collect.testing.SampleElements;
-import com.google.common.collect.testing.SetTestSuiteBuilder;
+import com.google.common.collect.testing.*;
 import com.google.common.collect.testing.features.*;
+import com.google.common.collect.testing.testers.CollectionClearTester;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import net.openhft.collect.Mutability;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -80,17 +81,22 @@ public class CharSetTestSuiteBuilder/*<>*/ {
         TestSuite suite = new TestSuite(subSuiteName(factories, samples, ""));
         for (CharSetFactory/*<>*/ factory : factories) {
             for (SampleElements<? extends Character> elems : samples) {
-                Test mutableTests = forEachTestSuiteBuilder(
-                        using(TestCharSetGenerator.mutable(factory, elems)))
-                        .named(subSuiteName(factory, elems.asList(), "mutable"))
-                        .withFeatures(SetFeature.GENERAL_PURPOSE)
-                        .createTestSuite();
-                suite.addTest(mutableTests);
-                TestSuite immutableTests = forEachTestSuiteBuilder(
-                        using(TestCharSetGenerator.immutable(factory, elems)))
-                        .named(subSuiteName(factory, elems.asList(), "immutable"))
-                        .createTestSuite();
-                suite.addTest(immutableTests);
+                for (Mutability mutability : Mutability.values()) {
+                    FeatureSpecificTestSuiteBuilder b = forEachTestSuiteBuilder(
+                            using(new TestCharSetGenerator(mutability, factory, elems)))
+                            .named(subSuiteName(factory, elems.asList(), mutability.toString()))
+                            .withFeatures(mutability.collectionFeatures);
+                    if (mutability == Mutability.UPDATABLE) {
+                        try {
+                            b.suppressing(CollectionClearTester.class
+                                    .getDeclaredMethod("testClear_unsupported"));
+                        } catch (NoSuchMethodException e) {
+                            throw new AssertionError(e);
+                        }
+                    }
+                    Test mutableTests = b.createTestSuite();
+                    suite.addTest(mutableTests);
+                }
             }
         }
         return suite;

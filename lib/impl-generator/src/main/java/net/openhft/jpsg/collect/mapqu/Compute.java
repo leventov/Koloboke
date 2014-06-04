@@ -35,8 +35,13 @@ public class Compute extends MapQueryUpdateMethod {
         gen.ret("newValue");
         if (cxt.isObjectValue() || cxt.genericVersion()) {
             gen.elseBlock();
-            gen.remove();
-            gen.ret("null");
+            if (!cxt.updatable()) {
+                gen.remove();
+                gen.ret("null");
+            } else {
+                gen.unsupportedOperation(getClass().getSimpleName() +
+                        " operation of updatable mup doesn't support removals");
+            }
             gen.blockEnd();
         }
     }

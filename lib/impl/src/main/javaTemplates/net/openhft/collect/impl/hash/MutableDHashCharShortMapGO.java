@@ -2,7 +2,7 @@
  DHash|QHash|LHash hash
  char|byte|short|int|long|float|double|obj key
  short|byte|char|int|long|float|double|obj value
- Mutable|Immutable mutability
+ Mutable|Updatable|Immutable mutability
 */
 /*
  * Copyright 2014 the original author or authors.
@@ -374,7 +374,7 @@ public class MutableDHashCharShortMapGO/*<>*/
     /* endif */
 
 
-    /* if Mutable mutability */
+    /* if !(Immutable mutability) */
     @Override
     public void clear() {
         int mc = modCount() + 1;
@@ -679,7 +679,8 @@ public class MutableDHashCharShortMapGO/*<>*/
     }
 
 
-    /* if Mutable mutability */
+    /* if !(Immutable mutability) */
+    /* with Mutable mutability */
     class MutableEntry extends CharShortEntry {
         int modCount;
         private final int index;
@@ -718,7 +719,7 @@ public class MutableDHashCharShortMapGO/*<>*/
             values[index] = newValue;
         }
     }
-
+    /* endwith */
 
     /* elif Immutable mutability */
     private class ImmutableEntry extends CharShortEntry {
@@ -1000,7 +1001,7 @@ public class MutableDHashCharShortMapGO/*<>*/
 
 
     /* with entry view No|Some removed */
-    /* if !(Immutable mutability Some removed) && !(LHash hash Some removed) */
+    /* if !(Updatable|Immutable mutability Some removed) && !(LHash hash Some removed) */
 
     class NoRemovedEntryIterator implements ObjIterator<Map.Entry<Character, Short>> {
         /* template Iterator.fields */
@@ -1064,7 +1065,7 @@ public class MutableDHashCharShortMapGO/*<>*/
 
 
     /* with value view No|Some removed */
-    /* if !(Immutable mutability Some removed) && !(LHash hash Some removed) */
+    /* if !(Updatable|Immutable mutability Some removed) && !(LHash hash Some removed) */
 
     class NoRemovedValueIterator implements ShortIterator/*<>*/ {
         /* template Iterator.fields */
@@ -1145,7 +1146,7 @@ public class MutableDHashCharShortMapGO/*<>*/
     /* endwith */
 
     /* with No|Some removed */
-    /* if !(Immutable mutability Some removed) && !(LHash hash Some removed) */
+    /* if !(Updatable|Immutable mutability Some removed) && !(LHash hash Some removed) */
 
     class NoRemovedMapCursor implements CharShortCursor/*<>*/ {
         /* template Cursor.fields */

@@ -77,12 +77,12 @@ public interface CharShortMapFactory/*<>*/ {
     CharShortMapFactory/*<>*/ withDefaultValue(short defaultValue);
     /* endif */
 
+    /* with Mutable|Updatable|Immutable mutability */
+    /* if !(Immutable mutability) */
     /*p1*/ CharShortMap/*p2*/ newMutableMap();
 
     /*p1*/ CharShortMap/*p2*/ newMutableMap(int expectedSize);
-
-
-    /* with Mutable|Immutable mutability */
+    /* endif */
 
     /* with with|without expectedSize */
     /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */

@@ -2,7 +2,7 @@
  DHash|QHash|LHash hash
  char|byte|short|int|long|float|double|obj key
  short|byte|char|int|long|float|double value
- Mutable|Immutable mutability
+ Mutable|Updatable|Immutable mutability
 */
 /*
  * Copyright 2014 the original author or authors.
@@ -74,7 +74,7 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
         } else {
             return false;
         }
-        /* elif Immutable mutability //
+        /* elif !(Mutable mutability) //
         throw new UnsupportedOperationException();
         // endif */
     }
@@ -86,7 +86,7 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
         return containsValue(((Short) value).shortValue());
     }
 
-    /* if Mutable mutability */
+    /* if !(Immutable mutability) */
     @Override
     void rehash(int newCapacity) {
         /* template Rehash */
@@ -103,6 +103,14 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
     /* endif */
 
     @Override
+    void allocateArrays(int capacity) {
+        super.allocateArrays(capacity);
+        values = new /* bits */short[capacity];
+    }
+    /* endif */
+
+    /* if Mutable mutability */
+    @Override
     void removeAt(int index) {
         // if !(LHash hash) */
         incrementModCount();
@@ -111,12 +119,6 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
         /* elif LHash hash //
         /* template RemoveAt */
         // endif */
-    }
-
-    @Override
-    void allocateArrays(int capacity) {
-        super.allocateArrays(capacity);
-        values = new /* bits */short[capacity];
     }
     /* endif */
 }

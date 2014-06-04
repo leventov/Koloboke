@@ -57,7 +57,7 @@ public abstract class DHashCharShortMapFactorySO/*<>*/
 
     /* if !(float|double key) && !(LHash hash) */
     @Override
-    MutableDHashCharShortMapGO/*<>*/ createNew(int expectedSize, char free, char removed) {
+    MutableDHashCharShortMapGO/*<>*/ createNewMutable(int expectedSize, char free, char removed) {
         MutableDHashCharShortMapGO/*<>*/ map = uninitializedMutableMap();
         map.init(configWrapper, expectedSize, free, removed);
         return map;
@@ -69,24 +69,23 @@ public abstract class DHashCharShortMapFactorySO/*<>*/
     }
     /* endif */
 
+    /* with Mutable|Updatable|Immutable mutability */
     /*p1*/ MutableDHashCharShortMapGO/*p2*/ uninitializedMutableMap() {
         return new MutableDHashCharShortMap/*p2*/();
     }
+    /* endwith */
 
-    /*p1*/ ImmutableDHashCharShortMapGO/*p2*/ uninitializedImmutableMap() {
-        return new ImmutableDHashCharShortMap/*p2*/();
-    }
-
+    /* with Mutable|Updatable mutability */
     @Override
     public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(int expectedSize) {
         /* if float|double key */
         MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
         map.init(configWrapper, expectedSize);
         return map;
-        /* elif !(float|double key) && !(LHash hash) */
+        /* elif !(float|double key) && !(LHash hash) && Mutable mutability */
         // noinspection unchecked
-        return (MutableDHashCharShortMapGO/*p2*/) newHash(expectedSize);
-        /* elif LHash hash */
+        return (MutableDHashCharShortMapGO/*p2*/) newMutableHash(expectedSize);
+        /* elif LHash hash || Updatable mutability */
         MutableDHashCharShortMapGO/*p2*/ map = uninitializedMutableMap();
         map.init(configWrapper, expectedSize, getFree());
         return map;
@@ -97,6 +96,7 @@ public abstract class DHashCharShortMapFactorySO/*<>*/
     /* if !(obj value) //Short// elif obj value //? extends V2// endif */
     /* enddefine */
 
+    /* if Updatable mutability */
     @Override
     public /*p1*/ MutableDHashCharShortMapGO/*p2*/ newMutableMap(
             Map<Character, /*ev*/Short/**/> map) {
@@ -119,6 +119,6 @@ public abstract class DHashCharShortMapFactorySO/*<>*/
         }
         return res;
     }
-
-
+    /* endif */
+    /* endwith */
 }

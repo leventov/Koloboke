@@ -39,12 +39,12 @@ public interface CharSetFactory/*<>*/ {
     /* if obj elem //<? extends E2>// elif !(obj elem) //<Character>// endif */
     /* enddefine */
 
+    /* with Mutable|Updatable|Immutable mutability */
+    /* if !(Immutable mutability) */
     /*p1*/ CharSet/*p2*/ newMutableSet();
 
     /*p1*/ CharSet/*p2*/ newMutableSet(int expectedSize);
-
-
-    /* with Mutable|Immutable mutability */
+    /* endif */
 
     /* with with|without expectedSize */
     /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */

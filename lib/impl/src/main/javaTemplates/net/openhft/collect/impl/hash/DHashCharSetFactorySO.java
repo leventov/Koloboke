@@ -50,7 +50,7 @@ public abstract class DHashCharSetFactorySO
 
     /* if !(float|double elem) && !(LHash hash) */
     @Override
-    MutableDHashCharSetGO createNew(int expectedSize, char free, char removed) {
+    MutableDHashCharSetGO createNewMutable(int expectedSize, char free, char removed) {
         MutableDHashCharSet set = new MutableDHashCharSet();
         set.init(configWrapper, expectedSize, free, removed);
         return set;
@@ -62,25 +62,29 @@ public abstract class DHashCharSetFactorySO
     }
     /* endif */
 
+    /* with Mutable|Updatable|Immutable mutability */
+    MutableDHashCharSetGO uninitializedMutableSet() {
+        return new MutableDHashCharSet();
+    }
+    /* endwith */
+
+    /* with Mutable|Updatable mutability */
     @Override
     public MutableDHashCharSetGO newMutableSet(int expectedSize) {
         /* if float|double elem */
         MutableDHashCharSetGO set = new MutableDHashCharSet();
         set.init(configWrapper, expectedSize);
         return set;
-        /* elif !(float|double elem) && !(LHash hash) */
-        return newHash(expectedSize);
-        /* elif LHash hash */
+        /* elif !(float|double elem) && !(LHash hash) && Mutable mutability */
+        return newMutableHash(expectedSize);
+        /* elif LHash hash || Updatable mutability */
         MutableDHashCharSetGO set = new MutableDHashCharSet();
         set.init(configWrapper, expectedSize, getFree());
         return set;
         /* endif */
     }
 
-    ImmutableDHashCharSetGO uninitializedImmutableSet() {
-        return new ImmutableDHashCharSet();
-    }
-
+    /* if Updatable mutability */
     @Override
     public MutableDHashCharSetGO newMutableSet(Iterable<Character> elements, int expectedSize) {
         if (elements instanceof CharCollection) {
@@ -105,4 +109,6 @@ public abstract class DHashCharSetFactorySO
             return set;
         }
     }
+    /* endif */
+    /* endwith */
 }

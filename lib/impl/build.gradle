@@ -10,8 +10,3 @@ dependencies {
     testCompile 'com.google.guava:guava-testlib:17.0'
     testCompile 'org.apache.mahout:mahout-math:0.9'
 }
-
-test {
-    maxParallelForks Math.max((int) (Runtime.runtime.availableProcessors() / 2), 1)
-    jvmArgs '-XX:MaxJavaStackTraceDepth=-1'
-}

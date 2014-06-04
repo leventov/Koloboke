@@ -47,7 +47,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         if (cxt.isEntryView() && method.entryType() == EntryType.REUSABLE)
             lines("ReusableEntry entry = new ReusableEntry();");
 
-        if (cxt.mutable()) {
+        if (!cxt.immutable()) {
             lines("int mc = modCount();");
         }
         if (cxt.isIntegralKey()) {
@@ -83,7 +83,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         if (valuesUsed)
             lines.add(beforeLoops, indent + copyValueArray());
 
-        if (cxt.mutable()) {
+        if (!cxt.immutable()) {
             lines(
                     "if (mc != modCount())",
                     "    throw new java.util.ConcurrentModificationException();"
@@ -239,7 +239,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
     private String entry() {
         if (method.entryType() == EntryType.SIMPLE) {
-            if (cxt.mutable()) {
+            if (!cxt.immutable()) {
                 return "new MutableEntry(mc, i, " + unwrappedKeyAndValue() + ")";
             } else {
                 return "new ImmutableEntry(" + unwrappedKeyAndValue() + ")";

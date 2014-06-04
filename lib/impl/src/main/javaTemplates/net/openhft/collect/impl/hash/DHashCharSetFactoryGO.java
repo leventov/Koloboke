@@ -78,7 +78,7 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
     /* if obj elem //<? extends E2>// elif !(obj elem) //<Character>// endif */
     /* enddefine */
 
-    private/*p1*/ MutableDHashCharSetGO/*p2*/ shrunk(MutableDHashCharSetGO/*p2*/ set) {
+    private/*p1*/ UpdatableDHashCharSetGO/*p2*/ shrunk(UpdatableDHashCharSetGO/*p2*/ set) {
         Predicate<HashContainer> shrinkCondition;
         if ((shrinkCondition = hashConf.getShrinkCondition()) != null) {
             if (shrinkCondition.test(set))
@@ -87,51 +87,52 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
         return set;
     }
 
+    /* with Updatable|Mutable mutability */
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet() {
-        return newMutableSet(hashConf.getDefaultExpectedSize());
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet() {
+        return newUpdatableSet(hashConf.getDefaultExpectedSize());
     }
-
+    /* endwith */
 
     private static int sizeOr(Iterable elems, int defaultSize) {
         return elems instanceof Collection ? ((Collection) elems).size() : defaultSize;
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elements) {
-        return newMutableSet(elements, sizeOr(elements, hashConf.getDefaultExpectedSize()));
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Character>/**/ elements) {
+        return newUpdatableSet(elements, sizeOr(elements, hashConf.getDefaultExpectedSize()));
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Character>/**/ elems1,
             Iterable/*ep*/<Character>/**/ elems2) {
         long expectedSize = (long) sizeOr(elems1, 0);
         expectedSize += (long) sizeOr(elems2, 0);
-        return newMutableSet(elems1, elems2, sizeAsInt(expectedSize));
+        return newUpdatableSet(elems1, elems2, sizeAsInt(expectedSize));
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Character>/**/ elems1,
             Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3) {
         long expectedSize = (long) sizeOr(elems1, 0);
         expectedSize += (long) sizeOr(elems2, 0);
         expectedSize += (long) sizeOr(elems3, 0);
-        return newMutableSet(elems1, elems2, elems3, sizeAsInt(expectedSize));
+        return newUpdatableSet(elems1, elems2, elems3, sizeAsInt(expectedSize));
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Character>/**/ elems1,
             Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
             Iterable/*ep*/<Character>/**/ elems4) {
         long expectedSize = (long) sizeOr(elems1, 0);
         expectedSize += (long) sizeOr(elems2, 0);
         expectedSize += (long) sizeOr(elems3, 0);
         expectedSize += (long) sizeOr(elems4, 0);
-        return newMutableSet(elems1, elems2, elems3, elems4, sizeAsInt(expectedSize));
+        return newUpdatableSet(elems1, elems2, elems3, elems4, sizeAsInt(expectedSize));
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Character>/**/ elems1,
             Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
             Iterable/*ep*/<Character>/**/ elems4, Iterable/*ep*/<Character>/**/ elems5) {
         long expectedSize = (long) sizeOr(elems1, 0);
@@ -139,17 +140,17 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
         expectedSize += (long) sizeOr(elems3, 0);
         expectedSize += (long) sizeOr(elems4, 0);
         expectedSize += (long) sizeOr(elems5, 0);
-        return newMutableSet(elems1, elems2, elems3, elems4, elems5, sizeAsInt(expectedSize));
+        return newUpdatableSet(elems1, elems2, elems3, elems4, elems5, sizeAsInt(expectedSize));
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elements,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Character>/**/ elements,
             int expectedSize) {
-        return shrunk(super.newMutableSet(elements, expectedSize));
+        return shrunk(super.newUpdatableSet(elements, expectedSize));
     }
 
 
-    private static /*<>*/ void addAll(MutableDHashCharSetGO/*<>*/ set,
+    private static /*<>*/ void addAll(UpdatableDHashCharSetGO/*<>*/ set,
             Iterable<? extends Character> elems) {
         if (elems instanceof Collection) {
             // noinspection unchecked
@@ -162,19 +163,19 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Character>/**/ elems1,
             Iterable/*ep*/<Character>/**/ elems2, int expectedSize) {
-        MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
+        UpdatableDHashCharSetGO/*p2*/ set = newUpdatableSet(expectedSize);
         addAll(set, elems1);
         addAll(set, elems2);
         return shrunk(set);
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Character>/**/ elems1,
             Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
             int expectedSize) {
-        MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
+        UpdatableDHashCharSetGO/*p2*/ set = newUpdatableSet(expectedSize);
         addAll(set, elems1);
         addAll(set, elems2);
         addAll(set, elems3);
@@ -182,10 +183,10 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Character>/**/ elems1,
             Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
             Iterable/*ep*/<Character>/**/ elems4, int expectedSize) {
-        MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
+        UpdatableDHashCharSetGO/*p2*/ set = newUpdatableSet(expectedSize);
         addAll(set, elems1);
         addAll(set, elems2);
         addAll(set, elems3);
@@ -194,11 +195,11 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Character>/**/ elems1,
             Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
             Iterable/*ep*/<Character>/**/ elems4, Iterable/*ep*/<Character>/**/ elems5,
             int expectedSize) {
-        MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
+        UpdatableDHashCharSetGO/*p2*/ set = newUpdatableSet(expectedSize);
         addAll(set, elems1);
         addAll(set, elems2);
         addAll(set, elems3);
@@ -209,14 +210,14 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
 
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterator/*ep*/<Character>/**/ elements) {
-        return newMutableSet(elements, hashConf.getDefaultExpectedSize());
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(Iterator/*ep*/<Character>/**/ elements) {
+        return newUpdatableSet(elements, hashConf.getDefaultExpectedSize());
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(Iterator/*ep*/<Character>/**/ elements,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(Iterator/*ep*/<Character>/**/ elements,
             int expectedSize) {
-        MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
+        UpdatableDHashCharSetGO/*p2*/ set = newUpdatableSet(expectedSize);
         while (elements.hasNext()) {
             set.add(elements.next());
         }
@@ -224,17 +225,17 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(
             Consumer</*f*/CharConsumer/*p2*/> elementsSupplier) {
-        return newMutableSet(elementsSupplier, hashConf.getDefaultExpectedSize());
+        return newUpdatableSet(elementsSupplier, hashConf.getDefaultExpectedSize());
     }
 
     /* define pe *//* if !(obj elem) //char// elif obj elem //E2// endif *//* enddefine */
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(
             Consumer</*f*/CharConsumer/*p2*/> elementsSupplier, int expectedSize) {
-        final MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
+        final UpdatableDHashCharSetGO/*p2*/ set = newUpdatableSet(expectedSize);
         elementsSupplier.accept(new /*f*/CharConsumer/*p2*/() {
             @Override
             public void accept(/*pe*/char/**/ e) {
@@ -245,14 +246,14 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(/*pe*/char/**/[] elements) {
-        return newMutableSet(elements, elements.length);
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(/*pe*/char/**/[] elements) {
+        return newUpdatableSet(elements, elements.length);
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSet(/*pe*/char/**/[] elements,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSet(/*pe*/char/**/[] elements,
             int expectedSize) {
-        MutableDHashCharSetGO/*p2*/ set = newMutableSet(expectedSize);
+        UpdatableDHashCharSetGO/*p2*/ set = newUpdatableSet(expectedSize);
         for (/*pe*/char/**/ e : elements) {
             set.add(e);
         }
@@ -261,14 +262,14 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
 
     /* if !(obj elem) */
     @Override
-    public MutableDHashCharSetGO newMutableSet(Character[] elements) {
-        return newMutableSet(elements, elements.length);
+    public UpdatableDHashCharSetGO newUpdatableSet(Character[] elements) {
+        return newUpdatableSet(elements, elements.length);
     }
 
     @Override
-    public MutableDHashCharSetGO newMutableSet(Character[] elements,
+    public UpdatableDHashCharSetGO newUpdatableSet(Character[] elements,
             int expectedSize) {
-        MutableDHashCharSetGO set = newMutableSet(expectedSize);
+        UpdatableDHashCharSetGO set = newUpdatableSet(expectedSize);
         for (char e : elements) {
             set.add(e);
         }
@@ -277,24 +278,24 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
     /* endif */
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSetOf(/*pe*/char/**/ e1) {
-        MutableDHashCharSetGO/*p2*/ set = newMutableSet(1);
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSetOf(/*pe*/char/**/ e1) {
+        UpdatableDHashCharSetGO/*p2*/ set = newUpdatableSet(1);
         set.add(e1);
         return set;
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2) {
-        MutableDHashCharSetGO/*p2*/ set = newMutableSet(2);
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2) {
+        UpdatableDHashCharSetGO/*p2*/ set = newUpdatableSet(2);
         set.add(e1);
         set.add(e2);
         return set;
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
             /*pe*/char/**/ e3) {
-        MutableDHashCharSetGO/*p2*/ set = newMutableSet(3);
+        UpdatableDHashCharSetGO/*p2*/ set = newUpdatableSet(3);
         set.add(e1);
         set.add(e2);
         set.add(e3);
@@ -302,9 +303,9 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
             /*pe*/char/**/ e3, /*pe*/char/**/ e4) {
-        MutableDHashCharSetGO/*p2*/ set = newMutableSet(4);
+        UpdatableDHashCharSetGO/*p2*/ set = newUpdatableSet(4);
         set.add(e1);
         set.add(e2);
         set.add(e3);
@@ -313,10 +314,10 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
     }
 
     @Override
-    public/*p1*/ MutableDHashCharSetGO/*p2*/ newMutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
+    public/*p1*/ UpdatableDHashCharSetGO/*p2*/ newUpdatableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
             /*pe*/char/**/ e3, /*pe*/char/**/ e4, /*pe*/char/**/ e5,
             /*pe*/char/**/... restElements) {
-        MutableDHashCharSetGO/*p2*/ set = newMutableSet(5 + restElements.length);
+        UpdatableDHashCharSetGO/*p2*/ set = newUpdatableSet(5 + restElements.length);
         set.add(e1);
         set.add(e2);
         set.add(e3);
@@ -328,150 +329,152 @@ public abstract class DHashCharSetFactoryGO/*<>*/ extends DHashCharSetFactorySO/
         return shrunk(set);
     }
 
+    /* with Mutable|Immutable mutability */
     /* with with|without expectedSize */
     /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */
     /* define apply *//* if with expectedSize //, expectedSize// endif *//* enddefine */
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterable/*ep*/<Character>/**/ elements/*arg*/) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elements/*apply*/));
+    public/*p1*/ HashCharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elements/*arg*/) {
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elements/*apply*/));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterable/*ep*/<Character>/**/ elems1,
+    public/*p1*/ HashCharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
             Iterable/*ep*/<Character>/**/ elems2/*arg*/) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elems1, elems2/*apply*/));
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elems1, elems2/*apply*/));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterable/*ep*/<Character>/**/ elems1,
+    public/*p1*/ HashCharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
             Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3/*arg*/) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elems1, elems2, elems3/*apply*/));
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elems1, elems2, elems3/*apply*/));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterable/*ep*/<Character>/**/ elems1,
+    public/*p1*/ HashCharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
             Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
             Iterable/*ep*/<Character>/**/ elems4/*arg*/) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elems1, elems2, elems3, elems4/*apply*/));
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elems1, elems2, elems3, elems4/*apply*/));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterable/*ep*/<Character>/**/ elems1,
+    public/*p1*/ HashCharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
             Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
             Iterable/*ep*/<Character>/**/ elems4, Iterable/*ep*/<Character>/**/ elems5/*arg*/) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elems1, elems2, elems3, elems4, elems5/*apply*/));
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elems1, elems2, elems3, elems4, elems5/*apply*/));
         return set;
     }
 
     /* endwith */
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterator/*ep*/<Character>/**/ elements) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elements));
+    public/*p1*/ HashCharSet/*p2*/ newMutableSet(Iterator/*ep*/<Character>/**/ elements) {
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elements));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(Iterator/*ep*/<Character>/**/ elements,
+    public/*p1*/ HashCharSet/*p2*/ newMutableSet(Iterator/*ep*/<Character>/**/ elements,
             int expectedSize) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elements, expectedSize));
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elements, expectedSize));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(
+    public/*p1*/ HashCharSet/*p2*/ newMutableSet(
             Consumer</*f*/CharConsumer/*p2*/> elementsSupplier) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elementsSupplier));
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elementsSupplier));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(
+    public/*p1*/ HashCharSet/*p2*/ newMutableSet(
             Consumer</*f*/CharConsumer/*p2*/> elementsSupplier, int expectedSize) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elementsSupplier, expectedSize));
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elementsSupplier, expectedSize));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(/*pe*/char/**/[] elements) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elements));
+    public/*p1*/ HashCharSet/*p2*/ newMutableSet(/*pe*/char/**/[] elements) {
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elements));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSet(/*pe*/char/**/[] elements, int expectedSize) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSet(elements, expectedSize));
+    public/*p1*/ HashCharSet/*p2*/ newMutableSet(/*pe*/char/**/[] elements, int expectedSize) {
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elements, expectedSize));
         return set;
     }
 
     /* if !(obj elem) */
     @Override
-    public HashCharSet newImmutableSet(Character[] elements) {
-        ImmutableDHashCharSetGO set = uninitializedImmutableSet();
-        set.move(newMutableSet(elements));
+    public HashCharSet newMutableSet(Character[] elements) {
+        MutableDHashCharSetGO set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elements));
         return set;
     }
 
     @Override
-    public HashCharSet newImmutableSet(Character[] elements, int expectedSize) {
-        ImmutableDHashCharSetGO set = uninitializedImmutableSet();
-        set.move(newMutableSet(elements, expectedSize));
+    public HashCharSet newMutableSet(Character[] elements, int expectedSize) {
+        MutableDHashCharSetGO set = uninitializedMutableSet();
+        set.move(newUpdatableSet(elements, expectedSize));
         return set;
     }
     /* endif */
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSetOf(/*pe*/char/**/ e1) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSetOf(e1));
+    public/*p1*/ HashCharSet/*p2*/ newMutableSetOf(/*pe*/char/**/ e1) {
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSetOf(e1));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSetOf(e1, e2));
+    public/*p1*/ HashCharSet/*p2*/ newMutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2) {
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSetOf(e1, e2));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
+    public/*p1*/ HashCharSet/*p2*/ newMutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
             /*pe*/char/**/ e3) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSetOf(e1, e2, e3));
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSetOf(e1, e2, e3));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
+    public/*p1*/ HashCharSet/*p2*/ newMutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
             /*pe*/char/**/ e3, /*pe*/char/**/ e4) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSetOf(e1, e2, e3, e4));
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSetOf(e1, e2, e3, e4));
         return set;
     }
 
     @Override
-    public/*p1*/ HashCharSet/*p2*/ newImmutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
+    public/*p1*/ HashCharSet/*p2*/ newMutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
             /*pe*/char/**/ e3, /*pe*/char/**/ e4, /*pe*/char/**/ e5,
             /*pe*/char/**/... restElements) {
-        ImmutableDHashCharSetGO/*p2*/ set = uninitializedImmutableSet();
-        set.move(newMutableSetOf(e1, e2, e3, e4, e5, restElements));
+        MutableDHashCharSetGO/*p2*/ set = uninitializedMutableSet();
+        set.move(newUpdatableSetOf(e1, e2, e3, e4, e5, restElements));
         return set;
     }
+    /* endwith */
 }

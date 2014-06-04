@@ -23,6 +23,7 @@ import net.openhft.jpsg.*;
 public final class MethodContext {
 
     private static final SimpleOption IMMUTABLE = new SimpleOption("Immutable");
+    private static final SimpleOption UPDATABLE = new SimpleOption("Updatable");
     private static final SimpleOption MUTABLE = new SimpleOption("Mutable");
 
     private static final SimpleOption NULL = new SimpleOption("null");
@@ -236,6 +237,10 @@ public final class MethodContext {
 
     public boolean immutable() {
         return getOption("mutability").equals(IMMUTABLE);
+    }
+
+    public boolean updatable() {
+        return getOption("mutability").equals(UPDATABLE);
     }
 
     public boolean mutable() {

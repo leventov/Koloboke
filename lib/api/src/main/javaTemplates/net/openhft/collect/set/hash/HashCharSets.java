@@ -50,7 +50,7 @@ public final class HashCharSets {
     }
 
 
-    /* with Mutable|Immutable mutability */
+    /* with Mutable|Updatable|Immutable mutability */
 
     /* with with|without expectedSize */
     /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */
