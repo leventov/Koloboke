@@ -17,20 +17,20 @@
 package net.openhft.jpsg;
 
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static net.openhft.jpsg.RegexpUtils.JAVA_ID_OR_CONST;
 
 
 public final class ConstProcessor extends TemplateProcessor {
     // after option processor because constant "(char) 0" is generated
     public static final int PRIORITY = OptionProcessor.PRIORITY - 1;
 
-    private static Pattern valuePattern(String dim) {
-        String pattern =
-                "/[\\*/]\\s*const\\s+" + dim + "\\s+(?<value>-?\\d+|min|max)\\s*[\\*/]/" +
-                        "([^/]*?/[\\*/] endconst [\\*/]/|" +
-                        "\\s*+" + RegexpUtils.JAVA_ID_OR_CONST + ")";
-        return RegexpUtils.compile(pattern);
+    private static CheckingPattern valuePattern(String dim) {
+        String prefix = "/[\\*/]\\s*const\\s+" + dim;
+        String pattern = prefix + "\\s+(?<value>-?\\d+|min|max)\\s*[\\*/]/" +
+                "([^/]*?/[\\*/] endconst [\\*/]/|" +
+                "\\s*+" + JAVA_ID_OR_CONST + ")";
+        return CheckingPattern.compile(prefix, pattern);
     }
 
     private static String replaceValue(String value, Option option) {
@@ -46,11 +46,10 @@ public final class ConstProcessor extends TemplateProcessor {
             String dim = e.getKey();
             Option option = e.getValue();
 
-            Matcher valueM = valuePattern(dim).matcher(template);
-            StringBuffer sb = new StringBuffer();
+            CheckingMatcher valueM = valuePattern(dim).matcher(template);
+            StringBuilder sb = new StringBuilder();
             while (valueM.find()) {
-                valueM.appendReplacement(sb,
-                        Matcher.quoteReplacement(replaceValue(valueM.group("value"), option)));
+                valueM.appendSimpleReplacement(sb, replaceValue(valueM.group("value"), option));
             }
             valueM.appendTail(sb);
             template = sb.toString();

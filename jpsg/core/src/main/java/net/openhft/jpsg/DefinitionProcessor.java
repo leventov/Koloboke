@@ -18,15 +18,14 @@ package net.openhft.jpsg;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public final class DefinitionProcessor extends TemplateProcessor {
     public static final int PRIORITY = Generator.BlocksProcessor.PRIORITY + 10;
 
-    private static final Pattern DEF_P = RegexpUtils.compile(
-            "/[\\*/]\\s*define\\s+(?<name>[a-z_0-9]+)\\s*[\\*/]/" +
+    private static final String DEF_PREFIX = "/[\\*/]\\s*define";
+    private static final CheckingPattern DEF_P = CheckingPattern.compile(DEF_PREFIX,
+            DEF_PREFIX + "\\s+(?<name>[a-z_0-9]+)\\s*[\\*/]/" +
             "(?<body>.+?)" +
             "/[\\*/]\\s*enddefine\\s*[\\*/]/"
     );
@@ -38,12 +37,12 @@ public final class DefinitionProcessor extends TemplateProcessor {
 
     @Override
     protected void process(StringBuilder builder, Context source, Context target, String template) {
-        Matcher matcher = DEF_P.matcher(template);
-        StringBuffer sb = new StringBuffer();
+        CheckingMatcher matcher = DEF_P.matcher(template);
+        StringBuilder sb = new StringBuilder();
         Map<String, String> definitions = new HashMap<>();
         while(matcher.find()) {
             definitions.put(matcher.group("name"), matcher.group("body").trim());
-            matcher.appendReplacement(sb, "");
+            matcher.appendSimpleReplacement(sb, "");
         }
         matcher.appendTail(sb);
         postProcess(builder, source, target, replaceDefinitions(definitions, sb.toString()));
@@ -52,16 +51,16 @@ public final class DefinitionProcessor extends TemplateProcessor {
     private static String replaceDefinitions(Map<String, String> definitions, String template) {
         for (Map.Entry<String, String> e : definitions.entrySet()) {
             String name = e.getKey();
-            Pattern defPattern = Pattern.compile(
-                    "/[\\*/]\\s*" + name + "\\s*[\\*/]/([^/]+?/[\\*/][\\*/]/)?+");
+            String defPrefix = "/[\\*/]\\s*" + name + "\\s*[\\*/]";
+            CheckingPattern defPattern = CheckingPattern.compile(defPrefix,
+                    defPrefix + "/([^/]+?/[\\*/][\\*/]/)?+", 0);
             String body = e.getValue();
-            StringBuffer sb = new StringBuffer();
-            Matcher m = defPattern.matcher(template);
+            StringBuilder sb = new StringBuilder();
+            CheckingMatcher m = defPattern.matcher(template);
             Map<String, String> withoutCurrentDef = new HashMap<>(definitions);
             withoutCurrentDef.remove(name);
             while (m.find()) {
-                m.appendReplacement(sb,
-                        Matcher.quoteReplacement(replaceDefinitions(withoutCurrentDef, body)));
+                m.appendSimpleReplacement(sb, replaceDefinitions(withoutCurrentDef, body));
             }
             m.appendTail(sb);
             template = sb.toString();

@@ -36,24 +36,30 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static net.openhft.jpsg.CheckingPattern.compile;
 import static net.openhft.jpsg.Condition.CONDITION;
 import static net.openhft.jpsg.Dimensions.DIMENSION;
 import static net.openhft.jpsg.Dimensions.Parser.parseOptions;
+import static net.openhft.jpsg.MalformedTemplateException.near;
 import static net.openhft.jpsg.ObjectType.IdentifierStyle.SHORT;
-import static net.openhft.jpsg.RegexpUtils.compile;
 import static net.openhft.jpsg.RegexpUtils.removeSubGroupNames;
 
 
 public class Generator {
     private static final Logger log = LoggerFactory.getLogger(Generator.class);
 
-    private static Pattern compileBlock(String insideBlockRegex) {
+    private static CheckingPattern compileBlock(String insideBlockRegex, String keyword) {
+        String checkingBlock = "/[\\*/]\\s*" + keyword + "[^/\\*]*+[\\*/]/";
         String block = "/[\\*/]\\s*" + removeSubGroupNames(insideBlockRegex) + "\\s*[\\*/]/";
-        return compile(format("^\\s*%s[^\\S\\n]*?\\n|%s", block, block));
+        return compile(justBlockOrWholeLine(checkingBlock), justBlockOrWholeLine(block));
+    }
+
+    private static String justBlockOrWholeLine(String block) {
+        return format("^[^\\S\\r\\n]*%s[^\\S\\n]*?\\n|%s", block, block);
     }
 
     private static Pattern wrapBlock(String insideBlockRegex) {
-        return compile("(^\\s*)?/[\\*/]\\s*" + insideBlockRegex + "\\s*[\\*/]/([^\\S\\n]*?\\n)?");
+        return RegexpUtils.compile("\\s*/[\\*/]\\s*" + insideBlockRegex + "\\s*[\\*/]/\\s*");
     }
 
     private static String getBlockGroup(String block, Pattern pattern, String group) {
@@ -69,29 +75,29 @@ public class Generator {
 
     private static final String COND_START = format("if\\s*(?<condition>%s)", CONDITION);
     private static final Pattern COND_START_BLOCK_P = wrapBlock(COND_START);
-    private static final Pattern COND_START_P = compileBlock(COND_START);
+    private static final CheckingPattern COND_START_P = compileBlock(COND_START, "if");
 
     private static final String COND_END = "endif";
-    private static final Pattern COND_END_P = compileBlock(COND_END);
+    private static final CheckingPattern COND_END_P = compileBlock(COND_END, COND_END);
 
     private static final String COND_PART =
             format("((el)?if\\s*(?<condition>%s)|%s)", CONDITION, COND_END);
     private static final Pattern COND_PART_BLOCK_P = wrapBlock(COND_PART);
-    private static final Pattern COND_PART_P = compileBlock(COND_PART);
+    private static final CheckingPattern COND_PART_P = compileBlock(COND_PART, "(el|end)?if");
 
     private static final String CONTEXT_START = format("with%s", DIMENSIONS);
     private static final Pattern CONTEXT_START_BLOCK_P = wrapBlock(CONTEXT_START);
-    private static final Pattern CONTEXT_START_P = compileBlock(CONTEXT_START);
+    private static final CheckingPattern CONTEXT_START_P = compileBlock(CONTEXT_START, "with");
 
     private static final String CONTEXT_END = "endwith";
-    private static final Pattern CONTEXT_END_P = compileBlock(CONTEXT_END);
+    private static final CheckingPattern CONTEXT_END_P = compileBlock(CONTEXT_END, CONTEXT_END);
 
     private static final String CONTEXT_PART = format("(%s|%s)", CONTEXT_START, CONTEXT_END);
-    private static final Pattern CONTEXT_PART_P = compileBlock(CONTEXT_PART);
+    private static final CheckingPattern CONTEXT_PART_P = compileBlock(CONTEXT_PART, "(end)?with");
 
-    private static final String BLOCK_START =
-            format("(%s|%s)", removeSubGroupNames(COND_PART), CONTEXT_START);
-    private static final Pattern BLOCK_START_P = compileBlock(BLOCK_START);
+    private static final String ANY_BLOCK_PART = format("(%s|%s)", COND_PART, CONTEXT_PART);
+    private static final CheckingPattern ANY_BLOCK_PART_P =
+            compileBlock(ANY_BLOCK_PART, "((el|end)?if|(end)?with)");
 
 
     private Path source;
@@ -367,13 +373,13 @@ public class Generator {
         String sourceFileName = sourceFile.toFile().getName();
         Dimensions targetDims = dimensionsParser.parseClassName(sourceFileName);
         String rawContent = new String(Files.readAllBytes(sourceFile));
-        Matcher fileDimsM = CONTEXT_START_P.matcher(rawContent);
+        CheckingMatcher fileDimsM = CONTEXT_START_P.matcher(rawContent);
         if (fileDimsM.find() && fileDimsM.start() == 0) {
             targetDims = dimensionsParser.parse(
                     getBlockGroup(fileDimsM.group(), CONTEXT_START_BLOCK_P, "dimensions"));
             rawContent = rawContent.substring(fileDimsM.end()).trim() + "\n";
         }
-        Matcher fileCondM = COND_START_P.matcher(rawContent);
+        CheckingMatcher fileCondM = COND_START_P.matcher(rawContent);
         Condition fileCond = null;
         if (fileCondM.find() && fileCondM.start() == 0) {
             fileCond = Condition.parse(
@@ -443,7 +449,7 @@ public class Generator {
         return true;
     }
 
-    public class BlocksProcessor extends TemplateProcessor {
+    public final class BlocksProcessor extends TemplateProcessor {
         public static final int PRIORITY = DEFAULT_PRIORITY + 10;
 
         @Override
@@ -453,7 +459,7 @@ public class Generator {
 
         @Override
         protected void process(StringBuilder sb, Context source, Context target, String template) {
-            Matcher blockStartMatcher = BLOCK_START_P.matcher(template);
+            CheckingMatcher blockStartMatcher = ANY_BLOCK_PART_P.matcher(template);
             int prevBlockEndPos = 0;
             blockSearch:
             while (blockStartMatcher.find()) {
@@ -461,9 +467,9 @@ public class Generator {
                 String linearBlock = template.substring(prevBlockEndPos, blockDefPos);
                 postProcess(sb, source, target, linearBlock);
                 String blockStart = blockStartMatcher.group();
-                Matcher condM = COND_START_P.matcher(blockStart);
+                CheckingMatcher condM = COND_START_P.matcher(blockStart);
                 if (condM.matches()) {
-                    Condition branchCond = Condition.parse(
+                    Condition prevBranchCond = Condition.parse(
                             getBlockGroup(condM.group(), COND_PART_BLOCK_P, "condition"),
                             getDimensionsParser());
                     int branchStartPos = blockStartMatcher.end();
@@ -479,8 +485,12 @@ public class Generator {
                             if (COND_END_P.matcher(condPart).matches()) {
                                 nest--;
                             }
-                        } else {
-                            if (branchCond.check(target)) {
+                            // no special processing of nested `elif` branches
+                        }
+                        else {
+                            if (prevBranchCond.check(target)) {
+                                // condition of the previous `if` or `elif` branch
+                                // triggers on the context
                                 int branchEndPos = condM.start();
                                 String block = template.substring(branchStartPos, branchEndPos);
                                 process(sb, source, target, block);
@@ -489,6 +499,7 @@ public class Generator {
                                     blockStartMatcher.region(prevBlockEndPos, template.length());
                                     continue blockSearch;
                                 } else {
+                                    // skip the rest `elif` branches
                                     while (condM.find()) {
                                         condPart = condM.group();
                                         if (COND_END_P.matcher(condPart).matches()) {
@@ -504,7 +515,7 @@ public class Generator {
                                             nest++;
                                         }
                                     }
-                                    throw new IllegalStateException();
+                                    throw near(template, blockDefPos, "`if` block is not closed");
                                 }
                             } else {
                                 if (COND_END_P.matcher(condPart).matches()) {
@@ -512,7 +523,8 @@ public class Generator {
                                     blockStartMatcher.region(prevBlockEndPos, template.length());
                                     continue blockSearch;
                                 } else {
-                                    branchCond = Condition.parse(
+                                    // `elif` branch
+                                    prevBranchCond = Condition.parse(
                                             getBlockGroup(condM.group(), COND_PART_BLOCK_P,
                                                     "condition"),
                                             getDimensionsParser());
@@ -521,12 +533,11 @@ public class Generator {
                             }
                         }
                     }
-                    String contentAround = template.substring(Math.max(0, blockDefPos - 100),
-                            Math.min(blockDefPos + 100, template.length()));
-                    throw new IllegalStateException("Near: " + contentAround);
+                    throw near(template, blockDefPos, "`if` block is not closed");
                 }
                 else {
-                    Matcher contextM = CONTEXT_START_P.matcher(blockStart);
+                    // `with` block
+                    CheckingMatcher contextM = CONTEXT_START_P.matcher(blockStart);
                     if (contextM.matches()) {
                         Dimensions additionalDims = getDimensionsParser().parse(
                                 getBlockGroup(contextM.group(), CONTEXT_START_BLOCK_P,
@@ -559,18 +570,17 @@ public class Generator {
                                     blockStartMatcher.region(prevBlockEndPos, template.length());
                                     continue blockSearch;
                                 } else {
+                                    // nesting `with` end
                                     nest--;
                                 }
                             } else {
-                                // context start
+                                // nesting `with` start
                                 nest++;
                             }
                         }
-                    }
-                    else {
-                        String contentAround = template.substring(Math.max(0, blockDefPos - 100),
-                                Math.min(blockDefPos + 100, template.length()));
-                        throw new IllegalStateException("Near: " + contentAround);
+                    } else {
+                        throw near(template, blockDefPos,
+                                "Block end or `elif` branch without start");
                     }
                 }
             }

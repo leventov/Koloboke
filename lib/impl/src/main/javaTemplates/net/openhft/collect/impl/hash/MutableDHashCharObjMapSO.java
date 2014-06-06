@@ -208,7 +208,7 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
     /* if float|double key */
     @Override
     boolean removeAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull InternalCharCollectionOps c) {
-        /* template RemoveAll with internal version with given this */ throw new NotGenerated();
+        /* template RemoveAll with internal version given this */ throw new NotGenerated();
         /* endtemplate */
     }
     /* endif */
@@ -226,7 +226,7 @@ public abstract class MutableDHashCharObjMapSO</* if obj key //K, // endif */V>
 
     /* if !(obj key) */
     private boolean retainAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull CharCollection c) {
-        /* template RetainAll given this */ throw new NotGenerated(); /* endtemplate */
+        /* template RetainAll with given this */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if float|double key */

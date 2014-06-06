@@ -16,20 +16,18 @@
 
 package net.openhft.jpsg;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 public final class FloatingWrappingProcessor extends TemplateProcessor {
 
-    private static final Pattern WRAPPING_P = RegexpUtils.compile(
-            "/[\\*/]\\s*(?<op>wrap|unwrap)\\s+(?<dim>[a-z0-9]+)\\s*[\\*/]/" +
+    private static final String WRAPPING_PREFIX = "/[\\*/]\\s*(?<op>wrap|unwrap)";
+    private static final CheckingPattern WRAPPING_P = CheckingPattern.compile(WRAPPING_PREFIX,
+            WRAPPING_PREFIX + "\\s+(?<dim>[a-z0-9]+)\\s*[\\*/]/" +
             "((?<closed>(?<closedBody>[^/]+)/[\\*/][\\*/]/)|(?<openBody>[^\\s\\{\\};/\\*]+))");
 
     @Override
     protected void process(StringBuilder builder, Context source, Context target, String template) {
-        StringBuffer sb = new StringBuffer();
-        Matcher m = WRAPPING_P.matcher(template);
+        StringBuilder sb = new StringBuilder();
+        CheckingMatcher m = WRAPPING_P.matcher(template);
         while (m.find()) {
             String body = m.group(m.group("closed") != null ? "closedBody" : "openBody");
             Option targetType = target.getOption(m.group("dim"));
@@ -41,7 +39,7 @@ public final class FloatingWrappingProcessor extends TemplateProcessor {
                 repl = "Double." + (wrap ? "longBitsToDouble" : "doubleToLongBits") + "(" +
                         repl + ")";
             }
-            m.appendReplacement(sb, repl);
+            m.appendSimpleReplacement(sb, repl);
         }
         m.appendTail(sb);
         postProcess(builder, source, target, sb.toString());

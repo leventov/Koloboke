@@ -33,8 +33,10 @@ import static net.openhft.jpsg.Generator.DIMENSIONS;
 public final class MethodGeneratingProcessor extends TemplateProcessor {
     private static final int PRIORITY = DEFAULT_PRIORITY - 10;
 
-    private static final Pattern METHOD_BODY_P = RegexpUtils.compile(
-            "(?<indentSpaces>[^\\S\\n]*+)/[\\*/]\\s*template\\s+(?<methodName>\\S+)" +
+    private static final String METHOD_BODY_PREFIX =
+            "(?<indentSpaces>[^\\S\\n]*+)/[\\*/]\\s*template";
+    private static final CheckingPattern METHOD_BODY_P = CheckingPattern.compile(METHOD_BODY_PREFIX,
+            METHOD_BODY_PREFIX + "\\s+(?<methodName>\\S+)" +
                     format("\\s*(with%s)?", DIMENSIONS) +
                     "\\s*[\\*/]/" +
                     "([^\\S\\n]*$|[^/]*?/[\\*/]\\s*endtemplate\\s*[\\*/]/)");
@@ -148,8 +150,8 @@ public final class MethodGeneratingProcessor extends TemplateProcessor {
 
     @Override
     protected void process(StringBuilder builder, Context source, Context target, String template) {
-        Matcher matcher = METHOD_BODY_P.matcher(template);
-        StringBuffer sb = new StringBuffer();
+        CheckingMatcher matcher = METHOD_BODY_P.matcher(template);
+        StringBuilder sb = new StringBuilder();
         while (matcher.find()) {
             String methodName = matcher.group("methodName");
             String indentSpaces = matcher.group("indentSpaces");
@@ -164,8 +166,7 @@ public final class MethodGeneratingProcessor extends TemplateProcessor {
             }
             try {
                 String generated = generate(methodName, target, indentSpaces);
-                matcher.appendReplacement(sb,
-                        Matcher.quoteReplacement(generated.replaceFirst("\\s+$", "")));
+                matcher.appendSimpleReplacement(sb, generated.replaceFirst("\\s+$", ""));
             } catch (RuntimeException e) {
                 throw new RuntimeException(
                         "Runtime exception while generating " + methodName + " template", e);

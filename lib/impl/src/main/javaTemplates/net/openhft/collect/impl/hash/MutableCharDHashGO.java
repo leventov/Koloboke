@@ -175,7 +175,7 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
 
     /* if !(obj elem) */
     private boolean retainAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull CharCollection c) {
-        /* template RetainAll given this */ throw new NotGenerated(); /* endtemplate */
+        /* template RetainAll with given this */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if float|double elem */

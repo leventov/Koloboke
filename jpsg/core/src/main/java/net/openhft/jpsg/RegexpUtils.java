@@ -25,8 +25,10 @@ public final class RegexpUtils {
 
     public static final String JAVA_ID_OR_CONST = "[a-zA-Z\\d_$]++(\\.[a-zA-Z\\d_$]++)?";
 
+    public static final int STANDARD_TEMPLATE_FLAGS = CASE_INSENSITIVE | DOTALL | MULTILINE;
+
     public static Pattern compile(String regex) {
-        return Pattern.compile(regex, CASE_INSENSITIVE | DOTALL | MULTILINE);
+        return Pattern.compile(regex, STANDARD_TEMPLATE_FLAGS);
     }
 
     public static String removeSubGroupNames(String regex) {
