@@ -44,7 +44,7 @@ public abstract class MutableCharDHashSetSO/*<>*/
         super.removeAt(index);
         postRemoveHook();
         /* elif LHash hash //
-        /* template RemoveAt */
+        /* template LHashRemoveAt */
         // endif */
     }
     /* endif */

@@ -24,6 +24,7 @@ import net.openhft.jpsg.collect.bulk.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static net.openhft.jpsg.collect.Permission.REMOVE;
 import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
 
 
@@ -35,13 +36,24 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
     private boolean noRemoved = true;
     private BulkMethod method;
+    private boolean valuesUsed = false;
 
     @Override
     public void generateLines(Method m) {
         this.method = (BulkMethod) m;
-
+        determineFeatures();
         callInternalVersion();
+        innerGenerate();
+    }
 
+    private void determineFeatures() {
+        innerGenerate();
+        noRemoved = true;
+        valuesUsed = countUsages(0, "vals") > 0;
+        lines.clear();
+    }
+
+    private void innerGenerate() {
         method.beginning();
 
         if (cxt.isEntryView() && method.entryType() == EntryType.REUSABLE)
@@ -57,7 +69,16 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             }
         }
         lines(cxt.keyUnwrappedRawType() + "[] keys = set;");
-        int beforeLoops = lines.size();
+        if (isLHash(cxt) && permissions.contains(REMOVE)) {
+            lines("int capacityMask = keys.length - 1;");
+            lines("int firstDelayedRemoved = -1;");
+            if (cxt.isPrimitiveKey()) {
+                String delayedValue = ((PrimitiveType) cxt.keyOption()).bitsType().formatValue("0");
+                lines(cxt.keyUnwrappedRawType() + " delayedRemoved = " + delayedValue + ";");
+            }
+        }
+        if (valuesUsed)
+            lines(cxt.valueUnwrappedType() + "[] vals = values;");
 
         method.rightBeforeLoop();
 
@@ -75,13 +96,12 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             blockEnd();
         }
 
-        boolean valuesUsed = false;
-        for (int i = lines.size(); i-- > beforeLoops;) {
-            if (lines.get(i).contains("vals"))
-                valuesUsed = true;
+        if (isLHash(cxt) && permissions.contains(REMOVE)) {
+            ifBlock("firstDelayedRemoved >= 0"); {
+                String addArg = cxt.isPrimitiveKey() ? ", delayedRemoved" : "";
+                lines("closeDelayedRemoved(firstDelayedRemoved" + addArg + ");");
+            } blockEnd();
         }
-        if (valuesUsed)
-            lines.add(beforeLoops, indent + copyValueArray());
 
         if (!cxt.immutable()) {
             lines(
@@ -91,7 +111,6 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         }
 
         method.end();
-
     }
 
     private void callInternalVersion() {
@@ -213,10 +232,6 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         }
     }
 
-    private String copyValueArray() {
-        return cxt.valueUnwrappedType() + "[] vals = values;";
-    }
-
     private String isFull() {
         if (cxt.isFloatingKey())
             return KEY_OBJ_SUB + " < FREE_BITS";
@@ -287,13 +302,72 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     public BulkMethodGenerator remove() {
         incrementModCount();
         lines("mc++;");
+        if (isLHash(cxt)) {
+            lHashShiftRemove();
+        } else {
+            tombstoneRemove();
+        }
+        lines("postRemoveHook();");
+        permissions.add(REMOVE);
+        return this;
+    }
+
+    private void tombstoneRemove() {
         lines("keys[i] = " + removed(cxt) + ";");
         if (cxt.isObjectValue()) {
             lines("vals[i] = null;");
         }
-        lines("postRemoveHook();");
-        permissions.add(Permission.REMOVE);
-        return this;
+
+    }
+
+    private void lHashShiftRemove() {
+        new LHashShiftRemove(this, cxt, "i", "vals") {
+
+            @Override
+            void generate() {
+                lines("closeDeletion:");
+                ifBlock("firstDelayedRemoved < 0"); {
+                    // "simple" mode
+                    closeDeletion();
+                } elseBlock(); {
+                    // "delayed removed" mode
+                    lines("keys[i] = " + (cxt.isPrimitiveKey() ? "delayedRemoved;" : "REMOVED;"));
+                } blockEnd();
+            }
+
+            @Override
+            boolean rawKeys() {
+                return true;
+            }
+
+            @Override
+            void beforeShift() {
+                // This condition means indexToShift wrapped around zero and keyToShift
+                // was already passed by this bulk operation. To prevent processing it twice
+                // we enter "delayed removed" mode, in which we place tombstones each time we
+                // want to shift delete a key.
+                ifBlock("indexToShift > indexToRemove"); {
+                    // set `firstDelayedRemoved` to `i`, not `indexToRemove` because after turning
+                    // into "delayed removed" mode we could remove the slot just before i-th.
+                    // more strictly `firstDelayedRemoved` should be `indexToRemove`,
+                    // if `indexToRemove` is equal to `i`, i. e. it is the first iteration
+                    // of close deletion loop, and `i - 1` otherwise, but we just use `i`
+                    // to simplify the code, because anyway it is a very rare branch
+                    lines("firstDelayedRemoved = i;");
+                    if (cxt.isPrimitiveKey()) {
+                        // when keys are primitives, use the first key, that should be
+                        // removed, as tombstone
+                        lines("delayedRemoved = keys[indexToRemove];");
+                    } else {
+                        lines("keys[indexToRemove] = REMOVED;");
+                    }
+                    lines("break closeDeletion;");
+                } blockEnd();
+                ifBlock("indexToRemove == i"); {
+                    lines("i++;");
+                } blockEnd();
+            }
+        }.generate();
     }
 
     @Override

@@ -202,10 +202,10 @@ final class HashIterMethodGeneratorCommons {
         g.lines(cxt.keyUnwrappedRawType() + "[] keys = this.keys;");
     }
 
-    abstract static class IterShiftRemove extends ShiftRemove {
+    abstract static class LHashIterShiftRemove extends LHashShiftRemove {
 
-        IterShiftRemove(MethodGenerator g, MethodContext cxt) {
-            super(g, cxt, "vals");
+        LHashIterShiftRemove(MethodGenerator g, MethodContext cxt) {
+            super(g, cxt, "index", "vals");
         }
 
         @Override
@@ -242,7 +242,7 @@ final class HashIterMethodGeneratorCommons {
             g.ifBlock("this.keys == keys"); {
                 // This condition means indexToShift wrapped around zero and keyToShift
                 // was already passed by this cursor. Making a copy of the original
-                // table to for future moveNext() calls which wouldn't contain this
+                // table for future moveNext() calls which wouldn't contain this
                 // entry.
                 // Note that local copies of keys and vals arrays are not changed, shift
                 // deletion continues in the original table.

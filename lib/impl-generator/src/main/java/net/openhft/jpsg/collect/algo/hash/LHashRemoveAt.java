@@ -21,7 +21,7 @@ import net.openhft.jpsg.collect.*;
 import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
 
 
-public class RemoveAt implements Method {
+public final class LHashRemoveAt implements Method {
 
     @Override
     public void init(net.openhft.jpsg.collect.MethodGenerator g, MethodContext cxt) {
@@ -37,7 +37,7 @@ public class RemoveAt implements Method {
 
         @Override
         protected void generateLines(Method method) {
-            assert method instanceof RemoveAt;
+            assert method instanceof LHashRemoveAt;
             permissions.add(Permission.REMOVE);
 
             if (cxt.isIntegralKey()) {
@@ -49,7 +49,7 @@ public class RemoveAt implements Method {
             if (cxt.hasValues())
                 lines(cxt.valueUnwrappedType() + "[] vals = values;");
             lines("int capacityMask = keys.length - 1;");
-            new ShiftRemove(this, cxt, "vals").generate();
+            new LHashShiftRemove(this, cxt, "index", "vals").generate();
         }
     }
 }

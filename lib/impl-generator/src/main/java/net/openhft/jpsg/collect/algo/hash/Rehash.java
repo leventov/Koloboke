@@ -20,7 +20,7 @@ import net.openhft.jpsg.collect.bulk.BulkMethod;
 
 import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
 
-public class Rehash extends BulkMethod {
+public final class Rehash extends BulkMethod {
 
     @Override
     public void rightBeforeLoop() {

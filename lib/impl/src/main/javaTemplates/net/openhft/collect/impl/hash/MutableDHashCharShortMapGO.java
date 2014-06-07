@@ -23,15 +23,15 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
-import net.openhft.function.*;
 import net.openhft.collect.impl.*;
-import net.openhft.collect.map.CharShortCursor;
-import net.openhft.collect.set.ObjSet;
-import net.openhft.collect.set.ShortSet;
-import net.openhft.collect.set.hash.HashObjSet;
+import net.openhft.collect.map.*;
+import net.openhft.collect.map.hash.*;
+import net.openhft.collect.set.*;
+import net.openhft.collect.set.hash.*;
+import net.openhft.function.*;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.*;
 
 
@@ -180,6 +180,14 @@ public class MutableDHashCharShortMapGO/*<>*/
     public String toString() {
         /* template ToString */ throw new NotGenerated(); /* endtemplate */
     }
+
+
+    /* if !(Immutable mutability) */
+    @Override
+    void rehash(int newCapacity) {
+        /* template Rehash */
+    }
+    /* endif */
 
 
     /* if !(obj key obj value) */
@@ -385,6 +393,20 @@ public class MutableDHashCharShortMapGO/*<>*/
     /* endif */
 
 
+    /* if Mutable mutability */
+    @Override
+    void removeAt(int index) {
+        // if !(LHash hash) */
+        incrementModCount();
+        super.removeAt(index);
+        /* if obj value */values[index] = null;/* endif */
+        postRemoveHook();
+        /* elif LHash hash //
+        /* template LHashRemoveAt */
+        // endif */
+    }
+    /* endif */
+
     @Override
     public Short remove(Object key) {
         /* template Remove with generic version */ throw new NotGenerated(); /* endtemplate */
@@ -455,6 +477,143 @@ public class MutableDHashCharShortMapGO/*<>*/
     public boolean removeIf(/*f*/CharShortPredicate filter) {
         /* template RemoveIf */ throw new NotGenerated(); /* endtemplate */
     }
+
+
+
+    /* if Mutable mutability obj value || Mutable mutability LHash hash */
+    /* with key view */
+
+    // under this condition - operations, overridden from MutableCharDHashGO
+    // when values are objects - in order to set values to null on removing (for garbage collection)
+    // when algo is LHash - because shift deletion should shift values to
+
+    @Override
+    public boolean removeIf(Predicate<? super Character> filter) {
+        /* template RemoveIf */ throw new NotGenerated(); /* endtemplate */
+    }
+
+    /* if !(obj key) */
+    @Override
+    public boolean removeIf(CharPredicate filter) {
+        /* template RemoveIf */ throw new NotGenerated(); /* endtemplate */
+    }
+    /* endif */
+
+    @Override
+    public boolean removeAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull Collection<?> c) {
+        /* template RemoveAll with given this */ throw new NotGenerated(); /* endtemplate */
+    }
+
+    /* if !(obj key) */
+    @Override
+    boolean removeAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull CharCollection c) {
+        /* template RemoveAll with given this */ throw new NotGenerated(); /* endtemplate */
+    }
+
+    /* if float|double key */
+    @Override
+    boolean removeAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull InternalCharCollectionOps c) {
+        /* template RemoveAll with internal version given this */ throw new NotGenerated();
+        /* endtemplate */
+    }
+    /* endif */
+    /* endif */
+
+    @Override
+    public boolean retainAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull Collection<?> c) {
+        /* if !(obj key) */
+        if (c instanceof CharCollection)
+            return retainAll(thisC, (CharCollection) c);
+        /* endif */
+        /* template RetainAll with generic version given this */ throw new NotGenerated();
+        /* endtemplate */
+    }
+
+    /* if !(obj key) */
+    private boolean retainAll(@Nonnull HashCharSet/*<>*/ thisC, @Nonnull CharCollection c) {
+        /* template RetainAll with given this */ throw new NotGenerated(); /* endtemplate */
+    }
+
+    /* if float|double key */
+    private boolean retainAll(@Nonnull HashCharSet/*<>*/ thisC,
+            @Nonnull InternalCharCollectionOps c) {
+        /* template RetainAll with internal version given this */ throw new NotGenerated();
+        /* endtemplate */
+    }
+    /* endif */
+    /* endif */
+
+    /* if LHash hash */
+    @Override
+    void closeDelayedRemoved(int firstDelayedRemoved
+            /* if !(obj key) */, /* bits */char delayedRemoved/* endif */) {
+        /* template LHashCloseDelayedRemoved */ throw new NotGenerated(); /* endtemplate */
+    }
+    /* endif */
+
+
+
+    @Override
+    public CharIterator/*<>*/ iterator() {
+        /* if !(Immutable mutability) */int mc = modCount();/* endif */
+        /* if !(LHash hash) //
+        if (!noRemoved())
+            return new SomeRemovedKeyIterator(// if !(Immutable mutability) //mc// endif //);
+        // endif */
+        return new NoRemovedKeyIterator(/* if !(Immutable mutability) */mc/* endif */);
+    }
+
+    @Override
+    public CharCursor/*<>*/ setCursor() {
+        /* if !(Immutable mutability) */int mc = modCount();/* endif */
+        /* if !(LHash hash) //
+        if (!noRemoved())
+            return new SomeRemovedKeyCursor(// if !(Immutable mutability) //mc// endif //);
+        // endif */
+        return new NoRemovedKeyCursor(/* if !(Immutable mutability) */mc/* endif */);
+    }
+
+    /* with No|Some removed */
+    /* if !(LHash hash Some removed) */
+
+    class NoRemovedKeyIterator extends NoRemovedIterator {
+        /* if CommentOn hash */
+        // vals non-final because could be updated in shift-removing procedure
+        /* endif */
+        /* if !(LHash hash) */final/* endif */ /* bits */short[] vals;
+
+        private NoRemovedKeyIterator(/* if !(Immutable mutability) */int mc/* endif */) {
+            super(mc);
+            vals = values;
+        }
+
+        @Override
+        public void remove() {
+            /* template Iterator.remove */ throw new NotGenerated(); /* endtemplate */
+        }
+    }
+
+
+    class NoRemovedKeyCursor extends NoRemovedCursor {
+        /* if !(LHash hash) */final/* endif */ /* bits */short[] vals;
+
+        private NoRemovedKeyCursor(/* if !(Immutable mutability) */int mc/* endif */) {
+            super(mc);
+            vals = values;
+        }
+
+        @Override
+        public void remove() {
+            /* template Cursor.remove */ throw new NotGenerated(); /* endtemplate */
+        }
+    }
+
+    /* endif */
+    /* endwith */
+
+    /* endwith */
+    /* endif */
+
 
 
     /* with entry view */

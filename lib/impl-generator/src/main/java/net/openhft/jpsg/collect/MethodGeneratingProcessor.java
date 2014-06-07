@@ -67,7 +67,8 @@ public final class MethodGeneratingProcessor extends TemplateProcessor {
                     put(Index.class);
                     put(Insert.class);
                     put(ValueIndex.class);
-                    put(RemoveAt.class);
+                    put(LHashRemoveAt.class);
+                    put(LHashCloseDelayedRemoved.class);
 
                     // map query/update
                     put(ContainsEntry.class);
@@ -105,7 +106,8 @@ public final class MethodGeneratingProcessor extends TemplateProcessor {
                             {
                                 put(HashBulkMethodGenerator.class);
                                 put(HashMapQueryUpdateMethodGenerator.class);
-                                put(RemoveAt.MethodGenerator.class);
+                                put(LHashRemoveAt.MethodGenerator.class);
+                                put(LHashCloseDelayedRemoved.MethodGenerator.class);
                             }
 
                             private void put(Class<? extends MethodGenerator> c) {

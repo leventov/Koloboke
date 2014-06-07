@@ -87,11 +87,6 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
     }
 
     /* if !(Immutable mutability) */
-    @Override
-    void rehash(int newCapacity) {
-        /* template Rehash */
-    }
-
     int insert(/* bits */char key, /* bits */short value) {
         /* template Insert with internal version */ throw new NotGenerated(); /* endtemplate */
     }
@@ -106,19 +101,6 @@ public abstract class MutableDHashCharShortMapSO/*<>*/
     void allocateArrays(int capacity) {
         super.allocateArrays(capacity);
         values = new /* bits */short[capacity];
-    }
-    /* endif */
-
-    /* if Mutable mutability */
-    @Override
-    void removeAt(int index) {
-        // if !(LHash hash) */
-        incrementModCount();
-        super.removeAt(index);
-        postRemoveHook();
-        /* elif LHash hash //
-        /* template RemoveAt */
-        // endif */
     }
     /* endif */
 }

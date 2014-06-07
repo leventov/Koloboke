@@ -71,6 +71,11 @@ public enum PrimitiveType implements Option {
         String maxValue() {
             return "Float.POSITIVE_INFINITY";
         }
+
+        @Override
+        public PrimitiveType bitsType() {
+            return INT;
+        }
     },
 
     DOUBLE ("double", "Double") {
@@ -103,6 +108,11 @@ public enum PrimitiveType implements Option {
         @Override
         String maxValue() {
             return "Double.POSITIVE_INFINITY";
+        }
+
+        @Override
+        public PrimitiveType bitsType() {
+            return LONG;
         }
     };
 
@@ -157,6 +167,9 @@ public enum PrimitiveType implements Option {
         return format("(%s) %s", standalone, value);
     }
 
+    public PrimitiveType bitsType() {
+        return this;
+    }
 
     @Override
     public String intermediateReplace(String content, String dim) {

@@ -187,6 +187,13 @@ public abstract class MutableCharDHashGO/*<>*/ extends MutableCharDHashSO/*<>*/ 
     /* endif */
     /* endif */
 
+    /* if Mutable mutability LHash hash */
+    void closeDelayedRemoved(int firstDelayedRemoved
+            /* if !(obj elem) */, /* bits */char delayedRemoved/* endif */) {
+        /* template LHashCloseDelayedRemoved */ throw new NotGenerated(); /* endtemplate */
+    }
+    /* endif */
+
 
     /* with No|Some removed */
     /* if !(Updatable|Immutable mutability Some removed) && !(LHash hash Some removed) */

@@ -23,7 +23,7 @@ import static net.openhft.jpsg.collect.algo.hash.HashIterMethodGeneratorCommons.
 import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
 
 
-public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
+public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
 
     @Override
     protected void generateFields() {
@@ -106,7 +106,7 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
         ifBlock("expectedModCount++ == " + modCount());
         lines("this.index = -1;");
         if (isLHash(cxt)) {
-            shiftRemove();
+            lHashShiftRemove();
         } else {
             tombstoneRemove();
         }
@@ -120,8 +120,8 @@ public class HashIteratorMethodGenerator extends IteratorMethodGenerator {
         lines("postRemoveHook();");
     }
 
-    private void shiftRemove() {
-        new IterShiftRemove(this, cxt) {
+    private void lHashShiftRemove() {
+        new LHashIterShiftRemove(this, cxt) {
             @Override
             String slotsToCopy() {
                 // `nextIndex + 1`, because if remove() is called

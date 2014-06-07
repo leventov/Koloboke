@@ -23,7 +23,7 @@ import static net.openhft.jpsg.collect.algo.hash.HashIterMethodGeneratorCommons.
 import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
 
 
-public class HashCursorMethodGenerator extends CursorMethodGenerator {
+public final class HashCursorMethodGenerator extends CursorMethodGenerator {
 
     @Override
     protected void generateFields() {
@@ -148,10 +148,10 @@ public class HashCursorMethodGenerator extends CursorMethodGenerator {
             ifBlock(isNotFree(cxt, curKeyAssignment));
         }
         ifBlock("expectedModCount++ == " + modCount());
-        // Local copy still holds the current key (could be used in shiftRemove())
+        // Local copy still holds the current key (could be used in lHashShiftRemove())
         lines("this.curKey = " + free(cxt) + ";");
         if (isLHash(cxt)) {
-            shiftRemove();
+            lHashShiftRemove();
         } else {
             tombstoneRemove();
         }
@@ -168,9 +168,9 @@ public class HashCursorMethodGenerator extends CursorMethodGenerator {
         lines("postRemoveHook();");
     }
 
-    private void shiftRemove() {
+    private void lHashShiftRemove() {
         lines("int index = this.index;");
-        new IterShiftRemove(this, cxt) {
+        new LHashIterShiftRemove(this, cxt) {
             @Override
             String slotsToCopy() {
                 return "index";

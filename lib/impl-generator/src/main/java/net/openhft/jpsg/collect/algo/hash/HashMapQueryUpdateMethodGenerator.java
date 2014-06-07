@@ -34,7 +34,7 @@ import static net.openhft.jpsg.collect.mapqu.Branch.KEY_ABSENT;
 import static net.openhft.jpsg.collect.mapqu.Branch.KEY_PRESENT;
 
 
-public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGenerator {
+public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGenerator {
 
     private static final String KEY_SUB = "#key#";
     private static final String VAL_SUB = "#val#";
@@ -361,7 +361,7 @@ public class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGener
                 lines("int capacityMask = keys.length - 1;");
             if (method.inline())
                 commonCapacityMaskCopy = true;
-            new ShiftRemove(this, cxt, VALUES_SUB).generate();
+            new LHashShiftRemove(this, cxt, index(), VALUES_SUB).generate();
         } else {
             incrementModCount();
             String keys;

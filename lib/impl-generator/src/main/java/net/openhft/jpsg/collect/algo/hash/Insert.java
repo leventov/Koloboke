@@ -20,7 +20,7 @@ import net.openhft.jpsg.collect.mapqu.BasicMapQueryUpdateOp;
 import net.openhft.jpsg.collect.mapqu.MapQueryUpdateMethod;
 
 
-public class Insert extends MapQueryUpdateMethod {
+public final class Insert extends MapQueryUpdateMethod {
 
     @Override
     public BasicMapQueryUpdateOp baseOp() {

@@ -166,11 +166,7 @@ public final class MethodContext {
 
     private String primitiveBitsType(Option opt) {
         PrimitiveType type = (PrimitiveType) opt;
-        switch (type) {
-            case FLOAT: return "int";
-            case DOUBLE: return "long";
-            default: return type.standalone;
-        }
+        return type.bitsType().standalone;
     }
 
     /** @return V or char..double if version=Generic, else Character..Double */

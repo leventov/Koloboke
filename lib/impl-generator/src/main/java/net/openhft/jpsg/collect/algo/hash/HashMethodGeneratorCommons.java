@@ -117,55 +117,12 @@ final class HashMethodGeneratorCommons {
         return cxt.mutable() && !isLHash(cxt);
     }
 
-    static class ShiftRemove {
-        final MethodGenerator g;
-        final MethodContext cxt;
-        final String values;
-
-        ShiftRemove(MethodGenerator g, MethodContext cxt, String values) {
-            this.g = g;
-            this.cxt = cxt;
-            this.values = values;
-        }
-
-        void generate() {
-            g.incrementModCount();
-            g.lines("int indexToRemove = index;");
-            g.lines("int indexToShift = indexToRemove;");
-            g.lines("int shiftDistance = 1;");
-            g.lines("while (true)").block(); {
-                g.lines("indexToShift = (indexToShift - 1) & capacityMask;");
-                g.lines(cxt.keyUnwrappedType() + " keyToShift;");
-                g.ifBlock(isFree(cxt, "(keyToShift = keys[indexToShift])")); {
-                    g.lines("break;");
-                } g.blockEnd();
-                String keyDistance =  "((" + keyHash(cxt, "keyToShift", false) +
-                        " - indexToShift) & capacityMask)";
-                g.ifBlock(keyDistance + " >= shiftDistance"); {
-                    beforeShift();
-                    g.lines("keys[indexToRemove] = keyToShift;");
-                    if (cxt.hasValues())
-                        g.lines(values + "[indexToRemove] = " + values + "[indexToShift];");
-                    g.lines("indexToRemove = indexToShift;");
-                    g.lines("shiftDistance = 1;");
-                } g.elseBlock(); {
-                    g.lines("shiftDistance++;");
-                } g.blockEnd();
-            } g.blockEnd();
-            eraseSlot(g, cxt, "indexToRemove", "indexToRemove", true, values);
-            g.lines("postRemoveHook();");
-        }
-
-        void beforeShift() {
-        }
-    }
-
     static void eraseSlot(MethodGenerator g, MethodContext cxt,
             String indexForKeys, String indexForValues) {
         eraseSlot(g, cxt, indexForKeys, indexForValues, true, "vals");
     }
 
-    private static void eraseSlot(MethodGenerator g, MethodContext cxt,
+    static void eraseSlot(MethodGenerator g, MethodContext cxt,
             String indexForKeys, String indexForValues, boolean genericKeys, String values) {
         String keys = cxt.isObjectOrNullKey() && genericKeys ? "((Object[]) keys)" : "keys";
         g.lines(keys + "[" + indexForKeys + "] = " + removed(cxt) + ";");

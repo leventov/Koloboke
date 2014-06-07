@@ -50,7 +50,9 @@ public final class CommonCharCollectionOps {
             // noinspection unchecked
             /* endif */
             return c2.forEachWhile(new
-                    /*f*/CharPredicate/* if is comment *//* endif */() {
+                    /*f*/CharPredicate/* if CommentForFuncProcessor elem //
+                        a template should start after function name to suppress params generation
+                        // endif */() {
                 @Override
                 public boolean test(/* raw */char value) {
                     return collection.contains(value);

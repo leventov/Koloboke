@@ -20,7 +20,7 @@ import net.openhft.jpsg.collect.MethodGenerator;
 import net.openhft.jpsg.collect.bulk.BulkMethod;
 
 
-public class ValueIndex extends BulkMethod {
+public final class ValueIndex extends BulkMethod {
 
     private String value = "value";
 
