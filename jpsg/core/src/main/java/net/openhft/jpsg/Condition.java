@@ -40,7 +40,17 @@ public final class Condition {
 
     private static enum Op {AND, OR}
 
-    static Condition parse(String condition, Dimensions.Parser dimensionsParser) {
+    static Condition parseCheckedCondition(
+            String condition, Dimensions.Parser dimensionsParser, Context context,
+            CharSequence input, int pos) {
+        try {
+            return parse(condition, dimensionsParser, context);
+        } catch (NonexistentDimensionException e) {
+            throw MalformedTemplateException.near(input, pos, "Nonexistent dimension in condition");
+        }
+    }
+    static Condition parse(String condition, Dimensions.Parser dimensionsParser, Context context)
+            throws NonexistentDimensionException {
         Condition cond = new Condition();
         String[] allDims = condition.split("\\|\\|");
         if (allDims.length > 1) {
@@ -57,7 +67,7 @@ public final class Condition {
             } else {
                 cond.negated.add(false);
             }
-            cond.allDims.add(dimensionsParser.parse(dims));
+            cond.allDims.add(dimensionsParser.parseForCondition(dims, context));
         }
         return cond;
     }
@@ -66,7 +76,7 @@ public final class Condition {
     private final List<Dimensions> allDims = new ArrayList<>();
     private final List<Boolean> negated = new ArrayList<>();
 
-    boolean dimsResult(int i, Context target) {
+    private boolean dimsResult(int i, Context target) {
         boolean res = allDims.get(i).checkAsCondition(target);
         if (negated.get(i))
             res = !res;

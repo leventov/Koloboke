@@ -40,8 +40,6 @@ public final class FunctionProcessor extends TemplateProcessor {
 
     private static String generateName(List<String> argDims, @Nullable String outDim,
             String baseName, boolean allowOperatorCollapse, boolean withParams, Context target) {
-        if (argDims.isEmpty())
-            throw new IllegalArgumentException();
         List<Option> args = argDims.stream().map(target::getOption).collect(Collectors.toList());
         Option out = outDim != null ? target.getOption(outDim) : null;
         if (out instanceof PrimitiveType &&
@@ -125,7 +123,9 @@ public final class FunctionProcessor extends TemplateProcessor {
                     outDim = titleToDim.get(parts[i]);
                     i++;
                 } else {
-                    throw new IllegalStateException();
+                    throw MalformedTemplateException.near(template, m.start(),
+                            "Function \"out\" type (after `To` infix) is not present" +
+                                    "in the source context: " + source.toString());
                 }
             } else {
                 outDim = null;
@@ -134,10 +134,17 @@ public final class FunctionProcessor extends TemplateProcessor {
             for (int j = i; j < parts.length; j++) {
                 baseName += parts[j];
             }
+            if (argDims.isEmpty()) {
+                throw MalformedTemplateException.near(template, m.start(),
+                        "Function should have at 1 or 2 \"input\" type params and " +
+                                "0 or 1 \"out\" type param (after `To` infix)");
+            }
             boolean allowOperatorCollapse;
             if ("BinaryOperator".equals(baseName) || "UnaryOperator".equals(baseName)) {
                 if (argDims.size() != 1)
-                    throw new IllegalStateException();
+                    throw MalformedTemplateException.near(template, m.start(),
+                            baseName + " can have only one only 1 \"input\" type param, " +
+                                    argDims.size() + " given: " + argDims);
                 String dim = argDims.get(0);
                 if (baseName.startsWith("Binary"))
                     argDims.add(dim);

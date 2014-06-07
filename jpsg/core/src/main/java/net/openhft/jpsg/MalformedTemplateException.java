@@ -35,6 +35,7 @@ public final class MalformedTemplateException extends RuntimeException {
 
     private static String makeMessageNear(CharSequence input, int pos, String message) {
         StringJoiner joiner = new StringJoiner("");
+        joiner.add("Source file: " + Generator.currentSourceFile() + "\n");
         joiner.add(message + ":\n");
 
         String s = input.toString();

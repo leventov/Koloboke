@@ -48,6 +48,15 @@ import static net.openhft.jpsg.RegexpUtils.removeSubGroupNames;
 public class Generator {
     private static final Logger log = LoggerFactory.getLogger(Generator.class);
 
+    private static ThreadLocal<Path> currentSource = new ThreadLocal<>();
+    private static void setCurrentSourceFile(Path source) {
+        currentSource.set(source);
+    }
+
+    public static Path currentSourceFile() {
+        return currentSource.get();
+    }
+
     private static CheckingPattern compileBlock(String insideBlockRegex, String keyword) {
         String checkingBlock = "/[\\*/]\\s*" + keyword + "[^/\\*]*+[\\*/]/";
         String block = "/[\\*/]\\s*" + removeSubGroupNames(insideBlockRegex) + "\\s*[\\*/]/";
@@ -67,7 +76,7 @@ public class Generator {
         if (m.matches()) {
             return m.group(group);
         }  else {
-            throw new IllegalArgumentException();
+            throw new AssertionError();
         }
     }
 
@@ -163,7 +172,8 @@ public class Generator {
         try {
             return addProcessor(processorClass.newInstance());
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(processorClass +
+                    " template processor class should have public no-arg constructor");
         }
     }
 
@@ -173,7 +183,8 @@ public class Generator {
             return addProcessor(
                     (Class<? extends TemplateProcessor>) Class.forName(processorClassName));
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException("Template processor class with " +
+                    processorClassName + " name is not found");
         }
     }
 
@@ -260,7 +271,8 @@ public class Generator {
             Files.createDirectories(target);
         } else if (Files.isRegularFile(target)) {
             log.error("Target {} should be a dir", target);
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                    target + " generation destination should be a dir");
         }
         init();
         if (Files.isDirectory(source)) {
@@ -369,28 +381,32 @@ public class Generator {
     }
 
     private void doGenerate(Path sourceFile, Path targetDir) throws IOException {
+        setCurrentSourceFile(sourceFile);
         log.info("Processing file: {}", sourceFile);
         String sourceFileName = sourceFile.toFile().getName();
         Dimensions targetDims = dimensionsParser.parseClassName(sourceFileName);
         String rawContent = new String(Files.readAllBytes(sourceFile));
         CheckingMatcher fileDimsM = CONTEXT_START_P.matcher(rawContent);
         if (fileDimsM.find() && fileDimsM.start() == 0) {
-            targetDims = dimensionsParser.parse(
+            targetDims = dimensionsParser.parseForContext(
                     getBlockGroup(fileDimsM.group(), CONTEXT_START_BLOCK_P, "dimensions"));
             rawContent = rawContent.substring(fileDimsM.end()).trim() + "\n";
         }
+        log.info("Target dimensions: {}", targetDims);
+        List<Context> targetContexts = targetDims.generateContexts();
+        final Context mainContext = defaultContext.join(targetContexts.get(0));
         CheckingMatcher fileCondM = COND_START_P.matcher(rawContent);
         Condition fileCond = null;
         if (fileCondM.find() && fileCondM.start() == 0) {
-            fileCond = Condition.parse(
+            fileCond = Condition.parseCheckedCondition(
                     getBlockGroup(fileCondM.group(), COND_START_BLOCK_P, "condition"),
-                    dimensionsParser);
+                    dimensionsParser, mainContext,
+                    rawContent, fileCondM.start()
+            );
             rawContent = rawContent.substring(fileCondM.end()).trim() + "\n";
         }
         final String content = rawContent;
-        log.info("Target dimensions: {}", targetDims);
-        List<Context> targetContexts = targetDims.generateContexts();
-        final Context mainContext = targetContexts.get(0);
+
         List<ForkJoinTask<?>> contextGenerationTasks = new ArrayList<>();
         for (Context tc : targetContexts) {
             if (!checkContext(tc)) {
@@ -405,6 +421,7 @@ public class Generator {
             final String generatedFileName = generate(mainContext, target, sourceFileName);
             final Path generatedFile = targetDir.resolve(generatedFileName);
             contextGenerationTasks.add(ForkJoinTask.adapt(() -> {
+                setCurrentSourceFile(sourceFile);
                 String generatedContent = generate(mainContext, target, content);
                 if (Files.exists(generatedFile)) {
                     String targetContent = new String(Files.readAllBytes(generatedFile));
@@ -469,9 +486,11 @@ public class Generator {
                 String blockStart = blockStartMatcher.group();
                 CheckingMatcher condM = COND_START_P.matcher(blockStart);
                 if (condM.matches()) {
-                    Condition prevBranchCond = Condition.parse(
+                    Condition prevBranchCond = Condition.parseCheckedCondition(
                             getBlockGroup(condM.group(), COND_PART_BLOCK_P, "condition"),
-                            getDimensionsParser());
+                            getDimensionsParser(), source,
+                            template, condM.start()
+                    );
                     int branchStartPos = blockStartMatcher.end();
                     int nest = 0;
                     condM = COND_PART_P.matcher(template);
@@ -524,10 +543,12 @@ public class Generator {
                                     continue blockSearch;
                                 } else {
                                     // `elif` branch
-                                    prevBranchCond = Condition.parse(
+                                    prevBranchCond = Condition.parseCheckedCondition(
                                             getBlockGroup(condM.group(), COND_PART_BLOCK_P,
                                                     "condition"),
-                                            getDimensionsParser());
+                                            getDimensionsParser(), source,
+                                            template, condM.start()
+                                    );
                                     branchStartPos = condM.end();
                                 }
                             }
@@ -539,7 +560,7 @@ public class Generator {
                     // `with` block
                     CheckingMatcher contextM = CONTEXT_START_P.matcher(blockStart);
                     if (contextM.matches()) {
-                        Dimensions additionalDims = getDimensionsParser().parse(
+                        Dimensions additionalDims = getDimensionsParser().parseForContext(
                                 getBlockGroup(contextM.group(), CONTEXT_START_BLOCK_P,
                                         "dimensions"));
                         int blockStartPos = blockStartMatcher.end();

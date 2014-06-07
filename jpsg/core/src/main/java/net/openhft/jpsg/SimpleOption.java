@@ -63,7 +63,9 @@ public final class SimpleOption implements Option {
             parts++;
         }
         if (upper.length() != title.length() + parts - 1) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                    "Source file: " + Generator.currentSourceFile() + "\n" +
+                    "Simple options should be CamelCased, " + title + " is given");
         }
         this.upper = upper;
         upperP = Pattern.compile("(?<![A-Z])" + upper + "(?![A-RT-Z].|S[A-Z])");

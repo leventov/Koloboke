@@ -57,6 +57,10 @@ public final class CheckingMatcher implements MatchResult {
         return targetMatcher.start(group);
     }
 
+    public int start(String name) {
+        return targetMatcher.start(name);
+    }
+
     @Override
     public int end() {
         return targetMatcher.end();
@@ -65,6 +69,10 @@ public final class CheckingMatcher implements MatchResult {
     @Override
     public int end(int group) {
         return targetMatcher.end(group);
+    }
+
+    public int end(String name) {
+        return targetMatcher.end(name);
     }
 
     @Override

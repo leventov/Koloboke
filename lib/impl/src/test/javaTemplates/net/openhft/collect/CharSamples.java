@@ -40,7 +40,7 @@ public final class CharSamples {
                 /* endif */
                 /* if char t //
                 new SampleElements<Character>('a', 'b', 'c', 'd', (char) 0)
-                // elif !(char elem) */
+                // elif !(char t) */
                 new SampleElements<Character>(
                         /* const t 0 */(char) 0/* endconst */,
                         /* const t min */Character.MIN_VALUE/* endconst*/,

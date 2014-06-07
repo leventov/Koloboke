@@ -65,11 +65,27 @@ public final class Dimensions {
         /**
          * @param descriptor in format "opt1|opt2 dim1 opt3|opt4 dim2"
          */
-        public Dimensions parse(String descriptor) {
+        public Dimensions parseForContext(String descriptor) {
+            try {
+                return parse(descriptor, null, false);
+            } catch (NonexistentDimensionException e) {
+                throw new AssertionError(e);
+            }
+        }
+
+        public Dimensions parseForCondition(String descriptor, Context context)
+                throws NonexistentDimensionException {
+            return parse(descriptor, context, true);
+        }
+
+        private Dimensions parse(String descriptor, Context context, boolean checkContext)
+                throws NonexistentDimensionException {
             Matcher m = DIMENSION_P.matcher(descriptor);
             LinkedHashMap<String, List<Option>> dimensions = new LinkedHashMap<>();
             while (m.find()) {
                 String dim = m.group("dim");
+                if (checkContext && context.getOption(dim) == null)
+                    throw new NonexistentDimensionException();
                 List<Option> opts = parseOptions(m.group("options"));
                 dimensions.put(dim, opts);
             }

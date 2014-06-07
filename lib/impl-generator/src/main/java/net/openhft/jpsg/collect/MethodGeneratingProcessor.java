@@ -22,9 +22,9 @@ import net.openhft.jpsg.collect.bulk.*;
 import net.openhft.jpsg.collect.iter.IterMethod;
 import net.openhft.jpsg.collect.mapqu.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static net.openhft.jpsg.Generator.DIMENSIONS;
@@ -157,7 +157,8 @@ public final class MethodGeneratingProcessor extends TemplateProcessor {
             String indentSpaces = matcher.group("indentSpaces");
             String additionalContextDims = matcher.group("dimensions");
             if (additionalContextDims != null) {
-                List<Context> addContexts = getDimensionsParser().parse(additionalContextDims)
+                List<Context> addContexts =
+                        getDimensionsParser().parseForContext(additionalContextDims)
                         .generateContexts();
                 if (addContexts.size() != 1) {
                     throw new IllegalStateException();
@@ -168,8 +169,12 @@ public final class MethodGeneratingProcessor extends TemplateProcessor {
                 String generated = generate(methodName, target, indentSpaces);
                 matcher.appendSimpleReplacement(sb, generated.replaceFirst("\\s+$", ""));
             } catch (RuntimeException e) {
-                throw new RuntimeException(
-                        "Runtime exception while generating " + methodName + " template", e);
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                throw MalformedTemplateException.near(template, matcher.start(),
+                        "Source file: " + Generator.currentSourceFile() + "\n" +
+                        "Runtime exception while generating " + methodName + " template:\n" +
+                        sw.toString());
             }
 
         }

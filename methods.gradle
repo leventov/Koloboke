@@ -1,11 +1,17 @@
 def setSourceCompatibility(level) {
     sourceCompatibility = level
-    def langLevel = 'JDK_' + level.toString().replace('.', '_')
+    def levelAsString = level.toString()
+    def langLevel = 'JDK_' + levelAsString.replace('.', '_')
     idea.module.iml { withXml {
         it.asNode().component.find {
             it.@name == 'NewModuleRootManager'
         }.@LANGUAGE_LEVEL = langLevel
     } }
+    if (ext.has("jpsgApplied")) {
+        generateJavaSpecializations {
+            with 'jdk=JDK' + levelAsString.substring(levelAsString.length() - 1)
+        }
+    }
 }
 
 def applyJpsg() {
@@ -15,6 +21,8 @@ def applyJpsg() {
         ['classes', 'dependency-cache', 'docs', 'java-compiler', 'libs', 'reports', 'resources',
          'test-results', 'tmp'].each { excludeDirs << file("$buildDir/$it") }
     }
+
+    ext.jpsgApplied = true
 }
 
 ext.setSourceCompatibility = this.&setSourceCompatibility
