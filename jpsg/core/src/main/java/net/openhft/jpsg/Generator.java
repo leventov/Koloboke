@@ -489,7 +489,7 @@ public class Generator {
                     Condition prevBranchCond = Condition.parseCheckedCondition(
                             getBlockGroup(condM.group(), COND_PART_BLOCK_P, "condition"),
                             getDimensionsParser(), source,
-                            template, condM.start()
+                            template, blockStartMatcher.start()
                     );
                     int branchStartPos = blockStartMatcher.end();
                     int nest = 0;
