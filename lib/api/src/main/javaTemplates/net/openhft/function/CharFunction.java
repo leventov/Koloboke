@@ -16,6 +16,7 @@
 
 package net.openhft.function;
 
+
 public interface CharFunction<R>/* if int|long|double t JDK8 jdk //
         extends java.util.function.CharFunction<R>// endif */ {
 

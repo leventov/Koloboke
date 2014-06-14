@@ -24,8 +24,6 @@
           <option name="BLANK_LINES_BEFORE_PACKAGE" value="1" />
           <option name="BLANK_LINES_AFTER_IMPORTS" value="2" />
           <option name="BLANK_LINES_AROUND_CLASS" value="2" />
-          <option name="BLANK_LINES_AROUND_FIELD" value="1" />
-          <option name="BLANK_LINES_AROUND_FIELD_IN_INTERFACE" value="1" />
           <option name="BLANK_LINES_AFTER_CLASS_HEADER" value="1" />
           <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
           <option name="SPACE_BEFORE_ARRAY_INITIALIZER_LBRACE" value="true" />

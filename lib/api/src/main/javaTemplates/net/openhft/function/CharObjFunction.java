@@ -16,6 +16,7 @@
 
 package net.openhft.function;
 
+
 public interface CharObjFunction<T, R> {
 
     R apply(char v, T t);

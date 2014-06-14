@@ -16,6 +16,7 @@
 
 package net.openhft.function;
 
+
 public interface BiPredicate<T, U>
         /* if JDK8 jdk //extends java.util.function.BiPredicate<T, R> // endif */{
     /* if JDK8 jdk //@Override// endif */

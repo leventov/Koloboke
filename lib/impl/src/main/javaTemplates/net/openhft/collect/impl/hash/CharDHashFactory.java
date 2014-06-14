@@ -26,6 +26,7 @@ import net.openhft.collect.HashConfig;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+
 abstract class CharDHashFactory/* if !(LHash hash) */<MT>/* endif */ {
 
     final CharHashConfig conf;

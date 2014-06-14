@@ -16,6 +16,7 @@
 
 package net.openhft.function;
 
+
 public interface Consumer<T>/* if JDK8 jdk // extends java.util.function.Consumer<T>// endif */ {
 
     /* if JDK8 jdk //@Override// endif */

@@ -18,7 +18,6 @@
  * limitations under the License.
  */
 
-
 package net.openhft.collect.impl;
 
 import net.openhft.collect.NullableObjects;
@@ -26,6 +25,7 @@ import net.openhft.function.*;
 import net.openhft.collect.map.CharShortMap;
 
 import java.util.Map;
+
 
 public final class CommonCharShortMapOps {
 

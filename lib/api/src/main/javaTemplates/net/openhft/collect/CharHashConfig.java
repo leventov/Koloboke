@@ -17,7 +17,6 @@
 
 package net.openhft.collect;
 
-
 import com.google.auto.value.AutoValue;
 
 

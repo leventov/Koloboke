@@ -17,7 +17,6 @@
 
 package net.openhft.collect.set;
 
-
 import net.openhft.collect.CharCollection;
 
 import java.util.Set;

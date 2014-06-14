@@ -20,6 +20,7 @@
 
 package net.openhft.function;
 
+
 public interface CharShortToShortFunction/*<>*/ {
 
     short applyAsShort( char a, short b );

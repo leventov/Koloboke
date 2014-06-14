@@ -18,7 +18,6 @@
  * limitations under the License.
  */
 
-
 package net.openhft.collect.impl;
 
 import net.openhft.collect.map.CharShortMap;

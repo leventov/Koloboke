@@ -16,6 +16,7 @@
 
 package net.openhft.function;
 
+
 public interface Predicate<T>/* if JDK8 jdk // extends java.util.function.Predicate<T>// endif */ {
 
     /* if JDK8 jdk //@Override// endif */

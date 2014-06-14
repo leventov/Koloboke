@@ -18,9 +18,7 @@
  * limitations under the License.
  */
 
-
 package net.openhft.collect.map;
-
 
 import net.openhft.collect.Container;
 import net.openhft.collect.Equivalence;

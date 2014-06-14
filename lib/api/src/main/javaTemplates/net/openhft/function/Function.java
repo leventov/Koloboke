@@ -16,6 +16,7 @@
 
 package net.openhft.function;
 
+
 public interface Function<T, R>
         /* if JDK8 jdk //extends java.util.function.Function<T, R> // endif */{
 

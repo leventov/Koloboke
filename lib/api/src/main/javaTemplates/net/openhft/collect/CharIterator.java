@@ -17,7 +17,6 @@
 
 package net.openhft.collect;
 
-
 import net.openhft.function.CharConsumer;
 import net.openhft.function.Consumer;
 
