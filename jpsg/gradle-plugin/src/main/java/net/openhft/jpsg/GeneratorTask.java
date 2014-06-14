@@ -22,6 +22,7 @@ import org.gradle.api.tasks.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.function.UnaryOperator;
 
 
 public class GeneratorTask extends ConventionTask {
@@ -60,6 +61,12 @@ public class GeneratorTask extends ConventionTask {
 
     public GeneratorTask addProcessor(String processorClassName) {
         g.addProcessor(processorClassName);
+        return this;
+    }
+
+    public GeneratorTask addPrimitiveTypeModifierProcessors(String keyword,
+            UnaryOperator<PrimitiveType> typeMapper) {
+        g.addPrimitiveTypeModifierProcessors(keyword, typeMapper);
         return this;
     }
 

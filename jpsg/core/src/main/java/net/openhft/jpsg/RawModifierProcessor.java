@@ -16,19 +16,16 @@
 
 package net.openhft.jpsg;
 
-import java.util.*;
+import java.util.Map;
 
 
-public final class OptionProcessor extends TemplateProcessor {
-    public static final int PRIORITY = DEFAULT_PRIORITY;
+public final class RawModifierProcessor extends TemplateProcessor {
+    /**
+     * {@code RawModifierProcessor} should run before any {@link PrimitiveTypeModifierPreProcessor}
+     */
+    public static final int PRIORITY = PrimitiveTypeModifierPreProcessor.PRIORITY + 1;
 
-    static String prefixPattern(String prefix, String primitive) {
-        return prefix + primitive + "(?![A-Za-z0-9_$#])";
-    }
-
-    static String modifier(String keyword) {
-        return "/[\\*/]\\s*" + keyword + "\\s*[\\*/]/";
-    }
+    private static final String RAW = OptionProcessor.modifier("raw");
 
     @Override
     protected int priority() {
@@ -39,18 +36,16 @@ public final class OptionProcessor extends TemplateProcessor {
     protected void process(StringBuilder sb, Context source, Context target, String template) {
         for (Map.Entry<String, Option> e : source) {
             String dim = e.getKey();
-            Option option = e.getValue();
-            template = option.intermediateReplace(template, dim);
+            if (e.getValue() instanceof PrimitiveType &&
+                    target.getOption(dim) instanceof ObjectType) {
+                PrimitiveType sourceT = (PrimitiveType) e.getValue();
+                String rawP = OptionProcessor.prefixPattern(RAW,
+                        "(" + sourceT.className + "|" + sourceT.standalone + ")");
+                template = template.replaceAll(rawP, "Object");
+            }
         }
-        List<String> dims = new ArrayList<>();
-        for (Map.Entry<String, Option> e : target) {
-            dims.add(e.getKey());
-        }
-        for (int i = dims.size(); i-- > 0;) {
-            String dim = dims.get(i);
-            Option option = target.getOption(dim);
-            template = option.finalReplace(template, dim);
-        }
+        // remove left modifier templates when for example target is primitive type
+        template = template.replaceAll(RAW, "");
         postProcess(sb, source, target, template);
     }
 }

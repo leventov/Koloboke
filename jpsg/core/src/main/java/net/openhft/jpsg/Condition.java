@@ -46,7 +46,8 @@ public final class Condition {
         try {
             return parse(condition, dimensionsParser, context);
         } catch (NonexistentDimensionException e) {
-            throw MalformedTemplateException.near(input, pos, "Nonexistent dimension in condition");
+            throw MalformedTemplateException.near(input, pos,
+                    "Nonexistent dimension in condition, context: " + context);
         }
     }
     static Condition parse(String condition, Dimensions.Parser dimensionsParser, Context context)

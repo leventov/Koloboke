@@ -16,18 +16,20 @@
 
 package net.openhft.jpsg;
 
-import java.util.*;
+import java.util.Map;
+import java.util.function.UnaryOperator;
 
 
-public final class OptionProcessor extends TemplateProcessor {
-    public static final int PRIORITY = DEFAULT_PRIORITY;
+public class PrimitiveTypeModifierPostProcessor extends TemplateProcessor {
+    public static final int PRIORITY = OptionProcessor.PRIORITY - 1;
 
-    static String prefixPattern(String prefix, String primitive) {
-        return prefix + primitive + "(?![A-Za-z0-9_$#])";
-    }
+    private final String keyword;
+    private final UnaryOperator<PrimitiveType> typeMapper;
 
-    static String modifier(String keyword) {
-        return "/[\\*/]\\s*" + keyword + "\\s*[\\*/]/";
+    public PrimitiveTypeModifierPostProcessor(String keyword,
+            UnaryOperator<PrimitiveType> typeMapper) {
+        this.keyword = keyword;
+        this.typeMapper = typeMapper;
     }
 
     @Override
@@ -37,19 +39,13 @@ public final class OptionProcessor extends TemplateProcessor {
 
     @Override
     protected void process(StringBuilder sb, Context source, Context target, String template) {
-        for (Map.Entry<String, Option> e : source) {
-            String dim = e.getKey();
-            Option option = e.getValue();
-            template = option.intermediateReplace(template, dim);
-        }
-        List<String> dims = new ArrayList<>();
         for (Map.Entry<String, Option> e : target) {
-            dims.add(e.getKey());
-        }
-        for (int i = dims.size(); i-- > 0;) {
-            String dim = dims.get(i);
-            Option option = target.getOption(dim);
-            template = option.finalReplace(template, dim);
+            String dim = e.getKey();
+            Option targetT = e.getValue();
+            if (targetT instanceof PrimitiveType) {
+                String kwDim = dim + "." + keyword;
+                template = typeMapper.apply((PrimitiveType) targetT).finalReplace(template, kwDim);
+            }
         }
         postProcess(sb, source, target, template);
     }

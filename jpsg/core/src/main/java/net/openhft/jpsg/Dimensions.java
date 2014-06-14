@@ -73,7 +73,7 @@ public final class Dimensions {
             }
         }
 
-        public Dimensions parseForCondition(String descriptor, Context context)
+        Dimensions parseForCondition(String descriptor, Context context)
                 throws NonexistentDimensionException {
             return parse(descriptor, context, true);
         }

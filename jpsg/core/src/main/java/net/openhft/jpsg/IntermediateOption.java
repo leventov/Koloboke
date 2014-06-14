@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import static java.lang.String.format;
 
 
-public final class IntermediateOption {
+final class IntermediateOption {
 
     private static final Map<String, IntermediateOption> cache = new HashMap<>();
 

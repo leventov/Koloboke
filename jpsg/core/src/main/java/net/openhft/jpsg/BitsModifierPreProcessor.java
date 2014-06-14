@@ -16,5 +16,9 @@
 
 package net.openhft.jpsg;
 
-final class NonexistentDimensionException extends Exception {
+public final class BitsModifierPreProcessor extends PrimitiveTypeModifierPreProcessor {
+
+    public BitsModifierPreProcessor() {
+        super("bits", PrimitiveType::bitsType);
+    }
 }

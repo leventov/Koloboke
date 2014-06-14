@@ -26,6 +26,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -126,6 +127,9 @@ public class Generator {
         add(new DefinitionProcessor());
         add(new FunctionProcessor());
         add(new FloatingWrappingProcessor());
+        add(new RawModifierProcessor());
+        add(new BitsModifierPreProcessor());
+        add(new BitsModifierPostProcessor());
     }};
 
     private final List<String> with = new ArrayList<>();
@@ -165,6 +169,13 @@ public class Generator {
 
     public Generator addProcessor(TemplateProcessor processor) {
         processors.add(processor);
+        return this;
+    }
+
+    public Generator addPrimitiveTypeModifierProcessors(String keyword,
+            UnaryOperator<PrimitiveType> typeMapper) {
+        addProcessor(new PrimitiveTypeModifierPreProcessor(keyword, typeMapper));
+        addProcessor(new PrimitiveTypeModifierPostProcessor(keyword, typeMapper));
         return this;
     }
 
