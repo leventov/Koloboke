@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static net.openhft.collect.Equivalence.caseInsensitive;
-import static net.openhft.collect.map.hash.HashObjObjMaps.*;
 import static net.openhft.collect.set.hash.HashObjSets.newImmutableSet;
 
 
@@ -104,12 +103,12 @@ public final class DimensionedJmh {
     private List<String> argDimNames = new ArrayList<>();
     private ObjObjMapFactory<String, Object> dimMapsFactory =
             HashObjObjMaps.getDefaultFactory().withKeyEquivalence(caseInsensitive());
-    private Map<String, List<String>> argDimOptions = dimMapsFactory.newMutableMap();
+    private Map<String, List<String>> argDimOptions = dimMapsFactory.newUpdatableMap();
     private List<String> benchDimNames = new ArrayList<>();
-    private Map<String, Collection<String>> benchDimOptions = dimMapsFactory.newMutableMap();
+    private Map<String, Collection<String>> benchDimOptions = dimMapsFactory.newUpdatableMap();
     private ObjIntMap<String> maxDimWidths =
             HashObjIntMaps.getDefaultFactory().withKeyEquivalence(caseInsensitive())
-            .newMutableMap();
+            .newUpdatableMap();
     private ToLongFunction<Map<String, String>> getOperationsPerInvocation = null;
     private boolean dynamicOperationsPerInvocation = false;
     private boolean headerPrinted = false;
@@ -185,9 +184,9 @@ public final class DimensionedJmh {
 
     public void run(String[] args) throws RunnerException, CommandLineOptionException {
         Map<String, Collection<String>> filteredBenchOptions =
-                dimMapsFactory.newMutableMap(benchDimOptions);
+                dimMapsFactory.newUpdatableMap(benchDimOptions);
         Map<String, List<String>> filteredArgOptions =
-                dimMapsFactory.newMutableMap(argDimOptions);
+                dimMapsFactory.newUpdatableMap(argDimOptions);
         List<String> filteredArgs = new ArrayList<>(asList(args));
         Iterator<String> argsIt = filteredArgs.iterator();
         while (argsIt.hasNext()) {
@@ -221,7 +220,7 @@ public final class DimensionedJmh {
             return;
         }
         for (int comb = 0; comb < argOptionCombinations; comb++) {
-            Map<String, String> combination = dimMapsFactory.newMutableMap();
+            Map<String, String> combination = dimMapsFactory.newUpdatableMap();
             int r = comb;
             for (String argDimName : argDimNames) {
                 List<String> options = filteredArgOptions.get(argDimName);
@@ -289,7 +288,7 @@ public final class DimensionedJmh {
             BenchmarkRecord bench, RunResult result) {
         argDimNames.stream().map(dim -> align(dim, combination.get(dim)))
                 .forEach(System.out::print);
-        Map<String, String> benchOptions = dimMapsFactory.newMutableMap();
+        Map<String, String> benchOptions = dimMapsFactory.newUpdatableMap();
         List<String> dims = dimParts(methodName(bench));
         Iterator<String> dimNamesIt = benchDimNames.iterator();
         for (String dim : dims) {
@@ -365,7 +364,8 @@ public final class DimensionedJmh {
 
     private long operations(Map<String, String> argOptions, Map<String, String> benchOptions) {
         return getOperationsPerInvocation != null ?
-                getOperationsPerInvocation.applyAsLong(newImmutableMap(argOptions, benchOptions)) :
+                getOperationsPerInvocation.applyAsLong(
+                        dimMapsFactory.newImmutableMap(argOptions, benchOptions)) :
                 1L;
     }
 
