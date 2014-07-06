@@ -1,4 +1,4 @@
-def setSourceCompatibility(level) {
+def setSourceCompatibility(project, level) { configure(project) {
     sourceCompatibility = level
     def levelAsString = level.toString()
     def langLevel = 'JDK_' + levelAsString.replace('.', '_')
@@ -7,12 +7,14 @@ def setSourceCompatibility(level) {
             it.@name == 'NewModuleRootManager'
         }.@LANGUAGE_LEVEL = langLevel
     } }
-    if (ext.has("jpsgApplied")) {
-        generateJavaSpecializations {
-            with 'jdk=JDK' + levelAsString.substring(levelAsString.length() - 1)
+    project.beforeEvaluate {
+        if (ext.has('jpsgApplied')) {
+            generateJavaSpecializations {
+                with 'jdk=JDK' + levelAsString.substring(levelAsString.length() - 1)
+            }
         }
     }
-}
+} }
 
 def applyJpsg() {
     apply plugin: 'jpsg'

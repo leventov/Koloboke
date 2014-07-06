@@ -1,3 +1,7 @@
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}
+
 allprojects {
     apply plugin: 'idea'
 
@@ -28,9 +32,13 @@ configure(leafProjects) {
         options.encoding = 'UTF-8'
     }
 
+    configure(tasks.withType(JavaCompile)) {
+        options.compilerArgs << '-Xlint:all'
+    }
+
     apply from: "$rootProject.projectDir/methods.gradle"
 
-    setSourceCompatibility(1.8)
+    setSourceCompatibility(project, 1.8)
 }
 
 def metaProjects = [':jpsg:core', ':jpsg:gradle-plugin', ':lib:impl-generator']

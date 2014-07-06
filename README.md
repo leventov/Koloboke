@@ -25,20 +25,20 @@ Then
 
     $ git clone git@github.com:OpenHFT/UntitledCollectionsProject.git collections
     $ cd collections
-    $ gradle :buildMeta
-    $ gradle buildMain -x test -x findbugsMain
-    $ gradle idea
+    $ ./gradlew :buildMeta
+    $ ./gradlew buildMain -x test -x findbugsMain
+    $ ./gradlew idea
 
 Then you can open the project in IntelliJ IDEA.
 
 To rebuild meta projects (code generators), run from the project root dir:
 
-    $ gradle --stop
-    $ gradle :cleanMeta :buildMeta
+    $ ./gradlew --stop
+    $ ./gradlew :cleanMeta :buildMeta
 
 To rebuild either the lib, benchmarks or both, run
 
-    $ gradle cleanMain buildMain
+    $ ./gradlew cleanMain buildMain
 
 from the `lib`, `benchmarks` subdir or the root project dir respectively.
  
