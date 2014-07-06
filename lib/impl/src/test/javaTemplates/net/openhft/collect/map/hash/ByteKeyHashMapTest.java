@@ -19,7 +19,7 @@ package net.openhft.collect.map.hash;
 
 import net.openhft.collect.ByteHashConfig;
 import net.openhft.collect.HashConfig;
-import net.openhft.collect.impl.hash.ByteIntDHash;
+import net.openhft.collect.impl.hash.SeparateKVByteIntDHash;
 import net.openhft.collect.impl.hash.MutableDHash;
 import net.openhft.collect.map.ByteIntMap;
 import net.openhft.collect.map.ByteIntMapFactory;
@@ -47,7 +47,7 @@ public class ByteKeyHashMapTest {
                     ByteIntMap map = factory.newMutableMapOf((byte) i, i, (byte) j, j, (byte) k, k);
                     if (map.size() != 3)
                         break;
-                    ByteIntDHash h = (ByteIntDHash) map;
+                    SeparateKVByteIntDHash h = (SeparateKVByteIntDHash) map;
                     String p = toString("Initially: ", h) + " ";
                     assertEquals(3, sizeByValueIterator(map));
                     map.remove((byte) i);
@@ -85,10 +85,10 @@ public class ByteKeyHashMapTest {
         ByteIntMapFactory factory = getDefaultFactory().withConfig(config);
 
         ByteIntMap map;
-        ByteIntDHash asDHash;
+        SeparateKVByteIntDHash asDHash;
         for (int i = 0; ; i++) {
             map = factory.newMutableMap(i);
-            asDHash = (ByteIntDHash) map;
+            asDHash = (SeparateKVByteIntDHash) map;
             if (asDHash.capacity() > 128) {
                 break;
             }
@@ -117,7 +117,7 @@ public class ByteKeyHashMapTest {
         assertFalse(map.containsKey((byte) 1));
     }
 
-    private static String toString(String prefix, ByteIntDHash hash) {
+    private static String toString(String prefix, SeparateKVByteIntDHash hash) {
         return prefix +
                 "Hash: " + hash.toString() + "; Keys: " + Arrays.toString(hash.keys()) +
                 "; Free value: " + hash.freeValue() +

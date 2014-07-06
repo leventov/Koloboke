@@ -30,7 +30,7 @@ public final class Condition {
      */
 
     private static final String POSSIBLY_NEGATED_DIMENSIONS =
-            format("(%s|!\\(%s\\))", DIMENSIONS, DIMENSIONS);
+            format("(%s|!?\\(%s\\))", DIMENSIONS, DIMENSIONS);
 
     static final String CONDITION =
             format("((%s\\s*\\|\\|\\s*)*|(%s\\s*&&\\s*)*)\\s*%s",
@@ -62,12 +62,14 @@ public final class Condition {
         }
         for (String dims : allDims) {
             dims = dims.trim();
-            if (dims.startsWith("!(")) {
+            if (dims.startsWith("!")) {
                 cond.negated.add(true);
-                dims = dims.substring(2, dims.length() - 1);
+                dims = dims.substring(1);
             } else {
                 cond.negated.add(false);
             }
+            if (dims.startsWith("("))
+                dims = dims.substring(1, dims.length() - 1);
             cond.allDims.add(dimensionsParser.parseForCondition(dims, context));
         }
         return cond;

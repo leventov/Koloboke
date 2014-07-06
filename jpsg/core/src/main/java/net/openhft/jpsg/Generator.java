@@ -26,6 +26,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveAction;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -173,9 +174,9 @@ public class Generator {
     }
 
     public Generator addPrimitiveTypeModifierProcessors(String keyword,
-            UnaryOperator<PrimitiveType> typeMapper) {
-        addProcessor(new PrimitiveTypeModifierPreProcessor(keyword, typeMapper));
-        addProcessor(new PrimitiveTypeModifierPostProcessor(keyword, typeMapper));
+            UnaryOperator<PrimitiveType> typeMapper, Predicate<String> dimFilter) {
+        addProcessor(new PrimitiveTypeModifierPreProcessor(keyword, typeMapper, dimFilter));
+        addProcessor(new PrimitiveTypeModifierPostProcessor(keyword, typeMapper, dimFilter));
         return this;
     }
 
@@ -478,7 +479,7 @@ public class Generator {
     }
 
     public final class BlocksProcessor extends TemplateProcessor {
-        public static final int PRIORITY = DEFAULT_PRIORITY + 10;
+        public static final int PRIORITY = DEFAULT_PRIORITY + 100;
 
         @Override
         protected int priority() {

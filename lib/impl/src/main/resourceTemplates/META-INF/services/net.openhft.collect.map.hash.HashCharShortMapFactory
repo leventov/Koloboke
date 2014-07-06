@@ -1,5 +1,6 @@
 /* with
  char|byte|short|int|long|float|double|obj key
  short|byte|char|int|long|float|double|obj value
+ Separate|Parallel kv
 */
-net.openhft.collect.impl.hash.LHashCharShortMapFactoryImpl
+net.openhft.collect.impl.hash.LHashSeparateKVCharShortMapFactoryImpl

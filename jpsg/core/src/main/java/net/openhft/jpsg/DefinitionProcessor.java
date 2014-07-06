@@ -21,7 +21,7 @@ import java.util.Map;
 
 
 public final class DefinitionProcessor extends TemplateProcessor {
-    public static final int PRIORITY = Generator.BlocksProcessor.PRIORITY + 10;
+    public static final int PRIORITY = Generator.BlocksProcessor.PRIORITY + 100;
 
     private static final String DEF_PREFIX = "/[\\*/]\\s*define";
     private static final CheckingPattern DEF_P = CheckingPattern.compile(DEF_PREFIX,

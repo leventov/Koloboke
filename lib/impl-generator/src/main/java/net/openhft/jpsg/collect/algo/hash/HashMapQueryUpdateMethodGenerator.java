@@ -36,6 +36,7 @@ import static net.openhft.jpsg.collect.mapqu.Branch.KEY_PRESENT;
 
 public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMethodGenerator {
 
+    private static final String TABLE_SUB = "#tab#";
     private static final String KEY_SUB = "#key#";
     private static final String VAL_SUB = "#val#";
     private static final String VALUES_SUB = "#vals#";
@@ -53,12 +54,19 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
     private boolean removedSlot;
     private boolean earlyAbsentLabel;
 
+    private boolean presentValueUsed = false;
     // if values copy should be lifted from branches
-    private boolean commonValuesCopy;
+    private boolean commonValuesCopy = false;
+    private boolean commonTableCopy = false;
 
     private boolean commonCapacityMaskCopy = false;
 
     private String index = "index";
+
+    private boolean inline() {
+        return method.inline() ||
+                (parallelKV(cxt) && !doubleSizedParallel(cxt) && presentValueUsed);
+    }
 
     @Override
     public String defaultValue() {
@@ -78,11 +86,10 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
     @Override
     public void insert(String value) {
         permissions.add(Permission.INSERT);
-        if (method.inline()) {
+        if (inline()) {
             incrementModCount();
-            lines("keys[" + index() + "] = " + unwrappedKey() + ";");
-            if (cxt.isMapView())
-                lines(values() + "[" + index() + "] = " + unwrapValue(value) + ";");
+            writeKeyAndValue(this, cxt, table(), "keys", values(), index(), unwrappedKey(),
+                    () -> unwrapValue(value), true, cxt.isMapView());
             if (removedSlot) {
                 lines("postRemovedSlotInsertHook();");
             } else {
@@ -98,7 +105,7 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
     protected void generateLines(Method m) {
         method = (MapQueryUpdateMethod) m;
         determineBranchFeatures();
-        if (method.inline()) {
+        if (inline()) {
             generateInline();
         } else {
             generateNotInlined();
@@ -113,6 +120,8 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
         getIndex();
         if (commonValuesCopy)
             copyValues();
+        if (commonTableCopy)
+            copyTable(this, cxt);
         beforeBranches = lines.size();
         if (absentBranchSize == 0 && presentBranchSize == 0)
             throw new IllegalStateException();
@@ -196,7 +205,7 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
                     String keyCopy = indent + cxt.keyType() + " k = key;";
                     lines.add(0, keyCopy);
                 }
-            } else if (!method.inline()) {
+            } else if (!inline()) {
                 // key is Object
                 // the only usage - in index() call
                 if (keyUsages != 1)
@@ -215,7 +224,7 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
         String key;
         if (cxt.isNullKey()) {
             key = "null";
-        } else if (cxt.isObjectKey() && method.inline() && method.baseOp() == GET) {
+        } else if (cxt.isObjectKey() && inline() && method.baseOp() == GET) {
             key = "k";
         } else {
             key = "key";
@@ -241,14 +250,18 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
 
     private void generateAbsent(boolean removedSlot, boolean replaceValues,
             boolean slotTypeComment) {
-        String time = method.baseOp() == INSERT && !method.inline() ? "was" : "is";
+        String time = method.baseOp() == INSERT && !inline() ? "was" : "is";
         String comment = "// key " + time + " absent";
-        if (slotTypeComment && cxt.mutable() && method.inline() && !isLHash(cxt)) {
+        if (slotTypeComment && cxt.mutable() && inline() && !isLHash(cxt)) {
             comment += removedSlot ? ", removed slot" : ", free slot";
         }
         lines(comment);
         int branchStart = firstAbsentLine = lines.size();
         this.removedSlot = removedSlot;
+        if (inline() && !method.inline() && method.baseOp() == INSERT) {
+            assert cxt.isMapView();
+            insert("value");
+        }
         method.ifAbsent();
         if (replaceValues)
             replaceValues(branchStart);
@@ -292,12 +305,14 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
 
     private void replaceValues(int branchStart) {
         int valUsages = countUsages(branchStart, VAL_SUB);
-        if (valUsages >= 2) {
-            replaceAll(branchStart, VAL_SUB, "val");
-            lines.add(branchStart,
-                    indent + cxt.valueUnwrappedType() + " val = " + values() + "[" + index() + "];");
-        } else {
-            replaceAll(branchStart, VAL_SUB, values() + "[" + index() + "]");
+        if (valUsages > 0) {
+            String val = readValue(cxt, table(), values(), index());
+            if (valUsages >= 2) {
+                replaceFirstDifferent(branchStart, VAL_SUB, "(val = " + val + ")", "val");
+                lines.add(branchStart, indent + cxt.valueUnwrappedType() + " val;");
+            } else {
+                replaceAll(branchStart, VAL_SUB, val);
+            }
         }
         if (commonValuesCopy) {
             replaceAll(branchStart, VALUES_SUB, "vals");
@@ -310,7 +325,18 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
                 replaceAll(branchStart, VALUES_SUB, "values");
             }
         }
-        if (method.baseOp() == CUSTOM_INSERT && !method.inline()) {
+        if (inline() || commonTableCopy) {
+            replaceAll(branchStart, TABLE_SUB, "tab");
+        } else {
+            int tableUsages = countUsages(branchStart, TABLE_SUB);
+            if (tableUsages >= 2) {
+                replaceAll(branchStart, TABLE_SUB, "tab");
+                lines.add(branchStart, indent + tableType(cxt) + "[] tab = table;");
+            } else {
+                replaceAll(branchStart, TABLE_SUB, "table");
+            }
+        }
+        if (method.baseOp() == CUSTOM_INSERT && !inline()) {
             for (int i = branchStart; i < lines.size(); i++) {
                 String line = lines.get(i);
                 if (countOccurrences(line, "index") > 0) {
@@ -322,7 +348,7 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
     }
 
     String removedValue() {
-        return method.inline() || !cxt.isIntegralKey() ? removed(cxt) : "removedValue";
+        return inline() || !cxt.isIntegralKey() ? removed(cxt) : "removedValue";
     }
 
     String index() {
@@ -347,6 +373,10 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
         return VAL_SUB;
     }
 
+    private String table() {
+        return TABLE_SUB;
+    }
+
     private String values() {
         return VALUES_SUB;
     }
@@ -356,35 +386,39 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
         permissions.add(REMOVE);
         if (isLHash(cxt) && !method.removeIsHighlyProbable()) {
             lines("removeAt(" + index() + ");");
-        } else if (isLHash(cxt)) {
-            if (!method.inline() || !commonCapacityMaskCopy)
-                lines("int capacityMask = keys.length - 1;");
-            if (method.inline())
-                commonCapacityMaskCopy = true;
-            new LHashShiftRemove(this, cxt, index(), VALUES_SUB).generate();
         } else {
-            incrementModCount();
-            String keys;
-            if (method.inline()) {
-                keys = "keys";
-                if (cxt.isObjectOrNullKey()) {
-                    keys = "((Object[]) " + keys + ")";
+            if (isLHash(cxt)) {
+                if (!inline() || !commonCapacityMaskCopy) {
+                    lines("int capacityMask = " + capacityMask(cxt) + ";");
                 }
+                if (inline()) {
+                    commonCapacityMaskCopy = true;
+                }
+                new LHashShiftRemove(this, cxt, index(), TABLE_SUB, VALUES_SUB).generate();
             } else {
-                keys = "set";
+                incrementModCount();
+                String keys, table;
+                if (inline()) {
+                    keys = "keys";
+                    if (cxt.isObjectOrNullKey())
+                        keys = "((Object[]) " + keys + ")";
+                    table = "tab";
+                } else {
+                    keys = "set";
+                    table = "table";
+                }
+                writeKey(this, cxt, table, keys, index(), removedValue());
+                if (cxt.isObjectValue())
+                    writeValue(this, cxt, table(), values(), index(), "null");
+                lines("postRemoveHook();");
             }
-            lines(keys + "[" + index() + "] = " + removedValue() + ";");
-            if (cxt.isObjectValue()) {
-                lines(values() + "[" + index() + "] = null;");
-            }
-            lines("postRemoveHook();");
         }
         return this;
     }
 
     @Override
     public MethodGenerator setValue(String newValue) {
-        lines(values() + "[" + index() + "] = " + unwrapValue(newValue) + ";");
+        writeValue(this, cxt, table(), values(), index(), unwrapValue(newValue));
         permissions.add(SET_VALUE);
         return this;
     }
@@ -393,7 +427,7 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
     private void generateInline() {
         inlineBeginning();
         inlineLocals();
-        String curAssignment = curAssignment(cxt, "keys", unwrappedKey(), commonCapacityMaskCopy);
+        String curAssignment = curAssignment(cxt, unwrappedKey(), commonCapacityMaskCopy);
         if (method.mostProbableBranch() == KEY_ABSENT) {
             firstIndexFreeCheck(curAssignment);
             if (separatePresent) {
@@ -489,26 +523,24 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
             }
         } else {
             if (isLHash(cxt) && cxt.isNullKey() && !commonCapacityMaskCopy)
-                lines("capacityMask = keys.length - 1;");
+                lines("capacityMask = " + capacityMask(cxt) + ";");
             keySearchLoop(true, false);
         }
     }
 
     private void inlineLocals() {
-        copyUnwrappedKeys(this, cxt);
-        if (commonValuesCopy)
-            copyValues();
+        copyArrays(this, cxt, commonValuesCopy);
         String locals;
         if (isLHash(cxt)) {
             if (commonCapacityMaskCopy) {
-                lines("int capacityMask = keys.length - 1;");
+                lines("int capacityMask = " + capacityMask(cxt) + ";");
                 locals = "";
             } else {
                 locals = "capacityMask, ";
             }
         } else if (isQHash(cxt)) {
             if (cxt.isNullKey()) {
-                lines("int capacity = keys.length;");
+                lines("int capacity = " + localTableVar(cxt) + ".length;");
                 locals = "";
             } else {
                 locals = "capacity, ";
@@ -517,10 +549,10 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
             assertHash(cxt, isDHash(cxt));
             locals = (!cxt.isNullKey() ? "capacity, hash, " : "");
         }
-        lines(
-                "int " + locals + "index;",
-                cxt.keyUnwrappedType() + " cur;"
-        );
+        lines("int " + locals + "index;");
+        lines(cxt.keyUnwrappedType() + " cur;");
+        if (parallelKV(cxt) && !doubleSizedParallel(cxt))
+            lines(tableEntryType(cxt) + " entry;");
     }
 
     private void copyValues() {
@@ -607,8 +639,9 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
                 if (!index.equals(prevIndex))
                     lines(prevIndex + " = " + index + ";");
             };
+            String key = readKeyOrEntry(cxt, index);
             if (method.mostProbableBranch() == KEY_PRESENT) {
-                ifBlock("(cur = keys[" + index + "]) == " + unwrappedKey());
+                ifBlock("(cur = " + key + ") == " + unwrappedKey());
                 generateOrGoToPresent(beforeBreak);
                 elseIf(isFree(cxt, "cur"));
                 generateOrGoToAbsent(false, beforeBreak);
@@ -619,7 +652,7 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
                     blockEnd();
                 }
             } else {
-                ifBlock(isFree(cxt, "(cur = keys[" + index + "])"));
+                ifBlock(isFree(cxt, "(cur = " + key + ")"));
                 generateOrGoToAbsent(false, beforeBreak);
                 String presentCond = "cur == " + unwrappedKey();
                 if (cxt.isObjectKey()) {
@@ -644,13 +677,14 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
                 if (!index.equals(prevIndex))
                     lines(prevIndex + " = " + index + ";");
             };
+            String key = readKeyOrEntry(cxt, index);
             if (method.mostProbableBranch() == KEY_PRESENT) {
-                ifBlock("(cur = keys[" + index + "]) == " + unwrappedKey());
+                ifBlock("(cur = " + key + ") == " + unwrappedKey());
                 generateOrGoToPresent(beforeBreak);
                 elseIf(isFree(cxt, "cur"));
                 generateAbsentDependingOnFirstRemoved(beforeBreak);
             } else {
-                ifBlock(isFree(cxt, "(cur = keys[" + index + "])"));
+                ifBlock(isFree(cxt, "(cur = " + key + ")"));
                 generateAbsentDependingOnFirstRemoved(beforeBreak);
                 elseIf("cur == " + unwrappedKey());
                 generateOrGoToPresent(beforeBreak);
@@ -693,6 +727,7 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
         absentBranchSize = lines.size() - 1;
         separateAbsentFreeSlot = absentBranchSize > 1;
         int absentBranchValuesUsages = countUsages(0, VALUES_SUB) + countUsages(0, VAL_SUB);
+        int absentBranchTableUsages = countUsages(0, TABLE_SUB);
         lines.clear();
 
         separateAbsentRemovedSlot = separateAbsentFreeSlot && innerLoopBodies(cxt) > 1;
@@ -701,10 +736,14 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
         // first line is comment
         presentBranchSize = lines.size() - 1;
         separatePresent = presentBranchSize > 1;
-        int presentBranchValueUsages = countUsages(0, VALUES_SUB) + countUsages(0, VAL_SUB);
+        int presentValUsages = countUsages(0, VAL_SUB);
+        int presentBranchValuesUsages = countUsages(0, VALUES_SUB) + presentValUsages;
+        int presentBranchTableUsages = countUsages(0, TABLE_SUB);
         lines.clear();
 
-        commonValuesCopy = absentBranchValuesUsages > 0 && presentBranchValueUsages > 0;
+        presentValueUsed = presentValUsages > 0;
+        commonValuesCopy = absentBranchValuesUsages > 0 && presentBranchValuesUsages > 0;
+        commonTableCopy = absentBranchTableUsages > 0 && presentBranchTableUsages > 0;
     }
 
     private void generateOrGoToPresent(Runnable beforeBreak) {

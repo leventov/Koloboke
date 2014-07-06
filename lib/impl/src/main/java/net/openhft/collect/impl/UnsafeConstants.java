@@ -19,6 +19,10 @@ package net.openhft.collect.impl;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
+import java.nio.ByteOrder;
+
+import static java.nio.ByteOrder.*;
+import static java.nio.ByteOrder.nativeOrder;
 
 
 public interface UnsafeConstants {
@@ -64,4 +68,25 @@ public interface UnsafeConstants {
     public static final long FLOAT_BASE = (long) Unsafe.ARRAY_FLOAT_BASE_OFFSET;
     public static final long LONG_BASE = (long) Unsafe.ARRAY_LONG_BASE_OFFSET;
     public static final long DOUBLE_BASE = (long) Unsafe.ARRAY_DOUBLE_BASE_OFFSET;
+
+    /**
+     * In parallel key-value tables keys and values sometimes are read and written as a single
+     * value of doubled size. Key is always in the lower half, value is in the higher.
+     * Then the offset to keys and values depends on native byte order.
+     */
+
+    public static final long BYTE_KEY_OFFSET = nativeOrder() == LITTLE_ENDIAN ? 0L : 1L;
+    public static final long BYTE_VALUE_OFFSET = 1L - BYTE_KEY_OFFSET;
+
+    public static final long CHAR_KEY_OFFSET = nativeOrder() == LITTLE_ENDIAN ? 0L : 2L;
+    public static final long CHAR_VALUE_OFFSET = 2L - CHAR_KEY_OFFSET;
+
+    public static final long SHORT_KEY_OFFSET = CHAR_KEY_OFFSET;
+    public static final long SHORT_VALUE_OFFSET = CHAR_VALUE_OFFSET;
+
+    public static final long INT_KEY_OFFSET = nativeOrder() == LITTLE_ENDIAN ? 0L : 4L;
+    public static final long INT_VALUE_OFFSET = 4L - INT_KEY_OFFSET;
+
+    public static final long FLOAT_KEY_OFFSET = INT_KEY_OFFSET;
+    public static final long FLOAT_VALUE_OFFSET = INT_VALUE_OFFSET;
 }

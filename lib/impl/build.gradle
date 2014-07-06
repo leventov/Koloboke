@@ -1,8 +1,24 @@
 evaluationDependsOn("$parent.path")
 
-generateJavaSpecializations {
+configure([generateJavaSpecializations, generateResourceSpecializations]) {
     addProcessor 'net.openhft.jpsg.collect.MethodGeneratingProcessor'
+    addProcessor 'net.openhft.jpsg.collect.algo.hash.TableTypePreProcessor'
+    addProcessor 'net.openhft.jpsg.collect.algo.hash.TableTypePostProcessor'
     never 'DHash'
+    with 'parallelKV=Enabled'
+    exclude(
+            'kv=Parallel,key=byte,value=char|short|int|long|float|double|obj',
+            'kv=Parallel,key=char|short,value=byte|int|long|float|double|obj',
+            'kv=Parallel,key=int|float,value=byte|char|short|long|double|obj',
+            'kv=Parallel,key=long|double,value=byte|char|short|int|float|obj',
+            'kv=Parallel,key=obj,value=byte|char|short|int|long|float|double',
+
+            'kv=Separate,key=byte,value=byte',
+            'kv=Separate,key=char|short,value=char|short',
+            'kv=Separate,key=int|float,value=int|float',
+            'kv=Separate,key=long|double,value=long|double',
+            'kv=Separate,key=obj,value=obj'
+    )
 }
 
 dependencies {

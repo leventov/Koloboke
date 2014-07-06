@@ -17,19 +17,22 @@
 package net.openhft.jpsg;
 
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 
 public class PrimitiveTypeModifierPostProcessor extends TemplateProcessor {
-    public static final int PRIORITY = OptionProcessor.PRIORITY - 1;
+    public static final int PRIORITY = OptionProcessor.PRIORITY - 10;
 
     private final String keyword;
     private final UnaryOperator<PrimitiveType> typeMapper;
+    private final Predicate<String> dimFilter;
 
     public PrimitiveTypeModifierPostProcessor(String keyword,
-            UnaryOperator<PrimitiveType> typeMapper) {
+            UnaryOperator<PrimitiveType> typeMapper, Predicate<String> dimFilter) {
         this.keyword = keyword;
         this.typeMapper = typeMapper;
+        this.dimFilter = dimFilter;
     }
 
     @Override
@@ -41,10 +44,15 @@ public class PrimitiveTypeModifierPostProcessor extends TemplateProcessor {
     protected void process(StringBuilder sb, Context source, Context target, String template) {
         for (Map.Entry<String, Option> e : target) {
             String dim = e.getKey();
+            if (!dimFilter.test(dim))
+                continue;
             Option targetT = e.getValue();
-            if (targetT instanceof PrimitiveType) {
+            if (targetT instanceof PrimitiveType || targetT instanceof ObjectType) {
                 String kwDim = dim + "." + keyword;
-                template = typeMapper.apply((PrimitiveType) targetT).finalReplace(template, kwDim);
+                Option mapped = targetT instanceof PrimitiveType ?
+                        typeMapper.apply((PrimitiveType) targetT) :
+                        targetT; // ObjectType maps to itself
+                template = mapped.finalReplace(template, kwDim);
             }
         }
         postProcess(sb, source, target, template);

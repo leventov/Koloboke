@@ -71,8 +71,8 @@ public abstract class DHashObjSetFactorySO<E> implements HashObjSetFactory<E> {
             int size;
             if (elements instanceof ObjSet) {
                 ObjSet elemSet = (ObjSet) elements;
-                if (elements instanceof ObjDHash) {
-                    ObjDHash hash = (ObjDHash) elements;
+                if (elements instanceof SeparateKVObjDHash) {
+                    SeparateKVObjDHash hash = (SeparateKVObjDHash) elements;
                     if (hash.hashConfig().equals(hashConf) &&
                             NullableObjects.equals(
                                     elemSet.equivalence(), getEquivalence())) {

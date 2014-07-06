@@ -21,6 +21,4 @@ import javax.annotation.Nonnull;
 
 interface ObjHash extends Hash {
     static final Object REMOVED = new Object(), FREE = new Object();
-
-    @Nonnull Object[] keys();
 }

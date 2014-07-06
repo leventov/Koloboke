@@ -70,13 +70,13 @@ public abstract class ImmutableDHash extends HashWithoutRemovedSlots implements 
 
 
     @Override
-    public boolean ensureCapacity(long minSize) {
+    public final boolean ensureCapacity(long minSize) {
         throw new UnsupportedOperationException();
     }
 
 
     @Override
-    public boolean shrink() {
+    public final boolean shrink() {
         throw new UnsupportedOperationException();
     }
 }

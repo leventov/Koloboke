@@ -44,14 +44,13 @@ public final class LHashCloseDelayedRemoved implements Method {
                 if (possibleRemovedSlots(cxt) && !noRemoved(cxt))
                     lines(cxt.keyType() + " removed = removedValue;");
             }
-            copyUnwrappedKeys(this, cxt);
-            if (cxt.hasValues())
-                lines(cxt.valueUnwrappedType() + "[] vals = values;");
-            lines("int capacityMask = keys.length - 1;");
-            lines("for (int i = firstDelayedRemoved; i >= 0; i--)").block(); {
+            copyArrays(this, cxt, cxt.hasValues());
+            lines("int capacityMask = " + capacityMask(cxt) + ";");
+            declareEntry(this, cxt);
+            forLoop(this, cxt, "firstDelayedRemoved", "i", true); {
                 String removed = cxt.isPrimitiveKey() ? "delayedRemoved" : "REMOVED";
-                ifBlock("keys[i] == " + removed); {
-                    new LHashShiftRemove(this, cxt, "i", "vals") {
+                ifBlock(readKeyOrEntry(cxt, "i") + " == " + removed); {
+                    new LHashShiftRemove(this, cxt, "i", "tab", "vals") {
                         @Override
                         String additionalShiftPrecondition() {
                             return "keyToShift != " + removed;

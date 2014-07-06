@@ -23,7 +23,7 @@ import static net.openhft.jpsg.RegexpUtils.JAVA_ID_OR_CONST;
 
 public final class ConstProcessor extends TemplateProcessor {
     // after option processor because constant "(char) 0" is generated
-    public static final int PRIORITY = OptionProcessor.PRIORITY - 1;
+    public static final int PRIORITY = OptionProcessor.PRIORITY - 10;
 
     private static CheckingPattern valuePattern(String dim) {
         String prefix = "/[\\*/]\\s*const\\s+" + dim;

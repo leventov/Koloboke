@@ -22,6 +22,7 @@ import org.gradle.api.tasks.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 
@@ -49,6 +50,10 @@ public class GeneratorTask extends ConventionTask {
         return this;
     }
 
+    public GeneratorTask addToDefaultContext(String... defaultContext) {
+        return with(defaultContext);
+    }
+
     public GeneratorTask addProcessor(TemplateProcessor processor) {
         g.addProcessor(processor);
         return this;
@@ -65,8 +70,8 @@ public class GeneratorTask extends ConventionTask {
     }
 
     public GeneratorTask addPrimitiveTypeModifierProcessors(String keyword,
-            UnaryOperator<PrimitiveType> typeMapper) {
-        g.addPrimitiveTypeModifierProcessors(keyword, typeMapper);
+            UnaryOperator<PrimitiveType> typeMapper, Predicate<String> dimFilter) {
+        g.addPrimitiveTypeModifierProcessors(keyword, typeMapper, dimFilter);
         return this;
     }
 

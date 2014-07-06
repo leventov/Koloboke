@@ -28,12 +28,15 @@ class LHashShiftRemove {
     final MethodGenerator g;
     final MethodContext cxt;
     final String index;
+    final String table;
     final String values;
 
-    LHashShiftRemove(MethodGenerator g, MethodContext cxt, String index, String values) {
+    LHashShiftRemove(MethodGenerator g, MethodContext cxt, String index, String table,
+            String values) {
         this.g = g;
         this.cxt = cxt;
         this.index = index;
+        this.table = table;
         this.values = values;
     }
 
@@ -46,11 +49,11 @@ class LHashShiftRemove {
     final void closeDeletion() {
         g.lines("int indexToRemove = " + index + ";");
         g.lines("int indexToShift = indexToRemove;");
-        g.lines("int shiftDistance = 1;");
+        g.lines("int shiftDistance = " + slots(1, cxt) +";");
         g.lines("while (true)").block(); {
-            g.lines("indexToShift = (indexToShift - 1) & capacityMask;");
+            g.lines("indexToShift = (indexToShift - " + slots(1, cxt) + ") & capacityMask;");
             g.lines(cxt.keyUnwrappedType() + " keyToShift;");
-            String key = "keys[indexToShift]";
+            String key = readKeyOrEntry(cxt, "indexToShift");
             if (cxt.isObjectKey() && rawKeys()) {
                 key = "(" + cxt.keyType() + ") " + key;
             }
@@ -66,20 +69,21 @@ class LHashShiftRemove {
             }
             g.ifBlock(shiftCondition); {
                 beforeShift();
-                g.lines("keys[indexToRemove] = keyToShift;");
-                if (cxt.hasValues())
-                    g.lines(values + "[indexToRemove] = " + values + "[indexToShift];");
+                writeKeyAndValue(g, cxt, table, "keys", values, "indexToRemove", "keyToShift",
+                        () -> readValue(cxt, table, values, "indexToShift"), false,
+                        cxt.hasValues());
                 g.lines("indexToRemove = indexToShift;");
-                g.lines("shiftDistance = 1;");
+                g.lines("shiftDistance = " + slots(1, cxt) + ";");
             } g.elseBlock(); {
-                g.lines("shiftDistance++;");
+                String increment = doubleSizedParallel(cxt) ? " += 2" : "++";
+                g.lines("shiftDistance" + increment + ";");
                 if (cxt.isPrimitiveKey()) {
                     // if keys are primitives, free value could change during the close deletion
                     // loop, and if it then be removed immediately (i'm not even sure this
                     // is possible), then we hang on forever, because `keyToShift == free`
                     // is the only way to break the close deletion loop.
                     // TODO understand when this check could be avoided
-                    g.ifBlock("indexToShift == 1 + " + index); {
+                    g.ifBlock("indexToShift == " + slots(1, cxt) + " + " + index); {
                         g.concurrentMod();
                     } g.blockEnd();
                 }
@@ -101,5 +105,6 @@ class LHashShiftRemove {
     }
 
     void beforeShift() {
+        // no-op by default
     }
 }

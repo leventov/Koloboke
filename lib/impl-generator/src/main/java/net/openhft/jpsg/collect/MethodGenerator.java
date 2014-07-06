@@ -223,4 +223,20 @@ public abstract class MethodGenerator {
             lines.set(i, replaceAll(lines.get(i), placeholder, replacement));
         }
     }
+
+    protected void replaceFirstDifferent(int bodyStart,
+            String placeholder, String firstReplacement, String restReplacement) {
+        boolean replacedFirst = false;
+        for (int i = bodyStart; i < lines.size(); i++) {
+            String line = lines.get(i);
+            if (!replacedFirst) {
+                String newLine = replaceFirst(line, placeholder, firstReplacement);
+                if (!line.equals(newLine)) {
+                    replacedFirst = true;
+                    line = newLine;
+                }
+            }
+            lines.set(i, replaceAll(line, placeholder, restReplacement));
+        }
+    }
 }

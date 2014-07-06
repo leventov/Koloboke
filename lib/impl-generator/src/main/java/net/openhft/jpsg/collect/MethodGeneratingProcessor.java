@@ -31,7 +31,7 @@ import static net.openhft.jpsg.Generator.DIMENSIONS;
 
 
 public final class MethodGeneratingProcessor extends TemplateProcessor {
-    private static final int PRIORITY = DEFAULT_PRIORITY - 10;
+    private static final int PRIORITY = DEFAULT_PRIORITY - 100;
 
     private static final String METHOD_BODY_PREFIX =
             "(?<indentSpaces>[^\\S\\n]*+)/[\\*/]\\s*template";

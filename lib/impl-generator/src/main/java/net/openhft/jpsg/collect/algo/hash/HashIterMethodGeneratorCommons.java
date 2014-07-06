@@ -28,9 +28,12 @@ final class HashIterMethodGeneratorCommons {
 
     static void commonFields(MethodGenerator g, MethodContext cxt) {
         String arrayCopiesMod = possibleArrayCopyOnRemove(cxt) ? "" : "final ";
-        g.lines(arrayCopiesMod + cxt.keyUnwrappedType() + "[] keys;");
-        if (!cxt.isKeyView()) {
-            g.lines(arrayCopiesMod + cxt.valueUnwrappedType() + "[] vals;");
+        if (!parallelKV(cxt)) {
+            g.lines(arrayCopiesMod + cxt.keyUnwrappedType() + "[] keys;");
+            if (!cxt.isKeyView())
+                g.lines(arrayCopiesMod + cxt.valueUnwrappedType() + "[] vals;");
+        } else {
+            g.lines(arrayCopiesMod + tableType(cxt) + "[] tab;");
         }
         if (cxt.isIntegralKey()) {
             g.lines("final " + cxt.keyType() + " " + free(cxt) + ";");
@@ -90,12 +93,10 @@ final class HashIterMethodGeneratorCommons {
 
     static void ifKeyNotFreeOrRemoved(MethodGenerator gen, MethodContext cxt,
             String indexVariableName, boolean forceCopyKey) {
-        String keyAssignment;
+        String keyAssignment = readKeyOrEntry(cxt, indexVariableName);
         if (forceCopyKey || (!noRemoved(cxt) && !cxt.isFloatingKey()) || !cxt.isValueView()) {
             gen.lines(cxt.keyUnwrappedRawType() + " key;");
-            keyAssignment = "(key = keys[" + indexVariableName + "])";
-        } else {
-            keyAssignment = "keys[" + indexVariableName + "]";
+            keyAssignment = "(key = " + keyAssignment + ")";
         }
         String cond = cxt.isFloatingKey() ?
                 keyAssignment + " < FREE_BITS" :
@@ -115,7 +116,8 @@ final class HashIterMethodGeneratorCommons {
         } else if (cxt.isValueView()) {
             return makeValue(cxt, index);
         } else if (cxt.isEntryView()) {
-            return entry(cxt, modCount, index, makeKey(cxt, key, false, raw), "vals[" + index + "]");
+            return entry(cxt, modCount, index, makeKey(cxt, key, false, raw),
+                    readValue(cxt, index));
         } else if (cxt.isMapView()) {
             return makeKey(cxt, key, true, raw) + ", " + makeValue(cxt, index);
         } else {
@@ -132,7 +134,7 @@ final class HashIterMethodGeneratorCommons {
     }
 
     private static String makeValue(MethodContext cxt, String index) {
-        return MethodGenerator.wrap(cxt, cxt.mapValueOption(), "vals[" + index + "]");
+        return MethodGenerator.wrap(cxt, cxt.mapValueOption(), readValue(cxt, index));
     }
 
     static String modCount() {
@@ -166,8 +168,10 @@ final class HashIterMethodGeneratorCommons {
                     "@Override"
             );
             g.lines("void updateValueInTable(" + cxt.valueUnwrappedType() + " newValue)").block(); {
-                g.ifBlock("vals == values"); {
-                    g.lines("vals[index] = newValue;");
+                String haveNotCopiedTableYet =
+                        parallelKV(cxt) ? "tab == table" : "vals == values";
+                g.ifBlock(haveNotCopiedTableYet); {
+                    writeValue(g, cxt, "index", "newValue");
                 } g.elseBlock(); {
                     g.lines("justPut(key, newValue);");
                     g.ifBlock("this.modCount != " + modCount()); {
@@ -194,28 +198,31 @@ final class HashIterMethodGeneratorCommons {
 
     static void copyArrays(MethodGenerator g, MethodContext cxt) {
         copyKeys(g, cxt);
-        if (!cxt.isKeyView())
+        if (cxt.hasValues() && !parallelKV(cxt))
             g.lines(cxt.valueUnwrappedType() + "[] vals = this.vals;");
     }
 
     static void copyKeys(MethodGenerator g, MethodContext cxt) {
-        g.lines(cxt.keyUnwrappedRawType() + "[] keys = this.keys;");
+        if (!parallelKV(cxt)) {
+            g.lines(cxt.keyUnwrappedType() + "[] keys = this.keys;");
+        } else {
+            g.lines(tableType(cxt) + "[] tab = this.tab;");
+        }
     }
 
     abstract static class LHashIterShiftRemove extends LHashShiftRemove {
 
         LHashIterShiftRemove(MethodGenerator g, MethodContext cxt) {
-            super(g, cxt, "index", "vals");
+            super(g, cxt, "index", "tab", "vals");
         }
 
         @Override
         void generate() {
-            g.lines(cxt.keyUnwrappedType() + "[] keys = this.keys;");
-            if (cxt.hasValues())
-                g.lines(cxt.valueUnwrappedType() + "[] vals = this.vals;");
+            copyArrays(g, cxt);
             // If we haven't copied the table yet, i. e. are going to search for
             // the next keys/values in the original table
-            g.ifBlock("keys == set"); {
+            String haveNotCopiedTableYet = parallelKV(cxt) ? "tab == table" : "keys == set";
+            g.ifBlock(haveNotCopiedTableYet); {
                 copyRemoved(g, cxt);
                 g.lines("int capacityMask = this.capacityMask;");
                 super.generate();
@@ -229,9 +236,9 @@ final class HashIterMethodGeneratorCommons {
                 // keys[index] won't be accessed anymore (moveNext() will start from index - 1),
                 // that is why we can set it to null instead of REMOVED special object.
                 if (cxt.isObjectKey())
-                    g.lines("keys[index] = null;");
+                    writeKey(g, cxt, "index", "null");
                 if (cxt.isObjectValue())
-                    g.lines("vals[index] = null;");
+                    writeValue(g, cxt, "index", "null");
             } g.blockEnd();
         }
 
@@ -239,7 +246,9 @@ final class HashIterMethodGeneratorCommons {
         void beforeShift() {
             // If we haven't copied the table yet, i. e. are going to search for
             // the next keys/values in the original table
-            g.ifBlock("this.keys == keys"); {
+            String haveNotCopiedTableYet =
+                    parallelKV(cxt) ? "this.tab == tab" : "this.keys == keys";
+            g.ifBlock(haveNotCopiedTableYet); {
                 // This condition means indexToShift wrapped around zero and keyToShift
                 // was already passed by this cursor. Making a copy of the original
                 // table for future moveNext() calls which wouldn't contain this
@@ -254,9 +263,14 @@ final class HashIterMethodGeneratorCommons {
                             // is erased. But before copying the table we should erase the slot too.
                             eraseSlot(g, cxt, "indexToRemove", "indexToRemove");
                         } g.blockEnd();
-                        g.lines("this.keys = Arrays.copyOf(keys, slotsToCopy);");
-                        if (cxt.hasValues())
-                            g.lines("this.vals = Arrays.copyOf(vals, slotsToCopy);");
+                        if (!parallelKV(cxt)) {
+                            g.lines("this.keys = Arrays.copyOf(keys, slotsToCopy);");
+                            if (cxt.hasValues()) {
+                                g.lines("this.vals = Arrays.copyOf(vals, slotsToCopy);");
+                            }
+                        } else {
+                            g.lines("this.tab = Arrays.copyOf(tab, slotsToCopy);");
+                        }
                     } g.blockEnd();
                 }
                 g.elseIf("indexToRemove == index"); {

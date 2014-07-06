@@ -24,15 +24,18 @@ public final class Rehash extends BulkMethod {
 
     @Override
     public void rightBeforeLoop() {
-        gen.lines(
-                "initForRehash(newCapacity);",
-                "mc++; // modCount is incremented in initForRehash()",
-                cxt.keyUnwrappedRawType() + "[] newKeys = set;",
-                isLHash(cxt) ?
-                        "int capacityMask = newKeys.length - 1;" :
-                        "int capacity = newKeys.length;"
-        );
-        if (cxt.isMapView())
+        gen.lines("initForRehash(newCapacity);");
+        gen.lines("mc++; // modCount is incremented in initForRehash()");
+        if (!parallelKV(cxt)) {
+            gen.lines(cxt.keyUnwrappedRawType() + "[] newKeys = set;");
+        } else {
+            gen.lines(tableType(cxt) + "[] newTab = table;");
+        }
+        String table = parallelKV(cxt) ? "newTab" : "newKeys";
+        gen.lines(isLHash(cxt) ?
+                        "int capacityMask = " + capacityMask(cxt, table) + ";" :
+                        "int capacity = " + table + ".length;");
+        if (cxt.isMapView() && !parallelKV(cxt))
             gen.lines(cxt.valueUnwrappedType() + "[] newVals = values;");
     }
 
@@ -42,17 +45,17 @@ public final class Rehash extends BulkMethod {
         if (isDHash(cxt))
             gen.lines("int hash;");
         gen.lines("int index;");
-        gen.ifBlock(isNotFree(cxt, KeySearch.firstKey(cxt, "newKeys", key, true, false))); {
+        String firstKey = KeySearch.firstKey(cxt, "newTab", "newKeys", key, true, false, true);
+        gen.ifBlock(isNotFree(cxt, firstKey)); {
             KeySearch.innerLoop(gen, cxt, index -> {
-                gen.ifBlock(isNotFree(cxt, "newKeys[" + index + "]")); {
+                gen.ifBlock(isNotFree(cxt, readKeyOnly(cxt, "newTab", "newKeys", index))); {
                     if (!index.equals("index"))
                         gen.lines("index = " + index + ";");
                     gen.lines("break;");
                 } gen.blockEnd();
             }, false).generate();
         } gen.blockEnd();
-        gen.lines("newKeys[index] = " + key + ";");
-        if (cxt.isMapView())
-            gen.lines("newVals[index] = " + gen.unwrappedValue() + ";");
+        writeKeyAndValue(gen, cxt, "newTab", "newKeys", "newVals", "index", key,
+                gen::unwrappedValue, false, cxt.isMapView());
     }
 }

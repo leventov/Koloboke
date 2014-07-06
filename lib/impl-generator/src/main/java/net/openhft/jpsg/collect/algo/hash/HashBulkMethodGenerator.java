@@ -37,27 +37,33 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     private boolean noRemoved = true;
     private BulkMethod method;
     private boolean valuesUsed = false;
+    private boolean indexUsed = false;
 
     @Override
     public void generateLines(Method m) {
         this.method = (BulkMethod) m;
         determineFeatures();
         callInternalVersion();
-        innerGenerate();
+        innerGenerate(true);
     }
 
     private void determineFeatures() {
-        innerGenerate();
+        innerGenerate(false);
         noRemoved = true;
-        valuesUsed = countUsages(0, "vals") > 0;
+        valuesUsed |= countUsages(0, "entry") > 0;
+        valuesUsed |= countUsages(0, VAL_SUB) > 0;
         lines.clear();
     }
 
-    private void innerGenerate() {
+    private boolean unsafeLoop() {
+        return !valuesUsed && !indexUsed && parallelKV(cxt) && !doubleSizedParallel(cxt);
+    }
+
+    private void innerGenerate(boolean replace) {
         method.beginning();
 
         if (cxt.isEntryView() && method.entryType() == EntryType.REUSABLE)
-            lines("ReusableEntry entry = new ReusableEntry();");
+            lines("ReusableEntry e = new ReusableEntry();");
 
         if (!cxt.immutable()) {
             lines("int mc = modCount();");
@@ -68,17 +74,29 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
                 lines(cxt.keyType() + " removed = removedValue;");
             }
         }
-        lines(cxt.keyUnwrappedRawType() + "[] keys = set;");
+        if (!parallelKV(cxt)) {
+            lines(cxt.keyUnwrappedRawType() + "[] keys = set;");
+        } else {
+            copyTable(this, cxt);
+        }
         if (isLHash(cxt) && permissions.contains(REMOVE)) {
-            lines("int capacityMask = keys.length - 1;");
+            lines("int capacityMask = " + capacityMask(cxt) + ";");
             lines("int firstDelayedRemoved = -1;");
             if (cxt.isPrimitiveKey()) {
                 String delayedValue = ((PrimitiveType) cxt.keyOption()).bitsType().formatValue("0");
                 lines(cxt.keyUnwrappedRawType() + " delayedRemoved = " + delayedValue + ";");
             }
         }
-        if (valuesUsed)
+        if (valuesUsed && !parallelKV(cxt))
             lines(cxt.valueUnwrappedType() + "[] vals = values;");
+
+        if (unsafeLoop()) {
+            PrimitiveType key = (PrimitiveType) cxt.keyOption();
+            lines("long base = " + TableType.INSTANCE.apply(key).upper + "_BASE + " +
+                            key.upper + "_KEY_OFFSET;");
+        } else {
+            declareEntry(this, cxt);
+        }
 
         method.rightBeforeLoop();
 
@@ -87,12 +105,12 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             lines("if (noRemoved()) {");
             indent();
         }
-        bulkLoop();
+        bulkLoop(replace);
         if (splitLoops) {
             unIndent();
             lines("} else").block();
             noRemoved = false;
-            bulkLoop();
+            bulkLoop(replace);
             blockEnd();
         }
 
@@ -140,14 +158,22 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         }
     }
 
-    private void bulkLoop() {
-        lines("for (int i = keys.length - 1; i >= 0; i--)").block(); {
+    private void bulkLoop(boolean replace) {
+        if (unsafeLoop()) {
+            String tableTypeUpper = TableType.INSTANCE.apply((PrimitiveType) cxt.keyOption()).upper;
+            lines("for (long off = ((long) tab.length) << " + tableTypeUpper + "_SCALE_SHIFT; " +
+                    "(off -= " + tableTypeUpper + "_SCALE) >= 0L;)").block();
+        } else {
+            forLoop(this, cxt, localTableVar(cxt) + ".length", "i", false);
+        } {
             int bodyStart = lines.size();
             lines("if (" + isFull() + ")").block(); {
                 method.loopBody();
             } blockEnd();
-            replaceValue(bodyStart + 1); // after if (isFull) check
-            replaceKey(bodyStart);
+            if (replace) {
+                replaceValue(bodyStart + 1); // after if (isFull) check
+                replaceKey(bodyStart);
+            }
             noInspectionKeyCast(bodyStart);
         } blockEnd();
     }
@@ -155,15 +181,21 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     private void replaceKey(int bodyStart) {
         int keyUsages = countUsages(bodyStart, KEY_SUB);
         int keyObjUsages = countUsages(bodyStart, KEY_OBJ_SUB);
-        String castedKey = "keys[i]";
+        String key;
+        if (!unsafeLoop()) {
+            key = readKeyOrEntry(cxt, "i");
+        } else {
+            key = cxt.unsafeGetKeyBits("tab", "base + off");
+        }
+        String castedKey = key;
         if (cxt.isObjectKey()) {
             castedKey = "(" + cxt.keyType() + ") " + castedKey;
         }
         if (keyUsages + keyObjUsages <= 1) {
             replaceAll(bodyStart, KEY_SUB, castedKey);
-            replaceAll(bodyStart, KEY_OBJ_SUB, "keys[i]");
+            replaceAll(bodyStart, KEY_OBJ_SUB, key);
         } else if (keyUsages == 0) {
-            replaceFirstDifferent(bodyStart, KEY_OBJ_SUB, "(key = keys[i])", "key");
+            replaceFirstDifferent(bodyStart, KEY_OBJ_SUB, "(key = " + key + ")", "key");
             lines.add(bodyStart, indent + cxt.keyUnwrappedRawType() + " key;");
         } else {
             boolean replacedFirst = false;
@@ -208,27 +240,12 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
     private void replaceValue(int bodyStart) {
         int valueUsages = countUsages(bodyStart, VAL_SUB);
+
         if (valueUsages > 1) {
-            replaceFirstDifferent(bodyStart, VAL_SUB, "(val = vals[i])", "val");
+            replaceFirstDifferent(bodyStart, VAL_SUB, "(val = " + readValue(cxt, "i") + ")", "val");
             lines.add(bodyStart, indent + cxt.valueUnwrappedType() + " val;");
         } else if (valueUsages == 1) {
-            replaceAll(bodyStart, VAL_SUB, "vals[i]");
-        }
-    }
-
-    private void replaceFirstDifferent(int bodyStart,
-            String placeholder, String firstReplacement, String restReplacement) {
-        boolean replacedFirst = false;
-        for (int i = bodyStart; i < lines.size(); i++) {
-            String line = lines.get(i);
-            if (!replacedFirst) {
-                String newLine = replaceFirst(line, placeholder, firstReplacement);
-                if (!line.equals(newLine)) {
-                    replacedFirst = true;
-                    line = newLine;
-                }
-            }
-            lines.set(i, replaceAll(line, placeholder, restReplacement));
+            replaceAll(bodyStart, VAL_SUB, readValue(cxt, "i"));
         }
     }
 
@@ -260,7 +277,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
                 return "new ImmutableEntry(" + unwrappedKeyAndValue() + ")";
             }
         } else {
-            return "entry.with(" + unwrappedKeyAndValue() + ")";
+            return "e.with(" + unwrappedKeyAndValue() + ")";
         }
     }
 
@@ -295,6 +312,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     }
 
     String index() {
+        indexUsed = true;
         return "i";
     }
 
@@ -313,15 +331,21 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     }
 
     private void tombstoneRemove() {
-        lines("keys[i] = " + removed(cxt) + ";");
-        if (cxt.isObjectValue()) {
-            lines("vals[i] = null;");
+        if (!unsafeLoop()) {
+            writeKey(this, cxt, "i", removed(cxt));
+            if (cxt.isObjectValue()) {
+                valuesUsed = true;
+                writeValue(this, cxt, "i", "null");
+            }
+        } else {
+            cxt.unsafePutKeyBits(this, "tab", "base + off", removed(cxt));
+            assert !cxt.isObjectValue();
         }
-
     }
 
     private void lHashShiftRemove() {
-        new LHashShiftRemove(this, cxt, "i", "vals") {
+        valuesUsed |= cxt.hasValues();
+        new LHashShiftRemove(this, cxt, "i", "tab", "vals") {
 
             @Override
             void generate() {
@@ -331,7 +355,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
                     closeDeletion();
                 } elseBlock(); {
                     // "delayed removed" mode
-                    lines("keys[i] = " + (cxt.isPrimitiveKey() ? "delayedRemoved;" : "REMOVED;"));
+                    writeKey(g, cxt, "i", (cxt.isPrimitiveKey() ? "delayedRemoved" : "REMOVED"));
                 } blockEnd();
             }
 
@@ -357,14 +381,15 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
                     if (cxt.isPrimitiveKey()) {
                         // when keys are primitives, use the first key, that should be
                         // removed, as tombstone
-                        lines("delayedRemoved = keys[indexToRemove];");
+                        lines("delayedRemoved = " + readKeyOnly(cxt, "indexToRemove") + ";");
                     } else {
-                        lines("keys[indexToRemove] = REMOVED;");
+                        writeKey(g, cxt, "indexToRemove", "REMOVED");
                     }
                     lines("break closeDeletion;");
                 } blockEnd();
                 ifBlock("indexToRemove == i"); {
-                    lines("i++;");
+                    String increment = doubleSizedParallel(cxt) ? " += 2" : "++";
+                    lines("i" + increment + ";");
                 } blockEnd();
             }
         }.generate();
@@ -372,8 +397,9 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
     @Override
     public BulkMethodGenerator setValue(String newValue) {
-        if (!cxt.isMapView()) throw new IllegalStateException();
-        lines("vals[i] = " + unwrapValue(newValue) + ";");
+        valuesUsed = true;
+        assert cxt.isMapView();
+        writeValue(this, cxt, "i", unwrapValue(newValue));
         permissions.add(Permission.SET_VALUE);
         return this;
     }

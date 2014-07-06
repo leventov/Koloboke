@@ -250,4 +250,29 @@ public final class MethodContext {
     public boolean internalVersion() {
         return INTERNAL.equals(getOption("version"));
     }
+
+    public String unsafeGetKeyBits(String object, String offset) {
+        return unsafeGet(object, offset, ((PrimitiveType) keyOption()).bitsType());
+    }
+
+    public void unsafePutKeyBits(MethodGenerator g, String object, String offset, String key) {
+        g.lines(unsafePut(object, offset, key, ((PrimitiveType) keyOption()).bitsType()) + ";");
+    }
+
+    public String unsafeGetValueBits(String object, String offset) {
+        return unsafeGet(object, offset, ((PrimitiveType) mapValueOption()).bitsType());
+    }
+
+    public void unsafePutValueBits(MethodGenerator g, String object, String offset, String value) {
+        g.lines(unsafePut(object, offset, value, ((PrimitiveType) mapValueOption()).bitsType()) +
+                ";");
+    }
+
+    private String unsafeGet(String object, String offset, PrimitiveType type) {
+        return "U.get" + type.title + "(" + object + ", " + offset + ")";
+    }
+
+    private String unsafePut(String object, String offset, String value, PrimitiveType type) {
+        return "U.put" + type.title + "(" + object + ", " + offset + ", " + value +")";
+    }
 }

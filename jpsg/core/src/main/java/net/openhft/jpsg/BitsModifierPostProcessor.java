@@ -16,12 +16,10 @@
 
 package net.openhft.jpsg;
 
-import java.util.function.UnaryOperator;
-
 
 public final class BitsModifierPostProcessor extends PrimitiveTypeModifierPostProcessor {
 
     public BitsModifierPostProcessor() {
-        super("bits", PrimitiveType::bitsType);
+        super("bits", PrimitiveType::bitsType, dim -> true);
     }
 }

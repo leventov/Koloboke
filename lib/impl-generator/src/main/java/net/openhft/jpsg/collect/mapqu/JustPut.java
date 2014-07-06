@@ -26,9 +26,11 @@ public final class JustPut extends MapQueryUpdateMethod {
     @Override
     public void ifPresent() {
         gen.setValue("value");
+        gen.lines("return;");
     }
 
     @Override
     public void ifAbsent() {
+        gen.lines("return;");
     }
 }

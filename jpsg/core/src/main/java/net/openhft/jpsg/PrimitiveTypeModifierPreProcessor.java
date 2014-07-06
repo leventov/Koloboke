@@ -17,19 +17,22 @@
 package net.openhft.jpsg;
 
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 
 public class PrimitiveTypeModifierPreProcessor extends TemplateProcessor {
-    public static final int PRIORITY = OptionProcessor.PRIORITY + 1;
+    public static final int PRIORITY = OptionProcessor.PRIORITY + 10;
 
     private final String keyword;
     private final UnaryOperator<PrimitiveType> typeMapper;
+    private final Predicate<String> dimFilter;
 
     public PrimitiveTypeModifierPreProcessor(String keyword,
-            UnaryOperator<PrimitiveType> typeMapper) {
+            UnaryOperator<PrimitiveType> typeMapper, Predicate<String> dimFilter) {
         this.keyword = keyword;
         this.typeMapper = typeMapper;
+        this.dimFilter = dimFilter;
     }
 
     @Override
@@ -42,11 +45,14 @@ public class PrimitiveTypeModifierPreProcessor extends TemplateProcessor {
         String modifier = OptionProcessor.modifier(keyword);
         for (Map.Entry<String, Option> e : source) {
             String dim = e.getKey();
-            Option targetT = target.getOption(dim);
-            if (e.getValue() instanceof PrimitiveType && targetT instanceof PrimitiveType) {
+            if (!dimFilter.test(dim))
+                continue;
+            if (e.getValue() instanceof PrimitiveType) {
+                Option targetT = target.getOption(dim);
                 PrimitiveType sourceT = (PrimitiveType) e.getValue();
                 String kwDim = dim + "." + keyword;
-                if (typeMapper.apply((PrimitiveType) targetT) != targetT) {
+                if (targetT instanceof PrimitiveType &&
+                        typeMapper.apply((PrimitiveType) targetT) != targetT) {
                     String modP = OptionProcessor.prefixPattern(modifier, sourceT.standalone);
                     template = template.replaceAll(modP, IntermediateOption.of(kwDim).standalone);
                 }

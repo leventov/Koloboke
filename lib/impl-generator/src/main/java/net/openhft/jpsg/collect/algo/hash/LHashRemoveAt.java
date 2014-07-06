@@ -45,11 +45,10 @@ public final class LHashRemoveAt implements Method {
                 if (possibleRemovedSlots(cxt) && !noRemoved(cxt))
                     lines(cxt.keyType() + " removed = removedValue;");
             }
-            copyUnwrappedKeys(this, cxt);
-            if (cxt.hasValues())
-                lines(cxt.valueUnwrappedType() + "[] vals = values;");
-            lines("int capacityMask = keys.length - 1;");
-            new LHashShiftRemove(this, cxt, "index", "vals").generate();
+            copyArrays(this, cxt, cxt.hasValues());
+            lines("int capacityMask = " + capacityMask(cxt) + ";");
+            declareEntry(this, cxt);
+            new LHashShiftRemove(this, cxt, "index", "tab", "vals").generate();
         }
     }
 }
