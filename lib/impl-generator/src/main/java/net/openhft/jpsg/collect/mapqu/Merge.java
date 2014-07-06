@@ -39,7 +39,7 @@ public final class Merge extends MapQueryUpdateMethod {
                 gen.ret("null");
             } else {
                 gen.unsupportedOperation(
-                        "Merge operation of updatable mup doesn't support removals");
+                        "Merge operation of updatable map doesn't support removals");
             }
             gen.blockEnd();
         }

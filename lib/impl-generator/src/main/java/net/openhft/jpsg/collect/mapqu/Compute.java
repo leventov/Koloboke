@@ -40,7 +40,7 @@ public class Compute extends MapQueryUpdateMethod {
                 gen.ret("null");
             } else {
                 gen.unsupportedOperation(getClass().getSimpleName() +
-                        " operation of updatable mup doesn't support removals");
+                        " operation of updatable map doesn't support removals");
             }
             gen.blockEnd();
         }
