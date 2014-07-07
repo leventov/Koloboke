@@ -154,51 +154,11 @@ public abstract class MutableSeparateKVByteDHashSO extends MutableDHash
         byte newFree;
         /* if byte|char|short elem */
         searchForFree:
-        if (size > BYTE_CARDINALITY / 2) {
-            int searchStart = random.nextInt(capacity);
-            /* if Parallel kv */
-            long base = CHAR_BASE + BYTE_KEY_OFFSET;
-            /* endif */
-            for (int i = searchStart; i >= 0; i--) {
-                if (/* if Separate kv */keys[i]/* elif Parallel kv */
-                    U.getByte(tab, base + (((long) i) << CHAR_SCALE_SHIFT))/* endif */ == free) {
-                    newFree = (byte) i;
-                    if (newFree != free/* if Mutable mutability && !(LHash hash) */ &&
-                            newFree != removed/* endif */) {
-                        break searchForFree;
-                    }
-                }
-            }
-            for (int i = capacity - 1; i > searchStart; i--) {
-                if (/* if Separate kv */keys[i]/* elif Parallel kv */
-                    U.getByte(tab, base + (((long) i) << CHAR_SCALE_SHIFT))/* endif */ == free) {
-                    newFree = (byte) i;
-                    if (newFree != free/* if Mutable mutability && !(LHash hash) */ &&
-                            newFree != removed/* endif */) {
-                        break searchForFree;
-                    }
-                }
-            }
-            newFree = (byte) (free + capacity);
-            if (newFree != free &&
-                    /* if Mutable mutability && !(LHash hash) */newFree != removed &&/* endif */
-                    index(newFree) < 0) {
-                break searchForFree;
-            }
-            /* if Mutable mutability && !(LHash hash) */
-            newFree = (byte) (removed + capacity);
-            if (newFree != free && newFree != removed && index(newFree) < 0) {
-                break searchForFree;
-            }
-            /* endif */
-            if (mc != modCount())
-                throw new ConcurrentModificationException();
-            // Will fail on tests which are executed with assertions enabled.
-            assert false : "Impossible state";
-            // As I see it's already impossible state. But if the above implementation has bugs
-            // (as it was already twice), try ALL byte values for being 146% sure.
+        if (size > BYTE_CARDINALITY * 3 / 4) {
+            int nf = random.nextInt(BYTE_CARDINALITY) * BYTE_PERMUTATION_STEP;
             for (int i = 0; i < BYTE_CARDINALITY; i++) {
-                newFree = (byte) i;
+                nf = nf + BYTE_PERMUTATION_STEP;
+                newFree = (byte) nf;
                 if (newFree != free &&
                         /* if Mutable mutability && !(LHash hash) */newFree != removed &&/* endif */
                         index(newFree) < 0) {
@@ -207,7 +167,7 @@ public abstract class MutableSeparateKVByteDHashSO extends MutableDHash
             }
             if (mc != modCount())
                 throw new ConcurrentModificationException();
-            throw new AssertionError("Surely impossible state");
+            throw new AssertionError("Impossible state");
         }
         else /* endif */ {
             do {

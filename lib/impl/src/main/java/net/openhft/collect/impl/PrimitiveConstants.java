@@ -19,11 +19,17 @@ package net.openhft.collect.impl;
 public interface PrimitiveConstants {
     public static final int BYTE_CARDINALITY = 1 << 8;
     public static final int BYTE_MASK = 0xFF;
+    /**
+     * A prime slightly greater than <tt>{@link #BYTE_CARDINALITY} / 3</tt>.
+     */
+    public static final int BYTE_PERMUTATION_STEP = 97;
 
     public static final int SHORT_CARDINALITY = 1 << 16;
     public static final int SHORT_MASK = 0xFFFF;
+    public static final int SHORT_PERMUTATION_STEP = 21859;
 
     public static final int CHAR_CARDINALITY = 1 << 16;
+    public static final int CHAR_PERMUTATION_STEP = 21859;
 
     public static final long INT_MASK = 0xFFFFFFFFL;
     public static final long FLOAT_MASK = INT_MASK;
