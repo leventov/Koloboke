@@ -74,7 +74,6 @@ public class ParallelVsSeparate {
             map = factory.newUpdatableMap(size);
         }
 
-        @Setup(Level.Invocation)
         public void generateKeys() {
             for (int i = 0; i < keys.length; i++) {
                 keys[i] = (char) r.nextLong();
@@ -91,6 +90,7 @@ public class ParallelVsSeparate {
     public static class PutOpQHashCharCharMapState extends QHashCharCharMapState {
         @Setup(Level.Invocation)
         public void clearMap() {
+            generateKeys();
             map.clear();
         }
     }
@@ -98,6 +98,7 @@ public class ParallelVsSeparate {
     public static class QueryUpdateOpQHashCharCharMapState extends QHashCharCharMapState {
         @Setup(Level.Invocation)
         public void fillMap() {
+            generateKeys();
             map.clear();
             for (char key : keys) {
                 map.put(key, /* const key 1 */(char) 1/* endconst */);
