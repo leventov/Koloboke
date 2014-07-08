@@ -177,7 +177,7 @@ public final class DimensionedJmh {
         maxDimWidths.merge(argName, argName.length(), Math::max);
         argDimNames.add(argName);
         argDimOptions.put(argName, Arrays.stream(options).map(Object::toString)
-                .peek(option -> maxDimWidths.merge(option, option.length(), Math::max))
+                .peek(option -> maxDimWidths.merge(argName, option.length(), Math::max))
                 .collect(Collectors.toList()));
         return this;
     }
