@@ -20,6 +20,7 @@ import net.openhft.bench.DimensionedJmh;
 import net.openhft.collect.*;
 import net.openhft.collect.map.*;
 import net.openhft.collect.map.hash.*;
+import net.openhft.function.*;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.CommandLineOptionException;
@@ -146,6 +147,29 @@ public class ParallelVsSeparate {
         long dummy = 0L;
         for (char key : keys) {
             dummy ^= (long) map.compute(key, (k, v) -> (char) (-v));
+        }
+        return dummy;
+    }
+
+    @GenerateMicroBenchmark
+    public long forEachOp_qHash_charKey(QueryUpdateOpQHashCharCharMapState state) {
+        class Consumer implements CharCharConsumer  {
+            long dummy;
+            @Override
+            public void accept(char a, char b) {
+                dummy ^= a + b;
+            }
+        }
+        Consumer c = new Consumer();
+        state.map.forEach(c);
+        return c.dummy;
+    }
+
+    @GenerateMicroBenchmark
+    public long iterOp_qHash_charKey(QueryUpdateOpQHashCharCharMapState state) {
+        long dummy = 0L;
+        for (CharCharCursor cur = state.map.cursor(); cur.moveNext();) {
+            dummy ^= cur.key() + cur.value();
         }
         return dummy;
     }
