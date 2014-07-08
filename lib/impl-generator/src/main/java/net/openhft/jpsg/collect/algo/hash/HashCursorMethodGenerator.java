@@ -57,6 +57,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
         }
         if (needCapacityMask(cxt))
             lines("capacityMask = " + capacityMask(cxt) + ";");
+        lines("index = " + localTableVar(cxt) + ".length;");
         if (!cxt.isKeyView() && !parallelKV(cxt))
             this.lines("vals = values;");
         if (cxt.isIntegralKey()) {
