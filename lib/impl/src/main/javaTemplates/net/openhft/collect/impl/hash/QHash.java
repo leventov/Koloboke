@@ -1,4 +1,4 @@
-/* with DHash hash */
+/* with QHash hash */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -17,15 +17,16 @@
 
 package net.openhft.collect.impl.hash;
 
+import static net.openhft.collect.impl.hash.LHash.*;
 
-interface DHash extends Hash {
 
+public interface QHash extends Hash {
     /* with Separate|Parallel kv */
 
     /* with byte|char|short|int|float key */
     static class SeparateKVByteKeyMixing {
         static int mix(/* bits */byte key) {
-            return key/* if !(char key) */ & Integer.MAX_VALUE/* endif */;
+            return (key * INT_PHI_MAGIC) & Integer.MAX_VALUE;
         }
     }
     /* endwith */
@@ -33,12 +34,14 @@ interface DHash extends Hash {
     /* with double|long key */
     static class SeparateKVDoubleKeyMixing {
         static int mix(long key) {
-            // not to loose information about 31-32 and 63-64-th bits
-            long h = key ^ (key >> 40) ^ (key >> 24);
+            long h = key * LONG_PHI_MAGIC;
             /* if Separate kv */
+            h ^= h >> 32;
             return ((int) h) & Integer.MAX_VALUE;
             /* elif Parallel kv */
-            return (((int) h) << 2) >>> 1;
+            // not to loose information about 63-64-th bits
+            h ^= (h >> 40) ^ (h >> 24);
+            return ((((int) h) << 2) >>> 1);
             /* endif */
         }
     }

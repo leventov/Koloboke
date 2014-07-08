@@ -1,4 +1,4 @@
-/* with DHash hash */
+/* with LHash hash */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -17,15 +17,24 @@
 
 package net.openhft.collect.impl.hash;
 
+public interface LHash extends Hash {
 
-interface DHash extends Hash {
+    /** = round(2 ^ 32 * (sqrt(5) - 1)), Java form of unsigned 2654435769 */
+    static final int INT_PHI_MAGIC = -1640531527;
+    /** ~= round(2 ^ 64 * (sqrt(5) - 1)), Java form of 11400714819323198485 */
+    static final long LONG_PHI_MAGIC = -7046029254386353131L;
+
+    static final int BYTE_MIX_SHIFT = 6;
+    static final int CHAR_MIX_SHIFT = 10, SHORT_MIX_SHIFT = CHAR_MIX_SHIFT;
+    static final int INT_MIX_SHIFT = 16, FLOAT_MIX_SHIFT = INT_MIX_SHIFT;
 
     /* with Separate|Parallel kv */
 
     /* with byte|char|short|int|float key */
     static class SeparateKVByteKeyMixing {
         static int mix(/* bits */byte key) {
-            return key/* if !(char key) */ & Integer.MAX_VALUE/* endif */;
+            int h = key * INT_PHI_MAGIC;
+            return h ^ (h >> BYTE_MIX_SHIFT);
         }
     }
     /* endwith */
@@ -33,26 +42,19 @@ interface DHash extends Hash {
     /* with double|long key */
     static class SeparateKVDoubleKeyMixing {
         static int mix(long key) {
-            // not to loose information about 31-32 and 63-64-th bits
-            long h = key ^ (key >> 40) ^ (key >> 24);
-            /* if Separate kv */
-            return ((int) h) & Integer.MAX_VALUE;
-            /* elif Parallel kv */
-            return (((int) h) << 2) >>> 1;
-            /* endif */
+            long h = key * LONG_PHI_MAGIC;
+            h ^= h >> 32;
+            return (int) (h ^ (h >> INT_MIX_SHIFT));
         }
     }
     /* endwith */
 
     static class SeparateKVObjKeyMixing {
         static int mix(int hash) {
-            /* if Separate kv */
-            return hash & Integer.MAX_VALUE;
-            /* elif Parallel kv */
-            return (hash << 2) >>> 1;
-            /* endif */
+            return hash ^ (hash >> INT_MIX_SHIFT);
         }
     }
 
     /* endwith */
 }
+

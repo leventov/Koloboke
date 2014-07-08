@@ -114,29 +114,19 @@ final class HashMethodGeneratorCommons {
 
     static String keyHash(MethodContext cxt, String key, boolean distinctNullKey) {
         String hash;
+        String mixingClass = (parallelKV(cxt) ? "Parallel" : "Separate") + "KV";
         if (distinctNullKey && cxt.isNullKey()) {
             return "0";
         } else if (cxt.isObjectOrNullKey()) {
             hash = (distinctNullKey ? "keyHashCode" : "nullableKeyHashCode") + "(" + key + ")";
+            mixingClass += "Obj";
         } else {
+            hash = key;
             PrimitiveType keyOption = (PrimitiveType) cxt.keyOption();
-            switch (keyOption) {
-                case BYTE: case SHORT: case CHAR:
-                    hash = "((int) " + key + ")";
-                    break;
-                case INT: case FLOAT:
-                    hash = key;
-                    break;
-                case LONG: case DOUBLE:
-                    hash = format("((int) (%s ^ (%s >>> 32)))", key, key);
-                    break;
-                default:
-                    throw new IllegalStateException();
-            }
+            mixingClass += keyOption.title;
         }
-        if (doubleSizedParallel(cxt))
-            hash = "((" + hash + ") << 1)";
-        return hash;
+        mixingClass += "KeyMixing";
+        return mixingClass + ".mix(" + hash + ")";
     }
 
     static String isFree(MethodContext cxt, String key) {

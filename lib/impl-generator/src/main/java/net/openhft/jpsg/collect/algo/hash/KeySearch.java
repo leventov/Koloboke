@@ -65,13 +65,9 @@ final class KeySearch {
                 modulo = capacityAssigned ? " % capacity" :
                         (" % (capacity = " + (parallelKV(cxt) ? table : keys) + ".length)");
             }
-            String hashAssignment = isLHash(cxt) ? keyHash(cxt, key, distinctNullKey) :
-                    positiveKeyHash(cxt, key, distinctNullKey);
-            if (isDHash(cxt)) {
+            String hashAssignment = keyHash(cxt, key, distinctNullKey);
+            if (isDHash(cxt))
                 hashAssignment = "(hash = " + hashAssignment + ")";
-            } else {
-                hashAssignment = "(" + hashAssignment + ")";
-            }
             indexAssignment = "index = " + hashAssignment + modulo;
         } else {
             indexAssignment = "index = 0";
@@ -81,40 +77,6 @@ final class KeySearch {
         } else {
             return readKeyOrEntry(cxt, table, keys, indexAssignment);
         }
-    }
-
-    private static String positiveKeyHash(MethodContext cxt, String key, boolean distinctNullKey) {
-        String hash;
-        if (distinctNullKey && cxt.isNullKey()) {
-            return "0";
-        } if (cxt.isObjectOrNullKey()) {
-            hash = (distinctNullKey ? "keyHashCode" : "nullableKeyHashCode") +
-                    "(" + key + ")";
-            hash = maskPositive(cxt, hash);
-        } else {
-            PrimitiveType keyOption = (PrimitiveType) cxt.keyOption();
-            switch (keyOption) {
-                case BYTE: hash = key + " & BYTE_MASK"; break;
-                case SHORT: hash = key + " & SHORT_MASK"; break;
-                case CHAR: hash = key; break;
-                case INT: case FLOAT: hash = maskPositive(cxt, key); break;
-                case LONG: case DOUBLE:
-                    hash = maskPositive(cxt, format("((int) (%s ^ (%s >>> 32)))", key, key));
-                    break;
-                default:
-                    throw new IllegalStateException();
-            }
-        }
-        if (doubleSizedParallel(cxt))
-            hash = "((" + hash + ") << 1)";
-        return hash;
-    }
-
-    private static String maskPositive(MethodContext cxt, String hash) {
-        String mask = "Integer.MAX_VALUE";
-        if (doubleSizedParallel(cxt))
-            mask = "(" + mask + " >> 1)";
-        return hash + " & " + mask;
     }
 
     static int innerLoopBodies(MethodContext cxt) {
