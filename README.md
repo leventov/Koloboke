@@ -33,7 +33,6 @@ Then you can open the project in IntelliJ IDEA.
 
 To rebuild meta projects (code generators), run from the project root dir:
 
-    $ ./gradlew --stop
     $ ./gradlew :cleanMeta :buildMeta
 
 To rebuild either the lib, benchmarks or both, run
