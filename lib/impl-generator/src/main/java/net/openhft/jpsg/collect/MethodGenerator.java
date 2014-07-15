@@ -185,7 +185,7 @@ public abstract class MethodGenerator {
         return unIndent().lines("}");
     }
 
-    public final void ret(String ret) {
+    public void ret(String ret) {
         lines("return " + ret + ";");
     }
 

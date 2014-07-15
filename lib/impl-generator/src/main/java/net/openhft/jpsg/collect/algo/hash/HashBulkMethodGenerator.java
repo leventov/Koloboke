@@ -38,6 +38,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     private BulkMethod method;
     private boolean valuesUsed = false;
     private boolean indexUsed = false;
+    private boolean methodReturnsSomething = false;
 
     @Override
     public void generateLines(Method m) {
@@ -53,6 +54,13 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         valuesUsed |= countUsages(0, "entry") > 0;
         valuesUsed |= countUsages(0, VAL_SUB) > 0;
         lines.clear();
+    }
+
+    @Override
+    public void ret(String ret) {
+        if (!ret.isEmpty())
+            methodReturnsSomething = true;
+        super.ret(ret);
     }
 
     private boolean unsafeLoop() {
@@ -150,7 +158,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             String collectionArgName = method.collectionArgName();
             lines(
                     "if (" + collectionArgName + " instanceof " + internalClass + ")",
-                    "    " + method.name() + "(" +
+                    "    " + (methodReturnsSomething ? "return " : "") +  method.name() + "(" +
                             (method.argsBeforeCollection().isEmpty() ? "" :
                                     method.argsBeforeCollection() + ", ") +
                             "(" + internalClass + ") " + collectionArgName + ");"
