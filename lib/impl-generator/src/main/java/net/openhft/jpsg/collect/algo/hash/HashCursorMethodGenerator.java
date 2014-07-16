@@ -206,6 +206,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
 
     @Override
     protected void generateForEachForward() {
+        requireNonNull("action");
         if (!cxt.immutable())
             lines("int mc = expectedModCount;");
         copyArrays(this, cxt);

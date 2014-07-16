@@ -20,6 +20,7 @@ public final class ForEach extends BulkMethod {
 
     @Override
     public void beginning() {
+        gen.requireNonNull("action");
         escapeIfEmpty();
     }
 

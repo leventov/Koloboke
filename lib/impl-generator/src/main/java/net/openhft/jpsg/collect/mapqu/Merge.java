@@ -24,6 +24,13 @@ public final class Merge extends MapQueryUpdateMethod {
     }
 
     @Override
+    public void beginning() {
+        if (cxt.genericVersion())
+            gen.requireNonNull("value");
+        gen.requireNonNull("remappingFunction");
+    }
+
+    @Override
     public void ifPresent() {
         gen.lines(cxt.valueGenericType() + " newValue = remappingFunction." + cxt.applyValueName() +
                 "(" + gen.value() + ", value);");

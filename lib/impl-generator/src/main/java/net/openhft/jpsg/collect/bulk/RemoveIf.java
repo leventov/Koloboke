@@ -20,6 +20,7 @@ public final class RemoveIf extends BulkMethod {
 
     @Override
     public void beginning() {
+        gen.requireNonNull("filter");
         gen.lines(
                 "if (isEmpty())",
                 "    return false;",

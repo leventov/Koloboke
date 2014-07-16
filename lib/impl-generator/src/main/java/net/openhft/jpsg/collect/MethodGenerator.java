@@ -206,6 +206,11 @@ public abstract class MethodGenerator {
         lines("throw new java.lang.UnsupportedOperationException(\"" + message + "\");");
     }
 
+    public final void requireNonNull(String obj) {
+        lines("if (" + obj + " == null)");
+        lines("    throw new java.lang.NullPointerException();");
+    }
+
     public final void incrementModCount() {
         lines("incrementModCount();");
     }

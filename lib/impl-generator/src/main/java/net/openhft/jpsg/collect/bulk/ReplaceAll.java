@@ -21,6 +21,7 @@ public final class ReplaceAll extends BulkMethod {
 
     @Override
     public void beginning() {
+        gen.requireNonNull("function");
         escapeIfEmpty();
     }
 

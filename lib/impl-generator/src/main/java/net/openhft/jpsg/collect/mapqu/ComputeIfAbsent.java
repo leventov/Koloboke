@@ -24,6 +24,11 @@ public final class ComputeIfAbsent extends MapQueryUpdateMethod {
     }
 
     @Override
+    public void beginning() {
+        gen.requireNonNull("mappingFunction");
+    }
+
+    @Override
     public Branch mostProbableBranch() {
         return Branch.KEY_ABSENT;
     }

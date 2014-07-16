@@ -157,6 +157,7 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
 
     @Override
     protected void generateForEachRemaining() {
+        requireNonNull("action");
         if (!cxt.immutable())
             lines("int mc = expectedModCount;");
         copyArrays(this, cxt);

@@ -25,6 +25,11 @@ public class Compute extends MapQueryUpdateMethod {
     }
 
     @Override
+    public void beginning() {
+        gen.requireNonNull("remappingFunction");
+    }
+
+    @Override
     public void ifPresent() {
         gen.lines(cxt.valueGenericType() + " newValue = remappingFunction." + cxt.applyValueName() +
                 "(" + gen.keyAndValue() + ");");

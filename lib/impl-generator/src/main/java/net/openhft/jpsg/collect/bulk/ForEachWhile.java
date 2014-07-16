@@ -20,6 +20,7 @@ public final class ForEachWhile extends BulkMethod {
 
     @Override
     public void beginning() {
+        gen.requireNonNull("predicate");
         gen.lines(
                 "if (isEmpty())",
                 "    return true;",
