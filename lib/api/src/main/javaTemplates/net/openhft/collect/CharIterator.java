@@ -30,14 +30,12 @@ public interface CharIterator extends Iterator<Character>
     /* if int|long|double elem JDK8 jdk //@Override// endif */
     char nextChar();
 
-    /* if JDK8 jdk */
     /**
      * @deprecated Use specialization {@link #forEachRemaining(CharConsumer)} instead
      */
     /* if JDK8 jdk //@Override// endif */
     @Deprecated
     void forEachRemaining(Consumer<? super Character> action);
-    /* endif */
 
     /* if int|long|double elem JDK8 jdk //@Override// endif */
     void forEachRemaining(CharConsumer action);

@@ -16,8 +16,8 @@
 
 package net.openhft.collect;
 
-import net.openhft.function.CharConsumer;
-import net.openhft.function.CharPredicate;
+import net.openhft.function.*;
+
 import javax.annotation.Nonnull;
 
 import java.util.Collection;
@@ -109,7 +109,14 @@ public interface CharCollection extends Collection<Character>, Container {
     @Nonnull
     CharCursor cursor();
 
+
+    /**
+     * @deprecated Use specialization {@link #forEach(CharConsumer)} instead
+     */
     /* if JDK8 jdk //@Override// endif */
+    @Deprecated
+    void forEach(Consumer<? super Character> action);
+
     void forEach(CharConsumer action);
 
     boolean forEachWhile(CharPredicate predicate);
@@ -177,6 +184,12 @@ public interface CharCollection extends Collection<Character>, Container {
     boolean removeChar(char v);
 
 
+    /**
+     * @deprecated Use specialization {@link #removeIf(CharPredicate)} instead
+     */
     /* if JDK8 jdk //@Override// endif */
+    @Deprecated
+    boolean removeIf(Predicate<? super Character> filter);
+
     boolean removeIf(CharPredicate filter);
 }

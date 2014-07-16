@@ -98,7 +98,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     }
 
     /* if !(obj key obj value) */
-    /* if JDK8 jdk */@Override/* endif */
+    @Override
     public Short getOrDefault(Object key, Short defaultValue) {
         /* template GetOrDefault with generic version */ throw new NotGenerated(); /* endtemplate */
     }
@@ -109,7 +109,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         /* template GetOrDefault */ throw new NotGenerated(); /* endtemplate */
     }
 
-    /* if obj key obj value || JDK8 jdk */@Override/* endif */
+    @Override
     public void forEach(BiConsumer<? super Byte, ? super Short> action) {
         /* template ForEach */
     }
@@ -204,7 +204,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     }
 
     /* if !(obj key obj value) */
-    /* if JDK8 jdk */@Override/* endif */
+    @Override
     public Short putIfAbsent(Byte key, Short value) {
         /* template PutIfAbsent with generic version */ throw new NotGenerated(); /* endtemplate */
     }
@@ -227,7 +227,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     }
     /* endif */
 
-    /* if obj key obj value || JDK8 jdk */@Override/* endif */
+    @Override
     public Short compute(Byte key,
             BiFunction<? super Byte, ? super Short, ? extends Short> remappingFunction) {
         /* template Compute with generic version */ throw new NotGenerated(); /* endtemplate */
@@ -254,7 +254,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     /* endif */
     /* endif */
 
-    /* if obj key obj value || JDK8 jdk */@Override/* endif */
+    @Override
     public Short computeIfAbsent(Byte key,
             Function<? super Byte, ? extends Short> mappingFunction) {
         /* template ComputeIfAbsent with generic version */ throw new NotGenerated();
@@ -282,7 +282,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     /* endif */
     /* endif */
 
-    /* if obj key obj value || JDK8 jdk */@Override/* endif */
+    @Override
     public Short computeIfPresent(Byte key,
             BiFunction<? super Byte, ? super Short, ? extends Short> remappingFunction) {
         /* template ComputeIfPresent with generic version */ throw new NotGenerated();
@@ -296,7 +296,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     }
     /* endif */
 
-    /* if obj key obj value || JDK8 jdk */@Override/* endif */
+    @Override
     public Short merge(Byte key, Short value,
             BiFunction<? super Short, ? super Short, ? extends Short> remappingFunction) {
         /* template Merge with generic version */ throw new NotGenerated(); /* endtemplate */
@@ -342,7 +342,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     }
 
 
-    /* if obj key obj value || JDK8 jdk */@Override/* endif */
+    @Override
     public Short replace(Byte key, Short value) {
         /* template Replace with generic version */ throw new NotGenerated(); /* endtemplate */
     }
@@ -355,7 +355,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     /* endif */
 
     /* if !(obj key obj value) */
-    /* if JDK8 jdk */@Override/* endif */
+    @Override
     public boolean replace(Byte key, Short oldValue, Short newValue) {
         return replace(key/* if !(obj key) */.byteValue()/* endif */,
                 oldValue/* if !(obj value) */.shortValue()/* endif */,
@@ -369,7 +369,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     }
 
 
-    /* if obj key obj value || JDK8 jdk */@Override/* endif */
+    @Override
     public void replaceAll(
             BiFunction<? super Byte, ? super Short, ? extends Short> function) {
         /* template ReplaceAll with generic version */ throw new NotGenerated(); /* endtemplate */
@@ -460,7 +460,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
 
 
     /* if !(obj key obj value) */
-    /* if JDK8 jdk */@Override/* endif */
+    @Override
     public boolean remove(Byte key, Short value) {
         return remove(key/* if !(obj key) */.byteValue()/* endif */,
                 value/* if !(obj value) */.shortValue()/* endif */);
@@ -984,7 +984,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         /* endif */
 
 
-        /* if obj value || JDK8 jdk //@Override// endif */
+        @Override
         public void forEach(Consumer<? super Short> action) {
             /* template ForEach */
         }
@@ -1259,7 +1259,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         }
         /* endif */
 
-        /* if obj value || JDK8 jdk //@Override// endif */
+        @Override
         public void forEachRemaining(Consumer<? super Short> action) {
             /* template Iterator.forEachRemaining */ throw new NotGenerated(); /* endtemplate */
         }
