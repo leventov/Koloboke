@@ -20,6 +20,7 @@ package net.openhft.function;
 public interface CharPredicate/* if int|long|double t JDK8 jdk //
         extends java.util.function.CharPredicate// endif */ {
 
-    /* if int|long|double t JDK8 jdk //@Override// endif */
+    /* if !(int|long|double t JDK8 jdk) */
     boolean test(char value);
+    /* endif */
 }

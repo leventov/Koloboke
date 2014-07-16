@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 public interface ObjIterator<E> extends Iterator<E> {
 
-    /* if JDK8 jdk //@Override// endif */
+    /* if !(JDK8 jdk) */
     void forEachRemaining(Consumer<? super E> action);
+    /* endif */
 }

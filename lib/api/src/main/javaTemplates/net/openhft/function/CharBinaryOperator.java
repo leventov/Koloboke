@@ -20,6 +20,7 @@ package net.openhft.function;
 public interface CharBinaryOperator/* if int|long|double t JDK8 jdk //
         extends java.util.function.CharBinaryOperator// endif */ {
 
-    /* if int|long|double t JDK8 jdk //@Override// endif */
+    /* if !(int|long|double t JDK8 jdk) */
     char applyAsChar(char left, char right);
+    /* endif */
 }

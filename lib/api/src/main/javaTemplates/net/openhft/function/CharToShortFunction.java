@@ -23,6 +23,7 @@ package net.openhft.function;
 public interface CharToShortFunction/* if int|long|double t int|long|double u JDK8 jdk //
         extends java.util.function.CharToShortFunction// endif */ {
 
-    /* if int|long|double t int|long|double u JDK8 jdk //@Override// endif */
+    /* if !(int|long|double t int|long|double u JDK8 jdk) */
     short applyAsShort(char value);
+    /* endif */
 }

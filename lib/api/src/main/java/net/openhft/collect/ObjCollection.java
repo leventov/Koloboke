@@ -31,14 +31,16 @@ public interface ObjCollection<E> extends Collection<E>, Container {
     @Nullable
     Equivalence<E> equivalence();
 
-    /* if JDK8 jdk //@Override// endif */
+    /* if !(JDK8 jdk) */
     void forEach(Consumer<? super E> action);
+    /* endif */
 
     boolean forEachWhile(Predicate<? super E> predicate);
 
     @Nonnull
     ObjCursor<E> cursor();
 
-    /* if JDK8 jdk //@Override// endif */
+    /* if !(JDK8 jdk) */
     boolean removeIf(Predicate<? super E> filter);
+    /* endif */
 }

@@ -20,6 +20,7 @@ package net.openhft.function;
 public interface CharConsumer/* if int|long|double t JDK8 jdk //
         extends java.util.function.CharConsumer// endif */ {
 
-    /* if int|long|double t JDK8 jdk //@Override// endif */
+    /* if !(int|long|double t JDK8 jdk) */
     void accept(char value);
+    /* endif */
 }

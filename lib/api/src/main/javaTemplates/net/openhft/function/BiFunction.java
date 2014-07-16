@@ -20,6 +20,7 @@ package net.openhft.function;
 public interface BiFunction<T, U, R>
         /* if JDK8 jdk //extends java.util.function.BiFunction<T, U, R> // endif */{
 
-    /* if JDK8 jdk //@Override// endif */
+    /* if !(JDK8 jdk) */
     R apply(T t, U u);
+    /* endif */
 }

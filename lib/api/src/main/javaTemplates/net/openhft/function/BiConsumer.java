@@ -20,6 +20,7 @@ package net.openhft.function;
 public interface BiConsumer<T, U>
         /* if JDK8 jdk //extends java.util.function.BiConsumer<T, U> // endif */{
 
-    /* if JDK8 jdk //@Override// endif */
+    /* if !(JDK8 jdk) */
     void accept(T t, U u);
+    /* endif */
 }

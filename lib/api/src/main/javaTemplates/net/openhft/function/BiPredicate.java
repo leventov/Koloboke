@@ -19,6 +19,8 @@ package net.openhft.function;
 
 public interface BiPredicate<T, U>
         /* if JDK8 jdk //extends java.util.function.BiPredicate<T, R> // endif */{
-    /* if JDK8 jdk //@Override// endif */
+
+    /* if !(JDK8 jdk) */
     public boolean test(T t, U u);
+    /* endif */
 }

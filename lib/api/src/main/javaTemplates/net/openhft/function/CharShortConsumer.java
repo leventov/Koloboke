@@ -25,6 +25,7 @@ package net.openhft.function;
 public interface CharShortConsumer/*<>*//* if obj t int|long|double u JDK8 jdk //
         extends java.util.function.ObjShortConsumer<T>// endif */ {
 
-    /* if obj t int|long|double u JDK8 jdk //@Override// endif */
+    /* if !(obj t int|long|double u JDK8 jdk) */
     void accept(char a, short b);
+    /* endif */
 }

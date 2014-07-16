@@ -20,6 +20,7 @@ package net.openhft.function;
 public interface ToCharFunction<T>/* if int|long|double t JDK8 jdk //
         extends java.util.function.ToCharFunction<T>// endif */ {
 
-    /* if int|long|double t JDK8 jdk //@Override// endif */
+    /* if !(int|long|double t JDK8 jdk) */
     char applyAsChar(T value);
+    /* endif */
 }
