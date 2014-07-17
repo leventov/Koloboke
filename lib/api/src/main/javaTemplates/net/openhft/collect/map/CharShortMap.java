@@ -39,8 +39,8 @@ import java.util.Map;
 
 
 /**
- * Interface for a {@link java.util.Map} specialization with // raw //char keys
- * and // raw //short values.
+ * Interface for a {@link java.util.Map} specialization with //raw//char keys
+ * and //raw//short values.
  */
 public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
@@ -84,7 +84,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj key obj value) */
     /**
-     * @deprecated Use specialization {@link #get// valueSuffix //(// raw //char)} instead
+     * @deprecated Use specialization {@link #get// valueSuffix //(//raw//char)} instead
      */
     @Override
     @Deprecated
@@ -96,7 +96,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj key obj value) */
     /**
-     * @deprecated Use specialization {@link #getOrDefault(char, short)} instead
+     * @deprecated Use specialization {@link #getOrDefault(//raw//char, //raw//short)} instead
      */
     /* if JDK8 jdk //@Override// endif */
     @Deprecated
@@ -124,7 +124,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj key obj value) */
     /**
-     * @deprecated Use specialization {@link #forEach(CharShortConsumer//<super>//)} instead
+     * @deprecated Use specialization {@link #forEach(CharShortConsumer)} instead
      */
     /* if JDK8 jdk //@Override// endif */
     @Deprecated
@@ -185,7 +185,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj key obj value) */
     /**
-     * @deprecated Use specialization {@link #put(// raw //char, // raw //short)} instead
+     * @deprecated Use specialization {@link #put(//raw//char, //raw//short)} instead
      */
     @Override
     @Deprecated
@@ -210,7 +210,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj key obj value) */
     /**
-     * @deprecated Use specialization {@link #putIfAbsent(char, short)} instead
+     * @deprecated Use specialization {@link #putIfAbsent(//raw//char, //raw//short)} instead
      */
     /* if JDK8 jdk //@Override// endif */
     @Deprecated
@@ -268,7 +268,8 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj key obj value) */
     /**
-     * @deprecated Use specialization {@link #compute(char, CharShortToShortFunction//ef//)} instead
+     * @deprecated Use specialization
+     *             {@link #compute(//raw//char, //f//CharShortToShortFunction////)} instead
      */
     /* if JDK8 jdk //@Override// endif */
     @Deprecated
@@ -304,7 +305,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     /* if !(obj key obj value) */
     /**
      * @deprecated Use specialization
-     *             {@link #computeIfAbsent(char, CharToShortFunction//ef//)} instead
+     *             {@link #computeIfAbsent(//raw//char, //f//CharToShortFunction////)} instead
      */
     /* if JDK8 jdk //@Override// endif */
     @Deprecated
@@ -344,7 +345,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     /* if !(obj key obj value) */
     /**
      * @deprecated Use specialization
-     *             {@link #computeIfPresent(char, CharShortToShortFunction//ef//)} instead
+     *             {@link #computeIfPresent(//raw//char, //f//CharShortToShortFunction////)} instead
      */
     /* if JDK8 jdk //@Override// endif */
     @Deprecated
@@ -377,7 +378,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     /* if !(obj key obj value) */
     /**
      * @deprecated Use specialization
-     *             {@link #merge(char, short, ShortBinaryOperator//ef//)} instead
+     *             {@link #merge(//raw//char, //raw//short, //f//ShortBinaryOperator////)} instead
      */
     /* if JDK8 jdk //@Override// endif */
     @Deprecated
@@ -457,7 +458,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj key obj value) */
     /**
-     * @deprecated Use specialization {@link #replace(char, short)} instead
+     * @deprecated Use specialization {@link #replace(//raw//char, //raw//short)} instead
      */
     /* if JDK8 jdk //@Override// endif */
     @Deprecated
@@ -485,9 +486,10 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj key obj value) */
     /**
-     * @deprecated Use specialization {@link #replace(char, short, short)} instead
+     * @deprecated Use specialization
+     *             {@link #replace(//raw//char, //raw//short, //raw//short)} instead
      */
-    /* if JDK8 jdk //@Override// endif */
+    /* if JDK8 jdk */@Override/* endif */
     @Deprecated
     boolean replace(Character key, Short oldValue, Short newValue);
     /* endif */
@@ -510,7 +512,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj key obj value) */
     /**
-     * @deprecated Use specialization {@link #replaceAll(CharShortToShortFunction//ef//)} instead
+     * @deprecated Use specialization {@link #replaceAll(//f//CharShortToShortFunction////)} instead
      */
     /* if JDK8 jdk //@Override// endif */
     @Deprecated
@@ -549,7 +551,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     /* if !(obj key obj value) */
     /**
      * @deprecated Use specialization
-     *             {@link #remove// if obj key //AsShort// endif //(// raw //char)} instead
+     *             {@link #remove// if obj key //AsShort// endif //(//raw//char)} instead
      */
     @Override
     @Deprecated
@@ -561,7 +563,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj key obj value) */
     /**
-     * @deprecated Use specialization {@link #remove(// raw //char, // raw //short)} instead
+     * @deprecated Use specialization {@link #remove(//raw//char, //raw//short)} instead
      */
     /* if JDK8 jdk */@Override/* endif */
     @Deprecated
