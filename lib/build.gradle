@@ -15,6 +15,7 @@ configure([project('api'), project('impl')]) {
     apply plugin: 'propdeps'
     apply plugin: 'propdeps-idea'
     apply plugin: 'findbugs'
+    apply plugin: 'jacoco'
 
 	setSourceCompatibility(project, 1.6)
 
