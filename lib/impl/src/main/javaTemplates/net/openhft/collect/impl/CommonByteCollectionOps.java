@@ -49,9 +49,7 @@ public final class CommonByteCollectionOps {
             // noinspection unchecked
             /* endif */
             return c2.forEachWhile(new
-                    /*f*/BytePredicate/* if CommentForFuncProcessor elem //
-                        a template should start after function name to suppress params generation
-                        // endif */() {
+                    /*f*/BytePredicate/**/() {
                 @Override
                 public boolean test(/* raw */byte value) {
                     return collection.contains(value);

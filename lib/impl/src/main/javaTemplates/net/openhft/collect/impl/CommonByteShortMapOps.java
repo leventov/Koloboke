@@ -57,8 +57,7 @@ public final class CommonByteShortMapOps {
             // noinspection unchecked
             /* endif */
             return m2.forEachWhile(new
-                   /* if !(obj key obj value) */ByteShortPredicate
-                   /* elif obj key obj value //BiPredicate// endif */() {
+                   /*f*/ByteShortPredicate/**/() {
                 @Override
                 public boolean test(/* raw */byte a, /* raw */short b) {
                     return map.containsEntry(a, b);

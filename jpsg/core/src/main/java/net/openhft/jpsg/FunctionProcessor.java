@@ -29,7 +29,7 @@ public final class FunctionProcessor extends TemplateProcessor {
             (Generator.BlocksProcessor.PRIORITY + OptionProcessor.PRIORITY) / 2;
 
     private static final Pattern FUNCTION_P = RegexpUtils.compile(
-            "/[\\*/]f[\\*/]/([a-z]+)|([a-z]+)/[\\*/]ef[\\*/]/");
+            "/[\\*/]f[\\*/]/([a-z]+)(/[\\*/][\\*/]/)?+|([a-z]+)/[\\*/]ef[\\*/]/");
 
     /**
      * template start or end of input, because template file is split by // if //s
@@ -108,7 +108,7 @@ public final class FunctionProcessor extends TemplateProcessor {
         while (m.find()) {
             String functionClass = m.group(1);
             if (functionClass == null)
-                functionClass = m.group(2);
+                functionClass = m.group(3);
             String[] parts = CAMEL_CASE.split(functionClass);
             List<String> argDims = new ArrayList<>();
             int i = 0;
@@ -154,12 +154,15 @@ public final class FunctionProcessor extends TemplateProcessor {
             } else {
                 allowOperatorCollapse = false;
             }
+
             Matcher templateStartM = TEMPLATE_START.matcher(template.substring(m.end()));
-            boolean noTemplateAhead = !templateStartM.find() || templateStartM.start() != 0;
+
+            boolean noTemplateAhead = m.group(2) != null ||
+                    (templateStartM.find() && templateStartM.start() == 0);
 
             postProcess(sb, source, target, template.substring(prevEnd, m.start()));
             String generatedName = generateName(
-                    argDims, outDim, baseName, allowOperatorCollapse, noTemplateAhead, target);
+                    argDims, outDim, baseName, allowOperatorCollapse, !noTemplateAhead, target);
             sb.append(generatedName);
             prevEnd = m.end();
         }
