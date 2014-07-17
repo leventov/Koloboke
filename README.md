@@ -13,7 +13,7 @@ Bonus: `java.util.Map` default methods from JDK8 in the API for Java 6 and 7.
 
 ---
 
-#### [JavaDoc] (http://openhft.github.io/UntitledCollectionsProject/api/current/java7/index.html)
+#### JavaDoc: [Java 6] (http://openhft.github.io/UntitledCollectionsProject/api/0.5/java6/index.html) | [Java 7] (http://openhft.github.io/UntitledCollectionsProject/api/0.5/java7/index.html) | [Java 8] (http://openhft.github.io/UntitledCollectionsProject/api/0.5/java8/index.html)
 
 ---
 
