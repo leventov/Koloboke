@@ -18,7 +18,8 @@
 package net.openhft.collect.set.hash;
 
 import net.openhft.collect.*;
-import net.openhft.function.*;
+import net.openhft.function./*f*/CharConsumer/**/;
+import net.openhft.function.Consumer;
 import net.openhft.collect.set.CharSetFactory;
 import javax.annotation.Nullable;
 

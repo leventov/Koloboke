@@ -43,7 +43,12 @@ public abstract class TemplateProcessor {
 
     protected final void postProcess(StringBuilder sb,
             Context source, Context target, String template) {
-        sb.append(next != null ? next.generate(source, target, template) : template);
+        if (next != null) {
+            next.process(sb, source, target, template);
+        } else {
+            sb.append(template);
+        }
+        // sb.append(next != null ? next.generate(source, target, template) : template);
     }
 
     final String generate(Context source, Context target, String template) {

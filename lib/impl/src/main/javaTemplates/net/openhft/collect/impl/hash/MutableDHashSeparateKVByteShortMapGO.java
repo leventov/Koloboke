@@ -29,7 +29,19 @@ import net.openhft.collect.map.*;
 import net.openhft.collect.map.hash.*;
 import net.openhft.collect.set.*;
 import net.openhft.collect.set.hash.*;
-import net.openhft.function.*;
+import net.openhft.function.BiConsumer;
+import net.openhft.function.BiFunction;
+import net.openhft.function./*f*/BytePredicate/**/;
+import net.openhft.function./*f*/ByteShortConsumer/**/;
+import net.openhft.function./*f*/ByteShortPredicate/**/;
+import net.openhft.function./*f*/ByteShortToShortFunction/**/;
+import net.openhft.function./*f*/ByteToShortFunction/**/;
+import net.openhft.function.Consumer;
+import net.openhft.function.Function;
+import net.openhft.function.Predicate;
+import net.openhft.function./*f*/ShortBinaryOperator/**/;
+import net.openhft.function./*f*/ShortConsumer/**/;
+import net.openhft.function./*f*/ShortPredicate/**/;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -461,9 +473,10 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
 
     /* if !(obj key obj value) */
     @Override
-    public boolean remove(Byte key, Short value) {
-        return remove(key/* if !(obj key) */.byteValue()/* endif */,
-                value/* if !(obj value) */.shortValue()/* endif */);
+    public boolean remove(Object key, Object value) {
+        return remove(/* if !(obj key) */((Byte) key).byteValue()/* elif obj key //key// endif */,
+                /* if !(obj value) */((Short) value).shortValue()
+                /* elif obj value //value// endif */);
     }
     /* endif */
 

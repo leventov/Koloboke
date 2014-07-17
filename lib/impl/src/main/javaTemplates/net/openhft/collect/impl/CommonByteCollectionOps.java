@@ -19,7 +19,8 @@ package net.openhft.collect.impl;
 
 import net.openhft.collect.NullableObjects;
 import net.openhft.collect.ByteCollection;
-import net.openhft.function.*;
+import net.openhft.function./*f*/ByteConsumer/**/;
+import net.openhft.function./*f*/BytePredicate/**/;
 import net.openhft.collect.set.ByteSet;
 
 import java.util.Collection;

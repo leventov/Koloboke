@@ -126,7 +126,6 @@ public class Generator {
         add(new BlocksProcessor());
         add(new GenericsProcessor());
         add(new DefinitionProcessor());
-        add(new FunctionProcessor());
         add(new FloatingWrappingProcessor());
         add(new RawModifierProcessor());
         add(new BitsModifierPreProcessor());

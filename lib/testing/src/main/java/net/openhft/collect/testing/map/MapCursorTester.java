@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package net.openhft.collect;
+package net.openhft.collect.testing.map;
 
-import java.lang.reflect.Method;
+import net.openhft.collect.Cursor;
+import net.openhft.collect.testing.*;
+
+import java.util.Map;
 
 
-public final class Util {
-
-    public static Method getTestMethod(Class testClass, String methodName) {
-        try {
-            return testClass.getMethod(methodName);
-        } catch (NoSuchMethodException e) {
-            throw new AssertionError("Could not find method to suppress ", e);
-        }
+/**
+ * {@link com.google.common.collect.testing.IteratorTester} ported to test
+ * map {@link Cursor cursors}.
+ */
+public abstract class MapCursorTester<K, V, C extends Cursor>
+        extends AbstractCursorTester<Map.Entry<K, V>, C> {
+    public MapCursorTester(int steps, Iterable<CursorFeature> features,
+            Iterable<Map.Entry<K, V>> expectedElements, CursorKnownOrder knownOrder) {
+        super(steps, features, expectedElements, knownOrder, 0, false);
     }
-
-    private Util () {}
 }

@@ -15,14 +15,15 @@
  * limitations under the License.
  */
 
-package net.openhft.collect.set;
+package net.openhft.collect.testing.set;
 
 import com.google.common.collect.testing.*;
 import com.google.common.collect.testing.features.*;
 import com.google.common.collect.testing.testers.CollectionClearTester;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import net.openhft.collect.Mutability;
+import net.openhft.collect.set.CharSetFactory;
+import net.openhft.collect.testing.Mutability;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -30,49 +31,49 @@ import java.util.*;
 import static com.google.common.collect.testing.SetTestSuiteBuilder.*;
 
 
-public class CharSetTestSuiteBuilder/*<>*/ {
+public class HyperCharSetTestSuiteBuilder/*<>*/ {
 
     private List<CharSetFactory/*<>*/> factories;
     private List<SampleElements<? extends Character>> samples;
     private List<Feature<?>> specialFeatures = new ArrayList<Feature<?>>();
     private List<Method> suppressing = new ArrayList<Method>();
 
-    public CharSetTestSuiteBuilder/*<>*/ setFactories(CharSetFactory/*<>*/... factories) {
+    public HyperCharSetTestSuiteBuilder/*<>*/ setFactories(CharSetFactory/*<>*/... factories) {
         this.factories = Arrays.asList(factories);
         return this;
     }
 
-    public CharSetTestSuiteBuilder/*<>*/ setFactories(
+    public HyperCharSetTestSuiteBuilder/*<>*/ setFactories(
             List<CharSetFactory/*<>*/> factories) {
         this.factories = factories;
         return this;
     }
 
-    public CharSetTestSuiteBuilder/*<>*/ setSamples(
+    public HyperCharSetTestSuiteBuilder/*<>*/ setSamples(
             SampleElements<? extends Character>... samples) {
         this.samples = Arrays.asList(samples);
         return this;
     }
 
-    public CharSetTestSuiteBuilder/*<>*/ setSamples(
+    public HyperCharSetTestSuiteBuilder/*<>*/ setSamples(
             List<SampleElements<? extends Character>> samples) {
         this.samples = samples;
         return this;
     }
 
-    public CharSetTestSuiteBuilder/*<>*/ withSpecialFeatures(
+    public HyperCharSetTestSuiteBuilder/*<>*/ withSpecialFeatures(
             List<Feature<?>> specialFeatures) {
         this.specialFeatures.addAll(specialFeatures);
         return this;
     }
 
-    public CharSetTestSuiteBuilder/*<>*/ withSpecialFeatures(
+    public HyperCharSetTestSuiteBuilder/*<>*/ withSpecialFeatures(
             Feature<?>... specialFeatures) {
         this.specialFeatures.addAll(Arrays.asList(specialFeatures));
         return this;
     }
 
-    public CharSetTestSuiteBuilder/*<>*/ suppressing(Method... methods) {
+    public HyperCharSetTestSuiteBuilder/*<>*/ suppressing(Method... methods) {
         suppressing.addAll(Arrays.asList(methods));
         return this;
     }
@@ -83,7 +84,8 @@ public class CharSetTestSuiteBuilder/*<>*/ {
             for (SampleElements<? extends Character> elems : samples) {
                 for (Mutability mutability : Mutability.values()) {
                     FeatureSpecificTestSuiteBuilder b = forEachTestSuiteBuilder(
-                            using(new TestCharSetGenerator(mutability, factory, elems)))
+                            new GuavaCharSetTestSuiteBuilder/*<>*/().usingGenerator(
+                                    new TestCharSetGenerator(mutability, factory, elems)))
                             .named(subSuiteName(factory, elems.asList(), mutability.toString()))
                             .withFeatures(mutability.collectionFeatures);
                     if (mutability == Mutability.UPDATABLE) {

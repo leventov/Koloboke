@@ -187,7 +187,7 @@ public abstract class HashConfig {
      * shrunk manually after creation.
      *
      * @return shrink condition
-     * @see #withShrinkCondition(net.openhft.function.Predicate)
+     * @see #withShrinkCondition(Predicate)
      * @see net.openhft.collect.HashContainer#shrink()
      */
     @Nullable

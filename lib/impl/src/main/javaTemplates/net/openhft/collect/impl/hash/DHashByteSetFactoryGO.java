@@ -22,7 +22,9 @@ package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
 import net.openhft.collect.set.hash.HashByteSetFactory;
-import net.openhft.function.*;
+import net.openhft.function./*f*/ByteConsumer/**/;
+import net.openhft.function.Consumer;
+import net.openhft.function.Predicate;
 import net.openhft.collect.set.hash.HashByteSet;
 
 import java.util.Collection;

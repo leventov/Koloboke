@@ -40,6 +40,12 @@ To rebuild either the lib, benchmarks or both, run
     $ ./gradlew cleanMain buildMain
 
 from the `lib`, `benchmarks` subdir or the root project dir respectively.
+
+To build the lib for Java 8, run
+
+    $ ../gradlew cleanMain buildMain -PlibTargetJava=8
+    
+from the `lib` subdir.
  
 ---
 

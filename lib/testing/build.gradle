@@ -1,0 +1,8 @@
+evaluationDependsOn("$parent.path")
+
+dependencies {
+    compile project("$parent.path:api")
+    compile 'com.google.guava:guava-testlib:17.0'
+    runtime project("$parent.path:impl")
+}
+

@@ -39,7 +39,7 @@ public final class CharSamples {
                 new SampleElements.Chars(),
                 /* endif */
                 /* if char t //
-                new SampleElements<Character>('a', 'b', 'c', 'd', (char) 0)
+                new SampleElements<Character>('b', 'a', 'c', 'd', (char) 0)
                 // elif !(char t) */
                 new SampleElements<Character>(
                         /* const t 0 */(char) 0/* endconst */,
@@ -47,15 +47,6 @@ public final class CharSamples {
                         /* const t max */Character.MAX_VALUE/* endconst*/,
                         /* const t 1 */(char) 1/* endconst */,
                         /* const t -2 */(char) -2/* endconst */
-                )
-                /* endif */
-                /* if float|double t */,
-                new SampleElements<Character>(
-                                /* const t 0 */(char) 0/* endconst */,
-                                /* if float t */Float/* elif double t //Double// endif */.NaN,
-                                Character.MAX_VALUE,
-                                /* const t 1 */(char) 1/* endconst */,
-                                /* const t -2 */(char) -2/* endconst */
                 )
                 /* endif */
         );

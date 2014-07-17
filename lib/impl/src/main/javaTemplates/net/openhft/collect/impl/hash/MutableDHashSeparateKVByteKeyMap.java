@@ -24,7 +24,10 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
-import net.openhft.function.*;
+import net.openhft.function./*f*/ByteConsumer/**/;
+import net.openhft.function./*f*/BytePredicate/**/;
+import net.openhft.function.Consumer;
+import net.openhft.function.Predicate;
 import net.openhft.collect.impl.*;
 import net.openhft.collect.set.ByteSet;
 import net.openhft.collect.set.hash.HashByteSet;
@@ -174,7 +177,7 @@ public abstract class MutableDHashSeparateKVByteKeyMap/*<>*/
 
 
         @Override
-        public void forEach( Consumer<? super Byte> action ) {
+        public void forEach(Consumer<? super Byte> action) {
             MutableDHashSeparateKVByteKeyMap.this.forEach(action);
         }
 
@@ -186,8 +189,7 @@ public abstract class MutableDHashSeparateKVByteKeyMap/*<>*/
         /* endif */
 
         @Override
-        public boolean forEachWhile(
-                /* if !(obj key) */BytePredicate/* elif obj key //Predicate// endif *//*<super>*/
+        public boolean forEachWhile(/*f*/BytePredicate/*<super>*/
                 predicate) {
             return MutableDHashSeparateKVByteKeyMap.this.forEachWhile(predicate);
         }

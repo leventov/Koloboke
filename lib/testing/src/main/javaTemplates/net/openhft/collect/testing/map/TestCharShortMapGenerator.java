@@ -18,11 +18,13 @@
  * limitations under the License.
  */
 
-package net.openhft.collect.map;
+package net.openhft.collect.testing.map;
 
 import com.google.common.collect.testing.*;
-import net.openhft.collect.Mutability;
-import net.openhft.function.*;
+import net.openhft.collect.testing.Mutability;
+import net.openhft.collect.map.CharShortMapFactory;
+import net.openhft.function./*f*/CharShortConsumer/**/;
+import net.openhft.function.Consumer;
 
 import java.util.List;
 import java.util.Map;
@@ -89,13 +91,10 @@ public class TestCharShortMapGenerator/*<>*/
     @Override
     public Map<Character, Short> create(final Object... elements) {
         Consumer</*f*/CharShortConsumer/*<>*/> supplier =
-                new Consumer</*f*/CharShortConsumer/*<>*/>() {
-                    @Override
-                    public void accept(/*f*/CharShortConsumer/*<>*/ map) {
-                        for (Object e : elements) {
-                            Map.Entry entry = (Map.Entry) e;
-                            map.accept((Character) entry.getKey(), (Short) entry.getValue());
-                        }
+                map -> {
+                    for (Object e : elements) {
+                        Map.Entry entry = (Map.Entry) e;
+                        map.accept((Character) entry.getKey(), (Short) entry.getValue());
                     }
                 };
         switch (mutability) {

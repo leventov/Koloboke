@@ -42,8 +42,9 @@ configure(leafProjects) {
     setSourceCompatibility(project, 1.8)
 }
 
-def metaProjects = [':jpsg:core', ':jpsg:gradle-plugin', ':lib:impl-generator']
-        .collect(this.&project)
+def metaProjects = [
+        ':jpsg:core', ':jpsg:gradle-plugin', ':lib:template-processors', ':lib:impl-generator'
+].collect(this.&project)
 metaProjects.each { p -> evaluationDependsOn(p.path) }
 task buildMeta { dependsOn metaProjects*.build }
 task cleanMeta { dependsOn metaProjects*.clean }

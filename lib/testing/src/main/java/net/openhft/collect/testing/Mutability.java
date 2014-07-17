@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.openhft.collect;
+package net.openhft.collect.testing;
 
 import com.google.common.collect.testing.features.*;
 

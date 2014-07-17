@@ -17,7 +17,8 @@
 
 package net.openhft.collect.set.hash;
 
-import net.openhft.function.*;
+import net.openhft.function./*f*/CharConsumer/**/;
+import net.openhft.function.Consumer;
 
 import java.util.Iterator;
 import java.util.ServiceLoader;

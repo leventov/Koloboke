@@ -21,7 +21,7 @@
 package net.openhft.collect.map;
 
 import net.openhft.collect.Cursor;
-import net.openhft.function.*;
+import net.openhft.function./*f*/CharShortConsumer/**/;
 
 
 /**

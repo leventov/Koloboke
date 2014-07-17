@@ -15,12 +15,14 @@
  * limitations under the License.
  */
 
-package net.openhft.collect.set;
+package net.openhft.collect.testing.set;
 
 import com.google.common.collect.testing.SampleElements;
 import com.google.common.collect.testing.TestSetGenerator;
-import net.openhft.collect.Mutability;
-import net.openhft.function.*;
+import net.openhft.collect.set.CharSetFactory;
+import net.openhft.collect.testing.Mutability;
+import net.openhft.function./*f*/CharConsumer/**/;
+import net.openhft.function.Consumer;
 
 import java.util.List;
 import java.util.Set;
@@ -41,12 +43,9 @@ public class TestCharSetGenerator/*<>*/ implements TestSetGenerator<Character> {
 
     @Override
     public Set<Character> create(final Object... elements) {
-        Consumer</*f*/CharConsumer/*<>*/> supplier = new Consumer</*f*/CharConsumer/*<>*/>() {
-            @Override
-            public void accept(/*f*/CharConsumer/*<>*/ set) {
-                for (Object e : elements) {
-                    set.accept((Character) e);
-                }
+        Consumer</*f*/CharConsumer/*<>*/> supplier = set -> {
+            for (Object e : elements) {
+                set.accept((Character) e);
             }
         };
         switch (mutability) {

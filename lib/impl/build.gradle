@@ -23,6 +23,6 @@ configure([generateJavaSpecializations, generateResourceSpecializations]) {
 
 dependencies {
     compile project("$parent.path:api")
-    testCompile 'com.google.guava:guava-testlib:17.0'
+    testCompile project("$parent.path:testing")
     testCompile 'org.apache.mahout:mahout-math:0.9'
 }

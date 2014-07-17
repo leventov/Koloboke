@@ -18,22 +18,21 @@
  * limitations under the License.
  */
 
-package net.openhft.collect.map;
+package net.openhft.collect.testing.map;
 
 import com.google.common.collect.testing.*;
 import com.google.common.collect.testing.features.*;
 import com.google.common.collect.testing.testers.CollectionClearTester;
 import com.google.common.collect.testing.testers.MapClearTester;
 import junit.framework.*;
-import net.openhft.collect.Mutability;
+import net.openhft.collect.testing.Mutability;
+import net.openhft.collect.map.CharShortMapFactory;
 
 import java.lang.reflect.Method;
 import java.util.*;
 
-import static com.google.common.collect.testing.MapTestSuiteBuilder.*;
 
-
-public class CharShortMapTestSuiteBuilder/*<>*/ {
+public class HyperCharShortMapTestSuiteBuilder/*<>*/ {
 
     private List<CharShortMapFactory/*<>*/> factories;
     private List<SampleElements<? extends Character>> keySamples;
@@ -41,54 +40,55 @@ public class CharShortMapTestSuiteBuilder/*<>*/ {
     private List<Feature<?>> specialFeatures = new ArrayList<Feature<?>>();
     private List<Method> suppressing = new ArrayList<Method>();
 
-    public CharShortMapTestSuiteBuilder/*<>*/ setFactories(CharShortMapFactory/*<>*/... factories) {
+    public HyperCharShortMapTestSuiteBuilder/*<>*/ setFactories(
+            CharShortMapFactory/*<>*/... factories) {
         this.factories = Arrays.asList(factories);
         return this;
     }
 
-    public CharShortMapTestSuiteBuilder/*<>*/ setFactories(
+    public HyperCharShortMapTestSuiteBuilder/*<>*/ setFactories(
             List<CharShortMapFactory/*<>*/> factories) {
         this.factories = factories;
         return this;
     }
 
-    public CharShortMapTestSuiteBuilder/*<>*/ setKeySamples(
+    public HyperCharShortMapTestSuiteBuilder/*<>*/ setKeySamples(
             SampleElements<? extends Character>... keySamples) {
         this.keySamples = Arrays.asList(keySamples);
         return this;
     }
 
-    public CharShortMapTestSuiteBuilder/*<>*/ setKeySamples(
+    public HyperCharShortMapTestSuiteBuilder/*<>*/ setKeySamples(
             List<SampleElements<? extends Character>> keySamples) {
         this.keySamples = keySamples;
         return this;
     }
 
-    public CharShortMapTestSuiteBuilder/*<>*/ setValueSamples(
+    public HyperCharShortMapTestSuiteBuilder/*<>*/ setValueSamples(
             SampleElements<? extends Short>... valueSamples) {
         this.valueSamples = Arrays.asList(valueSamples);
         return this;
     }
 
-    public CharShortMapTestSuiteBuilder/*<>*/ setValueSamples(
+    public HyperCharShortMapTestSuiteBuilder/*<>*/ setValueSamples(
             List<SampleElements<? extends Short>> valueSamples) {
         this.valueSamples = valueSamples;
         return this;
     }
 
-    public CharShortMapTestSuiteBuilder/*<>*/ withSpecialFeatures(
+    public HyperCharShortMapTestSuiteBuilder/*<>*/ withSpecialFeatures(
             List<Feature<?>> specialFeatures) {
         this.specialFeatures.addAll(specialFeatures);
         return this;
     }
 
-    public CharShortMapTestSuiteBuilder/*<>*/ withSpecialFeatures(
+    public HyperCharShortMapTestSuiteBuilder/*<>*/ withSpecialFeatures(
             Feature<?>... specialFeatures) {
         this.specialFeatures.addAll(Arrays.asList(specialFeatures));
         return this;
     }
 
-    public CharShortMapTestSuiteBuilder/*<>*/ suppressing(Method... methods) {
+    public HyperCharShortMapTestSuiteBuilder/*<>*/ suppressing(Method... methods) {
         suppressing.addAll(Arrays.asList(methods));
         return this;
     }
@@ -103,7 +103,9 @@ public class CharShortMapTestSuiteBuilder/*<>*/ {
                     builder.setKeys(keys).setValues(values);
                     for (Mutability mutability : Mutability.values()) {
                         FeatureSpecificTestSuiteBuilder b =
-                                forEachTestSuiteBuilder(using(builder.withMutability(mutability)))
+                                forEachTestSuiteBuilder(
+                                        new GuavaCharShortMapTestSuiteBuilder/*<>*/()
+                                                .usingGenerator(builder.withMutability(mutability)))
                                 .named(subSuiteName(factory, keys.asList(), values.asList(),
                                         mutability.toString()))
                                 .withFeatures(mutability.mapFeatures)

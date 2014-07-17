@@ -25,7 +25,9 @@ package net.openhft.collect.impl.hash;
 import net.openhft.collect.*;
 import net.openhft.collect.impl.Primitives;
 import net.openhft.collect.map.hash.HashByteShortMapFactory;
-import net.openhft.function.*;
+import net.openhft.function./*f*/ByteShortConsumer/**/;
+import net.openhft.function.Consumer;
+import net.openhft.function.Predicate;
 import net.openhft.collect.map.hash.HashByteShortMap;
 
 import java.util.*;

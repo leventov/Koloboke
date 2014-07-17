@@ -20,7 +20,8 @@
 
 package net.openhft.collect.map.hash;
 
-import net.openhft.function.*;
+import net.openhft.function./*f*/CharShortConsumer/**/;
+import net.openhft.function.Consumer;
 
 import java.util.Map;
 import java.util.ServiceLoader;

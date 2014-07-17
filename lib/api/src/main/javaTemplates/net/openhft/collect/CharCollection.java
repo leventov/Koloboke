@@ -16,7 +16,11 @@
 
 package net.openhft.collect;
 
-import net.openhft.function.*;
+
+import net.openhft.function.CharConsumer;
+import net.openhft.function.CharPredicate;
+import net.openhft.function.Consumer;
+import net.openhft.function.Predicate;
 
 import javax.annotation.Nonnull;
 

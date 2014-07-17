@@ -26,7 +26,10 @@ package net.openhft.collect.impl.hash;
 import net.openhft.collect.*;
 import net.openhft.collect.impl.InternalByteCollectionOps;
 import net.openhft.collect.set.hash.HashByteSet;
-import net.openhft.function.*;
+import net.openhft.function./*f*/ByteConsumer/**/;
+import net.openhft.function./*f*/BytePredicate/**/;
+import net.openhft.function.Consumer;
+import net.openhft.function.Predicate;
 import net.openhft.collect.impl.NotGenerated;
 
 import net.openhft.collect.set.ByteSet;

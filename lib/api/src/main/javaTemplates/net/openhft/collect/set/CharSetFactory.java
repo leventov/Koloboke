@@ -18,7 +18,8 @@
 package net.openhft.collect.set;
 
 import net.openhft.collect.Equivalence;
-import net.openhft.function.*;
+import net.openhft.function./*f*/CharConsumer/**/;
+import net.openhft.function.Consumer;
 import javax.annotation.Nullable;
 
 import java.util.Iterator;

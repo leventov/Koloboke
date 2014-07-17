@@ -26,13 +26,13 @@ import com.google.common.collect.testing.features.MapFeature;
 import junit.framework.*;
 import net.openhft.collect.*;
 import net.openhft.collect.map.CharShortMapFactory;
-import net.openhft.collect.map.CharShortMapTestSuiteBuilder;
+import net.openhft.collect.testing.map.HyperCharShortMapTestSuiteBuilder;
 
 
 public class HashCharShortMapTest extends TestCase {
 
     public static Test suite() {
-        CharShortMapTestSuiteBuilder builder = new CharShortMapTestSuiteBuilder()
+        HyperCharShortMapTestSuiteBuilder builder = new HyperCharShortMapTestSuiteBuilder()
                 .setKeySamples(CharSamples.allKeys()).setValueSamples(ShortSamples.allKeys());
         /* define pp */
         /* if obj key obj value //<Object, Object>// elif obj key || obj value //<Object>// endif */

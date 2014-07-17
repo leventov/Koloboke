@@ -24,12 +24,13 @@ import com.google.common.collect.testing.features.CollectionFeature;
 import junit.framework.*;
 import net.openhft.collect.*;
 import net.openhft.collect.set.*;
+import net.openhft.collect.testing.set.HyperCharSetTestSuiteBuilder;
 
 
 public class HashCharSetTest extends TestCase {
 
     public static Test suite() {
-        CharSetTestSuiteBuilder builder = new CharSetTestSuiteBuilder()
+        HyperCharSetTestSuiteBuilder builder = new HyperCharSetTestSuiteBuilder()
                 .setSamples(CharSamples.allKeys());
         builder.setFactories(Lists.transform(/* if !(float|double elem) */CharHashConfigs
                 /* elif float|double elem //HashConfigs// endif */.all(),

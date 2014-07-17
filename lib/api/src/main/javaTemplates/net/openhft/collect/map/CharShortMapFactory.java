@@ -21,7 +21,8 @@
 package net.openhft.collect.map;
 
 import net.openhft.collect.*;
-import net.openhft.function.*;
+import net.openhft.function./*f*/CharShortConsumer/**/;
+import net.openhft.function.Consumer;
 import javax.annotation.Nullable;
 
 import java.util.Map;

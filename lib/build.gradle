@@ -5,39 +5,59 @@ buildscript {
     }
 	dependencies {
 		classpath project(':jpsg:gradle-plugin')
+        classpath project('template-processors')
         classpath project('impl-generator')
 		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
 	}
 }
 
-configure([project('api'), project('impl')]) {
+if (libTargetJava != '6' && libTargetJava != '8')
+    throw new GradleException('libTargetJava should be either 6 or 8')
+
+def testingProject = project('testing')
+
+configure([project('api'), project('impl'), testingProject]) {
     applyJpsg()
-    apply plugin: 'propdeps'
-    apply plugin: 'propdeps-idea'
     apply plugin: 'findbugs'
-    apply plugin: 'jacoco'
 
-	setSourceCompatibility(project, 1.6)
-
-    dependencies {
-        provided 'com.google.auto.value:auto-value:1.0-rc1'
-        findbugs fileTree("$parent.projectDir/findbugs/libs/").include('*.jar')
+    def jpsgTasks = [generateJavaSpecializations]
+    if (project != testingProject)
+        jpsgTasks << generateTestJavaSpecializations
+    configure(jpsgTasks) {
+        addProcessor 'net.openhft.jpsg.FunctionProcessor'
+        addProcessor 'net.openhft.jpsg.Jdk8FunctionReplacer'
+        with "jdk=JDK$libTargetJava"
     }
 
-    compileJava {
-        // To suppress warnings about usages of sun.misc.Unsafe API
-        options.compilerArgs << '-XDignore.symbol.file'
-        options.compilerArgs << '-Xlint:-deprecation'
-        options.fork = true
-        def javac = System.env['JAVA_HOME'] ? System.env['JAVA_HOME'] + '/bin/javac' : 'javac'
-        options.forkOptions.executable = javac
-        
+    dependencies {
+        findbugs fileTree("$parent.projectDir/findbugs/libs/").include('*.jar')
     }
 
     findbugs {
         effort = 'max'
         reportLevel = 'high'
         excludeFilter = file("$parent.projectDir/findbugs/config/excludeFilter.xml")
+    }
+}
+
+configure([project('api'), project('impl')]) {
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'jacoco'
+
+	setSourceCompatibility(project, "1.$libTargetJava")
+
+    dependencies {
+        provided 'com.google.auto.value:auto-value:1.0-rc1'
+    }
+
+    compileJava {
+        // To suppress warnings about usages of sun.misc.Unsafe API
+        options.compilerArgs << '-XDignore.symbol.file'
+        options.compilerArgs << '-Xlint:-deprecation' << '-Xlint:-overloads'
+        options.fork = true
+        def javac = System.env['JAVA_HOME'] ? System.env['JAVA_HOME'] + '/bin/javac' : 'javac'
+        options.forkOptions.executable = javac
     }
 
     idea.module {

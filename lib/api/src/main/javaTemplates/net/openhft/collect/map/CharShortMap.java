@@ -22,7 +22,14 @@ package net.openhft.collect.map;
 
 import net.openhft.collect.Container;
 import net.openhft.collect.Equivalence;
-import net.openhft.function.*;
+import net.openhft.function.BiConsumer;
+import net.openhft.function.BiFunction;
+import net.openhft.function./*f*/CharShortConsumer/**/;
+import net.openhft.function./*f*/CharShortPredicate/**/;
+import net.openhft.function./*f*/CharShortToShortFunction/**/;
+import net.openhft.function./*f*/CharToShortFunction/**/;
+import net.openhft.function.Function;
+import net.openhft.function./*f*/ShortBinaryOperator/**/;
 import net.openhft.collect.ShortCollection;
 import net.openhft.collect.set.CharSet;
 import net.openhft.collect.set.ObjSet;
@@ -556,9 +563,9 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     /**
      * @deprecated Use specialization {@link #remove(// raw //char, // raw //short)} instead
      */
-    /* if JDK8 jdk //@Override// endif */
+    /* if JDK8 jdk */@Override/* endif */
     @Deprecated
-    boolean remove(Character key, Short value);
+    boolean remove(Object key, Object value);
     /* endif */
 
     /* if !(obj key obj value JDK8 jdk) */
