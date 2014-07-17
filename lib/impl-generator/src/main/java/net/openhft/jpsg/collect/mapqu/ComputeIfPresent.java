@@ -24,6 +24,18 @@ public final class ComputeIfPresent extends Compute {
     }
 
     @Override
+    public void ifPresent() {
+        if (cxt.isObjectValue())
+            gen.ifBlock(gen.value() + " != null");
+        super.ifPresent();
+        if (cxt.isObjectValue()) {
+            gen.elseBlock(); {
+                gen.ret("null");
+            } gen.blockEnd();
+        }
+    }
+
+    @Override
     public void ifAbsent() {
         gen.ret(gen.defaultValue());
     }

@@ -35,17 +35,28 @@ public final class ComputeIfAbsent extends MapQueryUpdateMethod {
 
     @Override
     public void ifPresent() {
+        if (cxt.isObjectValue())
+            gen.ifBlock(gen.value() + " != null");
         gen.ret(gen.value());
+        if (cxt.isObjectValue()) {
+            gen.elseBlock(); {
+                compute(() -> gen.setValue("value"));
+            } gen.blockEnd();
+        }
     }
 
     @Override
     public void ifAbsent() {
+        compute(() -> gen.insert("value"));
+    }
+
+    private void compute(Runnable insert) {
         gen.lines(cxt.valueGenericType() + " value = mappingFunction." + cxt.applyValueName() +
                 "(" + gen.key() + ");");
         if (cxt.isObjectValue() || cxt.genericVersion()) {
             gen.ifBlock("value != null");
         }
-        gen.insert("value");
+        insert.run();
         gen.ret("value");
         if (cxt.isObjectValue() || cxt.genericVersion()) {
             gen.elseBlock();

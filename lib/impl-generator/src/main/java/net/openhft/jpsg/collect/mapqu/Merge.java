@@ -25,18 +25,19 @@ public final class Merge extends MapQueryUpdateMethod {
 
     @Override
     public void beginning() {
-        if (cxt.genericVersion())
+        if (cxt.isObjectValue() || cxt.genericVersion())
             gen.requireNonNull("value");
         gen.requireNonNull("remappingFunction");
     }
 
     @Override
     public void ifPresent() {
+        if (cxt.isObjectValue())
+            gen.ifBlock(gen.value() + " != null");
         gen.lines(cxt.valueGenericType() + " newValue = remappingFunction." + cxt.applyValueName() +
                 "(" + gen.value() + ", value);");
-        if (cxt.isObjectValue() || cxt.genericVersion()) {
+        if (cxt.isObjectValue() || cxt.genericVersion())
             gen.ifBlock("newValue != null");
-        }
         gen.setValue("newValue");
         gen.ret("newValue");
         if (cxt.isObjectValue() || cxt.genericVersion()) {
@@ -50,20 +51,18 @@ public final class Merge extends MapQueryUpdateMethod {
             }
             gen.blockEnd();
         }
+        if (cxt.isObjectValue()) {
+            gen.elseBlock(); {
+                gen.setValue("value");
+                gen.ret("value");
+            } gen.blockEnd();
+        }
     }
 
     @Override
     public void ifAbsent() {
-        if (cxt.isObjectValue() || cxt.genericVersion()) {
-            gen.ifBlock("value != null");
-        }
         gen.insert("value");
         gen.ret("value");
-        if (cxt.isObjectValue() || cxt.genericVersion()) {
-            gen.elseBlock();
-            gen.ret("null");
-            gen.blockEnd();
-        }
     }
 
     @Override
