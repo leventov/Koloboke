@@ -34,6 +34,7 @@ configure(leafProjects) {
 
     configure(tasks.withType(JavaCompile)) {
         options.compilerArgs << '-Xlint:all'
+        options.compilerArgs += ['-Xlint:-unchecked', '-Xlint:-rawtypes', '-Xlint:-cast']
     }
 
     apply from: "$rootProject.projectDir/methods.gradle"
