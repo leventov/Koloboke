@@ -23,6 +23,7 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
+import net.openhft.collect.impl.*;
 import net.openhft.collect.map.ObjShortMap;
 import net.openhft.collect.map.hash.HashObjShortMapFactory;
 import javax.annotation.Nullable;

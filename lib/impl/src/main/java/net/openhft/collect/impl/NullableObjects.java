@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-
-package net.openhft.collect;
+package net.openhft.collect.impl;
 
 import javax.annotation.Nullable;
 
 
 /**
- * Placeholder of java.util.Objects in JDK6.
+ * Placeholder of java.util.Objects in JDK6. Should not be used with JDK7 and later.
+ * This class not in net.openhft.collect.impl package, because it is used in the api
  */
-final class NullableObjects {
+public final class NullableObjects {
     private NullableObjects() {}
 
     public static boolean equals(@Nullable Object a, @Nullable Object b) {
