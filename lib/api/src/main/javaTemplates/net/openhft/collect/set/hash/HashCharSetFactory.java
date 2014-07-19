@@ -18,6 +18,7 @@
 package net.openhft.collect.set.hash;
 
 import net.openhft.collect.*;
+import net.openhft.collect.hash.*;
 import net.openhft.function./*f*/CharConsumer/**/;
 import net.openhft.function.Consumer;
 import net.openhft.collect.set.CharSetFactory;

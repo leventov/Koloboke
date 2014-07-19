@@ -16,7 +16,7 @@
 
 package net.openhft.collect.impl.hash;
 
-import net.openhft.collect.HashContainer;
+import net.openhft.collect.hash.HashContainer;
 
 
 public interface Hash extends HashContainer {

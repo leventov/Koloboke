@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-package net.openhft.collect;
 
-import java.util.*;
+package net.openhft.collect.hash;
 
-
-public final class ObjHashConfigs {
-
-    public static List<ObjHashConfig> all() {
-        List<ObjHashConfig> configs = Arrays.asList(ObjHashConfig.getDefault());
-        List<ObjHashConfig> all = new ArrayList<ObjHashConfig>();
-        for (ObjHashConfig config : configs) {
-            for (HashConfig hashConfig : HashConfigs.all()) {
-                all.add(config.withHashConfig(hashConfig));
-            }
-        }
-        return all;
-    }
-
-    private ObjHashConfigs() {}
+/**
+ * Thrown when element or entry couldn't be inserted into the hash container
+ * due to implementation limitations.
+ */
+public class HashOverflowException extends IllegalStateException {
+    private static final long serialVersionUID = 0L;
 }

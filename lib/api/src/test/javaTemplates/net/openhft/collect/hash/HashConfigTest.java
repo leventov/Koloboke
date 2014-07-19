@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.openhft.collect;
+package net.openhft.collect.hash;
 
 import net.openhft.function.Predicate;
 import org.junit.Test;

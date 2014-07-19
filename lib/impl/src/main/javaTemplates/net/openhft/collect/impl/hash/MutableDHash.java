@@ -17,8 +17,8 @@
 
 package net.openhft.collect.impl.hash;
 
-import net.openhft.collect.HashConfig;
-import net.openhft.collect.HashOverflowException;
+import net.openhft.collect.hash.HashConfig;
+import net.openhft.collect.hash.HashOverflowException;
 import net.openhft.collect.impl.AbstractContainer;
 
 import static net.openhft.collect.impl.hash.DHashCapacities.nearestGreaterCapacity;

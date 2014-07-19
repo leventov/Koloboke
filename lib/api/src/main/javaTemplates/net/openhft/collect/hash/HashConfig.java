@@ -15,7 +15,7 @@
  */
 
 
-package net.openhft.collect;
+package net.openhft.collect.hash;
 
 import com.google.auto.value.AutoValue;
 import net.openhft.function.Predicate;
@@ -188,7 +188,7 @@ public abstract class HashConfig {
      *
      * @return shrink condition
      * @see #withShrinkCondition(Predicate)
-     * @see net.openhft.collect.HashContainer#shrink()
+     * @see net.openhft.collect.hash.HashContainer#shrink()
      */
     @Nullable
     public abstract Predicate<HashContainer> getShrinkCondition();

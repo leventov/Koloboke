@@ -22,7 +22,7 @@
 
 package net.openhft.collect.impl.hash;
 
-import net.openhft.collect.*;
+import net.openhft.collect.hash.*;
 import net.openhft.collect.map.ByteShortMap;
 import net.openhft.collect.map.hash.HashByteShortMapFactory;
 

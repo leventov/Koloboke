@@ -25,6 +25,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.testing.features.MapFeature;
 import junit.framework.*;
 import net.openhft.collect.*;
+import net.openhft.collect.hash.*;
 import net.openhft.collect.map.CharShortMapFactory;
 import net.openhft.collect.testing.map.HyperCharShortMapTestSuiteBuilder;
 

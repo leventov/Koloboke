@@ -20,8 +20,7 @@
 
 package net.openhft.collect.impl.hash;
 
-import net.openhft.collect.ByteHashConfig;
-import net.openhft.collect.HashConfig;
+import net.openhft.collect.hash.*;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;

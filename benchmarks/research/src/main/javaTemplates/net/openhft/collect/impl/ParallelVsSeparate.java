@@ -17,7 +17,8 @@
 package net.openhft.collect.impl;
 
 import net.openhft.bench.DimensionedJmh;
-import net.openhft.collect.*;
+import net.openhft.collect.hash.*;
+import net.openhft.collect.map.*;
 import net.openhft.collect.map.*;
 import net.openhft.collect.map.hash.*;
 import net.openhft.function.*;
@@ -153,7 +154,7 @@ public class ParallelVsSeparate {
 
     @GenerateMicroBenchmark
     public long forEachOp_qHash_charKey(QueryUpdateOpQHashCharCharMapState state) {
-        class Consumer implements CharCharConsumer  {
+        class Consumer implements CharCharConsumer {
             long dummy;
             @Override
             public void accept(char a, char b) {

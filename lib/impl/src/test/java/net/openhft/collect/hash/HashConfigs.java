@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
+package net.openhft.collect.hash;
 
-package net.openhft.collect;
+import java.util.Arrays;
+import java.util.List;
 
-/**
- * Thrown when element or entry couldn't be inserted into the hash container
- * due to implementation limitations.
- */
-public class HashOverflowException extends IllegalStateException {
-    private static final long serialVersionUID = 0L;
+
+public final class HashConfigs {
+
+    public static List<HashConfig> all() {
+        return Arrays.asList(
+                HashConfig.getDefault(),
+                HashConfig.getDefault().withGrowFactor(1.999)
+        );
+    }
+
+    private HashConfigs() {}
 }

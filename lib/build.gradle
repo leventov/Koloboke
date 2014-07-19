@@ -14,15 +14,17 @@ buildscript {
 if (libTargetJava != '6' && libTargetJava != '8')
     throw new GradleException('libTargetJava should be either 6 or 8')
 
-def testingProject = project('testing')
+def apiProject = project('api')
+def implProject = project('impl')
 
-configure([project('api'), project('impl'), testingProject]) {
+configure([apiProject, implProject, project('testing')]) {
     applyJpsg()
     apply plugin: 'findbugs'
 
     def jpsgTasks = [generateJavaSpecializations]
-    if (project != testingProject)
-        jpsgTasks << generateTestJavaSpecializations
+    def generateTestSpecializations = tasks.findByName('generateTestJavaSpecializations')
+    if (generateTestSpecializations != null)
+        jpsgTasks << generateTestSpecializations
     configure(jpsgTasks) {
         addProcessor 'net.openhft.jpsg.FunctionProcessor'
         addProcessor 'net.openhft.jpsg.Jdk8FunctionReplacer'
@@ -40,7 +42,7 @@ configure([project('api'), project('impl'), testingProject]) {
     }
 }
 
-configure([project('api'), project('impl')]) {
+configure([apiProject, implProject]) {
     apply plugin: 'propdeps'
     apply plugin: 'propdeps-idea'
     apply plugin: 'jacoco'

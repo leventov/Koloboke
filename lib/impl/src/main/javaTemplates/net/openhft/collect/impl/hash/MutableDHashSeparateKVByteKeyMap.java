@@ -24,6 +24,7 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
+import net.openhft.collect.hash.HashConfig;
 import net.openhft.function./*f*/ByteConsumer/**/;
 import net.openhft.function./*f*/BytePredicate/**/;
 import net.openhft.function.Consumer;

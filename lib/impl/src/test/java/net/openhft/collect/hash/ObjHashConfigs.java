@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package net.openhft.collect;
+package net.openhft.collect.hash;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
-public final class HashConfigs {
+public final class ObjHashConfigs {
 
-    public static List<HashConfig> all() {
-        return Arrays.asList(
-                HashConfig.getDefault(),
-                HashConfig.getDefault().withGrowFactor(1.999)
-        );
+    public static List<ObjHashConfig> all() {
+        List<ObjHashConfig> configs = Arrays.asList(ObjHashConfig.getDefault());
+        List<ObjHashConfig> all = new ArrayList<ObjHashConfig>();
+        for (ObjHashConfig config : configs) {
+            for (HashConfig hashConfig : HashConfigs.all()) {
+                all.add(config.withHashConfig(hashConfig));
+            }
+        }
+        return all;
     }
 
-    private HashConfigs() {}
+    private ObjHashConfigs() {}
 }

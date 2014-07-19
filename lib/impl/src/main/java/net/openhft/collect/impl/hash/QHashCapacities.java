@@ -16,11 +16,10 @@
 
 package net.openhft.collect.impl.hash;
 
-import net.openhft.collect.HashOverflowException;
+import net.openhft.collect.hash.HashOverflowException;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static java.lang.Math.abs;
 import static java.util.Arrays.binarySearch;

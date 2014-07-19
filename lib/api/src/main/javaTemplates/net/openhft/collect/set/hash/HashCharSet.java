@@ -17,7 +17,7 @@
 
 package net.openhft.collect.set.hash;
 
-import net.openhft.collect.HashContainer;
+import net.openhft.collect.hash.HashContainer;
 import net.openhft.collect.set.CharSet;
 
 

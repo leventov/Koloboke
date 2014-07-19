@@ -26,7 +26,7 @@ import static java.math.MathContext.DECIMAL128;
 /**
  * Class for precise and fast scaling non-negative integers by positive doubles.
  *
- * <p>Used in {@link net.openhft.collect.HashConfig}.
+ * <p>Used in {@link net.openhft.collect.impl.hash.HashConfigWrapper}.
  *
  * <p>Latencies of operations on floating stack, required for simple approach scaling
  * <pre>

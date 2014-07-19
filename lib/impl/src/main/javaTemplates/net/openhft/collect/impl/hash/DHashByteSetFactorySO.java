@@ -21,6 +21,7 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.*;
+import net.openhft.collect.hash.*;
 import net.openhft.collect.set.hash.HashByteSetFactory;
 
 import java.util.Collection;

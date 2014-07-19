@@ -15,7 +15,7 @@
  */
 
 
-package net.openhft.collect;
+package net.openhft.collect.hash;
 
 
 import com.google.auto.value.AutoValue;

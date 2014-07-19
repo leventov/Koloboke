@@ -18,7 +18,7 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.Equivalence;
-import net.openhft.collect.ObjHashConfig;
+import net.openhft.collect.hash.*;
 import net.openhft.collect.set.hash.HashObjSetFactory;
 import javax.annotation.Nullable;
 

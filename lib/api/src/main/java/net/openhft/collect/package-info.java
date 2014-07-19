@@ -36,7 +36,7 @@
  *
  * <p>In real practice individual removals are rarely needed, so most of the time you should use
  * updatable containers rather than fully mutable ones. On the other hand, prohibit of removals
- * permits faster implementation of {@link net.openhft.collect.HashContainer hash containers}
+ * permits faster implementation of {@link net.openhft.collect.hash.HashContainer hash containers}
  * and iterators over many data structures.
  *
  * <h3>Mutable</h3>

@@ -18,7 +18,7 @@
 
 package net.openhft.collect.impl.hash;
 
-import net.openhft.collect.HashConfig;
+import net.openhft.collect.hash.HashConfig;
 
 import static net.openhft.collect.impl.Maths.isPowerOf2;
 

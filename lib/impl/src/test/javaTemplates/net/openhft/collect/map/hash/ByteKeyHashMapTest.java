@@ -17,8 +17,8 @@
 
 package net.openhft.collect.map.hash;
 
-import net.openhft.collect.ByteHashConfig;
-import net.openhft.collect.HashConfig;
+import net.openhft.collect.hash.ByteHashConfig;
+import net.openhft.collect.hash.HashConfig;
 import net.openhft.collect.impl.hash.SeparateKVByteIntDHash;
 import net.openhft.collect.impl.hash.MutableDHash;
 import net.openhft.collect.map.ByteIntMap;

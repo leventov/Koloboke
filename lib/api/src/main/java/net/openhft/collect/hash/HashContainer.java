@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+package net.openhft.collect.hash;
 
-package net.openhft.collect;
+import net.openhft.collect.Container;
 
 
 /**

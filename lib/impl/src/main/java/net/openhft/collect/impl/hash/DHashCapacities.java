@@ -16,7 +16,7 @@
 
 package net.openhft.collect.impl.hash;
 
-import net.openhft.collect.HashOverflowException;
+import net.openhft.collect.hash.HashOverflowException;
 
 import java.util.*;
 
