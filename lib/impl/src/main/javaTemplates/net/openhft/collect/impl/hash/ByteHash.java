@@ -1,3 +1,4 @@
+/* with byte|char|short|int|long elem */
 /*
  * Copyright 2014 the original author or authors.
  *
