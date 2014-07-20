@@ -25,7 +25,7 @@ public final class ObjHashConfigs {
         List<ObjHashConfig> configs = Arrays.<ObjHashConfig>asList(new ObjHashConfig() {
             @Override
             public <T extends ObjHashFactory<T>> T apply(T factory) {
-                return factory;
+                return factory.withNullKeyAllowed(true);
             }
         });
         List<ObjHashConfig> all = new ArrayList<ObjHashConfig>();

@@ -27,7 +27,7 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
 
     /** For ServiceLoader */
     public DHashObjSetFactoryImpl() {
-        this(HashConfig.getDefault(), true);
+        this(HashConfig.getDefault(), false);
     }
 
     public DHashObjSetFactoryImpl(HashConfig hashConf, boolean isNullAllowed) {

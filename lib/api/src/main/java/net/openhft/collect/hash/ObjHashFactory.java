@@ -20,12 +20,22 @@ package net.openhft.collect.hash;
 /**
  * Common configuration for factories of hash containers with {@code Object} keys.
  *
- * <p>Currently {@code ObjHashFactory} allows to specify only if {@code null} keys are allowed
+ * <p>Currently {@code ObjHashFactory} allows to specify only if {@code null} key is allowed
  * or disallowed in hash containers, constructed by the factory. This is a performance hint:
  * hash containers might, but aren't required to throw {@link NullPointerException} on putting
  * {@code null} key, if {@code null} key is disallowed.
  *
- * <p>By default, {@code null} key is allowed.
+ * <p>By default, {@code null} key is <em>disallowed</em>. Because in 99% of cases {@code null}
+ * key isn't possible (moreover, it is a bad practice to use {@code null} along with ordinary
+ * objects), on the other side, when {@code null} key is disallowed, substantial optimizations
+ * of hash table implementations become possible.
+ *
+ * <p>To construct hash containers which strictly follow {@link java.util.HashMap}
+ * and {@link java.util.HashSet} behaviour (these collections support {@code null} keys), you
+ * <em>must</em> configure the corresponding factory to allow {@code null} keys:
+ * <pre>{@code
+ * factory = factory.withNullKeyAllowed(true);
+ * }</pre>
  *
  * @param <T> the concrete factory type which extends this interface
  */
@@ -34,7 +44,7 @@ public interface ObjHashFactory<T extends ObjHashFactory<T>> extends HashContain
     /**
      * Returns {@code true} if {@code null} key is allowed, {@code false} otherwise.
      *
-     * <p>Default: {@code true}.
+     * <p>Default: {@code false}.
      *
      * @return {@code true} if null key is allowed, {@code false} otherwise
      */

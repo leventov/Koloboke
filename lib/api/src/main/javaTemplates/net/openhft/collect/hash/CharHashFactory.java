@@ -19,7 +19,7 @@ package net.openhft.collect.hash;
 
 
 /**
- * Common performance configuration for factories of hash containers with {@code char} keys.
+ * Common configuration for factories of hash containers with {@code char} keys.
  *
  * <p>Currently {@code CharHashFactory} allows to specify consecutive range of keys which could be
  * inserted into hash container - <em>keys domain</em>. This is a performance hint:

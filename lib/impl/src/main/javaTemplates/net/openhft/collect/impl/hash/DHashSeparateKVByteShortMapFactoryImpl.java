@@ -53,7 +53,7 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
     /** For ServiceLoader */
     public DHashSeparateKVByteShortMapFactoryImpl() {
         this(HashConfig.getDefault()
-            /* if obj key */, true
+            /* if obj key */, false
             /* elif !(float|double key) */, Byte.MIN_VALUE, Byte.MAX_VALUE/* endif */);
     }
 
