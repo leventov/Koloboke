@@ -114,12 +114,14 @@ public interface CharCollection extends Collection<Character>, Container {
     CharCursor cursor();
 
 
+    /* if JDK8 jdk */
     /**
      * @deprecated Use specialization {@link #forEach(CharConsumer)} instead
      */
-    /* if JDK8 jdk //@Override// endif */
+    @Override
     @Deprecated
     void forEach(Consumer<? super Character> action);
+    /* endif */
 
     void forEach(CharConsumer action);
 
@@ -188,12 +190,14 @@ public interface CharCollection extends Collection<Character>, Container {
     boolean removeChar(char v);
 
 
+    /* if JDK8 jdk */
     /**
      * @deprecated Use specialization {@link #removeIf(CharPredicate)} instead
      */
-    /* if JDK8 jdk //@Override// endif */
+    @Override
     @Deprecated
     boolean removeIf(Predicate<? super Character> filter);
+    /* endif */
 
     boolean removeIf(CharPredicate filter);
 }

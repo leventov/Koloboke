@@ -248,7 +248,7 @@ public abstract class MutableSeparateKVByteDHashGO/*<>*/
         }
         /* endif */
 
-        @Override
+        /* if obj elem || JDK8 jdk //@Override// endif */
         public void forEachRemaining(Consumer<? super Byte> action) {
             /* template Iterator.forEachRemaining */ throw new NotGenerated(); /* endtemplate */
         }

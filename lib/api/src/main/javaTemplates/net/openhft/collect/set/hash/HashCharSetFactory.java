@@ -20,7 +20,6 @@ package net.openhft.collect.set.hash;
 import net.openhft.collect.*;
 import net.openhft.collect.hash.*;
 import net.openhft.function./*f*/CharConsumer/**/;
-import net.openhft.function.Consumer;
 import net.openhft.collect.set.CharSetFactory;
 import javax.annotation.Nullable;
 
@@ -94,10 +93,12 @@ public interface HashCharSetFactory/*<>*/ extends CharSetFactory/*<>*/
             int expectedSize);
 
     @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(Consumer</*f*/CharConsumer/*p2*/> elementsSupplier);
+    /*p1*/ HashCharSet/*p2*/ newMutableSet(
+            net.openhft.function.Consumer</*f*/CharConsumer/*p2*/> elementsSupplier);
 
     @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(Consumer</*f*/CharConsumer/*p2*/> elementsSupplier,
+    /*p1*/ HashCharSet/*p2*/ newMutableSet(
+            net.openhft.function.Consumer</*f*/CharConsumer/*p2*/> elementsSupplier,
             int expectedSize);
 
     /* define pe *//* if !(obj elem) //char// elif obj elem //E2// endif *//* enddefine */

@@ -24,7 +24,6 @@ import net.openhft.collect.hash.*;
 import net.openhft.collect.impl.*;
 import net.openhft.collect.set.hash.HashByteSetFactory;
 import net.openhft.function./*f*/ByteConsumer/**/;
-import net.openhft.function.Consumer;
 import net.openhft.function.Predicate;
 import net.openhft.collect.set.hash.HashByteSet;
 
@@ -223,7 +222,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
 
     @Override
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(
-            Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier) {
+            net.openhft.function.Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier) {
         return newUpdatableSet(elementsSupplier, hashConf.getDefaultExpectedSize());
     }
 
@@ -231,7 +230,8 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
 
     @Override
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(
-            Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier, int expectedSize) {
+            net.openhft.function.Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier,
+            int expectedSize) {
         final UpdatableDHashByteSetGO/*p2*/ set = newUpdatableSet(expectedSize);
         elementsSupplier.accept(new /*f*/ByteConsumer/*p2*/() {
             @Override
@@ -391,7 +391,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
 
     @Override
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(
-            Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier) {
+            net.openhft.function.Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
         set.move(newUpdatableSet(elementsSupplier));
         return set;
@@ -399,7 +399,8 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
 
     @Override
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(
-            Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier, int expectedSize) {
+            net.openhft.function.Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier,
+            int expectedSize) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
         set.move(newUpdatableSet(elementsSupplier, expectedSize));
         return set;

@@ -21,7 +21,6 @@
 package net.openhft.collect.map.hash;
 
 import net.openhft.function./*f*/CharShortConsumer/**/;
-import net.openhft.function.Consumer;
 
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -106,12 +105,13 @@ public final class HashCharShortMaps {
     /* endwith */
 
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(
-            Consumer</*f*/CharShortConsumer/*<>*/> entriesSupplier) {
+            net.openhft.function.Consumer</*f*/CharShortConsumer/*<>*/> entriesSupplier) {
         return getDefaultFactory().newMutableMap(entriesSupplier);
     }
 
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(
-            Consumer</*f*/CharShortConsumer/*<>*/> entriesSupplier, int expectedSize) {
+            net.openhft.function.Consumer</*f*/CharShortConsumer/*<>*/> entriesSupplier,
+            int expectedSize) {
         return getDefaultFactory().newMutableMap(entriesSupplier, expectedSize);
     }
 

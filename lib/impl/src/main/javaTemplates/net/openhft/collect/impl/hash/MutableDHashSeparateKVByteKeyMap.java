@@ -177,7 +177,7 @@ public abstract class MutableDHashSeparateKVByteKeyMap/*<>*/
         /* endif */
 
 
-        @Override
+        /* if obj key || JDK8 jdk //@Override// endif */
         public void forEach(Consumer<? super Byte> action) {
             MutableDHashSeparateKVByteKeyMap.this.forEach(action);
         }
@@ -284,7 +284,7 @@ public abstract class MutableDHashSeparateKVByteKeyMap/*<>*/
         /* endif */
 
 
-        @Override
+        /* if obj key || JDK8 jdk //@Override// endif */
         public boolean removeIf(Predicate<? super Byte> filter) {
             return MutableDHashSeparateKVByteKeyMap.this.removeIf(filter);
         }

@@ -18,7 +18,6 @@
 package net.openhft.collect.set.hash;
 
 import net.openhft.function./*f*/CharConsumer/**/;
-import net.openhft.function.Consumer;
 
 import java.util.Iterator;
 import java.util.ServiceLoader;
@@ -101,12 +100,13 @@ public final class HashCharSets {
     }
 
     public static /*<>*/ HashCharSet/*<>*/ newMutableSet(
-            Consumer</*f*/CharConsumer/*<>*/> elementsSupplier) {
+            net.openhft.function.Consumer</*f*/CharConsumer/*<>*/> elementsSupplier) {
         return getDefaultFactory().newMutableSet(elementsSupplier);
     }
 
     public static /*<>*/ HashCharSet/*<>*/ newMutableSet(
-            Consumer</*f*/CharConsumer/*<>*/> elementsSupplier, int expectedSize) {
+            net.openhft.function.Consumer</*f*/CharConsumer/*<>*/> elementsSupplier,
+            int expectedSize) {
         return getDefaultFactory().newMutableSet(elementsSupplier, expectedSize);
     }
 

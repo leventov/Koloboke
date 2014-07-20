@@ -23,7 +23,6 @@ package net.openhft.collect.map.hash;
 import net.openhft.collect.*;
 import net.openhft.collect.hash.*;
 import net.openhft.function./*f*/CharShortConsumer/**/;
-import net.openhft.function.Consumer;
 import net.openhft.collect.map.*;
 import javax.annotation.Nullable;
 
@@ -120,11 +119,12 @@ public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/
 
     @Override
     /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
-            Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier);
+            net.openhft.function.Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier);
 
     @Override
     /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
-            Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier, int expectedSize);
+            net.openhft.function.Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier,
+            int expectedSize);
 
     @Override
     /*p1*/ HashCharShortMap/*p2*/ newMutableMap(/*pk*/char/**/[] keys, /*pv*/short/**/[] values);

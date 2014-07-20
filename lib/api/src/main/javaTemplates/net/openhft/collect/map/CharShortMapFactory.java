@@ -22,7 +22,6 @@ package net.openhft.collect.map;
 
 import net.openhft.collect.*;
 import net.openhft.function./*f*/CharShortConsumer/**/;
-import net.openhft.function.Consumer;
 import javax.annotation.Nullable;
 
 import java.util.Map;
@@ -113,10 +112,11 @@ public interface CharShortMapFactory/*<>*/ {
     /* endwith */
 
     /*p1*/ CharShortMap/*p2*/ newMutableMap(
-            Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier);
+            net.openhft.function.Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier);
 
     /*p1*/ CharShortMap/*p2*/ newMutableMap(
-            Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier, int expectedSize);
+            net.openhft.function.Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier,
+            int expectedSize);
 
     /*p1*/ CharShortMap/*p2*/ newMutableMap(/*pk*/char/**/[] keys, /*pv*/short/**/[] values);
 

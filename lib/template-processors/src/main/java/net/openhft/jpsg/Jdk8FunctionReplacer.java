@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+import static java.util.stream.Collectors.toList;
+
 
 public final class Jdk8FunctionReplacer extends TemplateProcessor {
     private static final Logger log = LoggerFactory.getLogger(Jdk8FunctionReplacer.class);
@@ -40,8 +42,8 @@ public final class Jdk8FunctionReplacer extends TemplateProcessor {
                 template.trim().endsWith("}")) {
             template = sb.toString() + template;
             for (String jdk8Interface : JDK8_INTERFACES) {
-                template = template.replace(jdk8Interface, "java.util.function." +
-                        jdk8Interface.substring("net.openhft.function.".length()));
+                template = template.replace(jdk8Interface, "import java.util.function." +
+                        jdk8Interface.substring("import net.openhft.function.".length()));
             }
             sb.setLength(0);
             sb.append(template);
@@ -51,51 +53,48 @@ public final class Jdk8FunctionReplacer extends TemplateProcessor {
     }
 
     private static final List<String> JDK8_INTERFACES = Arrays.asList(
-            "net.openhft.function.BiConsumer",
-            "net.openhft.function.BiFunction",
-            "net.openhft.function.BinaryOperator",
-            "net.openhft.function.BiPredicate",
-            "net.openhft.function.BooleanSupplier",
-            "net.openhft.function.Consumer",
-            "net.openhft.function.DoubleBinaryOperator",
-            "net.openhft.function.DoubleConsumer",
-            "net.openhft.function.DoubleFunction",
-            "net.openhft.function.DoublePredicate",
-            "net.openhft.function.DoubleSupplier",
-            "net.openhft.function.DoubleToIntFunction",
-            "net.openhft.function.DoubleToLongFunction",
-            "net.openhft.function.DoubleUnaryOperator",
-            "net.openhft.function.Function",
-            "net.openhft.function.IntBinaryOperator",
-            "net.openhft.function.IntConsumer",
-            "net.openhft.function.IntFunction",
-            "net.openhft.function.IntPredicate",
-            "net.openhft.function.IntSupplier",
-            "net.openhft.function.IntToDoubleFunction",
-            "net.openhft.function.IntToLongFunction",
-            "net.openhft.function.IntUnaryOperator",
-            "net.openhft.function.LongBinaryOperator",
-            "net.openhft.function.LongConsumer",
-            "net.openhft.function.LongFunction",
-            "net.openhft.function.LongPredicate",
-            "net.openhft.function.LongSupplier",
-            "net.openhft.function.LongToDoubleFunction",
-            "net.openhft.function.LongToIntFunction",
-            "net.openhft.function.LongUnaryOperator",
-            "net.openhft.function.ObjDoubleConsumer",
-            "net.openhft.function.ObjIntConsumer",
-            "net.openhft.function.ObjLongConsumer",
-            "net.openhft.function.Predicate",
-            "net.openhft.function.Supplier",
-            "net.openhft.function.ToDoubleBiFunction",
-            "net.openhft.function.ToDoubleFunction",
-            "net.openhft.function.ToIntBiFunction",
-            "net.openhft.function.ToIntFunction",
-            "net.openhft.function.ToLongBiFunction",
-            "net.openhft.function.ToLongFunction",
-            "net.openhft.function.UnaryOperator"
-    );
-
-    private static final int MAX_LEN =
-            JDK8_INTERFACES.stream().mapToInt(String::length).max().getAsInt();
+            "BiConsumer",
+            "BiFunction",
+            "BinaryOperator",
+            "BiPredicate",
+            "BooleanSupplier",
+            "Consumer",
+            "DoubleBinaryOperator",
+            "DoubleConsumer",
+            "DoubleFunction",
+            "DoublePredicate",
+            "DoubleSupplier",
+            "DoubleToIntFunction",
+            "DoubleToLongFunction",
+            "DoubleUnaryOperator",
+            "Function",
+            "IntBinaryOperator",
+            "IntConsumer",
+            "IntFunction",
+            "IntPredicate",
+            "IntSupplier",
+            "IntToDoubleFunction",
+            "IntToLongFunction",
+            "IntUnaryOperator",
+            "LongBinaryOperator",
+            "LongConsumer",
+            "LongFunction",
+            "LongPredicate",
+            "LongSupplier",
+            "LongToDoubleFunction",
+            "LongToIntFunction",
+            "LongUnaryOperator",
+            "ObjDoubleConsumer",
+            "ObjIntConsumer",
+            "ObjLongConsumer",
+            "Predicate",
+            "Supplier",
+            "ToDoubleBiFunction",
+            "ToDoubleFunction",
+            "ToIntBiFunction",
+            "ToIntFunction",
+            "ToLongBiFunction",
+            "ToLongFunction",
+            "UnaryOperator"
+    ).stream().map("import net.openhft.function."::concat).collect(toList());
 }

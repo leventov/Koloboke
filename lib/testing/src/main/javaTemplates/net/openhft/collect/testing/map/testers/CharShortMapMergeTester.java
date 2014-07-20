@@ -54,7 +54,7 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
     }
 
     /* with Primitive|Generic kind */
-    /* if !(obj value) || Generic kind */
+    /* if obj value Generic kind || short|byte|char|int|long|float|double value Primitive kind */
 
     @Require(SUPPORTS_PUT)
     public void testMerge_supportedNotPresent_primitive() {
@@ -319,11 +319,10 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
                 remappingFunction
         );
     }
-    /* endif */
-
-    @SuppressWarnings("deprecation")
+    /* elif obj value */
     private Short genericMerge(Map.Entry<Character, Short> entry,
             BiFunction<Short, Short, Short> remappingFunction) {
         return getMap().merge(entry.getKey(), entry.getValue(), remappingFunction);
     }
+    /* endif */
 }

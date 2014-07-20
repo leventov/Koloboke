@@ -27,7 +27,6 @@ import net.openhft.collect.hash.*;
 import net.openhft.collect.impl.*;
 import net.openhft.collect.map.hash.HashByteShortMapFactory;
 import net.openhft.function./*f*/ByteShortConsumer/**/;
-import net.openhft.function.Consumer;
 import net.openhft.function.Predicate;
 import net.openhft.collect.map.hash.HashByteShortMap;
 
@@ -317,13 +316,14 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
 
     @Override
     public /*p1*/ UpdatableDHashSeparateKVByteShortMapGO/*p2*/ newUpdatableMap(
-            Consumer</*f*/ByteShortConsumer/*p2*/> entriesSupplier) {
+            net.openhft.function.Consumer</*f*/ByteShortConsumer/*p2*/> entriesSupplier) {
         return newUpdatableMap(entriesSupplier, hashConf.getDefaultExpectedSize());
     }
 
     @Override
     public /*p1*/ UpdatableDHashSeparateKVByteShortMapGO/*p2*/ newUpdatableMap(
-            Consumer</*f*/ByteShortConsumer/*p2*/> entriesSupplier, int expectedSize) {
+            net.openhft.function.Consumer</*f*/ByteShortConsumer/*p2*/> entriesSupplier,
+            int expectedSize) {
         final UpdatableDHashSeparateKVByteShortMapGO/*p2*/ map = newUpdatableMap(expectedSize);
         entriesSupplier.accept(new /*f*/ByteShortConsumer/*p2*/() {
              @Override
@@ -507,7 +507,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
 
     @Override
     public /*p1*/ HashByteShortMap/*p2*/ newMutableMap(
-            Consumer</*f*/ByteShortConsumer/*p2*/> entriesSupplier) {
+            net.openhft.function.Consumer</*f*/ByteShortConsumer/*p2*/> entriesSupplier) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
         map.move(newUpdatableMap(entriesSupplier));
         return map;
@@ -515,7 +515,8 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
 
     @Override
     public /*p1*/ HashByteShortMap/*p2*/ newMutableMap(
-            Consumer</*f*/ByteShortConsumer/*p2*/> entriesSupplier, int expectedSize) {
+            net.openhft.function.Consumer</*f*/ByteShortConsumer/*p2*/> entriesSupplier,
+            int expectedSize) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
         map.move(newUpdatableMap(entriesSupplier, expectedSize));
         return map;

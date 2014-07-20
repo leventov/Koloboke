@@ -122,7 +122,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     /* endif */
 
 
-    /* if !(obj key obj value) */
+    /* if !(obj key obj value) && JDK8 jdk */
     /**
      * @deprecated Use specialization {@link #forEach(CharShortConsumer)} instead
      */
@@ -266,7 +266,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      // endif //
     // enddefine */
 
-    /* if !(obj key obj value) */
+    /* if !(obj key obj value) && JDK8 jdk */
     /**
      * @deprecated Use specialization
      *             {@link #compute(//raw//char, //f//CharShortToShortFunction////)} instead
@@ -302,7 +302,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     /* endif */
 
 
-    /* if !(obj key obj value) */
+    /* if !(obj key obj value) && JDK8 jdk */
     /**
      * @deprecated Use specialization
      *             {@link #computeIfAbsent(//raw//char, //f//CharToShortFunction////)} instead
@@ -342,7 +342,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     /* endif */
 
 
-    /* if !(obj key obj value) */
+    /* if !(obj key obj value) && JDK8 jdk */
     /**
      * @deprecated Use specialization
      *             {@link #computeIfPresent(//raw//char, //f//CharShortToShortFunction////)} instead
@@ -375,7 +375,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     /* endif */
 
 
-    /* if !(obj key obj value) */
+    /* if !(obj key obj value) && JDK8 jdk */
     /**
      * @deprecated Use specialization
      *             {@link #merge(//raw//char, //raw//short, //f//ShortBinaryOperator////)} instead
@@ -510,7 +510,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     /* endif */
 
 
-    /* if !(obj key obj value) */
+    /* if !(obj key obj value) && JDK8 jdk */
     /**
      * @deprecated Use specialization {@link #replaceAll(//f//CharShortToShortFunction////)} instead
      */

@@ -24,7 +24,6 @@ import com.google.common.collect.testing.*;
 import net.openhft.collect.testing.Mutability;
 import net.openhft.collect.map.CharShortMapFactory;
 import net.openhft.function./*f*/CharShortConsumer/**/;
-import net.openhft.function.Consumer;
 
 import java.util.List;
 import java.util.Map;
@@ -90,7 +89,7 @@ public class TestCharShortMapGenerator/*<>*/
 
     @Override
     public Map<Character, Short> create(final Object... elements) {
-        Consumer</*f*/CharShortConsumer/*<>*/> supplier =
+        net.openhft.function.Consumer</*f*/CharShortConsumer/*<>*/> supplier =
                 map -> {
                     for (Object e : elements) {
                         Map.Entry entry = (Map.Entry) e;

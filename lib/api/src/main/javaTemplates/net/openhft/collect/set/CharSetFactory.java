@@ -19,7 +19,6 @@ package net.openhft.collect.set;
 
 import net.openhft.collect.Equivalence;
 import net.openhft.function./*f*/CharConsumer/**/;
-import net.openhft.function.Consumer;
 import javax.annotation.Nullable;
 
 import java.util.Iterator;
@@ -77,9 +76,11 @@ public interface CharSetFactory/*<>*/ {
 
     /*p1*/ CharSet/*p2*/ newMutableSet(Iterator/*ep*/<Character>/**/ elements, int expectedSize);
 
-    /*p1*/ CharSet/*p2*/ newMutableSet(Consumer</*f*/CharConsumer/*p2*/> elementsSupplier);
+    /*p1*/ CharSet/*p2*/ newMutableSet(
+            net.openhft.function.Consumer</*f*/CharConsumer/*p2*/> elementsSupplier);
 
-    /*p1*/ CharSet/*p2*/ newMutableSet(Consumer</*f*/CharConsumer/*p2*/> elementsSupplier,
+    /*p1*/ CharSet/*p2*/ newMutableSet(
+            net.openhft.function.Consumer</*f*/CharConsumer/*p2*/> elementsSupplier,
             int expectedSize);
 
     /* define pe *//* if !(obj elem) //char// elif obj elem //E2// endif *//* enddefine */
