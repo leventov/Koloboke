@@ -31,11 +31,8 @@ configure([apiProject, implProject, project('testing')]) {
         with "jdk=JDK$libTargetJava"
     }
 
-    dependencies {
-        findbugs fileTree("$parent.projectDir/findbugs/libs/").include('*.jar')
-    }
-
     findbugs {
+        toolVersion '3.0.0'
         effort = 'max'
         reportLevel = 'high'
         excludeFilter = file("$parent.projectDir/findbugs/config/excludeFilter.xml")
