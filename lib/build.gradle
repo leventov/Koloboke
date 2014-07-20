@@ -59,6 +59,8 @@ configure([apiProject, implProject]) {
         options.forkOptions.executable = javac
     }
 
+    test.testLogging.exceptionFormat = 'full'
+
     idea.module {
         excludeDirs.remove(file("$buildDir/classes"))
         // AutoValue implementations are located there
