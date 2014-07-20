@@ -77,7 +77,7 @@ public abstract class CharHashConfig {
      * {@code IllegalArgumentException} on putting key out of the specified domain.
      *
      * <p>Example:
-     * <pre> {@code
+     * <pre>{@code
      * // only positive keys
      * conf = conf.withKeysDomain(1, Character.MAX_VALUE);
      * }</pre>
@@ -95,7 +95,7 @@ public abstract class CharHashConfig {
      * Returns char hash config with the specified keys domain complement.
      *
      * <p>Example:
-     * <pre> {@code
+     * <pre>{@code
      * // any keys except 0
      * conf = conf.withKeysDomainComplement(0, 0);
      * }</pre>

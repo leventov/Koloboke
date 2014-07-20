@@ -28,11 +28,11 @@ public interface ObjCursor<E> extends Cursor {
     /**
      * Performs the given action for each element of the iteration after the cursor in forward
      * direction.
-     * <pre> {@code
+     * <pre>{@code
      * cur.forEachForward(action)
      * }</pre>
      * is exact equivalent of
-     * <pre> {@code
+     * <pre>{@code
      * while (cur.moveNext())
      *     action.accept(cur.elem());
      * }</pre>

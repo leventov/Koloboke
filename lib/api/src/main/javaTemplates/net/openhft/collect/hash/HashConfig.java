@@ -197,7 +197,7 @@ public abstract class HashConfig {
      * Returns hash config with the specified shrink condition.
      *
      * <p>Example:
-     * <pre> {@code
+     * <pre>{@code
      * conf.withShrinkCondition(h -> h.currentLoad() + 0.1 < h.hashConfig().getTargetLoad());
      * }</pre>
      *

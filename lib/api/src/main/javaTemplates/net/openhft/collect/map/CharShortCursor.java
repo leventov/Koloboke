@@ -63,11 +63,11 @@ public interface CharShortCursor/*<>*/ extends Cursor {
     /**
      * Performs the given action for each entry of the iteration after the cursor in forward
      * direction.
-     * <pre> {@code
+     * <pre>{@code
      * cur.forEachForward(action)
      * }</pre>
      * is exact equivalent of
-     * <pre> {@code
+     * <pre>{@code
      * while (cur.moveNext())
      *     action.accept(cur.key(), cur.value());
      * }</pre>
