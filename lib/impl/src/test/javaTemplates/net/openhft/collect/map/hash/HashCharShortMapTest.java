@@ -47,7 +47,11 @@ public class HashCharShortMapTest extends TestCase {
                     public CharShortMapFactory/*pp*/ apply(
                             /* if !(float|double key) */CharHashConfig
                             /* elif float|double key //HashConfig// endif */ config) {
-                        return HashCharShortMaps.getDefaultFactory().withConfig(config);
+                        return /* if !(float|double key) */
+                                config.apply(HashCharShortMaps.getDefaultFactory())
+                                /* elif float|double key */
+                                HashCharShortMaps.getDefaultFactory().withHashConfig(config)
+                                /* endif */;
                     }
                 }));
         /* if !(obj key) */

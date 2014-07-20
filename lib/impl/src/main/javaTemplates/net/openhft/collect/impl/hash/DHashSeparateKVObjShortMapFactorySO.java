@@ -33,27 +33,33 @@ import java.util.Map;
 
 
 public abstract class DHashSeparateKVObjShortMapFactorySO<K/* if obj value //, V// endif */>
-         implements HashObjShortMapFactory<K/* if obj value //, V// endif */> {
+        extends ObjHashFactorySO<K>
+        implements HashObjShortMapFactory<K/* if obj value //, V// endif */> {
 
-    final ObjHashConfig conf;
-    final HashConfig hashConf;
-    final HashConfigWrapper configWrapper;
-
-    DHashSeparateKVObjShortMapFactorySO(ObjHashConfig conf) {
-        this.conf = conf;
-        this.hashConf = conf.getHashConfig();
-        configWrapper = new HashConfigWrapper(hashConf);
-    }
-
-    @Override
-    public ObjHashConfig getConfig() {
-        return conf;
+    DHashSeparateKVObjShortMapFactorySO(HashConfig hashConf, boolean isNullKeyAllowed) {
+        super(hashConf, isNullKeyAllowed);
     }
 
     @Nullable
     @Override
     public Equivalence<K> getKeyEquivalence() {
         return null;
+    }
+
+    @Nullable
+    @Override
+    Equivalence<K> getEquivalence() {
+        return getKeyEquivalence();
+    }
+
+    String keySpecialString() {
+        return ",keyEquivalence=" + getKeyEquivalence() +
+                ",nullKeyAllowed=" + isNullKeyAllowed();
+    }
+
+    boolean keySpecialEquals(HashObjShortMapFactory/*<?>*/ other) {
+        return NullableObjects.equals(getKeyEquivalence(), other.getKeyEquivalence()) &&
+                isNullKeyAllowed() == other.isNullKeyAllowed();
     }
 
     /* define p1 */

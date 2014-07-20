@@ -27,11 +27,11 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
 
     /** For ServiceLoader */
     public DHashObjSetFactoryImpl() {
-        this(ObjHashConfig.getDefault());
+        this(HashConfig.getDefault(), true);
     }
 
-    public DHashObjSetFactoryImpl(ObjHashConfig conf) {
-        super(conf);
+    public DHashObjSetFactoryImpl(HashConfig hashConf, boolean isNullAllowed) {
+        super(hashConf, isNullAllowed);
     }
 
     @Override
@@ -40,21 +40,30 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
             // noinspection unchecked
             return (HashObjSetFactory<E2>) this;
         }
-        return new WithCustomEquivalence<E2>(conf, equivalence);
+        return new WithCustomEquivalence<E2>(getHashConfig(), isNullKeyAllowed(), equivalence);
     }
 
     @Override
-    public HashObjSetFactory<E> withConfig(ObjHashConfig config) {
-        if (LHashCapacities.configIsSuitableForMutableLHash(config.getHashConfig()))
-            return new LHashObjSetFactoryImpl<E>(config);
-        return /* with DHash|QHash hash */new DHashObjSetFactoryImpl<E>(config)/* endwith */;
+    public HashObjSetFactory<E> withHashConfig(HashConfig hashConf) {
+        if (LHashCapacities.configIsSuitableForMutableLHash(hashConf))
+            return new LHashObjSetFactoryImpl<E>(hashConf, isNullKeyAllowed());
+        return /* with DHash|QHash hash */
+                new DHashObjSetFactoryImpl<E>(hashConf, isNullKeyAllowed())/* endwith */;
+    }
+
+    @Override
+    public HashObjSetFactory<E> withNullKeyAllowed(boolean nullAllowed) {
+        if (nullAllowed == isNullKeyAllowed())
+            return this;
+        return new DHashObjSetFactoryImpl<E>(getHashConfig(), nullAllowed);
     }
 
     static final class WithCustomEquivalence<E> extends DHashObjSetFactoryGO<E> {
         final Equivalence<E> equivalence;
 
-        public WithCustomEquivalence(ObjHashConfig conf, Equivalence<E> equivalence) {
-            super(conf);
+        public WithCustomEquivalence(HashConfig hashConf, boolean isNullAllowed,
+                Equivalence<E> equivalence) {
+            super(hashConf, isNullAllowed);
             this.equivalence = equivalence;
         }
 
@@ -76,21 +85,31 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
         @Override
         public <E2> HashObjSetFactory<E2> withEquivalence(@Nullable Equivalence<E2> equivalence) {
             if (equivalence == null)
-                return new DHashObjSetFactoryImpl<E2>(conf);
+                return new DHashObjSetFactoryImpl<E2>(getHashConfig(), isNullKeyAllowed());
             if (this.equivalence.equals(equivalence)) {
                 // noinspection unchecked
                 return (HashObjSetFactory<E2>) this;
             }
-            return new WithCustomEquivalence<E2>(conf, equivalence);
+            return new WithCustomEquivalence<E2>(getHashConfig(), isNullKeyAllowed(), equivalence);
         }
 
         @Override
-        public HashObjSetFactory<E> withConfig(ObjHashConfig config) {
-            if (LHashCapacities.configIsSuitableForMutableLHash(config.getHashConfig()))
-                return new LHashObjSetFactoryImpl.WithCustomEquivalence<E>(config, equivalence);
+        public HashObjSetFactory<E> withHashConfig(HashConfig hashConf) {
+            if (LHashCapacities.configIsSuitableForMutableLHash(hashConf))
+                return new LHashObjSetFactoryImpl.WithCustomEquivalence<E>(
+                        hashConf, isNullKeyAllowed(), equivalence);
             /* with DHash|QHash hash */
-            return new DHashObjSetFactoryImpl.WithCustomEquivalence<E>(config, equivalence);
+            return new DHashObjSetFactoryImpl.WithCustomEquivalence<E>(
+                    hashConf, isNullKeyAllowed(), equivalence);
             /* endwith */
+        }
+
+        @Override
+        public HashObjSetFactory<E> withNullKeyAllowed(boolean nullAllowed) {
+            if (nullAllowed == isNullKeyAllowed())
+                return this;
+            return new DHashObjSetFactoryImpl.WithCustomEquivalence<E>(
+                    getHashConfig(), nullAllowed, equivalence);
         }
     }
 }

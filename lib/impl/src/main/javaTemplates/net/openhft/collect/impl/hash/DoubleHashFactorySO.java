@@ -1,4 +1,4 @@
-/* with byte|char|short|int|long elem */
+/* with double|float elem */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -17,15 +17,25 @@
 
 package net.openhft.collect.impl.hash;
 
+import net.openhft.collect.hash.HashConfig;
 
-interface ByteHash extends Hash {
 
-    byte freeValue();
+abstract class DoubleHashFactorySO extends AbstractHashFactory {
 
-    boolean supportRemoved();
+    DoubleHashFactorySO(HashConfig hashConf) {
+        super(hashConf);
+    }
 
-    /**
-     * @throws java.lang.UnsupportedOperationException
-     */
-    byte removedValue();
+    String keySpecialString() {
+        return "";
+    }
+
+    int keySpecialHashCode(int hashCode) {
+        return hashCode;
+    }
+
+    @SuppressWarnings("unused")
+    boolean keySpecialEquals(Object other) {
+        return true;
+    }
 }

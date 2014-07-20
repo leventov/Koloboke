@@ -1,4 +1,3 @@
-/* with byte|char|short|int|long elem */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -17,15 +16,19 @@
 
 package net.openhft.collect.impl.hash;
 
+import net.openhft.collect.hash.HashConfig;
 
-interface ByteHash extends Hash {
 
-    byte freeValue();
+abstract class AbstractHashFactory {
+    final HashConfig hashConf;
+    final HashConfigWrapper configWrapper;
 
-    boolean supportRemoved();
+    AbstractHashFactory(HashConfig hashConf) {
+        this.hashConf = hashConf;
+        configWrapper = new HashConfigWrapper(hashConf);
+    }
 
-    /**
-     * @throws java.lang.UnsupportedOperationException
-     */
-    byte removedValue();
+    public final HashConfig getHashConfig() {
+        return hashConf;
+    }
 }

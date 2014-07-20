@@ -24,15 +24,34 @@ public final class CharHashConfigs {
 
     public static List<CharHashConfig> all() {
         List<CharHashConfig> configs = Arrays.asList(
-                CharHashConfig.getDefault(),
-                CharHashConfig.getDefault().withKeysDomain(
-                        /* const t 1 */(char) 1/* endconst */,
-                        /* const t max */Character.MAX_VALUE/* endconst*/)
+                new CharHashConfig() {
+                    @Override
+                    public <T extends CharHashFactory<T>> T apply(T factory) {
+                        return factory;
+                    }
+                }
+                /* if !(float|double t) */
+                , new CharHashConfig() {
+
+                    @Override
+                    public <T extends CharHashFactory<T>> T apply(T factory) {
+                        return factory.withKeysDomain(
+                                /* const t 1 */(char) 1/* endconst */,
+                                /* const t max */Character.MAX_VALUE/* endconst*/);
+                    }
+                }
+                /* endif */
         );
         List<CharHashConfig> all = new ArrayList<CharHashConfig>();
-        for (CharHashConfig config : configs) {
-            for (HashConfig hashConfig : HashConfigs.all()) {
-                all.add(config.withHashConfig(hashConfig));
+        for (final CharHashConfig config : configs) {
+            for (final HashConfig hashConf : HashConfigs.all()) {
+                all.add(new CharHashConfig() {
+                    @Override
+                    public <T extends CharHashFactory<T>> T apply(T factory) {
+                        factory = factory.withHashConfig(hashConf);
+                        return config.apply(factory);
+                    }
+                });
             }
         }
         return all;

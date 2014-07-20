@@ -72,7 +72,7 @@ public class ParallelVsSeparate {
             int size = getSize(System.getProperty("size", "small"), char.class.getName());
             keys = new char[size];
             HashCharCharMapFactory factory = HashCharCharMaps.getDefaultFactory();
-            factory = factory.withConfig(factory.getConfig().withHashConfig(Q_HASH_CONFIG));
+            factory = factory.withHashConfig(Q_HASH_CONFIG);
             map = factory.newUpdatableMap(size);
         }
 

@@ -1,4 +1,4 @@
-/* with byte|char|short|int|long elem */
+/* with char|byte|short|int|long elem */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -15,17 +15,8 @@
  * limitations under the License.
  */
 
-package net.openhft.collect.impl.hash;
+package net.openhft.collect.hash;
 
-
-interface ByteHash extends Hash {
-
-    byte freeValue();
-
-    boolean supportRemoved();
-
-    /**
-     * @throws java.lang.UnsupportedOperationException
-     */
-    byte removedValue();
+public interface CharHashConfig {
+    <T extends CharHashFactory<T>> T apply(T factory);
 }

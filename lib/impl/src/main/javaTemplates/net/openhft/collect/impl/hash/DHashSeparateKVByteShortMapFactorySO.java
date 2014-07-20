@@ -30,25 +30,13 @@ import java.util.Map;
 
 
 public abstract class DHashSeparateKVByteShortMapFactorySO/*<>*/
-        /* if !(float|double key) */
-        extends ByteDHashFactory
-                    /* if !(LHash hash) */<MutableDHashSeparateKVByteShortMapGO/*<>*/>/* endif */
-        /* endif */
+        extends ByteDHashFactory /* if !(float|double key) && !(LHash hash) */
+                        <MutableDHashSeparateKVByteShortMapGO/*<>*/>/* endif */
         implements HashByteShortMapFactory/*<>*/ {
 
-    /* if float|double key */
-    final HashConfig hashConf;
-    final HashConfigWrapper configWrapper;
-    /* endif */
-
-    DHashSeparateKVByteShortMapFactorySO(/* if !(float|double key) */ByteHashConfig
-            /* elif float|double key //HashConfig// endif */ conf) {
-        /* if !(float|double key) */
-        super(conf);
-        /* elif float|double key */
-        hashConf = conf;
-        configWrapper = new HashConfigWrapper(conf);
-        /* endif */
+    DHashSeparateKVByteShortMapFactorySO(HashConfig hashConf
+            /* if !(float|double key) */, byte lower, byte upper/* endif */) {
+        super(hashConf/* if !(float|double key) */, lower, upper/* endif */);
     }
 
     /* define p1 *//* if obj value //<V2 extends V>// endif *//* enddefine */
@@ -64,11 +52,6 @@ public abstract class DHashSeparateKVByteShortMapFactorySO/*<>*/
         MutableDHashSeparateKVByteShortMapGO/*<>*/ map = uninitializedMutableMap();
         map.init(configWrapper, expectedSize, free, removed);
         return map;
-    }
-    /* elif float|double key */
-    @Override
-    public HashConfig getConfig() {
-        return hashConf;
     }
     /* endif */
 

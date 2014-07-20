@@ -17,7 +17,6 @@
 
 package net.openhft.collect.map.hash;
 
-import net.openhft.collect.hash.ByteHashConfig;
 import net.openhft.collect.hash.HashConfig;
 import net.openhft.collect.impl.hash.SeparateKVByteIntDHash;
 import net.openhft.collect.impl.hash.MutableDHash;
@@ -36,11 +35,10 @@ public class ByteKeyHashMapTest {
 
     @Test
     public void testCorrectFreeAndRemovedValuesReplacement() {
-        ByteHashConfig config = ByteHashConfig.getDefault()
+        ByteIntMapFactory factory = getDefaultFactory()
                 // to ensure DHash will be created
                 .withHashConfig(HashConfig.getDefault().withGrowFactor(1.999))
                 .withKeysDomainComplement((byte) 0, (byte) 0);
-        ByteIntMapFactory factory = getDefaultFactory().withConfig(config);
         for (int i = Byte.MIN_VALUE; i <= Byte.MAX_VALUE; i++) {
             for (int j = Byte.MIN_VALUE; j <= Byte.MAX_VALUE; j++) {
                 for (int k = Byte.MIN_VALUE; k <= Byte.MAX_VALUE; k++) {
@@ -77,12 +75,12 @@ public class ByteKeyHashMapTest {
 
     @Test
     public void testAbilityToReplaceFreeOnAlmostFullHash() {
-        ByteHashConfig config = ByteHashConfig.getDefault()
-                .withHashConfig(HashConfig.getDefault().withMaxLoad(0.999)
+        ByteIntMapFactory factory = getDefaultFactory()
+                .withHashConfig(HashConfig.getDefault()
+                        .withMaxLoad(0.999)
                         // to ensure DHash will be created
                         .withGrowFactor(1.999))
                 .withKeysDomainComplement((byte) 0, (byte) 1);
-        ByteIntMapFactory factory = getDefaultFactory().withConfig(config);
 
         ByteIntMap map;
         SeparateKVByteIntDHash asDHash;

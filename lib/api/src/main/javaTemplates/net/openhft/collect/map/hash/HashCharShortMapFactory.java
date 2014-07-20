@@ -33,7 +33,9 @@ import java.util.Map;
 /**
  * @see HashCharShortMaps#getDefaultFactory()
  */
-public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/ {
+public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/
+        /* if !(float|double key) */, CharHashFactory<HashCharShortMapFactory/*<>*/>
+        /* elif float|double key */, HashContainerFactory<HashCharShortMapFactory/*<>*/>/* endif */ {
 
     /* define p1 */
     /* if obj key obj value //<K2 extends K, V2 extends V>// elif obj key //<K2 extends K>
@@ -74,12 +76,6 @@ public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/
     @Override
     HashCharShortMapFactory/*<>*/ withDefaultValue(short defaultValue);
     /* endif */
-
-    /* if !(float|double key) */CharHashConfig/* elif float|double key //HashConfig// endif */
-    getConfig();
-
-    HashCharShortMapFactory/*<>*/ withConfig(/* if !(float|double key) */CharHashConfig
-            /* elif float|double key //HashConfig// endif */ config);
 
     /* with Mutable|Updatable|Immutable mutability */
     /* if !(Immutable mutability) */

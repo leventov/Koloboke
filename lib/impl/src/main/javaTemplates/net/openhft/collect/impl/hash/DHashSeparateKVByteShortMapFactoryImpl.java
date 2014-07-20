@@ -30,10 +30,6 @@ import javax.annotation.Nullable;
 import static net.openhft.collect.impl.hash.LHashCapacities.configIsSuitableForMutableLHash;
 
 
-/**
- * TODO recheck
- * high probability of copy-paste mistake
- */
 public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         extends DHashSeparateKVByteShortMapFactoryGO/*<>*/ {
 
@@ -54,22 +50,43 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
     /* define andP1 *//* if obj value //, V2 extends V// endif *//* enddefine */
     /* define andP2 *//* if obj value //, V2// endif *//* enddefine */
 
-    /* define configClass */
-    /* if !(float|double key) //ByteHashConfig// elif float|double key //HashConfig// endif */
-    /* enddefine */
-
-    /* define getHashConfig */
-    /* if !(float|double key) //config.getHashConfig()// elif float|double key //config// endif */
-    /* enddefine */
-
     /** For ServiceLoader */
     public DHashSeparateKVByteShortMapFactoryImpl() {
-        this(/* configClass */ByteHashConfig/**/.getDefault());
+        this(HashConfig.getDefault()
+            /* if obj key */, true
+            /* elif !(float|double key) */, Byte.MIN_VALUE, Byte.MAX_VALUE/* endif */);
     }
 
-    DHashSeparateKVByteShortMapFactoryImpl(/* configClass */ByteHashConfig/**/ conf) {
-        super(conf);
+    /* define commonArgDef //
+    HashConfig hashConf// if obj key //, boolean isNullKeyAllowed
+            // elif !(float|double key) //, byte lower, byte upper// endif //
+    // enddefine */
+
+    /* define commonArgApply //
+    hashConf// if obj key //, isNullKeyAllowed
+            // elif !(float|double key) //, lower, upper// endif //
+    // enddefine */
+
+    /* define commonArgGet //
+    getHashConfig()// if obj key //, isNullKeyAllowed()// elif !(float|double key) //
+            , getLowerKeyDomainBound(), getUpperKeyDomainBound()// endif //
+    // enddefine */
+
+    DHashSeparateKVByteShortMapFactoryImpl(/* commonArgDef */) {
+        super(/* commonArgApply */);
     }
+
+    @Override
+    HashByteShortMapFactory/*<>*/ thisWith(/* commonArgDef */) {
+        return new DHashSeparateKVByteShortMapFactoryImpl/*<>*/(/* commonArgApply */);
+    }
+
+    /* with DHash|QHash|LHash hash */
+    @Override
+    HashByteShortMapFactory/*<>*/ dHashLikeThisWith(/* commonArgDef */) {
+        return new DHashSeparateKVByteShortMapFactoryImpl/*<>*/(/* commonArgApply */);
+    }
+    /* endwith */
 
     /* if obj key */
     @Override
@@ -79,17 +96,16 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
             // noinspection unchecked
             return (HashObjShortMapFactory<KE/*andV*/>) this;
         }
-        return new WithCustomKeyEquivalence<KE/*andV*/>(getConfig(), keyEquivalence);
+        return new WithCustomKeyEquivalence<KE/*andV*/>(/* commonArgGet */, keyEquivalence);
     }
     /* endif */
-
 
     /* if !(obj value) */
     @Override
     public HashByteShortMapFactory/*<>*/ withDefaultValue(short defaultValue) {
         if (defaultValue == /* const value 0 */0)
             return this;
-        return new WithCustomDefaultValue/*<>*/(getConfig(), defaultValue);
+        return new WithCustomDefaultValue/*<>*/(/* commonArgGet */, defaultValue);
     }
     /* elif obj value */
     @Override
@@ -99,19 +115,9 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
             // noinspection unchecked
             return (HashByteObjMapFactory</*kAnd*/VE>) this;
         }
-        return new WithCustomValueEquivalence</*kAnd*/VE>(getConfig(), valueEquivalence);
+        return new WithCustomValueEquivalence</*kAnd*/VE>(/* commonArgGet */, valueEquivalence);
     }
     /* endif */
-
-    @Override
-    public HashByteShortMapFactory/*<>*/ withConfig(/* configClass */ByteHashConfig/**/ config) {
-        if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/))
-            return new LHashSeparateKVByteShortMapFactoryImpl/*<>*/(config);
-        /* with DHash|QHash hash */
-        return new DHashSeparateKVByteShortMapFactoryImpl/*<>*/(config);
-        /* endwith */
-    }
-
 
     /* if obj key */
     static class WithCustomKeyEquivalence<K/*andV*/>
@@ -119,8 +125,8 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
 
         private final Equivalence<K> keyEquivalence;
 
-        WithCustomKeyEquivalence(ObjHashConfig conf, Equivalence<K> keyEquivalence) {
-            super(conf);
+        WithCustomKeyEquivalence(/* commonArgDef */, Equivalence<K> keyEquivalence) {
+            super(/* commonArgApply */);
             this.keyEquivalence = keyEquivalence;
         }
 
@@ -144,12 +150,12 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         public <KE> HashObjShortMapFactory<KE/*andV*/> withKeyEquivalence(
                 @Nullable Equivalence<KE> keyEquivalence) {
             if (keyEquivalence == null)
-                return new DHashSeparateKVObjShortMapFactoryImpl<KE/*andV*/>(conf);
+                return new DHashSeparateKVObjShortMapFactoryImpl<KE/*andV*/>(/* commonArgGet */);
             if (keyEquivalence.equals(this.keyEquivalence)) {
                 // noinspection unchecked
                 return (HashObjShortMapFactory<KE/*andV*/>) this;
             }
-            return new WithCustomKeyEquivalence<KE/*andV*/>(getConfig(), keyEquivalence);
+            return new WithCustomKeyEquivalence<KE/*andV*/>(/* commonArgGet */, keyEquivalence);
         }
 
         /* if !(obj value) */
@@ -158,7 +164,7 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
             if (defaultValue == /* const value 0 */0)
                 return this;
             return new WithCustomKeyEquivalenceAndDefaultValue<K/*andV*/>(
-                    getConfig(), keyEquivalence, defaultValue);
+                    /* commonArgGet */, keyEquivalence, defaultValue);
         }
         /* elif obj value */
         @Override
@@ -168,31 +174,33 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
                 // noinspection unchecked
                 return (HashObjObjMapFactory<K, VE>) this;
             }
-            return new WithCustomEquivalences<K, VE>(getConfig(), keyEquivalence, valueEquivalence);
+            return new WithCustomEquivalences<K, VE>(/* commonArgGet */,
+                    keyEquivalence, valueEquivalence);
         }
         /* endif */
 
         @Override
-        public HashObjShortMapFactory<K/*andV*/> withConfig(ObjHashConfig config) {
-            if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/)) {
-                return new LHashSeparateKVByteShortMapFactoryImpl
-                        .WithCustomKeyEquivalence<K/*andV*/>(
-                            config, keyEquivalence);
-            }
-            /* with DHash|QHash hash */
-            return new DHashSeparateKVByteShortMapFactoryImpl.WithCustomKeyEquivalence<K/*andV*/>(
-                    config, keyEquivalence);
-            /* endwith */
+        HashByteShortMapFactory/*<>*/ thisWith(/* commonArgDef */) {
+            return new WithCustomKeyEquivalence<K/*andV*/>(/* commonArgApply */, keyEquivalence);
         }
+
+        /* with DHash|QHash|LHash hash */
+        @Override
+        HashByteShortMapFactory/*<>*/ dHashLikeThisWith(/* commonArgDef */) {
+            return new DHashSeparateKVByteShortMapFactoryImpl.WithCustomKeyEquivalence<K/*andV*/>(
+                    /* commonArgApply */, keyEquivalence);
+        }
+        /* endwith */
     }
     /* endif */
 
     /* if !(obj value) */
-    static final class WithCustomDefaultValue/*<>*/ extends DHashSeparateKVByteShortMapFactoryGO/*<>*/ {
+    static final class WithCustomDefaultValue/*<>*/
+            extends DHashSeparateKVByteShortMapFactoryGO/*<>*/ {
         private final short defaultValue;
 
-        WithCustomDefaultValue(/* configClass */ByteHashConfig/**/ conf, short defaultValue) {
-            super(conf);
+        WithCustomDefaultValue(/* commonArgDef */, short defaultValue) {
+            super(/* commonArgApply */);
             this.defaultValue = defaultValue;
         }
 
@@ -219,41 +227,41 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
                 // noinspection unchecked
                 return (HashObjShortMapFactory<KE>) this;
             }
-            return new WithCustomKeyEquivalenceAndDefaultValue<KE>(
-                    getConfig(), keyEquivalence, defaultValue);
+            return new WithCustomKeyEquivalenceAndDefaultValue<KE>(/* commonArgGet */,
+                    keyEquivalence, defaultValue);
         }
         /* endif */
 
         @Override
         public HashByteShortMapFactory/*<>*/ withDefaultValue(short defaultValue) {
             if (defaultValue == /* const value 0 */0)
-                return new DHashSeparateKVByteShortMapFactoryImpl/*<>*/(getConfig());
+                return new DHashSeparateKVByteShortMapFactoryImpl/*<>*/(/* commonArgGet */);
             if (defaultValue == this.defaultValue)
                 return this;
-            return new WithCustomDefaultValue/*<>*/(getConfig(), defaultValue);
+            return new WithCustomDefaultValue/*<>*/(/* commonArgGet */, defaultValue);
         }
 
         @Override
-        public HashByteShortMapFactory/*<>*/ withConfig(
-                /* configClass */ByteHashConfig/**/ config) {
-            if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/)) {
-                return new LHashSeparateKVByteShortMapFactoryImpl.WithCustomDefaultValue/*<>*/(
-                        config, defaultValue);
-            }
-            /* with DHash|QHash hash */
-            return new DHashSeparateKVByteShortMapFactoryImpl.WithCustomDefaultValue/*<>*/(
-                    config, defaultValue);
-            /* endwith */
+        HashByteShortMapFactory/*<>*/ thisWith(/* commonArgDef */) {
+            return new WithCustomDefaultValue/*<>*/(/* commonArgApply */, defaultValue);
         }
+
+        /* with DHash|QHash|LHash hash */
+        @Override
+        HashByteShortMapFactory/*<>*/ dHashLikeThisWith(/* commonArgDef */) {
+            return new DHashSeparateKVByteShortMapFactoryImpl.WithCustomDefaultValue/*<>*/(
+                    /* commonArgApply */, defaultValue);
+        }
+        /* endwith */
     }
     /* elif obj value */
     static final class WithCustomValueEquivalence</*kAnd*/V>
             extends DHashSeparateKVByteObjMapFactoryGO</*kAnd*/V> {
 
         private final Equivalence<V> valueEquivalence;
-        WithCustomValueEquivalence(/* configClass */ByteHashConfig/**/ conf,
+        WithCustomValueEquivalence(/* commonArgDef */,
                 Equivalence<V> valueEquivalence) {
-            super(conf);
+            super(/* commonArgApply */);
             this.valueEquivalence = valueEquivalence;
         }
 
@@ -281,7 +289,8 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
                 // noinspection unchecked
                 return (HashObjObjMapFactory<KE, V>) this;
             }
-            return new WithCustomEquivalences<KE, V>(getConfig(), keyEquivalence, valueEquivalence);
+            return new WithCustomEquivalences<KE, V>(/* commonArgGet */,
+                    keyEquivalence, valueEquivalence);
         }
         /* endif */
 
@@ -289,27 +298,26 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         public <VE> HashByteObjMapFactory</*kAnd*/VE> withValueEquivalence(
                 @Nullable Equivalence<VE> valueEquivalence) {
             if (valueEquivalence == null)
-                return new DHashSeparateKVByteObjMapFactoryImpl</*kAnd*/VE>(getConfig());
+                return new DHashSeparateKVByteObjMapFactoryImpl</*kAnd*/VE>(/* commonArgGet */);
             if (valueEquivalence.equals(this.valueEquivalence))
                 // noinspection unchecked
                 return (HashByteObjMapFactory</*kAnd*/VE>) this;
-            return new WithCustomValueEquivalence</*kAnd*/VE>(
-                    getConfig(), valueEquivalence);
+            return new WithCustomValueEquivalence</*kAnd*/VE>(/* commonArgGet */, valueEquivalence);
         }
 
         @Override
-        public HashByteObjMapFactory</*kAnd*/V> withConfig(
-                /* configClass */ByteHashConfig/**/ config) {
-            if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/)) {
-                return new LHashSeparateKVByteShortMapFactoryImpl
-                        .WithCustomValueEquivalence</*kAnd*/V>(
-                            config, valueEquivalence);
-            }
-            /* with DHash|QHash hash */
-            return new DHashSeparateKVByteShortMapFactoryImpl.WithCustomValueEquivalence</*kAnd*/V>(
-                    config, valueEquivalence);
-            /* endwith */
+        HashByteShortMapFactory/*<>*/ thisWith(/* commonArgDef */) {
+            return new WithCustomValueEquivalence</*kAnd*/V>(/* commonArgApply */,
+                    valueEquivalence);
         }
+
+        /* with DHash|QHash|LHash hash */
+        @Override
+        HashByteShortMapFactory/*<>*/ dHashLikeThisWith(/* commonArgDef */) {
+            return new DHashSeparateKVByteShortMapFactoryImpl.WithCustomValueEquivalence</*kAnd*/V>(
+                    /* commonArgApply */, valueEquivalence);
+        }
+        /* endwith */
     }
     /* endif */
 
@@ -319,9 +327,9 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         private final Equivalence<K> keyEquivalence;
         private final short defaultValue;
 
-        WithCustomKeyEquivalenceAndDefaultValue(ObjHashConfig conf,
+        WithCustomKeyEquivalenceAndDefaultValue(/* commonArgDef */,
                 Equivalence<K> keyEquivalence, short defaultValue) {
-            super(conf);
+            super(/* commonArgApply */);
             this.keyEquivalence = keyEquivalence;
             this.defaultValue = defaultValue;
         }
@@ -352,37 +360,39 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         public <KE> HashObjShortMapFactory<KE> withKeyEquivalence(
                 @Nullable Equivalence<KE> keyEquivalence) {
             if (keyEquivalence == null)
-                return new WithCustomDefaultValue<KE>(getConfig(), defaultValue);
+                return new WithCustomDefaultValue<KE>(/* commonArgGet */, defaultValue);
             if (keyEquivalence.equals(this.keyEquivalence)) {
                 // noinspection unchecked
                 return (HashObjShortMapFactory<KE>) this;
             }
             return new WithCustomKeyEquivalenceAndDefaultValue<KE>(
-                    getConfig(), keyEquivalence, defaultValue);
+                    /* commonArgGet */, keyEquivalence, defaultValue);
         }
 
         @Override
         public HashObjShortMapFactory<K> withDefaultValue(short defaultValue) {
             if (defaultValue == /* const value 0 */0)
-                return new WithCustomKeyEquivalence<K>(getConfig(), keyEquivalence);
+                return new WithCustomKeyEquivalence<K>(/* commonArgGet */, keyEquivalence);
             if (defaultValue == this.defaultValue)
                 return this;
             return new WithCustomKeyEquivalenceAndDefaultValue<K>(
-                    getConfig(), keyEquivalence, defaultValue);
+                    /* commonArgGet */, keyEquivalence, defaultValue);
         }
 
         @Override
-        public HashObjShortMapFactory<K> withConfig(ObjHashConfig config) {
-            if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/)) {
-                return new LHashSeparateKVByteShortMapFactoryImpl
-                        .WithCustomKeyEquivalenceAndDefaultValue<K>(
-                            config, keyEquivalence, defaultValue);
-            }
-            /* with DHash|QHash hash */
-            return new DHashSeparateKVByteShortMapFactoryImpl.WithCustomKeyEquivalenceAndDefaultValue<K>(
-                    config, keyEquivalence, defaultValue);
-            /* endwith */
+        HashByteShortMapFactory/*<>*/ thisWith(/* commonArgDef */) {
+            return new WithCustomKeyEquivalenceAndDefaultValue<K>(/* commonArgApply */,
+                    keyEquivalence, defaultValue);
         }
+
+        /* with DHash|QHash|LHash hash */
+        @Override
+        HashByteShortMapFactory/*<>*/ dHashLikeThisWith(/* commonArgDef */) {
+            return new DHashSeparateKVByteShortMapFactoryImpl
+                        .WithCustomKeyEquivalenceAndDefaultValue<K>(/* commonArgApply */,
+                    keyEquivalence, defaultValue);
+        }
+        /* endwith */
     }
     /* elif obj key obj value */
     static final class WithCustomEquivalences<K, V>
@@ -390,9 +400,9 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         private final Equivalence<K> keyEquivalence;
         private final Equivalence<V> valueEquivalence;
 
-        WithCustomEquivalences(ObjHashConfig conf,
+        WithCustomEquivalences(/* commonArgDef */,
                 Equivalence<K> keyEquivalence, Equivalence<V> valueEquivalence) {
-            super(conf);
+            super(/* commonArgApply */);
             this.keyEquivalence = keyEquivalence;
             this.valueEquivalence = valueEquivalence;
         }
@@ -423,37 +433,42 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         public <KE> HashObjObjMapFactory<KE, V> withKeyEquivalence(
                 @Nullable Equivalence<KE> keyEquivalence) {
             if (keyEquivalence == null)
-                return new WithCustomValueEquivalence<KE, V>(getConfig(), valueEquivalence);
+                return new WithCustomValueEquivalence<KE, V>(/* commonArgGet */,
+                        valueEquivalence);
             if (keyEquivalence.equals(this.keyEquivalence)) {
                 // noinspection unchecked
                 return (HashObjObjMapFactory<KE, V>) this;
             }
-            return new WithCustomEquivalences<KE, V>(getConfig(), keyEquivalence, valueEquivalence);
+            return new WithCustomEquivalences<KE, V>(/* commonArgGet */,
+                    keyEquivalence, valueEquivalence);
         }
 
         @Override
         public <VE> HashObjObjMapFactory<K, VE> withValueEquivalence(
                 @Nullable Equivalence<VE> valueEquivalence) {
             if (valueEquivalence == null)
-                return new WithCustomKeyEquivalence<K, VE>(getConfig(), keyEquivalence);
+                return new WithCustomKeyEquivalence<K, VE>(/* commonArgGet */, keyEquivalence);
             if (valueEquivalence.equals(this.valueEquivalence)) {
                 // noinspection unchecked
                 return (HashObjObjMapFactory<K, VE>) this;
             }
-            return new WithCustomEquivalences<K, VE>(getConfig(), keyEquivalence, valueEquivalence);
+            return new WithCustomEquivalences<K, VE>(/* commonArgGet */,
+                    keyEquivalence, valueEquivalence);
         }
 
         @Override
-        public HashObjObjMapFactory<K, V> withConfig(ObjHashConfig config) {
-            if (configIsSuitableForMutableLHash(/* getHashConfig */config.getHashConfig()/**/)) {
-                return new LHashSeparateKVByteShortMapFactoryImpl.WithCustomEquivalences<K, V>(
-                        config, keyEquivalence, valueEquivalence);
-            }
-            /* with DHash|QHash hash */
-            return new DHashSeparateKVByteShortMapFactoryImpl.WithCustomEquivalences<K, V>(
-                    config, keyEquivalence, valueEquivalence);
-            /* endwith */
+        HashByteShortMapFactory/*<>*/ thisWith(/* commonArgDef */) {
+            return new WithCustomEquivalences<K, V>(/* commonArgApply */,
+                    keyEquivalence, valueEquivalence);
         }
+
+        /* with DHash|QHash|LHash hash */
+        @Override
+        HashByteShortMapFactory/*<>*/ dHashLikeThisWith(/* commonArgDef */) {
+            return new DHashSeparateKVByteShortMapFactoryImpl.WithCustomEquivalences<K, V>(
+                    /* commonArgApply */, keyEquivalence, valueEquivalence);
+        }
+        /* endwith */
     }
     /* endif */
 }

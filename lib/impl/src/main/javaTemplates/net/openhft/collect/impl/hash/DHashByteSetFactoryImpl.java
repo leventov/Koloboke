@@ -26,25 +26,49 @@ import net.openhft.collect.set.hash.HashByteSetFactory;
 
 public class DHashByteSetFactoryImpl extends DHashByteSetFactoryGO {
 
-    /* define configClass */
-    /* if !(float|double elem) //ByteHashConfig// elif float|double elem //HashConfig// endif */
-    /* enddefine */
-
     /** For ServiceLoader */
     public DHashByteSetFactoryImpl() {
-        this(/* configClass */ByteHashConfig/**/.getDefault());
+        this(HashConfig.getDefault()
+                /* if !(float|double elem) */, Byte.MIN_VALUE, Byte.MAX_VALUE/* endif */);
     }
 
-    public DHashByteSetFactoryImpl(/* configClass */ByteHashConfig/**/ conf) {
-        super(conf);
+    public DHashByteSetFactoryImpl(HashConfig hashConf
+            /* if !(float|double elem) */, byte lower, byte upper/* endif */) {
+        super(hashConf/* if !(float|double elem) */, lower, upper/* endif */);
     }
 
     @Override
-    public HashByteSetFactory withConfig(/* configClass */ByteHashConfig/**/ config) {
-        if (LHashCapacities.configIsSuitableForMutableLHash(
-                /* if !(float|double elem) */config.getHashConfig()
-                /* elif float|double elem //config// endif */))
-            return new LHashByteSetFactoryImpl(config);
-        return /* with DHash|QHash hash */new DHashByteSetFactoryImpl(config);/* endwith */
+    public HashByteSetFactory withHashConfig(HashConfig hashConf) {
+        if (LHashCapacities.configIsSuitableForMutableLHash(hashConf))
+            return new LHashByteSetFactoryImpl(hashConf/* if !(float|double elem) */
+                    , getLowerKeyDomainBound(), getUpperKeyDomainBound()/* endif */);
+        /* with DHash|QHash hash */
+        return new DHashByteSetFactoryImpl(hashConf/* if !(float|double elem) */
+                , getLowerKeyDomainBound(), getUpperKeyDomainBound()/* endif */);
+        /* endwith */
     }
+
+    /* if !(float|double elem) */
+    HashByteSetFactory withDomain(byte lower, byte upper) {
+        if (lower == getLowerKeyDomainBound() && upper == getUpperKeyDomainBound())
+            return this;
+        return new DHashByteSetFactoryImpl(getHashConfig(), lower, upper);
+    }
+
+    @Override
+    public HashByteSetFactory withKeysDomain(byte lower, byte upper) {
+        if (lower > upper)
+            throw new IllegalArgumentException("minPossibleKey shouldn't be greater " +
+                    "than maxPossibleKey");
+        return withDomain(lower, upper);
+    }
+
+    @Override
+    public HashByteSetFactory withKeysDomainComplement(byte lower, byte upper) {
+        if (lower > upper)
+            throw new IllegalArgumentException("minImpossibleKey shouldn't be greater " +
+                    "than maxImpossibleKey");
+        return withDomain((byte) (upper + 1), (byte) (lower - 1));
+    }
+    /* endif */
 }

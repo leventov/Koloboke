@@ -22,11 +22,22 @@ import java.util.*;
 public final class ObjHashConfigs {
 
     public static List<ObjHashConfig> all() {
-        List<ObjHashConfig> configs = Arrays.asList(ObjHashConfig.getDefault());
+        List<ObjHashConfig> configs = Arrays.<ObjHashConfig>asList(new ObjHashConfig() {
+            @Override
+            public <T extends ObjHashFactory<T>> T apply(T factory) {
+                return factory;
+            }
+        });
         List<ObjHashConfig> all = new ArrayList<ObjHashConfig>();
-        for (ObjHashConfig config : configs) {
-            for (HashConfig hashConfig : HashConfigs.all()) {
-                all.add(config.withHashConfig(hashConfig));
+        for (final ObjHashConfig config : configs) {
+            for (final HashConfig hashConf : HashConfigs.all()) {
+                all.add(new ObjHashConfig() {
+                    @Override
+                    public <T extends ObjHashFactory<T>> T apply(T factory) {
+                        factory = factory.withHashConfig(hashConf);
+                        return config.apply(factory);
+                    }
+                });
             }
         }
         return all;

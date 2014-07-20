@@ -1,6 +1,6 @@
 /* with
  DHash|QHash|LHash hash
- byte|char|short|int|long elem
+ byte|char|short|int|long|float|double elem
  */
 /*
  * Copyright 2014 the original author or authors.
@@ -26,50 +26,15 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-abstract class ByteDHashFactory/* if !(LHash hash) */<MT>/* endif */ {
+abstract class ByteDHashFactory
+        /* if !(float|double elem) && !(LHash hash) */<MT>/* endif */ extends ByteHashFactorySO {
 
-    final ByteHashConfig conf;
-    final HashConfig hashConf;
-    final HashConfigWrapper configWrapper;
-    private final boolean randomFree, randomRemoved;
-    private final byte freeValue, removedValue;
-
-    ByteDHashFactory(ByteHashConfig conf) {
-        this.conf = conf;
-        hashConf = conf.getHashConfig();
-        configWrapper = new HashConfigWrapper(hashConf);
-        byte lower = conf.getLowerKeyDomainBound();
-        byte upper = conf.getUpperKeyDomainBound();
-        if ((byte) (lower - 1) == upper) {
-            randomFree = randomRemoved = true;
-            freeValue = removedValue = /* const elem 0 */0;
-        } else {
-            randomFree = false;
-            if ((lower < upper && (lower > 0 || upper < 0)) ||
-                    (upper < lower && (lower > 0 && upper < 0))) {
-                freeValue = /* const elem 0 */0;
-            } else {
-                freeValue = (byte) (lower - 1);
-            }
-            if ((byte) (lower - 2) == upper) {
-                randomRemoved = true;
-                removedValue = /* const elem 0 */0;
-            } else {
-                randomRemoved = false;
-                if (upper + 1 != 0) {
-                    removedValue = (byte) (upper + 1);
-                } else {
-                    removedValue = (byte) (upper + 2);
-                }
-            }
-        }
+    ByteDHashFactory(HashConfig hashConf
+            /* if !(float|double elem) */, byte lower, byte upper/* endif */) {
+        super(hashConf/* if !(float|double elem) */, lower, upper/* endif */);
     }
 
-    public ByteHashConfig getConfig() {
-        return conf;
-    }
-
-    /* if !(LHash hash) */
+    /* if !(float|double elem) && !(LHash hash) */
     abstract MT createNewMutable(int expectedSize, byte free, byte removed);
 
     /* define nextIntOrLong */
@@ -97,13 +62,4 @@ abstract class ByteDHashFactory/* if !(LHash hash) */<MT>/* endif */ {
     }
 
     /* endif */
-
-    byte getFree() {
-        if (randomFree) {
-            Random random = ThreadLocalRandom.current();
-            return (byte) random./* nextIntOrLong */nextInt/**/();
-        } else {
-            return freeValue;
-        }
-    }
 }

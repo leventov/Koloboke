@@ -42,7 +42,10 @@ public class HashCharSetTest extends TestCase {
                     public CharSetFactory/* if obj elem //<Object>// endif */ apply(
                             /* if !(float|double elem) */CharHashConfig
                             /* elif float|double elem //HashConfig// endif */ config) {
-                        return HashCharSets.getDefaultFactory().withConfig(config);
+                        return /* if !(float|double elem) */
+                                config.apply(HashCharSets.getDefaultFactory())
+                               /* elif float|double elem */
+                               HashCharSets.getDefaultFactory().withHashConfig(config)/* endif */;
                     }
                 }));
         /* if obj elem */

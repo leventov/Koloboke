@@ -30,17 +30,13 @@ import java.util.Iterator;
 /**
  * @see HashCharSets#getDefaultFactory()
  */
-public interface HashCharSetFactory/*<>*/ extends CharSetFactory/*<>*/ {
+public interface HashCharSetFactory/*<>*/ extends CharSetFactory/*<>*/
+        /* if !(float|double elem) */, CharHashFactory<HashCharSetFactory/*<>*/>
+        /* elif float|double elem */, HashContainerFactory<HashCharSetFactory/*<>*/>/* endif */ {
 
     /* if obj elem */
     <E2> HashCharSetFactory<E2> withEquivalence(@Nullable Equivalence<E2> equivalence);
     /* endif */
-
-    /* if !(float|double elem) */CharHashConfig/* elif float|double elem //HashConfig// endif */
-    getConfig();
-
-    HashCharSetFactory/*<>*/ withConfig(/* if !(float|double elem) */CharHashConfig
-            /* elif float|double elem //HashConfig// endif */ config);
 
     /* define p1 *//* if obj elem //<E2 extends E>// endif *//* enddefine */
 

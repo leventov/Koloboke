@@ -28,21 +28,21 @@ import java.util.Collection;
 import java.util.Set;
 
 
-public abstract class DHashObjSetFactorySO<E> implements HashObjSetFactory<E> {
+public abstract class DHashObjSetFactorySO<E> extends ObjHashFactorySO<E>
+        implements HashObjSetFactory<E> {
 
-    final ObjHashConfig conf;
-    final HashConfig hashConf;
-    final HashConfigWrapper configWrapper;
-
-    DHashObjSetFactorySO(ObjHashConfig conf) {
-        this.conf = conf;
-        hashConf = conf.getHashConfig();
-        configWrapper = new HashConfigWrapper(hashConf);
+    DHashObjSetFactorySO(HashConfig hashConf, boolean isNullAllowed) {
+        super(hashConf, isNullAllowed);
     }
 
-    @Override
-    public ObjHashConfig getConfig() {
-        return conf;
+    String keySpecialString() {
+        return ",equivalence=" + getEquivalence() +
+                ",nullKeyAllowed=" + isNullKeyAllowed();
+    }
+
+    boolean keySpecialEquals(HashObjSetFactory<?> other) {
+        return NullableObjects.equals(getEquivalence(), other.getEquivalence()) &&
+                isNullKeyAllowed() == other.isNullKeyAllowed();
     }
 
     @Nullable

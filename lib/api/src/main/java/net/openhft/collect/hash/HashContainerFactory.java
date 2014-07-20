@@ -1,4 +1,3 @@
-/* with byte|char|short|int|long elem */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -15,17 +14,11 @@
  * limitations under the License.
  */
 
-package net.openhft.collect.impl.hash;
+package net.openhft.collect.hash;
 
+public interface HashContainerFactory<T extends HashContainerFactory<T>> {
 
-interface ByteHash extends Hash {
+    HashConfig getHashConfig();
 
-    byte freeValue();
-
-    boolean supportRemoved();
-
-    /**
-     * @throws java.lang.UnsupportedOperationException
-     */
-    byte removedValue();
+    T withHashConfig(HashConfig config);
 }

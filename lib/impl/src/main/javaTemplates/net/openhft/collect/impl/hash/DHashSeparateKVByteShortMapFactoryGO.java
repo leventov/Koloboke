@@ -34,33 +34,91 @@ import net.openhft.collect.map.hash.HashByteShortMap;
 import java.util.*;
 
 import static net.openhft.collect.impl.Containers.sizeAsInt;
+import static net.openhft.collect.impl.hash.LHashCapacities.configIsSuitableForMutableLHash;
 
 
 public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
         extends DHashSeparateKVByteShortMapFactorySO/*<>*/ {
 
-    DHashSeparateKVByteShortMapFactoryGO(/* if !(float|double key) */ByteHashConfig
-            /* elif float|double key //HashConfig// endif */ conf) {
-        super(conf);
+    DHashSeparateKVByteShortMapFactoryGO(HashConfig hashConf
+            /* if obj key */, boolean isNullKeyAllowed
+            /* elif !(float|double key) */, byte lower, byte upper/* endif */) {
+        super(hashConf/* if obj key //, isNullKeyAllowed
+            // elif !(float|double key) */, lower, upper/* endif */);
     }
+
+    /* define commonArgDef //
+    HashConfig hashConf// if obj key //, boolean isNullKeyAllowed
+            // elif !(float|double key) //, byte lower, byte upper// endif //
+    // enddefine */
+
+    abstract HashByteShortMapFactory/*<>*/ thisWith(/* commonArgDef */);
+
+    abstract HashByteShortMapFactory/*<>*/ lHashLikeThisWith(/* commonArgDef */);
+
+    /* with DHash|QHash hash */
+    abstract HashByteShortMapFactory/*<>*/ dHashLikeThisWith(/* commonArgDef */);
+    /* endwith */
+
+    @Override
+    public final HashByteShortMapFactory/*<>*/ withHashConfig(HashConfig hashConf) {
+        if (configIsSuitableForMutableLHash(hashConf))
+            return lHashLikeThisWith(hashConf
+            /* if obj key */, isNullKeyAllowed()/* elif !(float|double key) */
+                    , getLowerKeyDomainBound(), getUpperKeyDomainBound()/* endif */);
+        /* with DHash|QHash hash */
+        return dHashLikeThisWith(hashConf
+            /* if obj key */, isNullKeyAllowed()/* elif !(float|double key) */
+                , getLowerKeyDomainBound(), getUpperKeyDomainBound()/* endif */);
+        /* endwith */
+    }
+
+    /* if obj key */
+    @Override
+    public final HashByteShortMapFactory/*<>*/ withNullKeyAllowed(boolean nullKeyAllowed) {
+        if (nullKeyAllowed == isNullKeyAllowed())
+            return this;
+        return thisWith(getHashConfig(), nullKeyAllowed);
+    }
+    /* elif !(float|double key) */
+    final HashByteShortMapFactory/*<>*/ withDomain(byte lower, byte upper) {
+        if (lower == getLowerKeyDomainBound() && upper == getUpperKeyDomainBound())
+            return this;
+        return thisWith(getHashConfig(), lower, upper);
+    }
+
+    @Override
+    public final HashByteShortMapFactory/*<>*/ withKeysDomain(byte lower, byte upper) {
+        if (lower > upper)
+            throw new IllegalArgumentException("minPossibleKey shouldn't be greater " +
+                    "than maxPossibleKey");
+        return withDomain(lower, upper);
+    }
+
+    @Override
+    public final HashByteShortMapFactory/*<>*/ withKeysDomainComplement(byte lower, byte upper) {
+        if (lower > upper)
+            throw new IllegalArgumentException("minImpossibleKey shouldn't be greater " +
+                    "than maxImpossibleKey");
+        return withDomain((byte) (upper + 1), (byte) (lower - 1));
+    }
+    /* endif */
 
     @Override
     public String toString() {
         return "HashByteShortMapFactory[" +
-                "keyConfig=" + getConfig() + "," +
-                /* if obj key */"keyEquivalence=" + getKeyEquivalence() + "," +/* endif */
-                /* if obj value */"valueEquivalence=" + getValueEquivalence() +
-                /* elif !(obj value) */"defaultValue=" + getDefaultValue() +/* endif */
+                "keyConfig=" + getHashConfig() +
+                keySpecialString() +
+                /* if obj value */",valueEquivalence=" + getValueEquivalence() +
+                /* elif !(obj value) */",defaultValue=" + getDefaultValue() +/* endif */
         "]";
     }
 
     @Override
     public int hashCode() {
         int hashCode = 17;
-        hashCode = hashCode * 31 + getConfig().hashCode();
-        /* if obj key */
-        hashCode = hashCode * 31 + NullableObjects.hashCode(getKeyEquivalence());
-        /* endif */
+        hashCode = hashCode * 31 + getHashConfig().hashCode();
+        hashCode = keySpecialHashCode(hashCode);
         /* if obj value */
         hashCode = hashCode * 31 + NullableObjects.hashCode(getValueEquivalence());
         /* elif !(obj value) */
@@ -75,18 +133,15 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
             return true;
         if (obj instanceof HashByteShortMapFactory) {
             HashByteShortMapFactory factory = (HashByteShortMapFactory) obj;
-            if (!this.getConfig().equals(factory.getConfig()))
-                return false;
-            /* if obj key */
-            if (!NullableObjects.equals(this.getKeyEquivalence(), factory.getKeyEquivalence()))
-                return false;
-            /* endif */
-            /* if obj value */
-            return NullableObjects.equals(this.getValueEquivalence(),
-                    factory.getValueEquivalence());
-            /* elif !(obj value) */
-            return ((Short) this.getDefaultValue()).equals(factory.getDefaultValue());
-            /* endif */
+            return getHashConfig().equals(factory.getHashConfig()) &&
+                    keySpecialEquals(factory) &&
+                    /* if obj value */
+                    NullableObjects.equals(getValueEquivalence(),
+                            factory.getValueEquivalence())
+                    /* elif !(obj value) */
+                    // boxing to treat NaNs correctly
+                   ((Short) getDefaultValue()).equals(factory.getDefaultValue())
+                    /* endif */;
         } else {
             return false;
         }

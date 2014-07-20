@@ -36,16 +36,15 @@ import static net.openhft.collect.impl.Containers.sizeAsInt;
 
 public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/*<>*/ {
 
-    public DHashByteSetFactoryGO(/* if !(float|double elem) */ByteHashConfig
-            /* elif float|double elem //HashConfig// endif */ conf) {
-        super(conf);
+    public DHashByteSetFactoryGO(HashConfig hashConf/* if obj elem */, boolean isNullAllowed
+            /* elif !(float|double elem) */, byte lower, byte upper/* endif */) {
+        super(hashConf/* if obj elem //, isNullAllowed
+            // elif !(float|double elem) */, lower, upper/* endif */);
     }
 
     @Override
     public String toString() {
-        return "HashByteSetFactory[config=" + getConfig() +
-                /* if obj elem */",equivalence=" + getEquivalence() +/* endif */
-        "]";
+        return "HashByteSetFactory[hashConfig=" + getHashConfig() + keySpecialString() + "]";
     }
 
     @Override
@@ -54,10 +53,8 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
             return true;
         if (obj instanceof HashByteSetFactory) {
             HashByteSetFactory factory = (HashByteSetFactory) obj;
-            return getConfig().equals(factory.getConfig())
-                    /* if obj elem */
-                    && NullableObjects.equals(getEquivalence(), factory.getEquivalence())
-                    /* endif */;
+            return getHashConfig().equals(factory.getHashConfig()) &&
+                    keySpecialEquals(factory);
         } else {
             return false;
         }
@@ -66,11 +63,8 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     @Override
     public int hashCode() {
         int hashCode = 17;
-        hashCode = hashCode * 31 + getConfig().hashCode();
-        /* if obj elem */
-        hashCode = hashCode * 31 + NullableObjects.hashCode(getEquivalence());
-        /* endif */
-        return hashCode;
+        hashCode = hashCode * 31 + getHashConfig().hashCode();
+        return keySpecialHashCode(hashCode);
     }
 
     /* define p1 *//* if obj elem // <E2 extends E>// endif *//* enddefine */

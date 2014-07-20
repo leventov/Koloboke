@@ -29,24 +29,13 @@ import java.util.Set;
 
 
 public abstract class DHashByteSetFactorySO
-        /* if !(float|double elem) */
-        extends ByteDHashFactory/* if !(LHash hash) */<MutableDHashByteSetGO>/* endif */
-        /* endif */
+        extends ByteDHashFactory
+            /* if !(float|double elem) && !(LHash hash) */<MutableDHashByteSetGO>/* endif */
         implements HashByteSetFactory {
 
-    /* if float|double elem */
-    final HashConfig hashConf;
-    final HashConfigWrapper configWrapper;
-    /* endif */
-
-    DHashByteSetFactorySO(/* if !(float|double elem) */ByteHashConfig
-            /* elif float|double elem //HashConfig// endif */ conf) {
-        /* if !(float|double elem) */
-        super(conf);
-        /* elif float|double elem */
-        hashConf = conf;
-        configWrapper = new HashConfigWrapper(conf);
-        /* endif */
+    DHashByteSetFactorySO(HashConfig hashConf
+            /* if !(float|double elem) */, byte lower, byte upper/* endif */) {
+        super(hashConf/* if !(float|double elem) */, lower, upper/* endif */);
     }
 
     /* if !(float|double elem) && !(LHash hash) */
@@ -55,11 +44,6 @@ public abstract class DHashByteSetFactorySO
         MutableDHashByteSet set = new MutableDHashByteSet();
         set.init(configWrapper, expectedSize, free, removed);
         return set;
-    }
-    /* elif float|double elem */
-    @Override
-    public HashConfig getConfig() {
-        return hashConf;
     }
     /* endif */
 
