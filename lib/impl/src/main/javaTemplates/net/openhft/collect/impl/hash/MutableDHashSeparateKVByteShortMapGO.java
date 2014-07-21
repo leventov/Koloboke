@@ -338,13 +338,13 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
 
     /* if !(obj value) */
     @Override
-    public short incrementValue(byte key, short value) {
-        /* template IncrementValue */ throw new NotGenerated(); /* endtemplate */
+    public short addValue(byte key, short value) {
+        /* template AddValue */ throw new NotGenerated(); /* endtemplate */
     }
 
     @Override
-    public short incrementValue(byte key, short increment, short defaultValue) {
-        /* template IncrementValueWithDefault */ throw new NotGenerated(); /* endtemplate */
+    public short addValue(byte key, short addition, short defaultValue) {
+        /* template AddValueWithDefault */ throw new NotGenerated(); /* endtemplate */
     }
     /* endif */
 

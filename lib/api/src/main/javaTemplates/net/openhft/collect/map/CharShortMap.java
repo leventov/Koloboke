@@ -416,14 +416,14 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj value) */
     /**
-     * {@code map.incrementValue(key, inc)} is equivalent
-     * of {@code map.compute(key, (k, v) -> v + inc)}.
+     * {@code map.addValue(key, add)} is equivalent
+     * of {@code map.compute(key, (k, v) -> v + add)}.
      * @return the new value associated with the specified key
      */
-    short incrementValue(char key, short increment);
+    short addValue(char key, short addition);
 
     /**
-     * {@code map.incrementValue(key, increment, defaultValue)} is equivalent to
+     * {@code map.addValue(key, addition, defaultValue)} is equivalent to
      * <pre>{@code
      * short newValue = map.getOrDefault(key, defaultValue) + increment;
      * map.put(key, newValue);
@@ -432,7 +432,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      *
      * @return the new value associated with the specified key
      */
-    short incrementValue(char key, short increment, short defaultValue);
+    short addValue(char key, short addition, short defaultValue);
     /* endif */
 
 

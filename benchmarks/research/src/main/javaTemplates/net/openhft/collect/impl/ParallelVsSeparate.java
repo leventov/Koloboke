@@ -131,12 +131,12 @@ public class ParallelVsSeparate {
     }
 
     @GenerateMicroBenchmark
-    public long incrementValueOp_qHash_charKey(QueryUpdateOpQHashCharCharMapState state) {
+    public long addValueOp_qHash_charKey(QueryUpdateOpQHashCharCharMapState state) {
         char[] keys = state.keys;
         CharCharMap map = state.map;
         long dummy = 0L;
         for (char key : keys) {
-            dummy ^= (long) map.incrementValue(key, /* const key 1 */(char) 1/* endconst */);
+            dummy ^= (long) map.addValue(key, /* const key 1 */(char) 1/* endconst */);
         }
         return dummy;
     }

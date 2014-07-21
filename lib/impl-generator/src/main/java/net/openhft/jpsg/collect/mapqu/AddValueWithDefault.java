@@ -21,27 +21,21 @@ import net.openhft.jpsg.Option;
 import static net.openhft.jpsg.PrimitiveType.*;
 
 
-public class IncrementValue extends MapQueryUpdateMethod {
+public final class AddValueWithDefault extends AddValue {
 
     @Override
-    public final BasicMapQueryUpdateOp baseOp() {
-        return BasicMapQueryUpdateOp.INSERT;
-    }
-
-    String toAdd() {
-        return "value";
-    }
-
-    @Override
-    public final void ifPresent() {
-        String newValue = gen.value() + " + " + toAdd();
+    public void beginning() {
+        String value = "defaultValue + addition";
         Option mvo = cxt.mapValueOption();
         if (mvo == BYTE || mvo == CHAR || mvo == SHORT) {
-            newValue = "(" + cxt.valueType() + ") (" + newValue + ")";
+            value = "(" + cxt.valueType() + ") (" + value + ")";
         }
-        gen.lines(cxt.valueType() + " newValue = " + newValue + ";");
-        gen.setValue("newValue");
-        gen.ret("newValue");
+        gen.lines(cxt.valueType() + " value = " + value + ";");
+    }
+
+    @Override
+    String toAdd() {
+        return "addition";
     }
 
     @Override

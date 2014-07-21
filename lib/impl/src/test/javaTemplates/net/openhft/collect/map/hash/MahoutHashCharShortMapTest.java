@@ -180,9 +180,9 @@ public class MahoutHashCharShortMapTest {
         map.put((char) 12, (short) 23);
         map.put((char) 13, (short) 24);
         map.put((char) 14, (short) 25);
-        map.incrementValue((char) 11, (short) 3, (short) 1);
+        map.addValue((char) 11, (short) 3, (short) 1);
         assertEquals(25, map.get((char) 11) /* valueEpsilon */);
-        map.incrementValue((char) 15, (short) 3, (short) 1);
+        map.addValue((char) 15, (short) 3, (short) 1);
         assertEquals(4, map.get((char) 15) /* valueEpsilon */);
     }
 
