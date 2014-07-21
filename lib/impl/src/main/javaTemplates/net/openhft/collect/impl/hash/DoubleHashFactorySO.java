@@ -22,8 +22,8 @@ import net.openhft.collect.hash.HashConfig;
 
 abstract class DoubleHashFactorySO extends AbstractHashFactory {
 
-    DoubleHashFactorySO(HashConfig hashConf) {
-        super(hashConf);
+    DoubleHashFactorySO(HashConfig hashConf, int defaultExpectedSize) {
+        super(hashConf, defaultExpectedSize);
     }
 
     String keySpecialString() {

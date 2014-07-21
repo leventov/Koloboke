@@ -27,23 +27,62 @@ import net.openhft.function./*f*/ByteConsumer/**/;
 import net.openhft.function.Predicate;
 import net.openhft.collect.set.hash.HashByteSet;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Iterator;
 
 import static net.openhft.collect.impl.Containers.sizeAsInt;
+import static net.openhft.collect.impl.hash.LHashCapacities.configIsSuitableForMutableLHash;
 
 
 public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/*<>*/ {
 
-    public DHashByteSetFactoryGO(HashConfig hashConf/* if obj elem */, boolean isNullAllowed
+    public DHashByteSetFactoryGO(HashConfig hashConf, int defaultExpectedSize
+            /* if obj elem */, boolean isNullAllowed
             /* elif !(float|double elem) */, byte lower, byte upper/* endif */) {
-        super(hashConf/* if obj elem //, isNullAllowed
+        super(hashConf, defaultExpectedSize/* if obj elem //, isNullAllowed
             // elif !(float|double elem) */, lower, upper/* endif */);
     }
 
+    /* define commonArgDef //
+    HashConfig hashConf, int defaultExpectedSize// if obj elem //, boolean isNullAllowed
+            // elif !(float|double elem) //, byte lower, byte upper// endif //
+    // enddefine */
+
+    abstract HashByteSetFactory/*<>*/ thisWith(/* commonArgDef */);
+
+    abstract HashByteSetFactory/*<>*/ lHashLikeThisWith(/* commonArgDef */);
+
+    /* with DHash|QHash hash */
+    abstract HashByteSetFactory/*<>*/ dHashLikeThisWith(/* commonArgDef */);
+    /* endwith */
+
+    @Override
+    public final HashByteSetFactory/*<>*/ withHashConfig(@Nonnull HashConfig hashConf) {
+        if (configIsSuitableForMutableLHash(hashConf))
+            return lHashLikeThisWith(hashConf, getDefaultExpectedSize()
+            /* if obj elem */, isNullKeyAllowed()/* elif !(float|double elem) */
+                    , getLowerKeyDomainBound(), getUpperKeyDomainBound()/* endif */);
+        /* with DHash|QHash hash */
+        return dHashLikeThisWith(hashConf, getDefaultExpectedSize()
+            /* if obj elem */, isNullKeyAllowed()/* elif !(float|double elem) */
+                , getLowerKeyDomainBound(), getUpperKeyDomainBound()/* endif */);
+        /* endwith */
+    }
+
+    @Override
+    public final HashByteSetFactory/*<>*/ withDefaultExpectedSize(int defaultExpectedSize) {
+        if (defaultExpectedSize == getDefaultExpectedSize())
+            return this;
+        return thisWith(getHashConfig(), defaultExpectedSize
+                /* if obj elem */, isNullKeyAllowed()/* elif !(float|double elem) */
+                , getLowerKeyDomainBound(), getUpperKeyDomainBound()/* endif */);
+    }
+
+
     @Override
     public String toString() {
-        return "HashByteSetFactory[hashConfig=" + getHashConfig() + keySpecialString() + "]";
+        return "HashByteSetFactory[" + commonString() + keySpecialString() + "]";
     }
 
     @Override
@@ -52,8 +91,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
             return true;
         if (obj instanceof HashByteSetFactory) {
             HashByteSetFactory factory = (HashByteSetFactory) obj;
-            return getHashConfig().equals(factory.getHashConfig()) &&
-                    keySpecialEquals(factory);
+            return commonEquals(factory) && keySpecialEquals(factory);
         } else {
             return false;
         }
@@ -61,9 +99,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
 
     @Override
     public int hashCode() {
-        int hashCode = 17;
-        hashCode = hashCode * 31 + getHashConfig().hashCode();
-        return keySpecialHashCode(hashCode);
+        return keySpecialHashCode(commonHashCode());
     }
 
     /* define p1 *//* if obj elem // <E2 extends E>// endif *//* enddefine */
@@ -86,7 +122,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     /* with Updatable|Mutable mutability */
     @Override
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet() {
-        return newUpdatableSet(hashConf.getDefaultExpectedSize());
+        return newUpdatableSet(getDefaultExpectedSize());
     }
     /* endwith */
 
@@ -96,7 +132,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
 
     @Override
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Byte>/**/ elements) {
-        return newUpdatableSet(elements, sizeOr(elements, hashConf.getDefaultExpectedSize()));
+        return newUpdatableSet(elements, sizeOr(elements, getDefaultExpectedSize()));
     }
 
     @Override
@@ -207,7 +243,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
 
     @Override
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterator/*ep*/<Byte>/**/ elements) {
-        return newUpdatableSet(elements, hashConf.getDefaultExpectedSize());
+        return newUpdatableSet(elements, getDefaultExpectedSize());
     }
 
     @Override
@@ -223,7 +259,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     @Override
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(
             net.openhft.function.Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier) {
-        return newUpdatableSet(elementsSupplier, hashConf.getDefaultExpectedSize());
+        return newUpdatableSet(elementsSupplier, getDefaultExpectedSize());
     }
 
     /* define pe *//* if !(obj elem) //byte// elif obj elem //E2// endif *//* enddefine */

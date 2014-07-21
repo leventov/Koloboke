@@ -26,11 +26,7 @@ public class HashConfigTest {
 
     @Test
     public void testEquals() {
-        HashConfig conf1 = HashConfig.getDefault();
-        int defaultExpectedSize = conf1.getDefaultExpectedSize();
-        HashConfig conf2 = conf1.withDefaultExpectedSize(defaultExpectedSize + 1);
-        assertEquals(conf1, conf2.withDefaultExpectedSize(defaultExpectedSize));
-
+        HashConfig conf2 = HashConfig.getDefault();
         double minLoad = conf2.getMinLoad();
         HashConfig conf3 = conf2.withMinLoad(minLoad - 0.01);
         assertEquals(conf2, conf3.withMinLoad(minLoad));
@@ -63,10 +59,10 @@ public class HashConfigTest {
                 "HashConfig{" +
                         "getMinLoad=" + (1.0 / 3.0) + ", getTargetLoad=" + 0.5 + ", " +
                         "getMaxLoad=" + (2.0 / 3.0) + ", getGrowFactor=" + 2.0 + ", " +
-                        "getShrinkCondition=null, getDefaultExpectedSize=10}",
+                        "getShrinkCondition=null}",
                 HashConfig.getDefault().withMinLoad(1.0 / 3.0).withTargetLoad(0.5)
                         .withMaxLoad(2.0 / 3.0).withGrowFactor(2.0).withShrinkCondition(null)
-                        .withDefaultExpectedSize(10).toString()
+                        .toString()
         );
     }
 }

@@ -36,8 +36,9 @@ public abstract class DHashSeparateKVObjShortMapFactorySO<K/* if obj value //, V
         extends ObjHashFactorySO<K>
         implements HashObjShortMapFactory<K/* if obj value //, V// endif */> {
 
-    DHashSeparateKVObjShortMapFactorySO(HashConfig hashConf, boolean isNullKeyAllowed) {
-        super(hashConf, isNullKeyAllowed);
+    DHashSeparateKVObjShortMapFactorySO(HashConfig hashConf, int defaultExpectedSize,
+            boolean isNullKeyAllowed) {
+        super(hashConf, defaultExpectedSize, isNullKeyAllowed);
     }
 
     @Nullable

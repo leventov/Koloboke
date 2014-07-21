@@ -27,11 +27,19 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
 
     /** For ServiceLoader */
     public DHashObjSetFactoryImpl() {
-        this(HashConfig.getDefault(), false);
+        this(HashConfig.getDefault(), 10, false);
     }
 
-    public DHashObjSetFactoryImpl(HashConfig hashConf, boolean isNullAllowed) {
-        super(hashConf, isNullAllowed);
+    /* define commonArgDef //HashConfig hashConf, int defaultExpectedSize, boolean isNullKeyAllowed
+    // enddefine */
+
+    /* define commonArgApply //hashConf, defaultExpectedSize, isNullKeyAllowed// enddefine */
+
+    /* define commonArgGet //getHashConfig(), getDefaultExpectedSize(), isNullKeyAllowed()
+    // enddefine */
+
+    public DHashObjSetFactoryImpl(/* commonArgDef */) {
+        super(/* commonArgApply */);
     }
 
     @Override
@@ -40,30 +48,33 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
             // noinspection unchecked
             return (HashObjSetFactory<E2>) this;
         }
-        return new WithCustomEquivalence<E2>(getHashConfig(), isNullKeyAllowed(), equivalence);
+        return new WithCustomEquivalence<E2>(/* commonArgGet */, equivalence);
     }
 
-    @Override
-    public HashObjSetFactory<E> withHashConfig(HashConfig hashConf) {
-        if (LHashCapacities.configIsSuitableForMutableLHash(hashConf))
-            return new LHashObjSetFactoryImpl<E>(hashConf, isNullKeyAllowed());
-        return /* with DHash|QHash hash */
-                new DHashObjSetFactoryImpl<E>(hashConf, isNullKeyAllowed())/* endwith */;
-    }
 
-    @Override
     public HashObjSetFactory<E> withNullKeyAllowed(boolean nullAllowed) {
         if (nullAllowed == isNullKeyAllowed())
             return this;
-        return new DHashObjSetFactoryImpl<E>(getHashConfig(), nullAllowed);
+        return thisWith(getHashConfig(), getDefaultExpectedSize(), nullAllowed);
     }
+
+    @Override
+    HashObjSetFactory<E> thisWith(/* commonArgDef */) {
+        return new DHashObjSetFactoryImpl<E>(/* commonArgApply */);
+    }
+
+    /* with DHash|QHash|LHash hash */
+    @Override
+    HashObjSetFactory<E> dHashLikeThisWith(/* commonArgDef */) {
+        return new DHashObjSetFactoryImpl<E>(/* commonArgApply */);
+    }
+    /* endwith */
 
     static final class WithCustomEquivalence<E> extends DHashObjSetFactoryGO<E> {
         final Equivalence<E> equivalence;
 
-        public WithCustomEquivalence(HashConfig hashConf, boolean isNullAllowed,
-                Equivalence<E> equivalence) {
-            super(hashConf, isNullAllowed);
+        public WithCustomEquivalence(/* commonArgDef */, Equivalence<E> equivalence) {
+            super(/* commonArgApply */);
             this.equivalence = equivalence;
         }
 
@@ -85,31 +96,32 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
         @Override
         public <E2> HashObjSetFactory<E2> withEquivalence(@Nullable Equivalence<E2> equivalence) {
             if (equivalence == null)
-                return new DHashObjSetFactoryImpl<E2>(getHashConfig(), isNullKeyAllowed());
+                return new DHashObjSetFactoryImpl<E2>(/* commonArgGet */);
             if (this.equivalence.equals(equivalence)) {
                 // noinspection unchecked
                 return (HashObjSetFactory<E2>) this;
             }
-            return new WithCustomEquivalence<E2>(getHashConfig(), isNullKeyAllowed(), equivalence);
-        }
-
-        @Override
-        public HashObjSetFactory<E> withHashConfig(HashConfig hashConf) {
-            if (LHashCapacities.configIsSuitableForMutableLHash(hashConf))
-                return new LHashObjSetFactoryImpl.WithCustomEquivalence<E>(
-                        hashConf, isNullKeyAllowed(), equivalence);
-            /* with DHash|QHash hash */
-            return new DHashObjSetFactoryImpl.WithCustomEquivalence<E>(
-                    hashConf, isNullKeyAllowed(), equivalence);
-            /* endwith */
+            return new WithCustomEquivalence<E2>(/* commonArgGet */, equivalence);
         }
 
         @Override
         public HashObjSetFactory<E> withNullKeyAllowed(boolean nullAllowed) {
             if (nullAllowed == isNullKeyAllowed())
                 return this;
-            return new DHashObjSetFactoryImpl.WithCustomEquivalence<E>(
-                    getHashConfig(), nullAllowed, equivalence);
+            return thisWith(getHashConfig(), getDefaultExpectedSize(), nullAllowed);
         }
+
+        @Override
+        HashObjSetFactory<E> thisWith(/* commonArgDef */) {
+            return new WithCustomEquivalence<E>(/* commonArgApply */, equivalence);
+        }
+
+        /* with DHash|QHash|LHash hash */
+        @Override
+        HashObjSetFactory<E> dHashLikeThisWith(/* commonArgDef */) {
+            return new DHashObjSetFactoryImpl.WithCustomEquivalence<E>(
+                /* commonArgApply */, equivalence);
+        }
+        /* endwith */
     }
 }

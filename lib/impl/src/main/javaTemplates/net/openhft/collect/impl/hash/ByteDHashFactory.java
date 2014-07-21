@@ -29,9 +29,9 @@ import java.util.concurrent.ThreadLocalRandom;
 abstract class ByteDHashFactory
         /* if !(float|double elem) && !(LHash hash) */<MT>/* endif */ extends ByteHashFactorySO {
 
-    ByteDHashFactory(HashConfig hashConf
+    ByteDHashFactory(HashConfig hashConf, int defaultExpectedSize
             /* if !(float|double elem) */, byte lower, byte upper/* endif */) {
-        super(hashConf/* if !(float|double elem) */, lower, upper/* endif */);
+        super(hashConf, defaultExpectedSize/* if !(float|double elem) */, lower, upper/* endif */);
     }
 
     /* if !(float|double elem) && !(LHash hash) */

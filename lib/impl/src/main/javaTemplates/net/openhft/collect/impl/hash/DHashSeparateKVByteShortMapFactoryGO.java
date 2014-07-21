@@ -30,6 +30,7 @@ import net.openhft.function./*f*/ByteShortConsumer/**/;
 import net.openhft.function.Predicate;
 import net.openhft.collect.map.hash.HashByteShortMap;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 import static net.openhft.collect.impl.Containers.sizeAsInt;
@@ -39,15 +40,15 @@ import static net.openhft.collect.impl.hash.LHashCapacities.configIsSuitableForM
 public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
         extends DHashSeparateKVByteShortMapFactorySO/*<>*/ {
 
-    DHashSeparateKVByteShortMapFactoryGO(HashConfig hashConf
+    DHashSeparateKVByteShortMapFactoryGO(HashConfig hashConf, int defaultExpectedSize
             /* if obj key */, boolean isNullKeyAllowed
             /* elif !(float|double key) */, byte lower, byte upper/* endif */) {
-        super(hashConf/* if obj key //, isNullKeyAllowed
+        super(hashConf, defaultExpectedSize/* if obj key //, isNullKeyAllowed
             // elif !(float|double key) */, lower, upper/* endif */);
     }
 
     /* define commonArgDef //
-    HashConfig hashConf// if obj key //, boolean isNullKeyAllowed
+    HashConfig hashConf, int defaultExpectedSize// if obj key //, boolean isNullKeyAllowed
             // elif !(float|double key) //, byte lower, byte upper// endif //
     // enddefine */
 
@@ -60,16 +61,25 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     /* endwith */
 
     @Override
-    public final HashByteShortMapFactory/*<>*/ withHashConfig(HashConfig hashConf) {
+    public final HashByteShortMapFactory/*<>*/ withHashConfig(@Nonnull HashConfig hashConf) {
         if (configIsSuitableForMutableLHash(hashConf))
-            return lHashLikeThisWith(hashConf
+            return lHashLikeThisWith(hashConf, getDefaultExpectedSize()
             /* if obj key */, isNullKeyAllowed()/* elif !(float|double key) */
                     , getLowerKeyDomainBound(), getUpperKeyDomainBound()/* endif */);
         /* with DHash|QHash hash */
-        return dHashLikeThisWith(hashConf
+        return dHashLikeThisWith(hashConf, getDefaultExpectedSize()
             /* if obj key */, isNullKeyAllowed()/* elif !(float|double key) */
                 , getLowerKeyDomainBound(), getUpperKeyDomainBound()/* endif */);
         /* endwith */
+    }
+
+    @Override
+    public final HashByteShortMapFactory/*<>*/ withDefaultExpectedSize(int defaultExpectedSize) {
+        if (defaultExpectedSize == getDefaultExpectedSize())
+            return this;
+        return thisWith(getHashConfig(), defaultExpectedSize
+                /* if obj key */, isNullKeyAllowed()/* elif !(float|double key) */
+                , getLowerKeyDomainBound(), getUpperKeyDomainBound()/* endif */);
     }
 
     /* if obj key */
@@ -77,13 +87,13 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     public final HashByteShortMapFactory/*<>*/ withNullKeyAllowed(boolean nullKeyAllowed) {
         if (nullKeyAllowed == isNullKeyAllowed())
             return this;
-        return thisWith(getHashConfig(), nullKeyAllowed);
+        return thisWith(getHashConfig(), getDefaultExpectedSize(), nullKeyAllowed);
     }
     /* elif !(float|double key) */
     final HashByteShortMapFactory/*<>*/ withDomain(byte lower, byte upper) {
         if (lower == getLowerKeyDomainBound() && upper == getUpperKeyDomainBound())
             return this;
-        return thisWith(getHashConfig(), lower, upper);
+        return thisWith(getHashConfig(), getDefaultExpectedSize(), lower, upper);
     }
 
     @Override
@@ -105,9 +115,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
 
     @Override
     public String toString() {
-        return "HashByteShortMapFactory[" +
-                "keyConfig=" + getHashConfig() +
-                keySpecialString() +
+        return "HashByteShortMapFactory[" + commonString() + keySpecialString() +
                 /* if obj value */",valueEquivalence=" + getValueEquivalence() +
                 /* elif !(obj value) */",defaultValue=" + getDefaultValue() +/* endif */
         "]";
@@ -115,9 +123,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
 
     @Override
     public int hashCode() {
-        int hashCode = 17;
-        hashCode = hashCode * 31 + getHashConfig().hashCode();
-        hashCode = keySpecialHashCode(hashCode);
+        int hashCode = keySpecialHashCode(commonHashCode());
         /* if obj value */
         hashCode = hashCode * 31 + NullableObjects.hashCode(getValueEquivalence());
         /* elif !(obj value) */
@@ -132,8 +138,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
             return true;
         if (obj instanceof HashByteShortMapFactory) {
             HashByteShortMapFactory factory = (HashByteShortMapFactory) obj;
-            return getHashConfig().equals(factory.getHashConfig()) &&
-                    keySpecialEquals(factory) &&
+            return commonEquals(factory) && keySpecialEquals(factory) &&
                     /* if obj value */
                     NullableObjects.equals(getValueEquivalence(),
                             factory.getValueEquivalence())
@@ -201,7 +206,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     /* with Updatable|Mutable mutability */
     @Override
     public /*p1*/ UpdatableDHashSeparateKVByteShortMapGO/*p2*/ newUpdatableMap() {
-        return newUpdatableMap(hashConf.getDefaultExpectedSize());
+        return newUpdatableMap(getDefaultExpectedSize());
     }
     /* endwith */
 
@@ -317,7 +322,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     @Override
     public /*p1*/ UpdatableDHashSeparateKVByteShortMapGO/*p2*/ newUpdatableMap(
             net.openhft.function.Consumer</*f*/ByteShortConsumer/*p2*/> entriesSupplier) {
-        return newUpdatableMap(entriesSupplier, hashConf.getDefaultExpectedSize());
+        return newUpdatableMap(entriesSupplier, getDefaultExpectedSize());
     }
 
     @Override
@@ -377,9 +382,8 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     @Override
     public /*p1*/ UpdatableDHashSeparateKVByteShortMapGO/*p2*/ newUpdatableMap(Iterable</*ek*/Byte/**/> keys,
             Iterable</*ev*/Short/**/> values) {
-        int expectedSize = keys instanceof Collection ?
-                ((Collection) keys).size() :
-                hashConf.getDefaultExpectedSize();
+        int expectedSize = keys instanceof Collection ? ((Collection) keys).size() :
+                getDefaultExpectedSize();
         return newUpdatableMap(keys, values, expectedSize);
     }
 

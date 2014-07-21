@@ -17,18 +17,43 @@
 package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.hash.HashConfig;
+import net.openhft.collect.hash.HashContainerFactory;
+
+import javax.annotation.Nonnull;
 
 
 abstract class AbstractHashFactory {
     final HashConfig hashConf;
     final HashConfigWrapper configWrapper;
+    final int defaultExpectedSize;
 
-    AbstractHashFactory(HashConfig hashConf) {
+    AbstractHashFactory(HashConfig hashConf, int defaultExpectedSize) {
         this.hashConf = hashConf;
         configWrapper = new HashConfigWrapper(hashConf);
+        this.defaultExpectedSize = defaultExpectedSize;
     }
 
+    @Nonnull
     public final HashConfig getHashConfig() {
         return hashConf;
+    }
+
+    public final int getDefaultExpectedSize() {
+        return defaultExpectedSize;
+    }
+
+    String commonString() {
+        return "hashConfig=" + getHashConfig() + ",defaultExpectedSize=" + getDefaultExpectedSize();
+    }
+
+    boolean commonEquals(HashContainerFactory<?> other) {
+        return getHashConfig().equals(other.getHashConfig()) &&
+                getDefaultExpectedSize() == other.getDefaultExpectedSize();
+    }
+
+    int commonHashCode() {
+        int hashCode = 17;
+        hashCode = hashCode * 31 + getHashConfig().hashCode();
+        return hashCode * 31 + getDefaultExpectedSize();
     }
 }

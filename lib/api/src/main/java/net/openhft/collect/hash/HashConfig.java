@@ -32,17 +32,15 @@ public abstract class HashConfig {
     private static final double DEFAULT_MAX_LOAD = 2.0 / 3.0;
     private static final double DEFAULT_TARGET_LOAD = 0.5;
     private static final double DEFAULT_GROW_FACTOR = 2.0;
-    private static final int DEFAULT_DEFAULT_EXPECTED_SIZE = 10;
     @Nullable
     private static final Predicate<HashContainer> DEFAULT_SHRINK_CONDITION = null;
     private static final HashConfig DEFAULT =
             create(DEFAULT_MIN_LOAD, DEFAULT_TARGET_LOAD, DEFAULT_MAX_LOAD, DEFAULT_GROW_FACTOR,
-                    DEFAULT_SHRINK_CONDITION, DEFAULT_DEFAULT_EXPECTED_SIZE);
+                    DEFAULT_SHRINK_CONDITION);
 
     /**
      * Returns a config with {@literal 0.(3)} min load, {@literal 0.5} target load,
-     * {@literal 0.(6)} max load, {@literal 2.0} grow factor, {@code null} shrink condition
-     * and {@literal 10} default expected size.
+     * {@literal 0.(6)} max load, {@literal 2.0} grow factor and {@code null} shrink condition.
      */
     public static HashConfig getDefault() {
         return DEFAULT;
@@ -50,7 +48,7 @@ public abstract class HashConfig {
 
     private static HashConfig create(
             double minLoad, double targetLoad, double maxLoad, double growFactor,
-            @Nullable Predicate<HashContainer> shrinkCondition, int defaultExpectedSize) {
+            @Nullable Predicate<HashContainer> shrinkCondition) {
         if (Double.isNaN(targetLoad) || targetLoad <= 0.0 || targetLoad >= 1.0) {
             throw new IllegalArgumentException("Target load must be in (0.0, 1.0) range, " +
                     targetLoad + " given.");
@@ -70,12 +68,8 @@ public abstract class HashConfig {
                     "Grow factor must be in [1.0, max load / min load = %f]  range, %f given.",
                     maxLoad / minLoad, growFactor));
         }
-        if (defaultExpectedSize < 0) {
-            throw new IllegalArgumentException("Default expected hash size must be non-negative, " +
-                    defaultExpectedSize + " given");
-        }
         HashConfig config = new AutoValue_HashConfig(minLoad, targetLoad,
-                maxLoad, growFactor, shrinkCondition, defaultExpectedSize);
+                maxLoad, growFactor, shrinkCondition);
         return config;
     }
 
@@ -105,7 +99,7 @@ public abstract class HashConfig {
      */
     public final HashConfig withMinLoad(double minLoad) {
         return create(minLoad, getTargetLoad(), getMaxLoad(), getGrowFactor(),
-                getShrinkCondition(), getDefaultExpectedSize());
+                getShrinkCondition());
     }
 
     /**
@@ -128,7 +122,7 @@ public abstract class HashConfig {
      */
     public final HashConfig withTargetLoad(double targetLoad) {
         return create(getMinLoad(), targetLoad, getMaxLoad(), getGrowFactor(),
-                getShrinkCondition(), getDefaultExpectedSize());
+                getShrinkCondition());
     }
 
     /**
@@ -149,7 +143,7 @@ public abstract class HashConfig {
      */
     public final HashConfig withMaxLoad(double maxLoad) {
         return create(getMinLoad(), getTargetLoad(), maxLoad, getGrowFactor(),
-                getShrinkCondition(), getDefaultExpectedSize());
+                getShrinkCondition());
     }
 
     /**
@@ -173,7 +167,7 @@ public abstract class HashConfig {
      */
     public final HashConfig withGrowFactor(double growFactor) {
         return create(getMinLoad(), getTargetLoad(), getMaxLoad(), growFactor,
-                getShrinkCondition(), getDefaultExpectedSize());
+                getShrinkCondition());
     }
 
     /**
@@ -206,27 +200,6 @@ public abstract class HashConfig {
      * @see #getShrinkCondition()
      */
     public final HashConfig withShrinkCondition(@Nullable Predicate<HashContainer> condition) {
-        return create(getMinLoad(), getTargetLoad(), getMaxLoad(), getGrowFactor(),
-                condition, getDefaultExpectedSize());
-    }
-
-    /**
-     * This size is used in no-arg hash container factory methods.
-     *
-     * @return default expected size
-     * @see #withDefaultExpectedSize(int)
-     */
-    public abstract int getDefaultExpectedSize();
-
-    /**
-     * Returns a config with the specified default expected size.
-     *
-     * @param defaultExpectedSize a positive value
-     * @return hash config with the specified default expected size
-     * @see #getDefaultExpectedSize()
-     */
-    public final HashConfig withDefaultExpectedSize(int defaultExpectedSize) {
-        return create(getMinLoad(), getTargetLoad(), getMaxLoad(), getGrowFactor(),
-                getShrinkCondition(), defaultExpectedSize);
+        return create(getMinLoad(), getTargetLoad(), getMaxLoad(), getGrowFactor(), condition);
     }
 }

@@ -23,36 +23,45 @@ package net.openhft.collect.impl.hash;
 import net.openhft.collect.hash.*;
 import net.openhft.collect.set.hash.HashByteSetFactory;
 
+import javax.annotation.Nonnull;
 
-public class DHashByteSetFactoryImpl extends DHashByteSetFactoryGO {
+
+public final class DHashByteSetFactoryImpl extends DHashByteSetFactoryGO {
 
     /** For ServiceLoader */
     public DHashByteSetFactoryImpl() {
-        this(HashConfig.getDefault()
+        this(HashConfig.getDefault(), 10
                 /* if !(float|double elem) */, Byte.MIN_VALUE, Byte.MAX_VALUE/* endif */);
     }
 
-    public DHashByteSetFactoryImpl(HashConfig hashConf
-            /* if !(float|double elem) */, byte lower, byte upper/* endif */) {
-        super(hashConf/* if !(float|double elem) */, lower, upper/* endif */);
+    /* define commonArgDef //HashConfig hashConf, int defaultExpectedSize
+        // if !(float|double elem) //, byte lower, byte upper// endif //
+    // enddefine */
+
+    /* define commonArgApply //hashConf, defaultExpectedSize
+        // if !(float|double elem) //, lower, upper// endif //// enddefine */
+
+    public DHashByteSetFactoryImpl(/* commonArgDef */) {
+        super(/* commonArgApply */);
     }
 
     @Override
-    public HashByteSetFactory withHashConfig(HashConfig hashConf) {
-        if (LHashCapacities.configIsSuitableForMutableLHash(hashConf))
-            return new LHashByteSetFactoryImpl(hashConf/* if !(float|double elem) */
-                    , getLowerKeyDomainBound(), getUpperKeyDomainBound()/* endif */);
-        /* with DHash|QHash hash */
-        return new DHashByteSetFactoryImpl(hashConf/* if !(float|double elem) */
-                , getLowerKeyDomainBound(), getUpperKeyDomainBound()/* endif */);
-        /* endwith */
+    HashByteSetFactory thisWith(/* commonArgDef */) {
+        return new DHashByteSetFactoryImpl(/* commonArgApply */);
     }
+
+    /* with DHash|QHash|LHash hash */
+    @Override
+    HashByteSetFactory dHashLikeThisWith(/* commonArgDef */) {
+        return new DHashByteSetFactoryImpl(/* commonArgApply */);
+    }
+    /* endwith */
 
     /* if !(float|double elem) */
     HashByteSetFactory withDomain(byte lower, byte upper) {
         if (lower == getLowerKeyDomainBound() && upper == getUpperKeyDomainBound())
             return this;
-        return new DHashByteSetFactoryImpl(getHashConfig(), lower, upper);
+        return new DHashByteSetFactoryImpl(getHashConfig(), getDefaultExpectedSize(), lower, upper);
     }
 
     @Override

@@ -52,23 +52,24 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
 
     /** For ServiceLoader */
     public DHashSeparateKVByteShortMapFactoryImpl() {
-        this(HashConfig.getDefault()
+        this(HashConfig.getDefault(), 10
             /* if obj key */, false
             /* elif !(float|double key) */, Byte.MIN_VALUE, Byte.MAX_VALUE/* endif */);
     }
 
     /* define commonArgDef //
-    HashConfig hashConf// if obj key //, boolean isNullKeyAllowed
+    HashConfig hashConf, int defaultExpectedSize// if obj key //, boolean isNullKeyAllowed
             // elif !(float|double key) //, byte lower, byte upper// endif //
     // enddefine */
 
     /* define commonArgApply //
-    hashConf// if obj key //, isNullKeyAllowed
+    hashConf, defaultExpectedSize// if obj key //, isNullKeyAllowed
             // elif !(float|double key) //, lower, upper// endif //
     // enddefine */
 
     /* define commonArgGet //
-    getHashConfig()// if obj key //, isNullKeyAllowed()// elif !(float|double key) //
+    getHashConfig(), getDefaultExpectedSize()
+        // if obj key //, isNullKeyAllowed()// elif !(float|double key) //
             , getLowerKeyDomainBound(), getUpperKeyDomainBound()// endif //
     // enddefine */
 

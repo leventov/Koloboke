@@ -27,8 +27,8 @@ abstract class ObjHashFactorySO<E> extends AbstractHashFactory {
 
     private final boolean isNullAllowed;
 
-    ObjHashFactorySO(HashConfig hashConf, boolean isNullAllowed) {
-        super(hashConf);
+    ObjHashFactorySO(HashConfig hashConf, int defaultExpectedSize, boolean isNullAllowed) {
+        super(hashConf, defaultExpectedSize);
         this.isNullAllowed = isNullAllowed;
     }
 

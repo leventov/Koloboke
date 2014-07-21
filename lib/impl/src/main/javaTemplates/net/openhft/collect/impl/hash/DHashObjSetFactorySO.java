@@ -31,8 +31,8 @@ import java.util.Set;
 public abstract class DHashObjSetFactorySO<E> extends ObjHashFactorySO<E>
         implements HashObjSetFactory<E> {
 
-    DHashObjSetFactorySO(HashConfig hashConf, boolean isNullAllowed) {
-        super(hashConf, isNullAllowed);
+    DHashObjSetFactorySO(HashConfig hashConf, int defaultExpectedSize, boolean isNullAllowed) {
+        super(hashConf, defaultExpectedSize, isNullAllowed);
     }
 
     String keySpecialString() {

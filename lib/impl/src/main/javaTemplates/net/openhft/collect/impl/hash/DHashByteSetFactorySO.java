@@ -33,9 +33,9 @@ public abstract class DHashByteSetFactorySO
             /* if !(float|double elem) && !(LHash hash) */<MutableDHashByteSetGO>/* endif */
         implements HashByteSetFactory {
 
-    DHashByteSetFactorySO(HashConfig hashConf
+    DHashByteSetFactorySO(HashConfig hashConf, int defaultExpectedSize
             /* if !(float|double elem) */, byte lower, byte upper/* endif */) {
-        super(hashConf/* if !(float|double elem) */, lower, upper/* endif */);
+        super(hashConf, defaultExpectedSize/* if !(float|double elem) */, lower, upper/* endif */);
     }
 
     /* if !(float|double elem) && !(LHash hash) */

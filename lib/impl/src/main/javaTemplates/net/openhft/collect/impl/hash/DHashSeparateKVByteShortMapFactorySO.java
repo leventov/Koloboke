@@ -34,9 +34,9 @@ public abstract class DHashSeparateKVByteShortMapFactorySO/*<>*/
                         <MutableDHashSeparateKVByteShortMapGO/*<>*/>/* endif */
         implements HashByteShortMapFactory/*<>*/ {
 
-    DHashSeparateKVByteShortMapFactorySO(HashConfig hashConf
+    DHashSeparateKVByteShortMapFactorySO(HashConfig hashConf, int defaultExpectedSize
             /* if !(float|double key) */, byte lower, byte upper/* endif */) {
-        super(hashConf/* if !(float|double key) */, lower, upper/* endif */);
+        super(hashConf, defaultExpectedSize/* if !(float|double key) */, lower, upper/* endif */);
     }
 
     /* define p1 *//* if obj value //<V2 extends V>// endif *//* enddefine */

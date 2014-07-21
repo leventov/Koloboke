@@ -31,8 +31,8 @@ abstract class ByteHashFactorySO extends AbstractHashFactory {
     final boolean randomFree, randomRemoved;
     final byte freeValue, removedValue;
 
-    ByteHashFactorySO(HashConfig hashConf, byte lower, byte upper) {
-        super(hashConf);
+    ByteHashFactorySO(HashConfig hashConf, int defaultExpectedSize, byte lower, byte upper) {
+        super(hashConf, defaultExpectedSize);
         this.lower = lower;
         this.upper = upper;
         if ((byte) (lower - 1) == upper) {
