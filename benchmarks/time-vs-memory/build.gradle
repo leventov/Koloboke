@@ -1,0 +1,11 @@
+evaluationDependsOn("$parent.path")
+
+dependencies {
+    compile 'net.sf.trove4j:trove4j:3.0.3'
+    compile 'com.carrotsearch:hppc:0.6.0'
+    compile 'com.goldmansachs:gs-collections:5.1.0'
+    compile 'it.unimi.dsi:fastutil:6.5.15'
+    compile 'org.apache.mahout:mahout-math:0.9'
+
+    compile 'org.openjdk.jol:jol-core:0.1'
+}

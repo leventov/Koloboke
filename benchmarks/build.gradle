@@ -1,6 +1,41 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name 'Shadow'
+            url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
+        }
+    }
+
+    dependencies {
+        classpath project(':jpsg:gradle-plugin')
+        classpath 'org.gradle.plugins:shadow:0.7.4'
+    }
+}
+
 subprojects {
     dependencies {
         compile 'org.openjdk.jmh:jmh-core:0.5.6'
         compile (project(':lib:api'), project(':lib:impl'))
     }
+}
+
+configure([project('research'), project('time-vs-memory')]) {
+    applyJpsg()
+    apply plugin: 'shadow'
+
+    dependencies {
+        compile 'org.openjdk.jmh:jmh-generator-annprocess:0.5.6'
+        compile 'net.openhft:lang:6.3.3'
+        compile project("$parent.path:dimensioned-jmh")
+    }
+
+    jar.manifest.attributes 'Main-Class': 'org.openjdk.jmh.Main'
+
+    shadow.outputFile = new File(libsDir, 'microbenchmarks.jar')
+
+    build.doLast {
+        tasks.shadow.execute()
+    }
+
 }
