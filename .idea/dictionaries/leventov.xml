@@ -5,6 +5,7 @@
       <w>antlr</w>
       <w>bytecode</w>
       <w>cond</w>
+      <w>deployer</w>
       <w>dhash</w>
       <w>elems</w>
       <w>elif</w>
@@ -17,9 +18,11 @@
       <w>fild</w>
       <w>findbugs</w>
       <w>fmul</w>
+      <w>github</w>
       <w>gradlew</w>
       <w>hashtable</w>
       <w>haswell</w>
+      <w>hftc</w>
       <w>inlined</w>
       <w>ints</w>
       <w>inversed</w>

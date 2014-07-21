@@ -1,3 +1,19 @@
 evaluationDependsOn("$parent.path")
 
-javadoc.options.links "http://docs.oracle.com/javase/$libTargetJava/docs/api/"
+javadoc {
+    title "HFT Collections $version API"
+    options.links(
+            "http://jsr-305.googlecode.com/svn/trunk/javadoc/",
+            "http://docs.oracle.com/javase/$libTargetJava/docs/api/"
+    )
+    executable = project.hasProperty('javadocExecutable') ? javadocExecutable : null
+}
+
+task javadocJar(type: Jar) {
+    classifier 'javadoc'
+    from javadoc
+}
+
+artifacts{
+    archives javadocJar
+}
