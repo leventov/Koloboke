@@ -81,6 +81,7 @@ public abstract class MutableDHashSeparateKVByteKeyMap/*<>*/
         }
         /* endif */
 
+        @Nonnull
         @Override
         public HashConfig hashConfig() {
             return MutableDHashSeparateKVByteKeyMap.this.hashConfig();

@@ -1,3 +1,4 @@
+/* with char|byte|short|int|long|float|double|obj elem */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -16,19 +17,24 @@
 
 package net.openhft.collect;
 
-import net.openhft.function.CharConsumer;
+import net.openhft.function./*f*/CharConsumer/**/;
+
+import javax.annotation.Nonnull;
 
 
 /**
- * A mutable pointer to the element in an iteration of {@code char}s.
+ * A mutable pointer to the element in an iteration
+ * of // if !(obj elem) //{@code char}// elif obj elem //object// endif //s.
  *
- * @see Cursor
+ * @see CharCollection#cursor()
  */
-public interface CharCursor extends Cursor {
+public interface CharCursor/*<>*/ extends Cursor {
 
     /**
      * Performs the given action for each element of the iteration after the cursor in forward
-     * direction.
+     * direction until all elements have been processed or the action throws an exception.
+     * Exceptions thrown by the action are relayed to the caller.
+     *
      * <pre>{@code
      * cur.forEachForward(action)
      * }</pre>
@@ -40,7 +46,7 @@ public interface CharCursor extends Cursor {
      *
      * @param action the action to be performed for each element
      */
-    void forEachForward(CharConsumer action);
+    void forEachForward(@Nonnull /*f*/CharConsumer action);
 
     /**
      * Returns the element to which the cursor currently points.

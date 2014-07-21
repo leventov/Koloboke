@@ -28,7 +28,10 @@ import javax.annotation.Nonnull;
 
 
 /**
- * @see net.openhft.collect.map.hash.HashCharShortMaps
+ * An interface for {@code CharShortMap}s, based on hash tables.
+ *
+ * @see HashCharShortMapFactory
+ * @see HashCharShortMaps
  */
 public interface HashCharShortMap/*<>*/ extends CharShortMap/*<>*/, HashContainer {
 

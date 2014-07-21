@@ -1,3 +1,4 @@
+/* with char|byte|short|int|long|float|double elem */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -25,12 +26,16 @@ import net.openhft.function.Predicate;
 import javax.annotation.Nonnull;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 
-//TODO doc
+/**
+ * A {@link Collection} specialization with {@code char} elements.
+ */
 public interface CharCollection extends Collection<Character>, Container {
 
     /**
+     * {@inheritDoc}
      * @deprecated Use specialization {@link #contains(char)} instead
      */
     @Override
@@ -43,12 +48,12 @@ public interface CharCollection extends Collection<Character>, Container {
      *
      * @param v element whose presence in this collection is to be tested
      * @return {@code true} if this collection contains the specified element
-     * @see #contains(Object)
      */
     boolean contains(char v);
 
 
     /**
+     * {@inheritDoc}
      * @deprecated Use specialization {@link #toCharArray()} instead
      */
     @Override
@@ -57,6 +62,7 @@ public interface CharCollection extends Collection<Character>, Container {
     Object[] toArray();
 
     /**
+     * {@inheritDoc}
      * @deprecated Use specialization {@link #toArray(char[])} instead
      */
     @Override
@@ -78,9 +84,9 @@ public interface CharCollection extends Collection<Character>, Container {
      * <p>This method acts as bridge between array-based and collection-based APIs.
      *
      * @return an array containing all the elements in this collection
-     * @see #toArray()
      * @see #toArray(char[])
      */
+    @Nonnull
     char[] toCharArray();
 
     /**
@@ -89,9 +95,9 @@ public interface CharCollection extends Collection<Character>, Container {
      * <p>If this collection fits in the specified array with room to spare
      * (i.e., the array has more elements than this collection), the element in
      * the array immediately following the end of the collection is set
-     * to {@code // const 0 elem //0} (zero).  This is useful in determining
+     * to {@code // const elem 0 //0// endconst //} (zero).  This is useful in determining
      * the length of this collection <i>only</i> if the caller knows that this
-     * collection does not contain any elements representing null.
+     * collection does not contain any elements equal to {@code // const elem 0 //0// endconst //}.
      *
      * <p>If the native array is smaller than the collection size,
      * the array will be filled with elements in Iterator order
@@ -106,34 +112,79 @@ public interface CharCollection extends Collection<Character>, Container {
      * @return an {@code char[]} containing all the elements in this collection
      * @throws NullPointerException if the specified array is {@code null}
      * @see #toCharArray()
-     * @see #toArray(Object[])
      */
-    char[] toArray(char[] a);
+    @Nonnull char[] toArray(@Nonnull char[] a);
 
+    /**
+     * Returns a new cursor over this collection's elements. Cursor iteration order is always
+     * corresponds to the {@link #iterator() iterator}'s order.
+     *
+     * @return a new cursor over this collection's elements
+     * @see <a href="package-summary.html#iteration">
+     *     Comparison of iteration options in the library</a>
+     */
     @Nonnull
     CharCursor cursor();
 
+    /**
+     * Returns a new iterator over this collection's elements.
+     *
+     * @return a new iterator over this collection's elements
+     * @see <a href="package-summary.html#iteration">
+     *     Comparison of iteration options in the library</a>
+     */
+    @Override
+    @Nonnull
+    CharIterator iterator();
 
     /* if JDK8 jdk */
     /**
+     * {@inheritDoc}
      * @deprecated Use specialization {@link #forEach(CharConsumer)} instead
      */
     @Override
     @Deprecated
-    void forEach(Consumer<? super Character> action);
+    void forEach(@Nonnull Consumer<? super Character> action);
     /* endif */
 
-    void forEach(CharConsumer action);
+    /**
+     * Performs the given action for each element of this collection until all elements have been
+     * processed or the action throws an exception.  Unless otherwise specified by the implementing
+     * class, actions are performed in the order of iteration (if an iteration order is specified).
+     * Exceptions thrown by the action are relayed to the caller.
+     *
+     * @param action the action to be performed for each element
+     * @see <a href="package-summary.html#iteration">
+     *     Comparison of iteration options in the library</a>
+     */
+    void forEach(@Nonnull CharConsumer action);
 
-    boolean forEachWhile(CharPredicate predicate);
+    /**
+     * Checks the given {@code predicate} on each element of this collection until all element
+     * have been processed or the predicate returns {@code false} for some element,
+     * or throws an {@code Exception}. Exceptions thrown by the predicate are relayed to the caller.
+     *
+     * <p>Unless otherwise specified by the implementing class, elements are checked
+     * by the predicate in the order of iteration (if an iteration order is specified).
+     *
+     * <p>If this collection is empty, this method returns {@code true} immediately.
+     *
+     * @return {@code true} if the predicate returned {@code true} for all elements of this
+     *         collection, {@code false} if it returned {@code false} for the element
+     * @param predicate the predicate to be checked for each element of this collection
+     * @see <a href="package-summary.html#iteration">
+     *     Comparison of iteration options in the library</a>
+     */
+    boolean forEachWhile(@Nonnull CharPredicate predicate);
 
 
     /**
+     * {@inheritDoc}
      * @deprecated Use specialization {@link #add(char)} instead
      */
     @Override
     @Deprecated
-    boolean add(Character e);
+    boolean add(@Nonnull Character e);
 
     /**
      * Ensures that this collection contains the specified element (optional
@@ -166,6 +217,7 @@ public interface CharCollection extends Collection<Character>, Container {
 
 
     /**
+     * {@inheritDoc}
      * @deprecated Use specialization {@link #removeChar(char)} instead
      */
     @Override
@@ -192,12 +244,27 @@ public interface CharCollection extends Collection<Character>, Container {
 
     /* if JDK8 jdk */
     /**
+     * {@inheritDoc}
      * @deprecated Use specialization {@link #removeIf(CharPredicate)} instead
      */
     @Override
     @Deprecated
-    boolean removeIf(Predicate<? super Character> filter);
+    boolean removeIf(@Nonnull Predicate<? super Character> filter);
     /* endif */
 
-    boolean removeIf(CharPredicate filter);
+    /**
+     * Removes all of the elements of this collection that satisfy the given predicate.
+     * Errors or runtime exceptions thrown during iteration or by the predicate are relayed
+     * to the caller.
+     *
+     * @param filter a predicate which returns {@code true} for elements to be removed
+     * @return {@code true} if any elements were removed
+     * @throws NullPointerException if the specified filter is null
+     * @throws UnsupportedOperationException if elements cannot be removed from this collection.
+     *         Implementations may throw this exception if a matching element cannot be removed
+     *         or if, in general, removal is not supported.
+     * @see <a href="package-summary.html#iteration">
+     *     Comparison of iteration options in the library</a>
+     */
+    boolean removeIf(@Nonnull CharPredicate filter);
 }

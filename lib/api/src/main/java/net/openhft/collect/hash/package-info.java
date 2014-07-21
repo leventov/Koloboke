@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-
-package net.openhft.collect.hash;
-
 /**
- * An exception thrown when element or entry couldn't be inserted into the hash container
- * due to implementation limitations.
+ * Contains basic interfaces and commonly used classes related to containers, based on hash tables.
+ *
+ * <p>Note that unless otherwise specified, in the library "hash table" means only hash tables with
+ * <a href="http://en.wikipedia.org/wiki/Open_addressing">open addressing</a> method of collision
+ * resolution.
+ *
+ * @see net.openhft.collect.hash.HashContainer
+ * @see <a href="../set/hash/package-summary.html"><code>net.openhft.collect.set.hash</code></a>
+ * @see <a href="../map/hash/package-summary.html"><code>net.openhft.collect.map.hash</code></a>
  */
-public class HashOverflowException extends IllegalStateException {
-    private static final long serialVersionUID = 0L;
-
-    /**
-     * A sole constructor.
-     */
-    public HashOverflowException() {
-        super();
-    }
-}
+package net.openhft.collect.hash;

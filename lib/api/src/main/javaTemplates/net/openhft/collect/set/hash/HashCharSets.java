@@ -23,6 +23,12 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 
 
+/**
+ * This class consists only of static factory methods to construct {@code HashCharSet}s, and
+ * the default {@link HashCharSetFactory} static provider ({@link #getDefaultFactory()}).
+ *
+ * @see HashCharSet
+ */
 public final class HashCharSets {
     private static final ServiceLoader<HashCharSetFactory> LOADER =
             ServiceLoader.load(HashCharSetFactory.class);

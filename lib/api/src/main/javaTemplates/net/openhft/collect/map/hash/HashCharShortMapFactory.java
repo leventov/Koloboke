@@ -30,6 +30,9 @@ import java.util.Map;
 
 
 /**
+ * An immutable factory of {@code HashCharShortMaps}
+ *
+ * @see HashCharShortMap
  * @see HashCharShortMaps#getDefaultFactory()
  */
 public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/

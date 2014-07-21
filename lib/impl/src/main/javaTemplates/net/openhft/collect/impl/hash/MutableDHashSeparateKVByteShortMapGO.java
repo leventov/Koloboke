@@ -653,6 +653,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
             );
         }
 
+        @Nonnull
         @Override
         public HashConfig hashConfig() {
             return MutableDHashSeparateKVByteShortMapGO.this.hashConfig();
@@ -698,18 +699,18 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         }
 
         @Override
-        public final void forEach(Consumer<? super Map.Entry<Byte, Short>> action) {
+        public final void forEach(@Nonnull Consumer<? super Map.Entry<Byte, Short>> action) {
             /* template ForEach */ throw new NotGenerated(); /* endtemplate */
         }
 
         @Override
-        public boolean forEachWhile(Predicate<? super Map.Entry<Byte, Short>> predicate) {
+        public boolean forEachWhile(@Nonnull  Predicate<? super Map.Entry<Byte, Short>> predicate) {
             /* template ForEachWhile */ throw new NotGenerated(); /* endtemplate */
         }
 
         @Override
         @Nonnull
-        public Iterator<Map.Entry<Byte, Short>> iterator() {
+        public ObjIterator<Map.Entry<Byte, Short>> iterator() {
             /* if !(Immutable mutability) */int mc = modCount();/* endif */
             /* if Mutable mutability && !(LHash hash) //
             if (!noRemoved())
@@ -782,7 +783,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
 
 
         @Override
-        public final boolean removeIf(Predicate<? super Map.Entry<Byte, Short>> filter) {
+        public final boolean removeIf(@Nonnull Predicate<? super Map.Entry<Byte, Short>> filter) {
             /* template RemoveIf */ throw new NotGenerated(); /* endtemplate */
         }
 
@@ -1203,7 +1204,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         }
 
         @Override
-        public void forEachRemaining(Consumer<? super Map.Entry<Byte, Short>> action) {
+        public void forEachRemaining(@Nonnull Consumer<? super Map.Entry<Byte, Short>> action) {
             /* template Iterator.forEachRemaining */ throw new NotGenerated(); /* endtemplate */
         }
 

@@ -28,7 +28,9 @@ import java.util.Map;
 
 
 /**
- * Immutable factory
+ * An immutable factory of {@code CharShortMap}s.
+ *
+ * @see CharShortMap
  */
 public interface CharShortMapFactory/*<>*/ {
 

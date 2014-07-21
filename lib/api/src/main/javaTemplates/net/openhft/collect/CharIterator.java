@@ -20,26 +20,58 @@ package net.openhft.collect;
 import net.openhft.function.CharConsumer;
 import net.openhft.function.Consumer;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 
 
-//TODO doc
+/**
+ * Primitive specialization of {@link Iterator}<code>&lt;</code>{@link Character}<code>&gt;</code>.
+ *
+ * <p>See the <a href="package-summary.html#iteration">comparison of iteration ways</a>
+ * in the library.
+ *
+ * <p>Iterators of updatable and immutable collections don't support {@link #remove()}
+ * operation. <a href="package-summary.html#mutability">More about mutability profiles.</a>
+ *
+ * @see CharCollection#iterator()
+ */
 public interface CharIterator extends Iterator<Character>
         /* if int|long|double elem JDK8 jdk //, java.util.PrimitiveIterator.OfChar// endif */ {
 
+    /**
+     * Returns the next {@code char} element in the iteration. This is a primitive specialization
+     * of the {@link #next()} method.
+     *
+     * @return the next {@code char} element in the iteration
+     * @throws java.util.NoSuchElementException if the iteration has no more elements
+     */
     /* if int|long|double elem JDK8 jdk //@Override// endif */
     char nextChar();
 
     /* if JDK8 jdk */
     /**
+     * Performs the given action for each remaining element until all elements
+     * have been processed or the action throws an exception.  Actions are
+     * performed in the order of iteration, if that order is specified.
+     * Exceptions thrown by the action are relayed to the caller.
+     *
+     * @param action the action to be performed for each element
      * @deprecated Use specialization {@link #forEachRemaining(CharConsumer)} instead
      */
     @Override
     @Deprecated
-    void forEachRemaining(Consumer<? super Character> action);
+    void forEachRemaining(@Nonnull Consumer<? super Character> action);
     /* endif */
 
+    /**
+     * Performs the given action for each remaining element until all elements
+     * have been processed or the action throws an exception.  Actions are
+     * performed in the order of iteration, if that order is specified.
+     * Exceptions thrown by the action are relayed to the caller.
+     *
+     * @param action the action to be performed for each element
+     */
     /* if int|long|double elem JDK8 jdk //@Override// endif */
-    void forEachRemaining(CharConsumer action);
+    void forEachRemaining(@Nonnull CharConsumer action);
 
 }

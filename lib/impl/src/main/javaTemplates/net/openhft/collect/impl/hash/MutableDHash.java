@@ -21,6 +21,8 @@ import net.openhft.collect.hash.HashConfig;
 import net.openhft.collect.hash.HashOverflowException;
 import net.openhft.collect.impl.AbstractContainer;
 
+import javax.annotation.Nonnull;
+
 import static net.openhft.collect.impl.hash.DHashCapacities.nearestGreaterCapacity;
 
 
@@ -71,6 +73,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     /////////////////////////////
     // Getters
 
+    @Nonnull
     @Override
     public final HashConfig hashConfig() {
         return configWrapper.config();

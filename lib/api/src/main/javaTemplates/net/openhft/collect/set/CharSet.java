@@ -19,22 +19,28 @@ package net.openhft.collect.set;
 
 import net.openhft.collect.CharCollection;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 
 
 /**
- * TODO doc
+ * // if !(obj elem) //
+ * A {@link Set} specialization with {@code char} elements.
+ * // elif obj elem //
+ * A set of objects, the library's extension of the classic {@link Set} interface.
+ * // endif //
+ *
+ * @see CharSetFactory
  */
 public interface CharSet/*<>*/ extends CharCollection/*<>*/, Set<Character> {
 
     /* if !(obj elem) */
-
     /**
      * Need to override this method, because Set.add(Object) -- erasure! -- conflicts with
      * {@code CharCollection.add(Character)}
      */
     @Override
     @Deprecated
-    boolean add(Character e);
+    boolean add(@Nonnull Character e);
     /* endif */
 }

@@ -23,46 +23,28 @@ package net.openhft.collect.map;
 import net.openhft.collect.Cursor;
 import net.openhft.function./*f*/CharShortConsumer/**/;
 
+import javax.annotation.Nonnull;
+
 
 /**
- * A mutable pointer to the entry in an iteration of entries with {@code Object} keys and
- * {@code char} values.
+ * A mutable pointer to the entry in an iteration of entries with {@code // raw //char} keys and
+ * {@code // raw //short} values.
  *
- * @see net.openhft.collect.Cursor
+ * <p>See the <a href="package-summary.html#iteration">comparison of iteration ways</a>
+ * in the library.
+ *
+ * <p>{@code CharShortCursors} of immutable maps don't support {@link #setValue(//raw//short)}
+ * operation. <a href="package-summary.html#mutability">More about mutability profiles.</a>
+ *
+ * @see CharShortMap#cursor()
  */
 public interface CharShortCursor/*<>*/ extends Cursor {
 
     /**
-     * Moves the cursor forward to the next entry, returns {@code true} if it exists,
-     * {@code false} otherwise. The cursor is located after the last entry in the iteration
-     * and doesn't point to any entry after the unsuccessful movement.
-     *
-     * @return {@code true} if the cursor has moved forward to the next entry,
-     *         {@code false} if the iteration has no more entries
-     */
-    @Override
-    boolean moveNext();
-
-    /**
-     * Removes the entry to which the cursor currently points (optional operation).
-     *
-     * <p>Throws {@code IllegalStateException} if the cursor isn't pointing to any entry: if it
-     * is in front of the first entry, after the last, or the current entry has been already
-     * removed.
-     *
-     * @throws UnsupportedOperationException if the {@code remove} operation is not supported
-     *         by this cursor
-     * @throws IllegalStateException if this cursor is initially in front of the first entry
-     *         and {@link #moveNext()} hasn't been called yet,
-     *         or the previous call of {@code moveNext} returned {@code false},
-     *         or {@code remove()} has been already performed after the previous cursor movement
-     */
-    @Override
-    void remove();
-
-    /**
      * Performs the given action for each entry of the iteration after the cursor in forward
-     * direction.
+     * direction until all entries have been processed or the action throws an exception.
+     * Exceptions thrown by the action are relayed to the caller.
+     *
      * <pre>{@code
      * cur.forEachForward(action)
      * }</pre>
@@ -74,7 +56,7 @@ public interface CharShortCursor/*<>*/ extends Cursor {
      *
      * @param action the action to be performed for each entry
      */
-    void forEachForward(/*f*/CharShortConsumer action);
+    void forEachForward(@Nonnull /*f*/CharShortConsumer action);
 
     /**
      * Returns the key of the entry to which the cursor currently points.

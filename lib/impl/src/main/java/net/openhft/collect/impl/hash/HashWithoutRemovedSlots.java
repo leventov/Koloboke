@@ -19,9 +19,12 @@ package net.openhft.collect.impl.hash;
 import net.openhft.collect.hash.HashConfig;
 import net.openhft.collect.impl.AbstractContainer;
 
+import javax.annotation.Nonnull;
+
 
 public abstract class HashWithoutRemovedSlots extends AbstractContainer implements Hash {
 
+    @Nonnull
     @Override
     public final HashConfig hashConfig() {
         return configWrapper().config();

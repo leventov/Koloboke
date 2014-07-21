@@ -24,6 +24,11 @@ import javax.annotation.Nullable;
 import java.util.Iterator;
 
 
+/**
+ * An immutable factory of {@code CharSet}s.
+ *
+ * @see CharSet
+ */
 public interface CharSetFactory/*<>*/ {
 
     /* if obj elem */

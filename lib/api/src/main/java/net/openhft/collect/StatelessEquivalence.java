@@ -17,18 +17,32 @@
 package net.openhft.collect;
 
 /**
- * Base class for final (or anonymous) stateless {@code Equivalence} implementations.
+ * Base class for stateless {@link Equivalence} implementations.
+ *
+ * <p>{@code StatelessEquivalence} relies on the fact that your equivalence class,
+ * which extend it, don't have subclasses in turn, therefore it is strongly recommended to declare
+ * your equivalence class as {@code final}.
  *
  * <p>Override {@link #toString()} if implementation is anonymous and you want to log
- * or pretty print it, because otherwise {@code String} representation
+ * or pretty print it, because otherwise {@code String} representation of your equivalence
  * would be {@code ""} (empty {@code String}).
+ *
+ * <p>See example implementations in the documentation to {@link #identity() identity} and
+ * {@link #caseInsensitive() case insensitive} equivalences.
  */
 public abstract class StatelessEquivalence<T> extends Equivalence<T> {
 
     /**
+     * Constructor for use by subclasses.
+     */
+    protected StatelessEquivalence() {
+        super();
+    }
+
+    /**
      * Returns {@code true} if the given object is also an instance of this equivalence class.
      *
-     * @return {@code o != null && o.getClass() == getClass()}
+     * @return if the given object is also an instance of this equivalence class
      */
     @Override
     public boolean equals(Object o) {
@@ -36,7 +50,9 @@ public abstract class StatelessEquivalence<T> extends Equivalence<T> {
     }
 
     /**
-     * Returns hash code of this equivalence class.
+     * Returns a hash code of this equivalence class.
+     *
+     * @return a hash code of this equivalence class
      */
     @Override
     public int hashCode() {
@@ -44,9 +60,9 @@ public abstract class StatelessEquivalence<T> extends Equivalence<T> {
     }
 
     /**
-     * Returns simple name of this equivalence class.
+     * Returns simple name of this equivalence class, {@code getClass().getSimpleName()}.
      *
-     * @return {@code getClass().getSimpleName()}
+     * @return simple name of this equivalence class
      */
     @Override
     public String toString() {

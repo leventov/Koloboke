@@ -17,24 +17,33 @@
 
 package net.openhft.collect;
 
+import java.util.Iterator;
+
+
 /**
  * A mutable pointer to the element in an iteration. {@code Cursor} is a kind of hybrid between
- * Java standard {@link java.util.Iterator} interface and {@code System.Collections.IEnumerator}
- * interface from .NET framework.
+ * Java standard {@link Iterator} interface and
+ * <a href="http://msdn.microsoft.com/en-us/library/system.collections.ienumerator.aspx">
+ *     {@code System.Collections.IEnumerator}</a> interface from .NET framework.
  *
- * <p>TODO explain motivation, design and naming decisions
+ * <p>{@code Cursor} interface design typically permits slightly faster implementation,
+ * than {@link Iterator}, so it is preferred in performance-critical code.
+ * On the other hand, isn't supported by Java's "for-each" syntax.
  *
- * @see java.util.Iterator
- * @see <a href="http://msdn.microsoft.com/en-us/library/system.collections.ienumerator.aspx">
- *      .NET IEnumerator documentation</a>
- * @see <a href="http://codechaos.me/?p=22">Java Iterator vs .NET IEnumerator –
- *      The Small Things Matter</a>
+ * <p>See the <a href="package-summary.html#iteration">comparison of iteration ways</a>
+ * in the library.
+ *
+ * <p>Cursors of updatable and immutable containers don't support {@link #remove()} operation.
+ * <a href="package-summary.html#mutability">More about mutability profiles.</a>
+ *
+ * @see <a href="http://web.archive.org/web/20130603171836/http://codechaos.me/?p=22">Java Iterator
+ *      vs .NET IEnumerator – The Small Things Matter</a>
  */
 public interface Cursor {
 
     /**
      * Moves the cursor forward to the next element (to the first element, if the cursor is in front
-     * of the first element), returns {@code true} if it exists, {@code false} otherwise.
+     * of the first element). Returns {@code true} if it exists, {@code false} otherwise.
      * The cursor is located after the last element in the iteration and doesn't point to any
      * element after the unsuccessful movement.
      *
@@ -46,7 +55,7 @@ public interface Cursor {
     /**
      * Removes the element to which the cursor currently points (optional operation).
      *
-     * <p>Throws {@code IllegalStateException} if the cursor isn't pointing to any element: if it
+     * <p>Throws {@link IllegalStateException} if the cursor isn't pointing to any element: if it
      * is in front of the first element, after the last, or the current element has been already
      * removed.
      *

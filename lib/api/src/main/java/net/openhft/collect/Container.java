@@ -17,6 +17,26 @@
 
 package net.openhft.collect;
 
+/**
+ * The root interface of all collections within the library.
+ *
+ * <p>Methods {@link #ensureCapacity(long)} and {@link #shrink()} make sense only for array-based
+ * containers.
+ *
+ * <h2><a name="mutability"></a><a href="package-summary.html#mutability">Mutability</a> matrix</h2>
+ *
+ * <table BORDER CELLPADDING=3 CELLSPACING=1>
+ *   <caption>This matrix shows which methods of this
+ *   interface are supported by containers with different mutability profiles.</caption>
+ *   <tr><td>Method \ Mutability</td><td>Mutable</td><td>Updatable</td><td>Immutable</td></tr>
+ *   <tr><td>{@link #size()}</td>              <td>✓</td><td>✓</td><td>✓</td></tr>
+ *   <tr><td>{@link #sizeAsLong()}</td>        <td>✓</td><td>✓</td><td>✓</td></tr>
+ *   <tr><td>{@link #isEmpty()}</td>           <td>✓</td><td>✓</td><td>✓</td></tr>
+ *   <tr><td>{@link #ensureCapacity(long)}</td><td>✓</td><td>✓</td><td>-</td></tr>
+ *   <tr><td>{@link #shrink()}</td>            <td>✓</td><td>✓</td><td>-</td></tr>
+ *   <tr><td>{@link #clear()}</td>             <td>✓</td><td>✓</td><td>-</td></tr>
+ * </table>
+ */
 public interface Container {
 
     /**
@@ -36,8 +56,11 @@ public interface Container {
     long sizeAsLong();
 
     /**
-     * If the container is an array-based data structure, increases the capacity of this container,
-     * if necessary, to ensure that it can hold at least {@code minSize} elements.
+     * Prepares the container for insertion of {@code minSize - }{@link #sizeAsLong()} new elements
+     * without excessive capacity increases.
+     *
+     * <p>If the container is an array-based data structure, increases the capacity of this
+     * container, if necessary, to ensure that it can hold at least {@code minSize} elements.
      * Returns {@code true}, if the capacity has been increased, {@code false}
      * if it isn't necessary.
      *
@@ -50,8 +73,10 @@ public interface Container {
     boolean ensureCapacity(long minSize);
 
     /**
-     * If the container is array-based data structure, and the memory is overused due to preventive
-     * expansion on elements insertion, decreases the capacity and returns {@code true},
+     * Decreases this container's capacity, if there is memory overuse.
+     *
+     * <p>If the container is array-based data structure, and the memory is overused due to
+     * preventive expansion on elements insertion, decreases the capacity and returns {@code true},
      * returns {@code false} if the capacity is already minimum needed to hold the current
      * number of elements.
      *
@@ -69,4 +94,11 @@ public interface Container {
      * @throws UnsupportedOperationException if the container is immutable
      */
     void clear();
+
+    /**
+     * Returns {@code true} if this container contains no elements.
+     *
+     * @return {@code true} if this container contains no elements
+     */
+    boolean isEmpty();
 }

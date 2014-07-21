@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-
-package net.openhft.collect.hash;
-
 /**
- * An exception thrown when element or entry couldn't be inserted into the hash container
- * due to implementation limitations.
+ * // if JDK8 jdk //{@link java.util.function} polyfill for all specializations.
+ * // elif !(JDK8 jdk) //The complete set of functional interfaces, following
+ * <a href="http://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">
+ *     {@code java.util.function}</a> scheme.
+ * // endif //
+ *
+ * @see <a href="http://blog.orfjackal.net/2014/07/java-8-functional-interface-naming-guide.html">
+ *     Java 8 Functional Interface Naming Guide</a>
  */
-public class HashOverflowException extends IllegalStateException {
-    private static final long serialVersionUID = 0L;
-
-    /**
-     * A sole constructor.
-     */
-    public HashOverflowException() {
-        super();
-    }
-}
+package net.openhft.function;

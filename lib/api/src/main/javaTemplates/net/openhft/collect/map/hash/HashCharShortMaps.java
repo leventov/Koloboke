@@ -26,6 +26,12 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 
+/**
+ * This class consists only of static factory methods to construct {@code HashCharShortMap}s, and
+ * the default {@link HashCharShortMapFactory} static provider ({@link #getDefaultFactory()}).
+ *
+ * @see HashCharShortMap
+ */
 public final class HashCharShortMaps {
 
     /* define oo */

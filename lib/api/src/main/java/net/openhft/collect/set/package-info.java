@@ -14,20 +14,7 @@
  * limitations under the License.
  */
 
-
-package net.openhft.collect.hash;
-
 /**
- * An exception thrown when element or entry couldn't be inserted into the hash container
- * due to implementation limitations.
+ * Contains interfaces of {@link java.util.Set Set} specializations and their factories.
  */
-public class HashOverflowException extends IllegalStateException {
-    private static final long serialVersionUID = 0L;
-
-    /**
-     * A sole constructor.
-     */
-    public HashOverflowException() {
-        super();
-    }
-}
+package net.openhft.collect.set;

@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
  * application semantics in any way, only performance and memory footprint characteristics.
  *
  * @param <T> the concrete factory type which extends this interface
+ * @see HashContainer
  */
 public interface HashContainerFactory<T extends HashContainerFactory<T>> {
 

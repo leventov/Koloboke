@@ -27,6 +27,9 @@ import java.util.Iterator;
 
 
 /**
+ * An immutable factory of {@code HashCharSet}s.
+ *
+ * @see HashCharSet
  * @see HashCharSets#getDefaultFactory()
  */
 public interface HashCharSetFactory/*<>*/ extends CharSetFactory/*<>*/

@@ -22,7 +22,10 @@ import net.openhft.collect.set.CharSet;
 
 
 /**
- * @see net.openhft.collect.set.hash.HashCharSets
+ * An interface for {@code CharSet}s, based on hash tables.
+ *
+ * @see HashCharSets
+ * @see HashCharSetFactory
  */
 public interface HashCharSet/*<>*/ extends CharSet/*<>*/, HashContainer {
 }
