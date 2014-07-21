@@ -396,7 +396,7 @@ public class Generator {
         log.info("Processing file: {}", sourceFile);
         String sourceFileName = sourceFile.toFile().getName();
         Dimensions targetDims = dimensionsParser.parseClassName(sourceFileName);
-        String rawContent = new String(Files.readAllBytes(sourceFile));
+        String rawContent = new String(Files.readAllBytes(sourceFile), UTF_8);
         CheckingMatcher fileDimsM = CONTEXT_START_P.matcher(rawContent);
         if (fileDimsM.find() && fileDimsM.start() == 0) {
             targetDims = dimensionsParser.parseForContext(
@@ -435,7 +435,7 @@ public class Generator {
                 setCurrentSourceFile(sourceFile);
                 String generatedContent = generate(mainContext, target, content);
                 if (Files.exists(generatedFile)) {
-                    String targetContent = new String(Files.readAllBytes(generatedFile));
+                    String targetContent = new String(Files.readAllBytes(generatedFile), UTF_8);
                     if (generatedContent.equals(targetContent)) {
                         log.warn("Already generated: {}", generatedFileName);
                         return null;

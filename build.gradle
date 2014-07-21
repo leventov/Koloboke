@@ -28,7 +28,7 @@ configure(leafProjects) {
         testCompile 'org.hamcrest:hamcrest-all:1.3'
     }
 
-    configure(tasks.withType(AbstractCompile)) {
+    configure(tasks.withType(AbstractCompile) + tasks.withType(Javadoc)) {
         options.encoding = 'UTF-8'
     }
 
