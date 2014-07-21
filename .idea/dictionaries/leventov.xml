@@ -3,6 +3,7 @@
     <words>
       <w>algo</w>
       <w>antlr</w>
+      <w>backported</w>
       <w>bytecode</w>
       <w>cond</w>
       <w>deployer</w>
@@ -44,6 +45,7 @@
       <w>scalarization</w>
       <w>scaler</w>
       <w>scalers</w>
+      <w>spliterators</w>
       <w>sqrt</w>
       <w>subclassing</w>
       <w>subdir</w>
