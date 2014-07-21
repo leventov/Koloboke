@@ -1,4 +1,5 @@
 net.openhft.collect
+net.openhft.collect.hash
 net.openhft.collect.map
 net.openhft.collect.map.hash
 net.openhft.collect.set
