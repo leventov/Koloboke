@@ -3,6 +3,24 @@
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
+  <component name="NullableNotNullManager">
+    <option name="myDefaultNullable" value="javax.annotation.Nullable" />
+    <option name="myDefaultNotNull" value="javax.annotation.Nonnull" />
+    <option name="myNullables">
+      <value>
+        <list size="1">
+          <item index="0" class="java.lang.String" itemvalue="javax.annotation.Nullable" />
+        </list>
+      </value>
+    </option>
+    <option name="myNotNulls">
+      <value>
+        <list size="1">
+          <item index="0" class="java.lang.String" itemvalue="javax.annotation.Nonnull" />
+        </list>
+      </value>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" assert-keyword="true" jdk-15="true" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
