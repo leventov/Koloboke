@@ -63,7 +63,7 @@
  *     add("Spring");
  * }});</code></pre></td>
  *         <td colspan=2>
- * <pre>{@code HashObjSets.newImmutableSetOf("Summer", "Autumn", "Winter", "Spring")}</pre></td>
+ * <pre>{@code HashObjSets.newImmutableSetOf("Summer", "Autumn", "Winter", "Spring");}</pre></td>
  *     </tr>
  * </table>
  *

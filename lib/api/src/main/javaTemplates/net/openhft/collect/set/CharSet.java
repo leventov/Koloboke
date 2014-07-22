@@ -37,7 +37,9 @@ public interface CharSet/*<>*/ extends CharCollection/*<>*/, Set<Character> {
     /* if !(obj elem) */
     /**
      * Need to override this method, because Set.add(Object) -- erasure! -- conflicts with
-     * {@code CharCollection.add(Character)}
+     * {@code CharCollection.add(Character)}.
+     *
+     * @deprecated Use specialization {@link #add(char)} instead
      */
     @Override
     @Deprecated

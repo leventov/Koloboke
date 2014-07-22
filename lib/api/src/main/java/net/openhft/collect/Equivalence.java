@@ -61,7 +61,7 @@ public abstract class Equivalence<T> {
      * in the case when {@code a} and {@code b} are both {@code null}.
      *
      * <p>This equivalence could be implemented as follows:
-     * <pre>{@code
+     * <pre><code>
      * final class Identity extends StatelessEquivalence&lt;Object&gt; {
      *     static final Identity INSTANCE = new Identity();
      *     private Identity() {}
@@ -74,7 +74,7 @@ public abstract class Equivalence<T> {
      *         return System.identityHashCode(t);
      *     }
      * }
-     * }</pre>
+     * </code></pre>
      *
      * @return the identity equivalence
      */
@@ -88,7 +88,7 @@ public abstract class Equivalence<T> {
      * strings.
      *
      * <p>This equivalence could be implemented as follows:
-     * <pre>{@code
+     * <pre><code>
      * final class CaseInsensitive extends StatelessEquivalence&lt;String&gt; {
      *     static final CaseInsensitive INSTANCE = new CaseInsensitive();
      *     private CaseInsensitive() {}
@@ -101,7 +101,7 @@ public abstract class Equivalence<T> {
      *         return s.toLowerCase().hashCode();
      *     }
      * }
-     * }</pre>
+     * </code></pre>
      *
      * @return the case-insensitive {@link String} equivalence
      */
