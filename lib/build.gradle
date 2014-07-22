@@ -1,13 +1,13 @@
 buildscript {
     repositories {
-    	mavenCentral()
+        mavenCentral()
         maven { url 'http://repo.springsource.org/plugins-release' }
     }
-	dependencies {
-		classpath project(':jpsg:gradle-plugin')
+    dependencies {
+	    classpath project(':jpsg:gradle-plugin')
         classpath project('template-processors')
         classpath project('impl-generator')
-		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
+	    classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
 	}
 }
 
@@ -47,7 +47,7 @@ configure([apiProject, implProject]) {
     apply plugin: 'signing'
     apply plugin: 'maven'
 
-	setSourceCompatibility(project, "1.$libTargetJava")
+    setSourceCompatibility(project, "1.$libTargetJava")
 
     dependencies {
         provided 'com.google.auto.value:auto-value:1.0-rc1'
