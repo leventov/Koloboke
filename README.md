@@ -11,7 +11,7 @@ Currently only *hash sets* and *hash maps* are implemented.
     - All primitive specialization collections *extend basic interfaces*
       (`Collection`, `Set`, `Map`),<br/> hence could be used as drop-in replacements
       of slow collections of boxed values
-    - API for Java 6 and 7 if are *forward-compatible* with all methods new in Java 8
+    - API for Java 6 and 7 is *forward-compatible* with all methods new in Java 8
     - *Fail-fast* semantics everywhere
     - `null` keys are (optionally) supported, just like in `java.util.HashMap`
     - `Float.NaN` and `Double.NaN` keys are treated consistently with boxed version
@@ -74,8 +74,8 @@ if your default `java` is still Java 7.
 
 Then
 
-    $ git clone git@github.com:OpenHFT/UntitledCollectionsProject.git collections
-    $ cd collections
+    $ git clone git@github.com:OpenHFT/hftc.git
+    $ cd hftc
     $ ./gradlew :buildMeta
     $ ./gradlew buildMain -x test -x findbugsMain
     $ ./gradlew idea
