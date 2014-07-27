@@ -133,9 +133,8 @@ public abstract class HashConfig {
                     "Grow factor must be in [1.0, max load / min load = %f]  range, %f given.",
                     maxLoad / minLoad, growFactor));
         }
-        HashConfig config = new AutoValue_HashConfig(minLoad, targetLoad,
+        return new AutoValue_HashConfig(minLoad, targetLoad,
                 maxLoad, growFactor, shrinkCondition);
-        return config;
     }
 
 
