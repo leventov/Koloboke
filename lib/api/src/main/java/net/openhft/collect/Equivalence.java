@@ -127,6 +127,15 @@ public abstract class Equivalence<T> {
         return new AutoValue_Equivalence_EntryEquivalence<K, V>(keyEquivalence, valueEquivalence);
     }
 
+    static <T> boolean equivalent(@Nullable Equivalence<T> equivalence,
+            @Nullable T a, @Nullable T b) {
+        if (equivalence == null) {
+            return NullableObjects.equals(a, b);
+        } else {
+            return equivalence.nullableEquivalent(a, b);
+        }
+    }
+
     @AutoValue
     static abstract class EntryEquivalence<K, V> extends Equivalence<Map.Entry<K, V>> {
 
@@ -138,25 +147,9 @@ public abstract class Equivalence<T> {
 
         @Override
         public boolean equivalent(@Nonnull Map.Entry<K, V> a, @Nonnull Map.Entry<K, V> b) {
-            if (a == b)
-                return true;
-            K aKey = a.getKey();
-            K bKey = b.getKey();
-            Equivalence<K> keyEquivalence = keyEquivalence();
-            if (keyEquivalence == null) {
-                if (!NullableObjects.equals(aKey, bKey))
-                    return false;
-            } else if (!keyEquivalence.nullableEquivalent(aKey, bKey)) {
-                return false;
-            }
-            V aVal = a.getValue();
-            V bVal = b.getValue();
-            Equivalence<V> valueEquivalence = valueEquivalence();
-            if (valueEquivalence == null) {
-                return NullableObjects.equals(aVal, bVal);
-            } else {
-                return valueEquivalence.nullableEquivalent(aVal, bVal);
-            }
+            return a == b ||
+                    equivalent(keyEquivalence(), a.getKey(), b.getKey()) &&
+                    equivalent(valueEquivalence(), a.getValue(), b.getValue());
         }
 
         @Override
