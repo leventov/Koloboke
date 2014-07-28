@@ -65,7 +65,7 @@ configure([apiProject, implProject]) {
     test.testLogging.exceptionFormat = 'full'
 
     group = 'net.openhft'
-    version = '0.6-SNAPSHOT'
+    version = '0.5.1'
 
     archivesBaseName  = "hftc-$project.name-jdk${libTargetJava == '6' ? '6-7' : '8'}"
 
@@ -111,7 +111,8 @@ configure([apiProject, implProject]) {
         pom.dependencies.removeAll { dep -> dep.scope == 'test' }
         pom.project {
             name = "HFT Collections (${project == apiProject ? 'API' : 'implementation'})"
-            description = 'Trove of primitive collections with Apache 2.0 license'
+            description = 'Trove of primitive collections with Apache 2.0 license, ' +
+                    "built for Java Java ${libTargetJava == '6' ? '6 or 7' : '8'}"
             url = 'https://github.com/OpenHFT/hftc'
             inceptionYear = '2013'
             organization {

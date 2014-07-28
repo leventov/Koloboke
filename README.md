@@ -38,8 +38,8 @@ Gradle build script (similarly for Maven):
 
     dependencies {
         // `jdk8` instead of `jdk6-7` if you use Java 8
-        compile 'net.openhft:hftc-api-jdk6-7:0.5'
-        runtime 'net.openhft:hftc-impl-jdk6-7:0.5'
+        compile 'net.openhft:hftc-api-jdk6-7:0.5.1'
+        runtime 'net.openhft:hftc-impl-jdk6-7:0.5.1'
     }
 
 Code:
