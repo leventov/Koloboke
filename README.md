@@ -29,12 +29,12 @@ Currently only *hash sets* and *hash maps* are implemented.
  - More than *half a million* of automatically generated tests
 
 #### Disadvantage
-All this goodness for the cost of... the library is insane fat. Currently it takes about 20 MB
+All this goodness for the cost of... the library is insanely fat. Currently it takes about 20 MB
 (and that's only hash sets and maps).
 
 ### Ultra quick start
 
-Gradle build script (similarly for Maven):
+Add to your Gradle build script:
 
     dependencies {
         // `jdk8` instead of `jdk6-7` if you use Java 8
@@ -42,14 +42,41 @@ Gradle build script (similarly for Maven):
         runtime 'net.openhft:hftc-impl-jdk6-7:0.5.1'
     }
 
-Code:
+Or Maven config (don't forget about jdk6-7/jdk8 suffix):
 
-    Map<Integer, Integer> map = HashIntIntMaps.newUpdatableMap(expectedSize);
-    
-Next, see [the table of equivalents of JDK collection patterns]
+    <dependencies>
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>hftc-api-jdk6-7</artifactId>
+            <version>0.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>hftc-impl-jdk6-7</artifactId>
+            <version>0.5.1</version>
+            <scope>runtime</scope>
+        </dependency>
+    <dependencies>
+
+Or similarly for your favourite build system.
+Or download jars of [the latest release](https://github.com/OpenHFT/hftc/releases/latest).
+
+Then you can start using collections. Replace all lines like
+
+    Map<Integer, Integer> map = new HashMap<>();
+
+with   
+
+    Map<Integer, Integer> map = HashIntIntMaps.newMutableMap();
+
+Next step: see [the table of equivalents of JDK collection patterns]
 (http://openhft.github.io/hftc/api/0.5/java8/net/openhft/collect/package-summary.html#jdk-equivalents).
 
 ### JavaDoc: [Java 6] (http://openhft.github.io/hftc/api/0.5/java6/index.html) | [Java 7] (http://openhft.github.io/hftc/api/0.5/java7/index.html) | [Java 8] (http://openhft.github.io/hftc/api/0.5/java8/index.html)
+
+### [Releases (with changelog)](https://github.com/OpenHFT/hftc/releases)
+
+### [Roadmap](https://github.com/OpenHFT/hftc/issues?q=is%3Aopen+label%3A"new+functionality"+is%3Aissue)
 
 ---
 
@@ -62,11 +89,14 @@ Next, see [the table of equivalents of JDK collection patterns]
     
 ### Contributing
 
-I would like to accept a feedback from you.
+I would like to accept feedback from you.
 
  - What method names/signatures are inconvenient?
  - Missing features
  - Performance experience
+ - Bugs or problems
+
+Use [issues](https://github.com/OpenHFT/hftc/issues) or drop me a line at leventov@ya.ru.
 
 ### How to build and develop
 Gradle build requires Java 8 compiler, set `JAVA_HOME` environment variable to the JDK8 location,
@@ -97,8 +127,4 @@ To build the lib for Java 8, run
     $ ../gradlew cleanMain buildMain -PlibTargetJava=8
     
 from the `lib` subdir.
- 
----
-
-Project started as [Trove fork](https://bitbucket.org/leventov/trove) in July 2013.
 
