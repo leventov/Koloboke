@@ -61,6 +61,9 @@ public final class HashCharShortMaps {
 
     /* define ep //<// ek //, // ev //>// enddefine */
 
+    /* with Mutable|Updatable|Immutable mutability */
+
+    /* if !(Immutable mutability) */
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap() {
         return getDefaultFactory().newMutableMap();
     }
@@ -68,9 +71,7 @@ public final class HashCharShortMaps {
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(int expectedSize) {
         return getDefaultFactory().newMutableMap(expectedSize);
     }
-
-
-    /* with Mutable|Updatable|Immutable mutability */
+    /* endif */
 
     /* with with|without expectedSize */
     /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */

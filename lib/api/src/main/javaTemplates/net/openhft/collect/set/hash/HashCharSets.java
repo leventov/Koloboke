@@ -47,6 +47,9 @@ public final class HashCharSets {
     /* if obj elem //<? extends E>// elif !(obj elem) //<Character>// endif */
     /* enddefine */
 
+    /* with Mutable|Updatable|Immutable mutability */
+
+    /* if !(Immutable mutability) */
     public static /*<>*/ HashCharSet/*<>*/ newMutableSet() {
         return getDefaultFactory().newMutableSet();
     }
@@ -54,9 +57,7 @@ public final class HashCharSets {
     public static /*<>*/ HashCharSet/*<>*/ newMutableSet(int expectedSize) {
         return getDefaultFactory().newMutableSet(expectedSize);
     }
-
-
-    /* with Mutable|Updatable|Immutable mutability */
+    /* endif*/
 
     /* with with|without expectedSize */
     /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */
