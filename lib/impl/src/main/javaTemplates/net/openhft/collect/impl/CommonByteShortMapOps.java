@@ -38,11 +38,11 @@ public final class CommonByteShortMapOps {
             /* if obj key || obj value */
             if (
                 // if obj key //
-                    NullableObjects.equals(m2.keyEquivalence(), map.keyEquivalence())
+                    m2.keyEquivalence().equals(map.keyEquivalence())
                 // endif //
                 /* if obj key obj value */ && /* endif */
                 // if obj value //
-                    NullableObjects.equals(m2.valueEquivalence(), map.valueEquivalence())
+                    m2.valueEquivalence().equals(map.valueEquivalence())
                 // endif //
             ) {
             /* endif */

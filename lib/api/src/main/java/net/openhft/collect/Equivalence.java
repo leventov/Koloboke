@@ -31,19 +31,11 @@ import java.util.Map;
  *
  * <p>This class is inspired and very similar to
  * <a href="http://docs.guava-libraries.googlecode.com/git-history/release/javadoc/com/google/common/base/Equivalence.html">
- * Guava's {@code Equivalence}</a>, with two notable differences.
- *
- * <p>First, this {@code Equivalence}
- * is consistently nullable, i. e. when {@code null} is passed instead of {@code Equivalence}
- * instance anywhere in the library, default Java equality is assumed (see
- * {@link Object#equals(Object)} and {@link Object#hashCode()}). In Guava there is a special
- * instance for such equivalence.
- *
- * <p>Second, this {@code Equivalence} forces the actual implementation to override
- * {@link #equals(Object)} and {@link #hashCode()}. Notice these are {@code Equivalence}'s own
- * equals and hashCode, not the strategy {@link #equivalent(Object, Object)} and
- * {@link #hash(Object)} methods. It is needed because, for example, {@link ObjCollection}'s
- * equality depends on {@code Equivalence} equality.
+ * Guava's {@code Equivalence}</a>, with one notable difference: this {@code Equivalence} forces
+ * the actual implementation to override {@link #equals(Object)} and {@link #hashCode()}. Notice
+ * these are {@code Equivalence}'s own equals and hashCode, not the strategy
+ * {@link #equivalent(Object, Object)} and {@link #hash(Object)} methods. It is needed because,
+ * for example, {@link ObjCollection}'s equality depends on {@code Equivalence} equality.
  *
  * <p>In most cases, when {@code Equivalence} is stateless, you can extend
  * {@link StatelessEquivalence} not to bother with implementing these methods. See examples
@@ -53,6 +45,20 @@ import java.util.Map;
  * @param <T> type of objects compared by this equivalence
  */
 public abstract class Equivalence<T> {
+
+    /**
+     * Returns the default, built-in equivalence in Java, driven by {@link Object#equals(Object)}
+     * and {@link Object#hashCode()} methods.
+     *
+     * @param <T> type of objects, needed to compare. {@link Object#equals} could be applied to
+     *        object of any type, so there aren't any constraints over the generic type parameter.
+     * @return the built-in Java equality
+     */
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    public static <T> Equivalence<T> defaultEquality() {
+        return (Equivalence<T>) DEFAULT_EQUALITY;
+    }
 
     /**
      * Returns the equivalence that uses {@code ==} to compare objects and
@@ -76,11 +82,14 @@ public abstract class Equivalence<T> {
      * }
      * </code></pre>
      *
+     * @param <T> type of objects, needed to compare. Identity check could be applied to objects
+     *        of any type, so there aren't any constraints over the generic type parameter.
      * @return the identity equivalence
      */
+    @SuppressWarnings("unchecked")
     @Nonnull
-    public static Equivalence<Object> identity() {
-        return IDENTITY;
+    public static <T> Equivalence<T> identity() {
+        return (Equivalence<T>) IDENTITY;
     }
 
     /**
@@ -119,50 +128,49 @@ public abstract class Equivalence<T> {
      * @param <V> the entry value type
      * @return a {@link java.util.Map.Entry} equivalence for the given key and value equivalences
      */
-    @Nullable
+    @Nonnull
     public static <K, V> Equivalence<Map.Entry<K, V>> entryEquivalence(
-            @Nullable Equivalence<K> keyEquivalence, @Nullable Equivalence<V> valueEquivalence) {
-        if (keyEquivalence == null && valueEquivalence == null)
-            return null;
+            @Nonnull Equivalence<K> keyEquivalence, @Nonnull Equivalence<V> valueEquivalence) {
+        if (keyEquivalence.equals(defaultEquality()) && valueEquivalence.equals(defaultEquality()))
+            return defaultEquality();
         return new AutoValue_Equivalence_EntryEquivalence<K, V>(keyEquivalence, valueEquivalence);
-    }
-
-    static <T> boolean equivalent(@Nullable Equivalence<T> equivalence,
-            @Nullable T a, @Nullable T b) {
-        if (equivalence == null) {
-            return NullableObjects.equals(a, b);
-        } else {
-            return equivalence.nullableEquivalent(a, b);
-        }
     }
 
     @AutoValue
     static abstract class EntryEquivalence<K, V> extends Equivalence<Map.Entry<K, V>> {
 
-        @Nullable
+        @Nonnull
         abstract Equivalence<K> keyEquivalence();
 
-        @Nullable
+        @Nonnull
         abstract Equivalence<V> valueEquivalence();
 
         @Override
         public boolean equivalent(@Nonnull Map.Entry<K, V> a, @Nonnull Map.Entry<K, V> b) {
             return a == b ||
-                    equivalent(keyEquivalence(), a.getKey(), b.getKey()) &&
-                    equivalent(valueEquivalence(), a.getValue(), b.getValue());
+                    keyEquivalence().nullableEquivalent(a.getKey(), b.getKey()) &&
+                    valueEquivalence().nullableEquivalent(a.getValue(), b.getValue());
         }
 
         @Override
         public int hash(@Nonnull Map.Entry<K, V> entry) {
-            Equivalence<K> keyEquivalence = keyEquivalence();
-            int keyHash = keyEquivalence == null ?
-                    NullableObjects.hashCode(entry.getKey()) :
-                    keyEquivalence.nullableHash(entry.getKey());
-            Equivalence<V> valueEquivalence = valueEquivalence();
-            int valHash = valueEquivalence == null ?
-                    NullableObjects.hashCode(entry.getValue()) :
-                    valueEquivalence.nullableHash(entry.getValue());
-            return keyHash ^ valHash;
+            return keyEquivalence().nullableHash(entry.getKey()) ^
+                    valueEquivalence().nullableHash(entry.getValue());
+        }
+    }
+
+    private static final Equivalence<Object> DEFAULT_EQUALITY = new DefaultEquality();
+
+    private static class DefaultEquality extends StatelessEquivalence<Object> {
+
+        @Override
+        public boolean equivalent(@Nonnull Object a, @Nonnull Object b) {
+            return a.equals(b);
+        }
+
+        @Override
+        public int hash(@Nonnull Object o) {
+            return o.hashCode();
         }
     }
 

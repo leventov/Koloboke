@@ -27,6 +27,8 @@ import net.openhft.collect.hash.*;
 import net.openhft.collect.impl.*;
 import net.openhft.collect.map.ObjShortMap;
 import net.openhft.collect.map.hash.HashObjShortMapFactory;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.Map;
@@ -41,13 +43,13 @@ public abstract class DHashSeparateKVObjShortMapFactorySO<K/* if obj value //, V
         super(hashConf, defaultExpectedSize, isNullKeyAllowed);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public Equivalence<K> getKeyEquivalence() {
-        return null;
+        return Equivalence.defaultEquality();
     }
 
-    @Nullable
+    @Nonnull
     @Override
     Equivalence<K> getEquivalence() {
         return getKeyEquivalence();
@@ -59,7 +61,7 @@ public abstract class DHashSeparateKVObjShortMapFactorySO<K/* if obj value //, V
     }
 
     boolean keySpecialEquals(HashObjShortMapFactory/*<?>*/ other) {
-        return NullableObjects.equals(getKeyEquivalence(), other.getKeyEquivalence()) &&
+        return getKeyEquivalence().equals(other.getKeyEquivalence()) &&
                 isNullKeyAllowed() == other.isNullKeyAllowed();
     }
 
@@ -115,7 +117,7 @@ public abstract class DHashSeparateKVObjShortMapFactorySO<K/* if obj value //, V
             if (map instanceof SeparateKVObjShortDHash) {
                 SeparateKVObjShortDHash hash = (SeparateKVObjShortDHash) map;
                 if (hash.hashConfig().equals(hashConf) &&
-                        NullableObjects.equals(objShortMap.keyEquivalence(), getKeyEquivalence())) {
+                        objShortMap.keyEquivalence().equals(getKeyEquivalence())) {
                     MutableDHashSeparateKVObjShortMapGO/*p2*/<K2>/**/ res =
                             uninitializedMutableMap();
                     res.copy(hash);

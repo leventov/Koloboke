@@ -22,6 +22,8 @@ import net.openhft.collect.hash.*;
 import net.openhft.collect.impl.*;
 import net.openhft.collect.set.ObjSet;
 import net.openhft.collect.set.hash.HashObjSetFactory;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.Collection;
@@ -41,14 +43,14 @@ public abstract class DHashObjSetFactorySO<E> extends ObjHashFactorySO<E>
     }
 
     boolean keySpecialEquals(HashObjSetFactory<?> other) {
-        return NullableObjects.equals(getEquivalence(), other.getEquivalence()) &&
+        return getEquivalence().equals(other.getEquivalence()) &&
                 isNullKeyAllowed() == other.isNullKeyAllowed();
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public Equivalence<E> getEquivalence() {
-        return null;
+        return Equivalence.defaultEquality();
     }
 
     /* with Mutable|Updatable|Immutable mutability */
@@ -76,14 +78,13 @@ public abstract class DHashObjSetFactorySO<E> extends ObjHashFactorySO<E>
                 if (elements instanceof SeparateKVObjDHash) {
                     SeparateKVObjDHash hash = (SeparateKVObjDHash) elements;
                     if (hash.hashConfig().equals(hashConf) &&
-                            NullableObjects.equals(
-                                    elemSet.equivalence(), getEquivalence())) {
+                            elemSet.equivalence().equals(getEquivalence())) {
                         MutableDHashObjSetGO<E2> set = uninitializedMutableSet();
                         set.copy(hash);
                         return set;
                     }
                 }
-                if (NullableObjects.equals(elemSet.equivalence(), getEquivalence())) {
+                if (elemSet.equivalence().equals(getEquivalence())) {
                     size = elemSet.size();
                 } else {
                     size = expectedSize;

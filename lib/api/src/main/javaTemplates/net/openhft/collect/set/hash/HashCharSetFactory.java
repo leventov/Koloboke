@@ -21,6 +21,8 @@ import net.openhft.collect.*;
 import net.openhft.collect.hash.*;
 import net.openhft.function./*f*/CharConsumer/**/;
 import net.openhft.collect.set.CharSetFactory;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.Iterator;
@@ -37,7 +39,7 @@ public interface HashCharSetFactory/*<>*/ extends CharSetFactory/*<>*/
         /* elif float|double elem */, HashContainerFactory<HashCharSetFactory/*<>*/>/* endif */ {
 
     /* if obj elem */
-    <E2> HashCharSetFactory<E2> withEquivalence(@Nullable Equivalence<E2> equivalence);
+    <E2> HashCharSetFactory<E2> withEquivalence(@Nonnull Equivalence<E2> equivalence);
     /* endif */
 
     /* define p1 *//* if obj elem //<E2 extends E>// endif *//* enddefine */

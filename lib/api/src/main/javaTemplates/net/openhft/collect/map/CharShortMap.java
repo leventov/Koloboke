@@ -56,11 +56,10 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      * interface which defined in terms of {@link Object#equals(Object)} equality of key objects
      * (almost all methods, actually), are supposed to use this equivalence instead.
      *
-     * @return the equivalence strategy for keys in this map,
-     *         or {@code null} if it is the default {@link Object} equality
+     * @return the equivalence strategy for keys in this map
      * @see net.openhft.collect.map.hash.HashCharShortMapFactory#withKeyEquivalence
      */
-    @Nullable
+    @Nonnull
     Equivalence<Character> keyEquivalence();
     /* endif */
 
@@ -71,11 +70,10 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      * for example, {@link #containsValue(Object)} and {@link #remove(//raw//char, //raw//short)},
      * are supposed to use this equivalence instead.
      *
-     * @return the equivalence strategy for values in this map,
-     *         or {@code null} if it is the default {@link Object} equality
+     * @return the equivalence strategy for values in this map
      * @see CharShortMapFactory#withValueEquivalence
      */
-    @Nullable
+    @Nonnull
     Equivalence<Short> valueEquivalence();
     /* endif */
     /* if !(obj value) */

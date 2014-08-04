@@ -18,8 +18,8 @@ package net.openhft.collect.impl.hash;
 
 import net.openhft.collect.Equivalence;
 import net.openhft.collect.hash.HashConfig;
-import net.openhft.collect.impl.NullableObjects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
@@ -36,11 +36,11 @@ abstract class ObjHashFactorySO<E> extends AbstractHashFactory {
         return isNullAllowed;
     }
 
-    @Nullable
+    @Nonnull
     abstract Equivalence<E> getEquivalence();
 
     int keySpecialHashCode(int hashCode) {
-        hashCode = hashCode * 31 + NullableObjects.hashCode(getEquivalence());
+        hashCode = hashCode * 31 + getEquivalence().hashCode();
         return hashCode * 31 + (isNullKeyAllowed() ? 1 : 0);
     }
 }

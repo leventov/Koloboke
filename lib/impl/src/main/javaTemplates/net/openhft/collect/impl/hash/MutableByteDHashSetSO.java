@@ -31,7 +31,7 @@ public abstract class MutableByteDHashSetSO/*<>*/
 
     /* if obj elem */
     public Equivalence/*<>*/ equivalence() {
-        return null;
+        return Equivalence.defaultEquality();
     }
     /* endif */
 

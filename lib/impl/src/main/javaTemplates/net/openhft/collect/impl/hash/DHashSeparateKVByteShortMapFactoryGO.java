@@ -125,7 +125,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     public int hashCode() {
         int hashCode = keySpecialHashCode(commonHashCode());
         /* if obj value */
-        hashCode = hashCode * 31 + NullableObjects.hashCode(getValueEquivalence());
+        hashCode = hashCode * 31 + getValueEquivalence().hashCode();
         /* elif !(obj value) */
         hashCode = hashCode * 31 + Primitives.hashCode(getDefaultValue());
         /* endif */
@@ -140,8 +140,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
             HashByteShortMapFactory factory = (HashByteShortMapFactory) obj;
             return commonEquals(factory) && keySpecialEquals(factory) &&
                     /* if obj value */
-                    NullableObjects.equals(getValueEquivalence(),
-                            factory.getValueEquivalence())
+                    getValueEquivalence().equals(factory.getValueEquivalence())
                     /* elif !(obj value) */
                     // boxing to treat NaNs correctly
                    ((Short) getDefaultValue()).equals(factory.getDefaultValue())
@@ -158,8 +157,9 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     }
     /* elif obj value */
     @Override
+    @Nonnull
     public Equivalence<Short> getValueEquivalence() {
-        return null;
+        return Equivalence.defaultEquality();
     }
     /* endif */
 

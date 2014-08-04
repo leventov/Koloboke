@@ -34,7 +34,7 @@ import java.util.Iterator;
  * in this interface. Thus in some sense {@code ObjCollection} violates general {@link Collection}
  * contract, but this approach provides a great flexibility. If you need strict {@link Collection}
  * implementation, you can always construct an {@code ObjCollection} with default equality,
- * i. e. {@code equivalence() == null}.
+ * i. e. {@code equivalence() == }{@link Equivalence#defaultEquality()}.
  *
  * <p>See <a href="package-summary.html#collection-mutability">{@code Collection} mutability
  * matrix</a> for methods which are supported by {@code ObjCollections} with the specific
@@ -51,10 +51,9 @@ public interface ObjCollection<E> extends Collection<E>, Container {
      * equality of elements, for example, {@link #contains(Object)} and {@link #remove(Object)},
      * are supposed to use this equivalence instead.
      *
-     * @return the equivalence strategy for elements in this collection,
-     *         or {@code null} if it is the default {@link Object} equality
+     * @return the equivalence strategy for elements in this collection
      */
-    @Nullable
+    @Nonnull
     Equivalence<E> equivalence();
 
     /* if !(JDK8 jdk) */

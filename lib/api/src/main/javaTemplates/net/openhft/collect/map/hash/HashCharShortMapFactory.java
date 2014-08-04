@@ -24,6 +24,8 @@ import net.openhft.collect.*;
 import net.openhft.collect.hash.*;
 import net.openhft.function./*f*/CharShortConsumer/**/;
 import net.openhft.collect.map.*;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.Map;
@@ -66,13 +68,13 @@ public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/
 
     /* if obj key */
     <KE> HashCharShortMapFactory<KE/* if obj value */, V/* endif */>
-    withKeyEquivalence(@Nullable Equivalence<KE> keyEquivalence);
+    withKeyEquivalence(@Nonnull Equivalence<KE> keyEquivalence);
     /* endif */
 
     /* if obj value */
     @Override
     <VE> HashCharShortMapFactory</* if obj key */K, /* endif */VE>
-    withValueEquivalence(@Nullable Equivalence<VE> valueEquivalence);
+    withValueEquivalence(@Nonnull Equivalence<VE> valueEquivalence);
 
     /* elif !(obj value) */
     @Override

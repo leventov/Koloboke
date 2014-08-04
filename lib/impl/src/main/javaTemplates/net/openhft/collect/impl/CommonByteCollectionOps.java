@@ -34,7 +34,7 @@ public final class CommonByteCollectionOps {
         if (another instanceof ByteCollection) {
             ByteCollection c2 = (ByteCollection) another;
             /* if obj elem */
-            if (NullableObjects.equals(collection.equivalence(), c2.equivalence())) {
+            if (collection.equivalence().equals(c2.equivalence())) {
             /* endif */
             if (collection instanceof ByteSet && c2 instanceof ByteSet &&
                     collection.size() < another.size()) {

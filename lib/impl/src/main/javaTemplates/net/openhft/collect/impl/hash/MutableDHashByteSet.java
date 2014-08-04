@@ -33,6 +33,7 @@ public final class MutableDHashByteSet/*<>*/ extends MutableDHashByteSetGO/*<>*/
         Equivalence<? super E> equivalence;
 
         @Override
+        @Nonnull
         public Equivalence<E> equivalence() {
             // noinspection unchecked
             return (Equivalence<E>) equivalence;

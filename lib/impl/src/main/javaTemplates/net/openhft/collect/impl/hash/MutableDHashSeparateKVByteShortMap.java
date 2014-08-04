@@ -40,6 +40,7 @@ final class MutableDHashSeparateKVByteShortMap/*<>*/
 
         /* define keyMethods */
         @Override
+        @Nonnull
         public Equivalence<K> keyEquivalence() {
             // noinspection unchecked
             return (Equivalence<K>) keyEquivalence;
@@ -91,6 +92,7 @@ final class MutableDHashSeparateKVByteShortMap/*<>*/
 
         /* define valueMethods */
         @Override
+        @Nonnull
         public Equivalence<V> valueEquivalence() {
             // noinspection unchecked
             return (Equivalence<V>) valueEquivalence;

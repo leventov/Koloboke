@@ -42,7 +42,7 @@ public abstract class MutableDHashSeparateKVByteKeyMap/*<>*/
 
     /* if obj key */
     public Equivalence<Byte> keyEquivalence() {
-        return null;
+        return Equivalence.defaultEquality();
     }
     /* endif */
 
@@ -76,6 +76,7 @@ public abstract class MutableDHashSeparateKVByteKeyMap/*<>*/
 
         /* if obj key */
         /* if obj key //@Override// endif */
+        @Nonnull
         public Equivalence<Byte> equivalence() {
             return MutableDHashSeparateKVByteKeyMap.this.keyEquivalence();
         }
@@ -305,7 +306,7 @@ public abstract class MutableDHashSeparateKVByteKeyMap/*<>*/
                 if (c instanceof InternalByteCollectionOps) {
                     InternalByteCollectionOps c2 = (InternalByteCollectionOps) c;
                     if (c2.size() < this.size()/* if obj key //
-                            && NullableObjects.equals(equivalence(), c2.equivalence())
+                            && equivalence().equals(c2.equivalence())
                             // endif */) {
                         /* if obj key */// noinspection unchecked/* endif */
                         return c2.reverseRemoveAllFrom(this);

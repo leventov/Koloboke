@@ -70,8 +70,9 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
 
     /* if obj value */
     @Override
+    @Nonnull
     public Equivalence<Short> valueEquivalence() {
-        return null;
+        return Equivalence.defaultEquality();
     }
     /* endif */
 
@@ -644,12 +645,14 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
             implements HashObjSet<Map.Entry<Byte, Short>>,
             InternalObjCollectionOps<Map.Entry<Byte, Short>> {
 
-        @Nullable
+        @Nonnull
         @Override
         public Equivalence<Entry<Byte, Short>> equivalence() {
             return Equivalence.entryEquivalence(
-                    /* if !(obj key) */null/* elif obj key //keyEquivalence()// endif */,
-                    /* if !(obj value) */null/* elif obj value //valueEquivalence()// endif */
+                    /* if !(obj key) */Equivalence.<Byte>defaultEquality()
+                    /* elif obj key //keyEquivalence()// endif */,
+                    /* if !(obj value) */Equivalence.<Short>defaultEquality()
+                    /* elif obj value //valueEquivalence()// endif */
             );
         }
 
@@ -791,8 +794,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         public final boolean removeAll(@Nonnull Collection<?> c) {
             if (c instanceof InternalObjCollectionOps) {
                 InternalObjCollectionOps c2 = (InternalObjCollectionOps) c;
-                if (NullableObjects.equals(this.equivalence(), c2.equivalence()) &&
-                        c2.size() < this.size()) {
+                if (equivalence().equals(c2.equivalence()) && c2.size() < this.size()) {
                     // noinspection unchecked
                     c2.reverseRemoveAllFrom(this);
                 }

@@ -20,6 +20,8 @@ package net.openhft.collect.impl.hash;
 import net.openhft.collect.Equivalence;
 import net.openhft.collect.hash.*;
 import net.openhft.collect.set.hash.HashObjSetFactory;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
@@ -43,8 +45,8 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
     }
 
     @Override
-    public <E2> HashObjSetFactory<E2> withEquivalence(@Nullable Equivalence<E2> equivalence) {
-        if (equivalence == null) {
+    public <E2> HashObjSetFactory<E2> withEquivalence(@Nonnull Equivalence<E2> equivalence) {
+        if (equivalence.equals(Equivalence.defaultEquality())) {
             // noinspection unchecked
             return (HashObjSetFactory<E2>) this;
         }
@@ -79,6 +81,7 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
         }
 
         @Override
+        @Nonnull
         public Equivalence<E> getEquivalence() {
             return equivalence;
         }
@@ -94,8 +97,8 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
         /* endwith */
 
         @Override
-        public <E2> HashObjSetFactory<E2> withEquivalence(@Nullable Equivalence<E2> equivalence) {
-            if (equivalence == null)
+        public <E2> HashObjSetFactory<E2> withEquivalence(@Nonnull Equivalence<E2> equivalence) {
+            if (equivalence.equals(Equivalence.defaultEquality()))
                 return new DHashObjSetFactoryImpl<E2>(/* commonArgGet */);
             if (this.equivalence.equals(equivalence)) {
                 // noinspection unchecked

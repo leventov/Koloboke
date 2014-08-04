@@ -146,7 +146,7 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
             if (c instanceof InternalByteCollectionOps) {
                 InternalByteCollectionOps c2 = (InternalByteCollectionOps) c;
                 if (c2.size() < this.size()/* if obj elem //
-                            && NullableObjects.equals(equivalence(), c2.equivalence())
+                            && equivalence().equals(c2.equivalence())
                             // endif */) {
                     /* if obj elem */// noinspection unchecked/* endif */
                     return c2.reverseRemoveAllFrom(this);

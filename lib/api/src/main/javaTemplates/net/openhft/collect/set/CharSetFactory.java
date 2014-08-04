@@ -19,6 +19,8 @@ package net.openhft.collect.set;
 
 import net.openhft.collect.Equivalence;
 import net.openhft.function./*f*/CharConsumer/**/;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.Iterator;
@@ -32,7 +34,7 @@ import java.util.Iterator;
 public interface CharSetFactory/*<>*/ {
 
     /* if obj elem */
-    @Nullable
+    @Nonnull
     Equivalence<Character> getEquivalence();
     /* endif */
 

@@ -25,6 +25,8 @@ package net.openhft.collect.impl.hash;
 import net.openhft.collect.*;
 import net.openhft.collect.hash.*;
 import net.openhft.collect.map.hash.*;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static net.openhft.collect.impl.hash.LHashCapacities.configIsSuitableForMutableLHash;
@@ -92,8 +94,8 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
     /* if obj key */
     @Override
     public <KE> HashObjShortMapFactory<KE/*andV*/> withKeyEquivalence(
-            @Nullable Equivalence<KE> keyEquivalence) {
-        if (keyEquivalence == null) {
+            @Nonnull Equivalence<KE> keyEquivalence) {
+        if (keyEquivalence.equals(Equivalence.defaultEquality())) {
             // noinspection unchecked
             return (HashObjShortMapFactory<KE/*andV*/>) this;
         }
@@ -111,8 +113,8 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
     /* elif obj value */
     @Override
     public <VE> HashByteObjMapFactory</*kAnd*/VE> withValueEquivalence(
-            @Nullable Equivalence<VE> valueEquivalence) {
-        if (valueEquivalence == null) {
+            @Nonnull Equivalence<VE> valueEquivalence) {
+        if (valueEquivalence.equals(Equivalence.defaultEquality())) {
             // noinspection unchecked
             return (HashByteObjMapFactory</*kAnd*/VE>) this;
         }
@@ -132,6 +134,7 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         }
 
         @Override
+        @Nonnull
         public Equivalence<K> getKeyEquivalence() {
             return keyEquivalence;
         }
@@ -149,8 +152,8 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
 
         @Override
         public <KE> HashObjShortMapFactory<KE/*andV*/> withKeyEquivalence(
-                @Nullable Equivalence<KE> keyEquivalence) {
-            if (keyEquivalence == null)
+                @Nonnull Equivalence<KE> keyEquivalence) {
+            if (keyEquivalence.equals(Equivalence.defaultEquality()))
                 return new DHashSeparateKVObjShortMapFactoryImpl<KE/*andV*/>(/* commonArgGet */);
             if (keyEquivalence.equals(this.keyEquivalence)) {
                 // noinspection unchecked
@@ -170,8 +173,8 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         /* elif obj value */
         @Override
         public <VE> HashObjObjMapFactory<K, VE> withValueEquivalence(
-                @Nullable Equivalence<VE> valueEquivalence) {
-            if (valueEquivalence == null) {
+                @Nonnull Equivalence<VE> valueEquivalence) {
+            if (valueEquivalence.equals(Equivalence.defaultEquality())) {
                 // noinspection unchecked
                 return (HashObjObjMapFactory<K, VE>) this;
             }
@@ -223,8 +226,8 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         /* if obj key */
         @Override
         public <KE> HashObjShortMapFactory<KE> withKeyEquivalence(
-                @Nullable Equivalence<KE> keyEquivalence) {
-            if (keyEquivalence == null) {
+                @Nonnull Equivalence<KE> keyEquivalence) {
+            if (keyEquivalence.equals(Equivalence.defaultEquality())) {
                 // noinspection unchecked
                 return (HashObjShortMapFactory<KE>) this;
             }
@@ -267,6 +270,7 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         }
 
         @Override
+        @Nonnull
         public Equivalence<V> getValueEquivalence() {
             return valueEquivalence;
         }
@@ -285,8 +289,8 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         /* if obj key */
         @Override
         public <KE> HashObjObjMapFactory<KE, V> withKeyEquivalence(
-                @Nullable Equivalence<KE> keyEquivalence) {
-            if (keyEquivalence == null) {
+                @Nonnull Equivalence<KE> keyEquivalence) {
+            if (keyEquivalence.equals(Equivalence.defaultEquality())) {
                 // noinspection unchecked
                 return (HashObjObjMapFactory<KE, V>) this;
             }
@@ -297,8 +301,8 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
 
         @Override
         public <VE> HashByteObjMapFactory</*kAnd*/VE> withValueEquivalence(
-                @Nullable Equivalence<VE> valueEquivalence) {
-            if (valueEquivalence == null)
+                @Nonnull Equivalence<VE> valueEquivalence) {
+            if (valueEquivalence.equals(Equivalence.defaultEquality()))
                 return new DHashSeparateKVByteObjMapFactoryImpl</*kAnd*/VE>(/* commonArgGet */);
             if (valueEquivalence.equals(this.valueEquivalence))
                 // noinspection unchecked
@@ -336,6 +340,7 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         }
 
         @Override
+        @Nonnull
         public Equivalence<K> getKeyEquivalence() {
             return keyEquivalence;
         }
@@ -359,8 +364,8 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
 
         @Override
         public <KE> HashObjShortMapFactory<KE> withKeyEquivalence(
-                @Nullable Equivalence<KE> keyEquivalence) {
-            if (keyEquivalence == null)
+                @Nonnull Equivalence<KE> keyEquivalence) {
+            if (keyEquivalence.equals(Equivalence.defaultEquality()))
                 return new WithCustomDefaultValue<KE>(/* commonArgGet */, defaultValue);
             if (keyEquivalence.equals(this.keyEquivalence)) {
                 // noinspection unchecked
@@ -409,11 +414,13 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
         }
 
         @Override
+        @Nonnull
         public Equivalence<K> getKeyEquivalence() {
             return keyEquivalence;
         }
 
         @Override
+        @Nonnull
         public Equivalence<V> getValueEquivalence() {
             return valueEquivalence;
         }
@@ -432,8 +439,8 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
 
         @Override
         public <KE> HashObjObjMapFactory<KE, V> withKeyEquivalence(
-                @Nullable Equivalence<KE> keyEquivalence) {
-            if (keyEquivalence == null)
+                @Nonnull Equivalence<KE> keyEquivalence) {
+            if (keyEquivalence.equals(Equivalence.defaultEquality()))
                 return new WithCustomValueEquivalence<KE, V>(/* commonArgGet */,
                         valueEquivalence);
             if (keyEquivalence.equals(this.keyEquivalence)) {
@@ -446,8 +453,8 @@ public final class DHashSeparateKVByteShortMapFactoryImpl/*<>*/
 
         @Override
         public <VE> HashObjObjMapFactory<K, VE> withValueEquivalence(
-                @Nullable Equivalence<VE> valueEquivalence) {
-            if (valueEquivalence == null)
+                @Nonnull Equivalence<VE> valueEquivalence) {
+            if (valueEquivalence.equals(Equivalence.defaultEquality()))
                 return new WithCustomKeyEquivalence<K, VE>(/* commonArgGet */, keyEquivalence);
             if (valueEquivalence.equals(this.valueEquivalence)) {
                 // noinspection unchecked
