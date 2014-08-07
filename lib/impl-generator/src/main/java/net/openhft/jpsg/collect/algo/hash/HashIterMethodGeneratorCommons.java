@@ -258,11 +258,6 @@ final class HashIterMethodGeneratorCommons {
                 g.ifBlock("indexToShift > indexToRemove"); {
                     g.lines("int slotsToCopy;");
                     g.ifBlock("(slotsToCopy = " + slotsToCopy() + ") > 0"); {
-                        g.ifBlock("indexToRemove < slotsToCopy"); {
-                            // In normal path slots substitute one another and only the last one
-                            // is erased. But before copying the table we should erase the slot too.
-                            eraseSlot(g, cxt, "indexToRemove", "indexToRemove");
-                        } g.blockEnd();
                         if (!parallelKV(cxt)) {
                             g.lines("this.keys = Arrays.copyOf(keys, slotsToCopy);");
                             if (cxt.hasValues()) {
@@ -271,6 +266,19 @@ final class HashIterMethodGeneratorCommons {
                         } else {
                             g.lines("this.tab = Arrays.copyOf(tab, slotsToCopy);");
                         }
+                        g.ifBlock("indexToRemove < slotsToCopy"); {
+                            // In normal path slots substitute one another and only the last one
+                            // is erased. But we should erase in the table copy the current slot,
+                            // that we are going to substitute with a shifted slot (or erase),
+                            // because shift deletion continues in the original table.
+                            String keys = cxt.isObjectOrNullKey() ? "((Object[]) this.keys)" :
+                                    "this.keys";
+                            writeKey(g, cxt, "this.tab", keys, "indexToRemove", removed(cxt));
+                            if (cxt.isObjectValue()) {
+                                writeValue(g, cxt, "this.tab", "this.vals", "indexToRemove",
+                                        "null");
+                            }
+                        } g.blockEnd();
                     } g.blockEnd();
                 }
                 g.elseIf("indexToRemove == index"); {
