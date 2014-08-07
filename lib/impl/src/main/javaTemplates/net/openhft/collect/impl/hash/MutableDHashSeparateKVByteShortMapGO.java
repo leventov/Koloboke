@@ -867,7 +867,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     /* if !(Immutable mutability) */
     /* with Mutable mutability */
     class MutableEntry extends ByteShortEntry {
-        int modCount;
+        final int modCount;
         private final int index;
         final /* bits */byte key;
         private /* bits */short value;

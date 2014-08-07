@@ -174,6 +174,15 @@ final class HashIterMethodGeneratorCommons {
                     writeValue(g, cxt, "index", "newValue");
                 } g.elseBlock(); {
                     g.lines("justPut(key, newValue);");
+                    // This check ensures that justPut (one line above) was an update, as expected,
+                    // rather than insertion put. As far as this hash table implementation isn't
+                    // fully thread-safe, this check is excessive, because there is one
+                    // in setValue() prologue.
+                    //
+                    // (The explanation above is the result of investigation,
+                    // because I didn't remember the purpose of the check. I would remove the check,
+                    // if I was 100% sure that had correctly recalled my own intents when added this
+                    // check.)
                     g.ifBlock("this.modCount != " + modCount()); {
                         g.illegalState();
                     } g.blockEnd();
