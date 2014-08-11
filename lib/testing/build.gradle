@@ -2,7 +2,7 @@ evaluationDependsOn("$parent.path")
 
 dependencies {
     compile project("$parent.path:api")
-    compile 'com.google.guava:guava-testlib:17.0'
+    compile 'com.google.guava:guava-testlib:18.0-rc2'
     runtime project("$parent.path:impl")
 }
 
