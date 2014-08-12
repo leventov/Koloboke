@@ -16,32 +16,21 @@
 
 package net.openhft.function;
 
+
 /**
  * // if !(JDK8 jdk) //
- * Represents an operation that accepts two input arguments and returns no
- * result.  This is the two-arity specialization of {@link Consumer}.
- * Unlike most other functional interfaces, {@code BiConsumer} is expected
- * to operate via side-effects.
+ * Represents an operation on a single operand that produces a result of the
+ * same type as its operand.  This is a specialization of {@code Function} for
+ * the case where the operand and result are of the same type.
  *
- * @param <T> the type of the first argument to the operation
- * @param <U> the type of the second argument to the operation
- * @see Consumer
+ * @param <T> the type of the operand and result of the operator
+ * @see Function
  * // elif JDK8 jdk //
  * @deprecated this interface is present for backward compatibility with the version of this library
- *             for Java 6 or 7, use {@link java.util.function.BiConsumer} instead.
+ *             for Java 6 or 7, use {@link java.util.function.UnaryOperator} instead.
  * // endif //
  */
 /* if JDK8 jdk */@FunctionalInterface @Deprecated/* endif */
-public interface BiConsumer<T, U>
-        /* if JDK8 jdk */extends java.util.function.BiConsumer<T, U> /* endif */{
-
-    /* if !(JDK8 jdk) */
-    /**
-     * Performs this operation on the given arguments.
-     *
-     * @param t the first input argument
-     * @param u the second input argument
-     */
-    void accept(T t, U u);
-    /* endif */
+public interface UnaryOperator<T> extends Function<T, T>
+        /* if JDK8 jdk */, java.util.function.UnaryOperator<T>/* endif */ {
 }

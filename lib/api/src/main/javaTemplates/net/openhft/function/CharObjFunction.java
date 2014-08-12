@@ -16,8 +16,24 @@
 
 package net.openhft.function;
 
-
+/**
+ * Represents a function that accepts //a// {@code char}-valued and an object-valued argument
+ * and returns a result. This is the {@code (char, reference, reference)} specialization
+ * of {@link BiFunction}.
+ *
+ * @param <T> the type of the first argument to the function
+ * @param <R> the type of the result of the function
+ * @see BiFunction
+ */
+/* if JDK8 jdk */@FunctionalInterface/* endif */
 public interface CharObjFunction<T, R> {
 
+    /**
+     * Applies this function to the given arguments.
+     *
+     * @param v the first function argument
+     * @param t the second function argument
+     * @return the function result
+     */
     R apply(char v, T t);
 }

@@ -16,11 +16,32 @@
 
 package net.openhft.function;
 
-
+/**
+ * // if !(JDK8 jdk) //
+ * Represents a function that accepts two arguments and produces a result.
+ * This is the two-arity specialization of {@link Function}.
+ *
+ * @param <T> the type of the first argument to the function
+ * @param <U> the type of the second argument to the function
+ * @param <R> the type of the result of the function
+ * @see Function
+ * // elif JDK8 jdk //
+ * @deprecated this interface is present for backward compatibility with the version of this library
+ *             for Java 6 or 7, use {@link java.util.function.BiFunction} instead.
+ * // endif //
+ */
+/* if JDK8 jdk */@FunctionalInterface @Deprecated/* endif */
 public interface BiFunction<T, U, R>
-        /* if JDK8 jdk //extends java.util.function.BiFunction<T, U, R> // endif */{
+        /* if JDK8 jdk */extends java.util.function.BiFunction<T, U, R> /* endif */{
 
     /* if !(JDK8 jdk) */
+    /**
+     * Applies this function to the given arguments.
+     *
+     * @param t the first function argument
+     * @param u the second function argument
+     * @return the function result
+     */
     R apply(T t, U u);
     /* endif */
 }

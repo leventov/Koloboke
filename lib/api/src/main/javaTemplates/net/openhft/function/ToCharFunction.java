@@ -17,10 +17,30 @@
 package net.openhft.function;
 
 
+/**
+ * // if !(int|long|double t JDK8 jdk) //
+ * Represents a function that produces //a// {@code char}-valued result.  This is the
+ * {@code char}-producing primitive specialization for {@link Function}.
+ *
+ * @param <T> the type of the input to the function
+ * @see Function
+ * // elif int|long|double t JDK8 jdk //
+ * @deprecated this interface is present for backward compatibility with the version of this library
+ *             for Java 6 or 7, use {@link java.util.function.ToCharFunction} instead.
+ * // endif //
+ */
+/* if JDK8 jdk */@FunctionalInterface/* endif */
+/* if int|long|double t JDK8 jdk */@Deprecated/* endif */
 public interface ToCharFunction<T>/* if int|long|double t JDK8 jdk //
         extends java.util.function.ToCharFunction<T>// endif */ {
 
     /* if !(int|long|double t JDK8 jdk) */
+    /**
+     * Applies this function to the given argument.
+     *
+     * @param value the function argument
+     * @return the function result
+     */
     char applyAsChar(T value);
     /* endif */
 }

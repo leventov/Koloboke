@@ -21,7 +21,39 @@
 package net.openhft.function;
 
 
+/**
+ * Represents a function that accepts
+ * // if !(char t char u) && !(byte t byte u) && !(short t short u) && !(int t int u) &&
+ !(long t long u) && !(float t float u) && !(double t double u) //
+ * // if !(obj t) ////a// {@code char}// elif obj t //an object// endif //-valued and
+ * //a// {@code short}-valued argument
+ * // elif char t char u || byte t byte u || short t short u || int t int u || long t long u ||
+ float t float u || double t double u //
+ * two {@code char}-valued arguments
+ * // endif //
+ * and produces //a// {@code short}-valued result.
+ * This is the {@code (// if !(obj t) //char// elif obj t //reference// endif //, short, short)}
+ * specialization of {@link BiFunction}.
+ *
+ * // if char t char u || byte t byte u || short t short u || int t int u || long t long u ||
+ float t float u || double t double u //
+ * <p>Unlike {@link CharBinaryOperator}, this function is supposed to accept heterogeneous
+ * arguments, e. g. key and value in {@link net.openhft.collect.map.CharCharMap#compute(char,
+ * CharCharToCharFunction)} method.
+ * // endif //
+ *
+ * // if obj t // @param //<>// the type of the first argument to the function// endif //
+ * @see BiFunction
+ */
+/* if JDK8 jdk */@FunctionalInterface/* endif */
 public interface CharShortToShortFunction/*<>*/ {
 
-    short applyAsShort( char a, short b );
+    /**
+     * Applies this function to the given arguments.
+     *
+     * @param a the first function argument
+     * @param b the second function argument
+     * @return the function result
+     */
+    short applyAsShort(char a, short b);
 }

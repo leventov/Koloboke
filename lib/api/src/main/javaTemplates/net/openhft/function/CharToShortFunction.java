@@ -19,11 +19,30 @@
 
 package net.openhft.function;
 
-
+/**
+ * // if !(int|long|double t int|long|double u JDK8 jdk) //
+ * Represents a function that accepts //a// {@code char}-valued argument and produces //a//
+ * {@code short}-valued result.  This is the {@code char}-to-{@code short} primitive
+ * specialization for {@link Function}.
+ *
+ * @see Function
+ * // elif int|long|double t int|long|double u JDK8 jdk //
+ * @deprecated this interface is present for backward compatibility with the version of this library
+ *             for Java 6 or 7, use {@link java.util.function.CharToShortFunction} instead.
+ * // endif //
+ */
+/* if JDK8 jdk */@FunctionalInterface/* endif */
+/* if int|long|double t int|long|double u JDK8 jdk */@Deprecated/* endif */
 public interface CharToShortFunction/* if int|long|double t int|long|double u JDK8 jdk //
         extends java.util.function.CharToShortFunction// endif */ {
 
     /* if !(int|long|double t int|long|double u JDK8 jdk) */
+    /**
+     * Applies this function to the given argument.
+     *
+     * @param value the function argument
+     * @return the function result
+     */
     short applyAsShort(char value);
     /* endif */
 }
