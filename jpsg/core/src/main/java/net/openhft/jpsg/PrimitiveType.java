@@ -133,7 +133,8 @@ public enum PrimitiveType implements Option {
 
     private PrimitiveType(String prim, String className) {
         this.className = className;
-        classNameP = Pattern.compile("(?<![A-Za-z0-9_$#])" + className + "(?![A-Za-z0-9_$#])");
+        // allowed end # because of Javadoc links: {@link Integer#valueOf}
+        classNameP = Pattern.compile("(?<![A-Za-z0-9_$#])" + className + "(?![A-Za-z0-9_$])");
 
         standalone = prim;
         standaloneP = Pattern.compile("(?<![A-Za-z0-9_$#])" + prim + "(?![A-Za-z0-9_$#])");
