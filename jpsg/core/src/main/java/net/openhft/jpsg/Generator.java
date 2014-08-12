@@ -130,6 +130,7 @@ public class Generator {
         add(new RawModifierProcessor());
         add(new BitsModifierPreProcessor());
         add(new BitsModifierPostProcessor());
+        add(new ArticleProcessor());
     }};
 
     private final List<String> with = new ArrayList<>();
