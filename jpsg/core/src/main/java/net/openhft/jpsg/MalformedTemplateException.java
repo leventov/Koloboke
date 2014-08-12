@@ -33,14 +33,18 @@ public final class MalformedTemplateException extends RuntimeException {
         return new MalformedTemplateException(makeMessageNear(input, pos, message));
     }
 
+    static List<String> lines(String s) {
+        String[] ls = s.split("\\n");
+        return Arrays.stream(ls).map(l -> l + '\n').collect(toList());
+    }
+
     private static String makeMessageNear(CharSequence input, int pos, String message) {
         StringJoiner joiner = new StringJoiner("");
         joiner.add("Source file: " + Generator.currentSourceFile() + "\n");
         joiner.add(message + ":\n");
 
         String s = input.toString();
-        String[] ls = s.split("\\n");
-        List<String> lines = Arrays.stream(ls).map(l -> l + '\n').collect(toList());
+        List<String> lines = lines(s);
         int charCount = 0;
         int targetLine = -1;
         for (int i = 0; i < lines.size(); i++) {

@@ -59,6 +59,15 @@ public class Generator {
         return currentSource.get();
     }
 
+    private static ThreadLocal<Generator> currentGenerator = new ThreadLocal<>();
+    private static void setCurrentGenerator(Generator generator) {
+        currentGenerator.set(generator);
+    }
+
+    public static Generator currentGenerator() {
+        return currentGenerator.get();
+    }
+
     private static CheckingPattern compileBlock(String insideBlockRegex, String keyword) {
         String checkingBlock = "/[\\*/]\\s*" + keyword + "[^/\\*]*+[\\*/]/";
         String block = "/[\\*/]\\s*" + removeSubGroupNames(insideBlockRegex) + "\\s*[\\*/]/";
@@ -131,6 +140,7 @@ public class Generator {
         add(new BitsModifierPreProcessor());
         add(new BitsModifierPostProcessor());
         add(new ArticleProcessor());
+        add(new OverviewProcessor());
     }};
 
     private final List<String> with = new ArrayList<>();
@@ -393,6 +403,7 @@ public class Generator {
     }
 
     private void doGenerate(Path sourceFile, Path targetDir) throws IOException {
+        setCurrentGenerator(this);
         setCurrentSourceFile(sourceFile);
         log.info("Processing file: {}", sourceFile);
         String sourceFileName = sourceFile.toFile().getName();
@@ -433,6 +444,7 @@ public class Generator {
             final String generatedFileName = generate(mainContext, target, sourceFileName);
             final Path generatedFile = targetDir.resolve(generatedFileName);
             contextGenerationTasks.add(ForkJoinTask.adapt(() -> {
+                setCurrentGenerator(Generator.this);
                 setCurrentSourceFile(sourceFile);
                 String generatedContent = generate(mainContext, target, content);
                 if (Files.exists(generatedFile)) {
@@ -442,8 +454,7 @@ public class Generator {
                         return null;
                     }
                 }
-                Files.write(generatedFile, Arrays.asList(generatedContent), UTF_8,
-                        TRUNCATE_EXISTING, CREATE);
+                writeFile(generatedFile, generatedContent);
                 log.info("Wrote: {}", generatedFileName);
                 return null;
             }));
@@ -451,7 +462,11 @@ public class Generator {
         ForkJoinTask.invokeAll(contextGenerationTasks);
     }
 
-    private String generate(Context source, Context target, String template) {
+    void writeFile(Path file, String content) throws IOException {
+        Files.write(file, Arrays.asList(content), UTF_8, TRUNCATE_EXISTING, CREATE);
+    }
+
+    String generate(Context source, Context target, String template) {
         return firstProcessor.generate(source, target, template);
     }
 
