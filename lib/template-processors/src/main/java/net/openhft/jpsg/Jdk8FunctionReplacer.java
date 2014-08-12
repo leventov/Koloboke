@@ -19,6 +19,7 @@ package net.openhft.jpsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
@@ -37,13 +38,22 @@ public final class Jdk8FunctionReplacer extends TemplateProcessor {
 
     @Override
     protected void process(StringBuilder sb, Context source, Context target, String template) {
+        Path currentSourceFile = Generator.currentSourceFile();
+        boolean packageInfo = currentSourceFile.endsWith("package-info.java") ||
+                currentSourceFile.endsWith("html");
         if (JDK8.equals(target.getOption("jdk")) &&
                 // Heuristic that we are at the end of the template class
-                template.trim().endsWith("}")) {
+                (template.trim().endsWith("}") || packageInfo)) {
             template = sb.toString() + template;
+            // in ordinary Java source files, we replace only imports, to let fully-qualified refs
+            // in the code to remain unchanged. In package descriptions, there are no imports,
+            // so we can only replace all fully-qualified names.
+            String prefix = packageInfo ? "" : "import ";
             for (String jdk8Interface : JDK8_INTERFACES) {
-                template = template.replace(jdk8Interface, "import java.util.function." +
-                        jdk8Interface.substring("import net.openhft.function.".length()));
+                template = template.replace(
+                        prefix + "net.openhft.function." + jdk8Interface,
+                        prefix + "java.util.function." + jdk8Interface
+                );
             }
             sb.setLength(0);
             sb.append(template);
@@ -96,5 +106,5 @@ public final class Jdk8FunctionReplacer extends TemplateProcessor {
             "ToLongBiFunction",
             "ToLongFunction",
             "UnaryOperator"
-    ).stream().map("import net.openhft.function."::concat).collect(toList());
+    );
 }
