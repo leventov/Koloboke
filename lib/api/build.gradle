@@ -2,10 +2,16 @@ evaluationDependsOn("$parent.path")
 
 javadoc {
     title "HFT Collections $version API"
-    options.links(
-            "http://jsr-305.googlecode.com/svn/trunk/javadoc/",
-            "http://docs.oracle.com/javase/$libTargetJava/docs/api/"
-    )
+    configure((CoreJavadocOptions) getOptions()) {
+        links("http://jsr-305.googlecode.com/svn/trunk/javadoc/",
+                "http://docs.oracle.com/javase/$libTargetJava/docs/api/")
+        addStringOption('sourcepath', project.hasProperty('jdkSrc') ? jdkSrc :
+                "$System.env.JAVA_HOME/src")
+        if (libTargetJava == '8')
+            // to suppress warnings in JDK sources
+            addStringOption('tag', 'implSpec')
+        addStringOption('noqualifier', 'java.lang:java.util')
+    }
     executable = project.hasProperty('javadocExecutable') ? javadocExecutable : null
 }
 

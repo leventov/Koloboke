@@ -29,6 +29,7 @@
       <w>inversed</w>
       <w>iter</w>
       <w>iterables</w>
+      <w>javadocs</w>
       <w>jpsg</w>
       <w>leventov</w>
       <w>lhash</w>
@@ -49,6 +50,7 @@
       <w>sqrt</w>
       <w>subclassing</w>
       <w>subdir</w>
+      <w>subdirs</w>
       <w>subproject</w>
       <w>tradeoff</w>
       <w>unary</w>

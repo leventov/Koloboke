@@ -128,3 +128,10 @@ To build the lib for Java 8, run
     
 from the `lib` subdir.
 
+If you want to generate proper Javadocs, especially for Java 6 or 7, you should specify
+`javadocExecutable` and `jdkSrc` build properties (see
+[Gradle docs](http://www.gradle.org/docs/2.0/userguide/tutorial_this_and_that.html#sec:gradle_properties_and_system_properties)
+for how to do that). Typical `javadocExecutable` value is `JAVA_HOME/bin/javadoc[.exe]`, `jdkSrc`
+should point to a directory which contain uncompressed JDK sources, i. e. package structure starting
+from `java`, `javax`, `sun`, etc. subdirs.
+
