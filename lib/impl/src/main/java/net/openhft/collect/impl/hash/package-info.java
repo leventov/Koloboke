@@ -21,6 +21,12 @@
  * "generic operations". Thus this segregation is for reducing repetitive _template_ code only.
  * (DRY!!)
  *
- * Some "Generic Operations" are so generic that could be used to template tree maps/sets in future.
+ * <p>Some "Generic Operations" are so generic that could be used to template tree maps/sets
+ * in future.
+ *
+ * <p>Annotation {@link javax.annotation.ParametersAreNonnullByDefault} on this package added to
+ * suppress warnings in API about not annotated method implementations. It doesn't mean that all
+ * parameters in the package are really nonnull by default.
  */
+@javax.annotation.ParametersAreNonnullByDefault
 package net.openhft.collect.impl.hash;

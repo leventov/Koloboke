@@ -23,7 +23,7 @@ package net.openhft.collect.impl.hash;
 import net.openhft.collect.hash.*;
 import net.openhft.collect.impl.*;
 import net.openhft.collect.set.hash.HashByteSetFactory;
-import net.openhft.function./*f*/ByteConsumer/**/;
+import net.openhft.function.Consumer;
 import net.openhft.function.Predicate;
 import net.openhft.collect.set.hash.HashByteSet;
 
@@ -121,6 +121,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
 
     /* with Updatable|Mutable mutability */
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet() {
         return newUpdatableSet(getDefaultExpectedSize());
     }
@@ -131,11 +132,13 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Byte>/**/ elements) {
         return newUpdatableSet(elements, sizeOr(elements, getDefaultExpectedSize()));
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Byte>/**/ elems1,
             Iterable/*ep*/<Byte>/**/ elems2) {
         long expectedSize = (long) sizeOr(elems1, 0);
@@ -144,6 +147,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Byte>/**/ elems1,
             Iterable/*ep*/<Byte>/**/ elems2, Iterable/*ep*/<Byte>/**/ elems3) {
         long expectedSize = (long) sizeOr(elems1, 0);
@@ -153,6 +157,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Byte>/**/ elems1,
             Iterable/*ep*/<Byte>/**/ elems2, Iterable/*ep*/<Byte>/**/ elems3,
             Iterable/*ep*/<Byte>/**/ elems4) {
@@ -164,6 +169,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Byte>/**/ elems1,
             Iterable/*ep*/<Byte>/**/ elems2, Iterable/*ep*/<Byte>/**/ elems3,
             Iterable/*ep*/<Byte>/**/ elems4, Iterable/*ep*/<Byte>/**/ elems5) {
@@ -176,6 +182,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Byte>/**/ elements,
             int expectedSize) {
         return shrunk(super.newUpdatableSet(elements, expectedSize));
@@ -195,6 +202,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Byte>/**/ elems1,
             Iterable/*ep*/<Byte>/**/ elems2, int expectedSize) {
         UpdatableDHashByteSetGO/*p2*/ set = newUpdatableSet(expectedSize);
@@ -204,6 +212,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Byte>/**/ elems1,
             Iterable/*ep*/<Byte>/**/ elems2, Iterable/*ep*/<Byte>/**/ elems3,
             int expectedSize) {
@@ -215,6 +224,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Byte>/**/ elems1,
             Iterable/*ep*/<Byte>/**/ elems2, Iterable/*ep*/<Byte>/**/ elems3,
             Iterable/*ep*/<Byte>/**/ elems4, int expectedSize) {
@@ -227,6 +237,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterable/*ep*/<Byte>/**/ elems1,
             Iterable/*ep*/<Byte>/**/ elems2, Iterable/*ep*/<Byte>/**/ elems3,
             Iterable/*ep*/<Byte>/**/ elems4, Iterable/*ep*/<Byte>/**/ elems5,
@@ -242,11 +253,13 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
 
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterator/*ep*/<Byte>/**/ elements) {
         return newUpdatableSet(elements, getDefaultExpectedSize());
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(Iterator/*ep*/<Byte>/**/ elements,
             int expectedSize) {
         UpdatableDHashByteSetGO/*p2*/ set = newUpdatableSet(expectedSize);
@@ -257,19 +270,21 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(
-            net.openhft.function.Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier) {
+            Consumer<net.openhft.function./*f*/ByteConsumer/*p2*/> elementsSupplier) {
         return newUpdatableSet(elementsSupplier, getDefaultExpectedSize());
     }
 
     /* define pe *//* if !(obj elem) //byte// elif obj elem //E2// endif *//* enddefine */
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(
-            net.openhft.function.Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier,
+            Consumer<net.openhft.function./*f*/ByteConsumer/*p2*/> elementsSupplier,
             int expectedSize) {
         final UpdatableDHashByteSetGO/*p2*/ set = newUpdatableSet(expectedSize);
-        elementsSupplier.accept(new /*f*/ByteConsumer/*p2*/() {
+        elementsSupplier.accept(new net.openhft.function./*f*/ByteConsumer/*p2*/() {
             @Override
             public void accept(/*pe*/byte/**/ e) {
                 set.add(e);
@@ -279,11 +294,13 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(/*pe*/byte/**/[] elements) {
         return newUpdatableSet(elements, elements.length);
     }
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSet(/*pe*/byte/**/[] elements,
             int expectedSize) {
         UpdatableDHashByteSetGO/*p2*/ set = newUpdatableSet(expectedSize);
@@ -295,11 +312,13 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
 
     /* if !(obj elem) */
     @Override
+    @Nonnull
     public UpdatableDHashByteSetGO newUpdatableSet(Byte[] elements) {
         return newUpdatableSet(elements, elements.length);
     }
 
     @Override
+    @Nonnull
     public UpdatableDHashByteSetGO newUpdatableSet(Byte[] elements,
             int expectedSize) {
         UpdatableDHashByteSetGO set = newUpdatableSet(expectedSize);
@@ -311,6 +330,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     /* endif */
 
     @Override
+    @Nonnull
     public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSetOf(/*pe*/byte/**/ e1) {
         UpdatableDHashByteSetGO/*p2*/ set = newUpdatableSet(1);
         set.add(e1);
@@ -318,7 +338,9 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
-    public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSetOf(/*pe*/byte/**/ e1, /*pe*/byte/**/ e2) {
+    @Nonnull
+    public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSetOf(
+            /*pe*/byte/**/ e1, /*pe*/byte/**/ e2) {
         UpdatableDHashByteSetGO/*p2*/ set = newUpdatableSet(2);
         set.add(e1);
         set.add(e2);
@@ -326,8 +348,9 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
-    public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSetOf(/*pe*/byte/**/ e1, /*pe*/byte/**/ e2,
-            /*pe*/byte/**/ e3) {
+    @Nonnull
+    public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSetOf(
+            /*pe*/byte/**/ e1, /*pe*/byte/**/ e2, /*pe*/byte/**/ e3) {
         UpdatableDHashByteSetGO/*p2*/ set = newUpdatableSet(3);
         set.add(e1);
         set.add(e2);
@@ -336,8 +359,9 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
-    public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSetOf(/*pe*/byte/**/ e1, /*pe*/byte/**/ e2,
-            /*pe*/byte/**/ e3, /*pe*/byte/**/ e4) {
+    @Nonnull
+    public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSetOf(
+            /*pe*/byte/**/ e1, /*pe*/byte/**/ e2, /*pe*/byte/**/ e3, /*pe*/byte/**/ e4) {
         UpdatableDHashByteSetGO/*p2*/ set = newUpdatableSet(4);
         set.add(e1);
         set.add(e2);
@@ -347,8 +371,9 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
-    public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSetOf(/*pe*/byte/**/ e1, /*pe*/byte/**/ e2,
-            /*pe*/byte/**/ e3, /*pe*/byte/**/ e4, /*pe*/byte/**/ e5,
+    @Nonnull
+    public/*p1*/ UpdatableDHashByteSetGO/*p2*/ newUpdatableSetOf(/*pe*/byte/**/ e1,
+            /*pe*/byte/**/ e2, /*pe*/byte/**/ e3, /*pe*/byte/**/ e4, /*pe*/byte/**/ e5,
             /*pe*/byte/**/... restElements) {
         UpdatableDHashByteSetGO/*p2*/ set = newUpdatableSet(5 + restElements.length);
         set.add(e1);
@@ -368,6 +393,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     /* define apply *//* if with expectedSize //, expectedSize// endif *//* enddefine */
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(Iterable/*ep*/<Byte>/**/ elements/*arg*/) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
         set.move(newUpdatableSet(elements/*apply*/));
@@ -375,6 +401,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(Iterable/*ep*/<Byte>/**/ elems1,
             Iterable/*ep*/<Byte>/**/ elems2/*arg*/) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
@@ -383,6 +410,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(Iterable/*ep*/<Byte>/**/ elems1,
             Iterable/*ep*/<Byte>/**/ elems2, Iterable/*ep*/<Byte>/**/ elems3/*arg*/) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
@@ -391,6 +419,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(Iterable/*ep*/<Byte>/**/ elems1,
             Iterable/*ep*/<Byte>/**/ elems2, Iterable/*ep*/<Byte>/**/ elems3,
             Iterable/*ep*/<Byte>/**/ elems4/*arg*/) {
@@ -400,6 +429,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(Iterable/*ep*/<Byte>/**/ elems1,
             Iterable/*ep*/<Byte>/**/ elems2, Iterable/*ep*/<Byte>/**/ elems3,
             Iterable/*ep*/<Byte>/**/ elems4, Iterable/*ep*/<Byte>/**/ elems5/*arg*/) {
@@ -411,6 +441,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     /* endwith */
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(Iterator/*ep*/<Byte>/**/ elements) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
         set.move(newUpdatableSet(elements));
@@ -418,6 +449,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(Iterator/*ep*/<Byte>/**/ elements,
             int expectedSize) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
@@ -426,16 +458,18 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(
-            net.openhft.function.Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier) {
+            Consumer<net.openhft.function./*f*/ByteConsumer/*p2*/> elementsSupplier) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
         set.move(newUpdatableSet(elementsSupplier));
         return set;
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(
-            net.openhft.function.Consumer</*f*/ByteConsumer/*p2*/> elementsSupplier,
+            Consumer<net.openhft.function./*f*/ByteConsumer/*p2*/> elementsSupplier,
             int expectedSize) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
         set.move(newUpdatableSet(elementsSupplier, expectedSize));
@@ -443,6 +477,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(/*pe*/byte/**/[] elements) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
         set.move(newUpdatableSet(elements));
@@ -450,6 +485,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSet(/*pe*/byte/**/[] elements, int expectedSize) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
         set.move(newUpdatableSet(elements, expectedSize));
@@ -458,6 +494,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
 
     /* if !(obj elem) */
     @Override
+    @Nonnull
     public HashByteSet newMutableSet(Byte[] elements) {
         MutableDHashByteSetGO set = uninitializedMutableSet();
         set.move(newUpdatableSet(elements));
@@ -465,6 +502,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public HashByteSet newMutableSet(Byte[] elements, int expectedSize) {
         MutableDHashByteSetGO set = uninitializedMutableSet();
         set.move(newUpdatableSet(elements, expectedSize));
@@ -473,6 +511,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     /* endif */
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSetOf(/*pe*/byte/**/ e1) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
         set.move(newUpdatableSetOf(e1));
@@ -480,6 +519,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSetOf(/*pe*/byte/**/ e1, /*pe*/byte/**/ e2) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
         set.move(newUpdatableSetOf(e1, e2));
@@ -487,6 +527,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSetOf(/*pe*/byte/**/ e1, /*pe*/byte/**/ e2,
             /*pe*/byte/**/ e3) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
@@ -495,6 +536,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSetOf(/*pe*/byte/**/ e1, /*pe*/byte/**/ e2,
             /*pe*/byte/**/ e3, /*pe*/byte/**/ e4) {
         MutableDHashByteSetGO/*p2*/ set = uninitializedMutableSet();
@@ -503,6 +545,7 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
     @Override
+    @Nonnull
     public/*p1*/ HashByteSet/*p2*/ newMutableSetOf(/*pe*/byte/**/ e1, /*pe*/byte/**/ e2,
             /*pe*/byte/**/ e3, /*pe*/byte/**/ e4, /*pe*/byte/**/ e5,
             /*pe*/byte/**/... restElements) {

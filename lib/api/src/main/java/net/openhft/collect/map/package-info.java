@@ -15,6 +15,6 @@
  */
 
 /**
- * Contains interfaces of {@link java.util.Map Map} specializations, their factories and cursors.
+ * Contains interfaces of {@link java.util.Map} specializations, their factories and cursors.
  */
 package net.openhft.collect.map;

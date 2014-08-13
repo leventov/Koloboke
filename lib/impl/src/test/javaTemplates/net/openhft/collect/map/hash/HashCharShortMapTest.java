@@ -36,15 +36,15 @@ public class HashCharShortMapTest extends TestCase {
         HyperCharShortMapTestSuiteBuilder builder = new HyperCharShortMapTestSuiteBuilder()
                 .setKeySamples(CharSamples.allKeys()).setValueSamples(ShortSamples.allKeys());
         /* define pp */
-        /* if obj key obj value //<Object, Object>// elif obj key || obj value //<Object>// endif */
+        /* if obj key obj value //Object, Object, // elif obj key || obj value //Object, // endif */
         /* enddefine */
         builder.setFactories(Lists.transform(/* if !(float|double key) */CharHashConfigs
                 /* elif float|double key //HashConfigs// endif */.all(),
                 new Function</* if !(float|double key) */CharHashConfig
                             /* elif float|double key //HashConfig// endif */,
-                        CharShortMapFactory/*pp*/>() {
+                        CharShortMapFactory</*pp*/?>>() {
                     @Override
-                    public CharShortMapFactory/*pp*/ apply(
+                    public CharShortMapFactory</*pp*/?> apply(
                             /* if !(float|double key) */CharHashConfig
                             /* elif float|double key //HashConfig// endif */ config) {
                         return /* if !(float|double key) */

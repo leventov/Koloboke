@@ -1,6 +1,6 @@
 ## HFT Collections
 
-This is a yet another Java collections library of primitive specializations.
+This library extends Java Collections Framework with primitive specializations and more.
 Java 6+. Apache 2.0 license.
 
 Currently only *hash sets* and *hash maps* are implemented.
@@ -26,6 +26,7 @@ Currently only *hash sets* and *hash maps* are implemented.
     - As already mentioned, major part of Java 8 Collections API additions (actually, everything
       except streams and spliterators) is backported to the API for Java 6 and 7
     - Some useful extension methods beyond Java 8 Collections API
+    - *Every* public entity in the API is documented
  - More than *half a million* of automatically generated tests
 
 #### Disadvantage
@@ -70,7 +71,7 @@ with
     Map<Integer, Integer> map = HashIntIntMaps.newMutableMap();
 
 Next step: see [the table of equivalents of JDK collection patterns]
-(http://openhft.github.io/hftc/api/0.5/java8/net/openhft/collect/package-summary.html#jdk-equivalents).
+(http://openhft.github.io/hftc/api/0.5/java8/index.html#jdk-equivalents).
 
 ### JavaDoc: [Java 6] (http://openhft.github.io/hftc/api/0.5/java6/index.html) | [Java 7] (http://openhft.github.io/hftc/api/0.5/java7/index.html) | [Java 8] (http://openhft.github.io/hftc/api/0.5/java8/index.html)
 

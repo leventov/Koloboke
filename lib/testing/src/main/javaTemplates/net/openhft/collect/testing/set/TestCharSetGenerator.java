@@ -21,7 +21,7 @@ import com.google.common.collect.testing.SampleElements;
 import com.google.common.collect.testing.TestSetGenerator;
 import net.openhft.collect.set.CharSetFactory;
 import net.openhft.collect.testing.Mutability;
-import net.openhft.function./*f*/CharConsumer/**/;
+import net.openhft.function.Consumer;
 
 import java.util.List;
 import java.util.Set;
@@ -30,10 +30,11 @@ import java.util.Set;
 public class TestCharSetGenerator/*<>*/ implements TestSetGenerator<Character> {
 
     private final Mutability mutability;
-    private final CharSetFactory/*<>*/ factory;
+    private final CharSetFactory</* if obj elem //E, // endif */?> factory;
     private final SampleElements<? extends Character> elems;
 
-    public TestCharSetGenerator(Mutability mutability, CharSetFactory/*<>*/ factory,
+    public TestCharSetGenerator(Mutability mutability,
+            CharSetFactory</* if obj elem //E, // endif */?> factory,
             SampleElements<? extends Character> elems) {
         this.mutability = mutability;
         this.factory = factory;
@@ -42,7 +43,7 @@ public class TestCharSetGenerator/*<>*/ implements TestSetGenerator<Character> {
 
     @Override
     public Set<Character> create(final Object... elements) {
-        net.openhft.function.Consumer</*f*/CharConsumer/*<>*/> supplier = set -> {
+        Consumer<net.openhft.function./*f*/CharConsumer/*<>*/> supplier = set -> {
             for (Object e : elements) {
                 set.accept((Character) e);
             }

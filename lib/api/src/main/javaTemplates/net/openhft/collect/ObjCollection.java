@@ -36,10 +36,13 @@ import java.util.Iterator;
  * implementation, you can always construct an {@code ObjCollection} with default equality,
  * i. e. {@code equivalence() == }{@link Equivalence#defaultEquality()}.
  *
- * <p>See <a href="package-summary.html#collection-mutability">{@code Collection} mutability
- * matrix</a> for methods which are supported by {@code ObjCollections} with the specific
- * mutability. All methods defined in this interface directly are supported
- * by {@code ObjCollections} with any mutability profile.
+ * <p>See <a href="{@docRoot}/overview-summary.html#collection-mutability">{@code Collection}
+ * mutability matrix</a> for methods which are supported by {@code ObjCollections} with the specific
+ * mutability. // if JDK8 jdk //All methods defined in this interface directly are supported
+ * by {@code ObjCollections} with any mutability profile.// elif !(JDK8 jdk) //Among methods,
+ * defined in this interface directly, {@link #removeIf(Predicate)} is supported only by collections
+ * of <i>mutable</i> profile, others are supported by {@code ObjCollections} with any mutability
+ * profile.// endif //
  *
  * @param <E> the type of elements in this collection
  */
@@ -64,7 +67,7 @@ public interface ObjCollection<E> extends Collection<E>, Container {
      * Exceptions thrown by the action are relayed to the caller.
      *
      * @param action the action to be performed for each element
-     * @see <a href="package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     void forEach(@Nonnull Consumer<? super E> action);
@@ -83,17 +86,17 @@ public interface ObjCollection<E> extends Collection<E>, Container {
      * @return {@code true} if the predicate returned {@code true} for all elements of this
      *         collection, {@code false} if it returned {@code false} for the element
      * @param predicate the predicate to be checked for each element of this collection
-     * @see <a href="package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     boolean forEachWhile(@Nonnull Predicate<? super E> predicate);
 
     /**
      * Returns a new cursor over this collection's elements. Cursor iteration order is always
-     * corresponds to the {@link #iterator() iterator}'s order.
+     * corresponds to the {@linkplain #iterator() iterator}'s order.
      *
      * @return a new cursor over this collection's elements
-     * @see <a href="package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     @Nonnull
@@ -103,7 +106,7 @@ public interface ObjCollection<E> extends Collection<E>, Container {
      * Returns a new iterator over this collection's elements.
      *
      * @return a new iterator over this collection's elements
-     * @see <a href="package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     @Override
@@ -122,7 +125,7 @@ public interface ObjCollection<E> extends Collection<E>, Container {
      * @throws UnsupportedOperationException if elements cannot be removed from this collection.
      *         Implementations may throw this exception if a matching element cannot be removed
      *         or if, in general, removal is not supported.
-     * @see <a href="package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     boolean removeIf(@Nonnull Predicate<? super E> filter);

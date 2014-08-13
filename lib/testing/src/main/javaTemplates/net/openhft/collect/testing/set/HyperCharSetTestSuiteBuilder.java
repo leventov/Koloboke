@@ -33,18 +33,19 @@ import static com.google.common.collect.testing.SetTestSuiteBuilder.*;
 
 public class HyperCharSetTestSuiteBuilder/*<>*/ {
 
-    private List<CharSetFactory/*<>*/> factories;
+    /* define ps //<// if obj elem //E, // endif //?>// enddefine */
+    private List<CharSetFactory/*ps*/> factories;
     private List<SampleElements<? extends Character>> samples;
     private List<Feature<?>> specialFeatures = new ArrayList<Feature<?>>();
     private List<Method> suppressing = new ArrayList<Method>();
 
-    public HyperCharSetTestSuiteBuilder/*<>*/ setFactories(CharSetFactory/*<>*/... factories) {
+    public HyperCharSetTestSuiteBuilder/*<>*/ setFactories(CharSetFactory/*ps*/... factories) {
         this.factories = Arrays.asList(factories);
         return this;
     }
 
     public HyperCharSetTestSuiteBuilder/*<>*/ setFactories(
-            List<CharSetFactory/*<>*/> factories) {
+            List<CharSetFactory/*ps*/> factories) {
         this.factories = factories;
         return this;
     }
@@ -80,7 +81,7 @@ public class HyperCharSetTestSuiteBuilder/*<>*/ {
 
     public TestSuite create() {
         TestSuite suite = new TestSuite(subSuiteName(factories, samples, ""));
-        for (CharSetFactory/*<>*/ factory : factories) {
+        for (CharSetFactory/*ps*/ factory : factories) {
             for (SampleElements<? extends Character> elems : samples) {
                 for (Mutability mutability : Mutability.values()) {
                     FeatureSpecificTestSuiteBuilder b = forEachTestSuiteBuilder(

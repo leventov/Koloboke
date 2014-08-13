@@ -30,11 +30,12 @@ import javax.annotation.Nonnull;
  * A mutable pointer to the entry in an iteration of entries with {@code // raw //char} keys and
  * {@code // raw //short} values.
  *
- * <p>See the <a href="package-summary.html#iteration">comparison of iteration ways</a>
+ * <p>See the <a href="{@docRoot}/overview-summary.html#iteration">comparison of iteration ways</a>
  * in the library.
  *
  * <p>{@code CharShortCursors} of immutable maps don't support {@link #setValue(//raw//short)}
- * operation. <a href="package-summary.html#mutability">More about mutability profiles.</a>
+ * operation. <a href="{@docRoot}/overview-summary.html#mutability">More about mutability profiles.
+ * </a>
  *
  * @see CharShortMap#cursor()
  */
@@ -45,14 +46,10 @@ public interface CharShortCursor/*<>*/ extends Cursor {
      * direction until all entries have been processed or the action throws an exception.
      * Exceptions thrown by the action are relayed to the caller.
      *
-     * <pre>{@code
-     * cur.forEachForward(action)
-     * }</pre>
-     * is exact equivalent of
-     * <pre>{@code
+     * {@code cur.forEachForward(action)} is exact equivalent of
+     * <pre> {@code
      * while (cur.moveNext())
-     *     action.accept(cur.key(), cur.value());
-     * }</pre>
+     *     action.accept(cur.key(), cur.value());}</pre>
      *
      * @param action the action to be performed for each entry
      */

@@ -16,6 +16,8 @@
 
 package net.openhft.collect.hash;
 
+import net.openhft.collect.ContainerFactory;
+
 import javax.annotation.Nonnull;
 
 
@@ -25,10 +27,11 @@ import javax.annotation.Nonnull;
  * <p>Configurations from this interface, hash config and default expected size, don't affect
  * application semantics in any way, only performance and memory footprint characteristics.
  *
- * @param <T> the concrete factory type which extends this interface
+ * @param <F> the concrete factory type which extends this interface
  * @see HashContainer
  */
-public interface HashContainerFactory<T extends HashContainerFactory<T>> {
+public interface HashContainerFactory<F extends HashContainerFactory<F>>
+        extends ContainerFactory<F> {
 
     /**
      * Returns the hash config, with which containers constructed by this factory are initialized.
@@ -45,25 +48,5 @@ public interface HashContainerFactory<T extends HashContainerFactory<T>> {
      * @param config the new hash config
      * @return a copy of this factory with hash config set to the given one
      */
-    T withHashConfig(@Nonnull HashConfig config);
-
-    /**
-     * Returns the default expected size. This size is used to initialize hash containers
-     * in no-arg factory methods and methods that accept uncountable sources of elements:
-     * {@link Iterable iterables}, {@link java.util.Iterator iterators}, supplier functions, etc.
-     *
-     * <p>Default value of the default expected size is {@literal 10}.
-     *
-     * @return the default expected size
-     */
-    int getDefaultExpectedSize();
-
-    /**
-     * Returns a copy of this factory with default expected size set to the given value.
-     *
-     * @param defaultExpectedSize the new default expected size
-     * @return a copy of this factory with default expected size set to the given value
-     * @throws IllegalArgumentException if {@code defaultExpectedSize} is non-positive
-     */
-    T withDefaultExpectedSize(int defaultExpectedSize);
+    F withHashConfig(@Nonnull HashConfig config);
 }

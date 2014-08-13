@@ -15,7 +15,7 @@
  */
 
 /**
- * Contains interfaces of {@link java.util.Set Set} specializations, based on hash tables,
+ * Contains interfaces of {@link java.util.Set} specializations, based on hash tables,
  * their factories and static factory methods.
  *
  * @see <a href="../../hash/package-summary.html"><code>net.openhft.collect.hash</code></a>

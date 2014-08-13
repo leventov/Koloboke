@@ -61,6 +61,7 @@ public abstract class DHashObjSetFactorySO<E> extends ObjHashFactorySO<E>
 
     /* with Mutable|Updatable mutability */
     @Override
+    @Nonnull
     public <E2 extends E> MutableDHashObjSetGO<E2> newMutableSet(int expectedSize) {
         MutableDHashObjSetGO<E2> set = uninitializedMutableSet();
         set.init(configWrapper, expectedSize);
@@ -69,6 +70,7 @@ public abstract class DHashObjSetFactorySO<E> extends ObjHashFactorySO<E>
 
     /* if Updatable mutability */
     @Override
+    @Nonnull
     public <E2 extends E> MutableDHashObjSetGO<E2> newMutableSet(Iterable<? extends E2> elements,
             int expectedSize) {
         if (elements instanceof ObjCollection) {

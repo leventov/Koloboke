@@ -24,6 +24,7 @@ import net.openhft.collect.*;
 import net.openhft.collect.hash.*;
 import net.openhft.collect.set.hash.HashByteSetFactory;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Set;
 
@@ -55,6 +56,7 @@ public abstract class DHashByteSetFactorySO
 
     /* with Mutable|Updatable mutability */
     @Override
+    @Nonnull
     public MutableDHashByteSetGO newMutableSet(int expectedSize) {
         /* if float|double elem */
         MutableDHashByteSetGO set = new MutableDHashByteSet();
@@ -71,6 +73,7 @@ public abstract class DHashByteSetFactorySO
 
     /* if Updatable mutability */
     @Override
+    @Nonnull
     public MutableDHashByteSetGO newMutableSet(Iterable<Byte> elements, int expectedSize) {
         if (elements instanceof ByteCollection) {
             if (elements instanceof SeparateKVByteDHash) {

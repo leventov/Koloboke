@@ -34,12 +34,11 @@ package net.openhft.collect.hash;
  * and {@link java.util.HashSet} behaviour (these collections support {@code null} keys), you
  * <em>must</em> configure the corresponding factory to allow {@code null} keys:
  * <pre>{@code
- * factory = factory.withNullKeyAllowed(true);
- * }</pre>
+ * factory = factory.withNullKeyAllowed(true);}</pre>
  *
- * @param <T> the concrete factory type which extends this interface
+ * @param <F> the concrete factory type which extends this interface
  */
-public interface ObjHashFactory<T extends ObjHashFactory<T>> extends HashContainerFactory<T> {
+public interface ObjHashFactory<F extends ObjHashFactory<F>> extends HashContainerFactory<F> {
 
     /**
      * Returns {@code true} if {@code null} key is allowed, {@code false} otherwise.
@@ -55,6 +54,9 @@ public interface ObjHashFactory<T extends ObjHashFactory<T>> extends HashContain
      *
      * <p>This is a performance hint: hash containers might, but aren't required to throw
      * {@link NullPointerException} on putting {@code null} key, if {@code null} key is disallowed.
+     * @param nullKeyAllowed if {@code null} should be allowed in the containers contructed
+     *        by the returned factory
+     * @return a copy of this factory with {@code null} key allowed or disallowed, as specified
      */
-    T withNullKeyAllowed(boolean nullKeyAllowed);
+    F withNullKeyAllowed(boolean nullKeyAllowed);
 }

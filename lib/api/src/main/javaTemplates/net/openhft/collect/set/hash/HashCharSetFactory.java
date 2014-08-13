@@ -19,11 +19,10 @@ package net.openhft.collect.set.hash;
 
 import net.openhft.collect.*;
 import net.openhft.collect.hash.*;
-import net.openhft.function./*f*/CharConsumer/**/;
+import net.openhft.function.Consumer;
 import net.openhft.collect.set.CharSetFactory;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import java.util.Iterator;
 
@@ -34,12 +33,32 @@ import java.util.Iterator;
  * @see HashCharSet
  * @see HashCharSets#getDefaultFactory()
  */
-public interface HashCharSetFactory/*<>*/ extends CharSetFactory/*<>*/
+public interface HashCharSetFactory/*<>*/
+        extends CharSetFactory</* if obj elem //E, // endif */HashCharSetFactory/*<>*/>
         /* if !(float|double elem) */, CharHashFactory<HashCharSetFactory/*<>*/>
         /* elif float|double elem */, HashContainerFactory<HashCharSetFactory/*<>*/>/* endif */ {
 
     /* if obj elem */
-    <E2> HashCharSetFactory<E2> withEquivalence(@Nonnull Equivalence<E2> equivalence);
+    /**
+     * {@inheritDoc} Defaults to {@link Equivalence#defaultEquality()}.
+     */
+    @Override
+    @Nonnull
+    Equivalence<Character> getEquivalence();
+    /* endif */
+
+    /* if obj elem */
+    /**
+     * Returns a copy of this factory, with exception that it constructs sets with
+     * {@linkplain ObjCollection#equivalence() element equivalence} set to the given
+     * {@code Equivalence}.
+     *
+     * @param equivalence the new element equivalence
+     * @return a copy of this factory, which constructs sets with the given {@code keyEquivalence}
+     */
+    @Nonnull
+    HashCharSetFactory<Character> withEquivalence(
+            @Nonnull Equivalence<? super Character> equivalence);
     /* endif */
 
     /* define p1 *//* if obj elem //<E2 extends E>// endif *//* enddefine */
@@ -53,90 +72,91 @@ public interface HashCharSetFactory/*<>*/ extends CharSetFactory/*<>*/
     /* with Mutable|Updatable|Immutable mutability */
     /* if !(Immutable mutability) */
     @Override
+    @Nonnull
     /*p1*/ HashCharSet/*p2*/ newMutableSet();
 
     @Override
+    @Nonnull
     /*p1*/ HashCharSet/*p2*/ newMutableSet(int expectedSize);
     /* endif */
 
     /* with with|without expectedSize */
     /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */
 
-    /* if with expectedSize *//**
-     * If the specified elements is a set// if obj elem //
-     * and has the same equivalence with this factory// endif //,
-     * {@code expectedSize} is ignored.
-     *//* endif*/
     @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elements/*arg*/);
+    @Nonnull
+    /*p1*/ HashCharSet/*p2*/ newMutableSet(@Nonnull Iterable/*ep*/<Character>/**/ elements/*arg*/);
 
     @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
-            Iterable/*ep*/<Character>/**/ elems2/*arg*/);
+    @Nonnull
+    /*p1*/ HashCharSet/*p2*/ newMutableSet(@Nonnull Iterable/*ep*/<Character>/**/ elems1,
+            @Nonnull Iterable/*ep*/<Character>/**/ elems2/*arg*/);
 
     @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
-            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3/*arg*/);
+    @Nonnull
+    /*p1*/ HashCharSet/*p2*/ newMutableSet(@Nonnull Iterable/*ep*/<Character>/**/ elems1,
+            @Nonnull Iterable/*ep*/<Character>/**/ elems2,
+            @Nonnull Iterable/*ep*/<Character>/**/ elems3/*arg*/);
 
     @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
-            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
-            Iterable/*ep*/<Character>/**/ elems4/*arg*/);
+    @Nonnull
+    /*p1*/ HashCharSet/*p2*/ newMutableSet(@Nonnull Iterable/*ep*/<Character>/**/ elems1,
+            @Nonnull Iterable/*ep*/<Character>/**/ elems2,
+            @Nonnull Iterable/*ep*/<Character>/**/ elems3,
+            @Nonnull Iterable/*ep*/<Character>/**/ elems4/*arg*/);
 
     @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(Iterable/*ep*/<Character>/**/ elems1,
-            Iterable/*ep*/<Character>/**/ elems2, Iterable/*ep*/<Character>/**/ elems3,
-            Iterable/*ep*/<Character>/**/ elems4, Iterable/*ep*/<Character>/**/ elems5/*arg*/);
-
-    /* endwith */
-
-    @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(Iterator/*ep*/<Character>/**/ elements);
+    @Nonnull
+    /*p1*/ HashCharSet/*p2*/ newMutableSet(@Nonnull Iterable/*ep*/<Character>/**/ elems1,
+            @Nonnull Iterable/*ep*/<Character>/**/ elems2,
+            @Nonnull Iterable/*ep*/<Character>/**/ elems3,
+            @Nonnull Iterable/*ep*/<Character>/**/ elems4,
+            @Nonnull Iterable/*ep*/<Character>/**/ elems5/*arg*/);
 
     @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(Iterator/*ep*/<Character>/**/ elements,
-            int expectedSize);
+    @Nonnull
+    /*p1*/ HashCharSet/*p2*/ newMutableSet(@Nonnull Iterator/*ep*/<Character>/**/ elements/*arg*/);
 
     @Override
+    @Nonnull
     /*p1*/ HashCharSet/*p2*/ newMutableSet(
-            net.openhft.function.Consumer</*f*/CharConsumer/*p2*/> elementsSupplier);
-
-    @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(
-            net.openhft.function.Consumer</*f*/CharConsumer/*p2*/> elementsSupplier,
-            int expectedSize);
+            @Nonnull Consumer<net.openhft.function./*f*/CharConsumer/*p2*/> elementsSupplier
+            /*arg*/);
 
     /* define pe *//* if !(obj elem) //char// elif obj elem //E2// endif *//* enddefine */
 
     @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(/*pe*/char/**/[] elements);
-
-    @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(/*pe*/char/**/[] elements, int expectedSize);
+    @Nonnull
+    /*p1*/ HashCharSet/*p2*/ newMutableSet(@Nonnull /*pe*/char/**/[] elements/*arg*/);
 
     /* if !(obj elem) */
     @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(Character[] elements);
-
-    @Override
-    /*p1*/ HashCharSet/*p2*/ newMutableSet(Character[] elements, int expectedSize);
+    @Nonnull
+    /*p1*/ HashCharSet/*p2*/ newMutableSet(@Nonnull Character[] elements/*arg*/);
     /* endif */
 
+    /* endwith */
+
     @Override
+    @Nonnull
     /*p1*/ HashCharSet/*p2*/ newMutableSetOf(/*pe*/char/**/ e1);
 
     @Override
+    @Nonnull
     /*p1*/ HashCharSet/*p2*/ newMutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2);
 
     @Override
+    @Nonnull
     /*p1*/ HashCharSet/*p2*/ newMutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
             /*pe*/char/**/ e3);
 
     @Override
+    @Nonnull
     /*p1*/ HashCharSet/*p2*/ newMutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
             /*pe*/char/**/ e3, /*pe*/char/**/ e4);
 
     @Override
+    @Nonnull
     /*p1*/ HashCharSet/*p2*/ newMutableSetOf(/*pe*/char/**/ e1, /*pe*/char/**/ e2,
             /*pe*/char/**/ e3, /*pe*/char/**/ e4, /*pe*/char/**/ e5,
             /*pe*/char/**/... restElements);

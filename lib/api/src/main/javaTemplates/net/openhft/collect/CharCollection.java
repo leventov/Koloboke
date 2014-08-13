@@ -117,10 +117,10 @@ public interface CharCollection extends Collection<Character>, Container {
 
     /**
      * Returns a new cursor over this collection's elements. Cursor iteration order is always
-     * corresponds to the {@link #iterator() iterator}'s order.
+     * corresponds to the {@linkplain #iterator() iterator}'s order.
      *
      * @return a new cursor over this collection's elements
-     * @see <a href="package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     @Nonnull
@@ -130,7 +130,7 @@ public interface CharCollection extends Collection<Character>, Container {
      * Returns a new iterator over this collection's elements.
      *
      * @return a new iterator over this collection's elements
-     * @see <a href="package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     @Override
@@ -154,7 +154,7 @@ public interface CharCollection extends Collection<Character>, Container {
      * Exceptions thrown by the action are relayed to the caller.
      *
      * @param action the action to be performed for each element
-     * @see <a href="package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     void forEach(@Nonnull CharConsumer action);
@@ -172,7 +172,7 @@ public interface CharCollection extends Collection<Character>, Container {
      * @return {@code true} if the predicate returned {@code true} for all elements of this
      *         collection, {@code false} if it returned {@code false} for the element
      * @param predicate the predicate to be checked for each element of this collection
-     * @see <a href="package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     boolean forEachWhile(@Nonnull CharPredicate predicate);
@@ -263,7 +263,7 @@ public interface CharCollection extends Collection<Character>, Container {
      * @throws UnsupportedOperationException if elements cannot be removed from this collection.
      *         Implementations may throw this exception if a matching element cannot be removed
      *         or if, in general, removal is not supported.
-     * @see <a href="package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     boolean removeIf(@Nonnull CharPredicate filter);

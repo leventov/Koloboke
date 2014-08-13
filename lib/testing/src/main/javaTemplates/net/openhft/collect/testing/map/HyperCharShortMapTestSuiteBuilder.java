@@ -34,20 +34,24 @@ import java.util.*;
 
 public class HyperCharShortMapTestSuiteBuilder/*<>*/ {
 
-    private List<CharShortMapFactory/*<>*/> factories;
+    /* define ps */
+    // if obj key obj value //K, V, // elif obj key //K, // elif obj value //V, // endif //
+    /* enddefine */
+
+    private List<CharShortMapFactory</*ps*/?>> factories;
     private List<SampleElements<? extends Character>> keySamples;
     private List<SampleElements<? extends Short>> valueSamples;
     private List<Feature<?>> specialFeatures = new ArrayList<Feature<?>>();
     private List<Method> suppressing = new ArrayList<Method>();
 
     public HyperCharShortMapTestSuiteBuilder/*<>*/ setFactories(
-            CharShortMapFactory/*<>*/... factories) {
+            CharShortMapFactory</*ps*/?>... factories) {
         this.factories = Arrays.asList(factories);
         return this;
     }
 
     public HyperCharShortMapTestSuiteBuilder/*<>*/ setFactories(
-            List<CharShortMapFactory/*<>*/> factories) {
+            List<CharShortMapFactory</*ps*/?>> factories) {
         this.factories = factories;
         return this;
     }
@@ -95,7 +99,7 @@ public class HyperCharShortMapTestSuiteBuilder/*<>*/ {
 
     public TestSuite create() {
         TestSuite suite = new TestSuite(subSuiteName(factories, keySamples, valueSamples, ""));
-        for (CharShortMapFactory/*<>*/ factory : factories) {
+        for (CharShortMapFactory</*ps*/?> factory : factories) {
             TestCharShortMapGenerator.Builder builder = new TestCharShortMapGenerator.Builder()
                     .setFactory(factory);
             for (SampleElements<? extends Character> keys : keySamples) {

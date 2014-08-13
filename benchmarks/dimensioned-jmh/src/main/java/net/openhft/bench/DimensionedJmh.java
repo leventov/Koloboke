@@ -101,13 +101,13 @@ public final class DimensionedJmh {
 
     private final String regexp;
     private List<String> argDimNames = new ArrayList<>();
-    private ObjObjMapFactory<String, Object> dimMapsFactory =
-            HashObjObjMaps.getDefaultFactory().withKeyEquivalence(caseInsensitive());
+    private ObjObjMapFactory<String, Object, ?> dimMapsFactory = HashObjObjMaps
+            .<String, Object>getDefaultFactory().withKeyEquivalence(caseInsensitive());
     private Map<String, List<String>> argDimOptions = dimMapsFactory.newUpdatableMap();
     private List<String> benchDimNames = new ArrayList<>();
     private Map<String, Collection<String>> benchDimOptions = dimMapsFactory.newUpdatableMap();
     private ObjIntMap<String> maxDimWidths =
-            HashObjIntMaps.getDefaultFactory().withKeyEquivalence(caseInsensitive())
+            HashObjIntMaps.<String>getDefaultFactory().withKeyEquivalence(caseInsensitive())
             .newUpdatableMap();
     private ToLongFunction<Map<String, String>> getOperationsPerInvocation = null;
     private boolean dynamicOperationsPerInvocation = false;

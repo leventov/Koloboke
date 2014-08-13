@@ -45,15 +45,17 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
     }
 
     @Override
-    public <E2> HashObjSetFactory<E2> withEquivalence(@Nonnull Equivalence<E2> equivalence) {
+    @Nonnull
+    public HashObjSetFactory<E> withEquivalence(@Nonnull Equivalence<? super E> equivalence) {
         if (equivalence.equals(Equivalence.defaultEquality())) {
             // noinspection unchecked
-            return (HashObjSetFactory<E2>) this;
+            return (HashObjSetFactory<E>) this;
         }
-        return new WithCustomEquivalence<E2>(/* commonArgGet */, equivalence);
+        return new WithCustomEquivalence<E>(/* commonArgGet */, (Equivalence<E>) equivalence);
     }
 
-
+    @Override
+    @Nonnull
     public HashObjSetFactory<E> withNullKeyAllowed(boolean nullAllowed) {
         if (nullAllowed == isNullKeyAllowed())
             return this;
@@ -97,17 +99,19 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
         /* endwith */
 
         @Override
-        public <E2> HashObjSetFactory<E2> withEquivalence(@Nonnull Equivalence<E2> equivalence) {
+        @Nonnull
+        public HashObjSetFactory<E> withEquivalence(@Nonnull Equivalence<? super E> equivalence) {
             if (equivalence.equals(Equivalence.defaultEquality()))
-                return new DHashObjSetFactoryImpl<E2>(/* commonArgGet */);
+                return new DHashObjSetFactoryImpl<E>(/* commonArgGet */);
             if (this.equivalence.equals(equivalence)) {
                 // noinspection unchecked
-                return (HashObjSetFactory<E2>) this;
+                return (HashObjSetFactory<E>) this;
             }
-            return new WithCustomEquivalence<E2>(/* commonArgGet */, equivalence);
+            return new WithCustomEquivalence<E>(/* commonArgGet */, (Equivalence<E>) equivalence);
         }
 
         @Override
+        @Nonnull
         public HashObjSetFactory<E> withNullKeyAllowed(boolean nullAllowed) {
             if (nullAllowed == isNullKeyAllowed())
                 return this;

@@ -26,6 +26,7 @@ import net.openhft.collect.hash.*;
 import net.openhft.collect.map.ByteShortMap;
 import net.openhft.collect.map.hash.HashByteShortMapFactory;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 
@@ -63,6 +64,7 @@ public abstract class DHashSeparateKVByteShortMapFactorySO/*<>*/
 
     /* with Mutable|Updatable mutability */
     @Override
+    @Nonnull
     public /*p1*/ MutableDHashSeparateKVByteShortMapGO/*p2*/ newMutableMap(int expectedSize) {
         /* if float|double key */
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
@@ -84,6 +86,7 @@ public abstract class DHashSeparateKVByteShortMapFactorySO/*<>*/
 
     /* if Updatable mutability */
     @Override
+    @Nonnull
     public /*p1*/ MutableDHashSeparateKVByteShortMapGO/*p2*/ newMutableMap(
             Map<Byte, /*ev*/Short/**/> map) {
         if (map instanceof ByteShortMap) {

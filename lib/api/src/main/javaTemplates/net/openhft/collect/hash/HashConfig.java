@@ -43,24 +43,23 @@ import javax.annotation.Nullable;
  *
  * <p><a name="invariants"></a>There is an obvious invariant over the loads:
  * <pre>{@code
- * 0 <= min load <= target load <= max load <= 1
- * }</pre> But the target load shouldn't touch the bounds:
+ * 0 <= min load <= target load <= max load <= 1}</pre>
+ * But the target load shouldn't touch the bounds:
  * <pre>{@code
- * 0 < target load < 1
- * }</pre> The loads are bounded within the {@code [0, 1]} range,
+ * 0 < target load < 1}</pre>
+ * The loads are bounded within the {@code [0, 1]} range,
  * since all hashes in the library
  * use <a href="http://en.wikipedia.org/wiki/Open_addressing">open addressing</a>
  * method of collision resolution.
  *
  * <p>Also {@code HashConfig} allows to configure the <em>grow factor</em>. When elements
  * are inserted into the hash container and it grows, when
- * {@link HashContainer#currentLoad() the hash container load} reaches the <em>max load</em>, hash
+ * {@linkplain HashContainer#currentLoad() the hash container load} reaches the <em>max load</em>, hash
  * table's capacity is multiplied by the grow factor, immediately after that the current load
  * is supposed to be at or a bit higher than the <em>min load</em>. That is why {@code HashConfig}
  * keeps one more invariant:
  * <pre>{@code
- * 1.0 < grow factor <= max load / min load
- * }</pre>
+ * 1.0 < grow factor <= max load / min load}</pre>
  *
  * <p>The schema explained above allows much more precise control over
  * memory footprint -- performance tradeoff of hash containers, than a single load factor
@@ -83,8 +82,8 @@ public abstract class HashConfig {
             DEFAULT_MIN_LOAD, DEFAULT_TARGET_LOAD, DEFAULT_MAX_LOAD, DEFAULT_GROW_FACTOR, null);
 
     /**
-     * Returns a hash config with {@literal 0.(3)} min load, {@literal 0.5} target load,
-     * {@literal 0.(6)} max load, {@literal 2.0} grow factor and {@code null} shrink condition.
+     * Returns a hash config with 0.(3) min load, 0.5 target load, 0.(6) max load, 2.0 grow factor
+     * and {@code null} shrink condition.
      *
      * @return the default hash config
      */
@@ -147,10 +146,10 @@ public abstract class HashConfig {
      * Returns the min load of this hash config. It denotes the minimum load a hash table will
      * try to never be sparser than.
      *
-     * <p>The default is {@literal 0.(3)} (one-third).
+     * <p>The default is 0.(3) (one-third).
      *
      * @return the minimum load, a value
-     *         in the [{@literal 0.0}, {@link #getTargetLoad() target load}] range
+     *         in the [{@code 0.0}, {@link #getTargetLoad() target load}] range
      * @see #withMinLoad(double)
      */
     public abstract double getMinLoad();
@@ -160,10 +159,10 @@ public abstract class HashConfig {
      *
      * <p>Min load allows to limit memory usage of hash containers.
      *
-     * <p>Updatable and mutable linear hash tables can't have min load greater than {@literal 0.5}.
+     * <p>Updatable and mutable linear hash tables can't have min load greater than 0.5.
      *
      * @param minLoad the new min load, a value
-     *                in the [{@literal 0.0}, {@link #getTargetLoad() target load}] range
+     *                in the [{@code 0.0}, {@link #getTargetLoad() target load}] range
      * @return a copy of this hash config with the min load set to the given value
      * @throws IllegalArgumentException if the resulting hash config violates
      *         the <a href="#invariants">invariants</a>
@@ -209,7 +208,7 @@ public abstract class HashConfig {
      * try to never be denser than.
      *
      * @return the maximum load, a value
-     *         in the [{@link #getTargetLoad() target load}, {@literal 1.0}] range
+     *         in the [{@link #getTargetLoad() target load}, {@code 1.0}] range
      * @see #withMaxLoad(double)
      */
     public abstract double getMaxLoad();
@@ -221,7 +220,7 @@ public abstract class HashConfig {
      * because too dense hash tables operate slowly.
      *
      * @param maxLoad the new max load, a value
-     *                in the [{@link #getTargetLoad() target load}, {@literal 1.0}] range
+     *                in the [{@link #getTargetLoad() target load}, {@code 1.0}] range
      * @return a copy of this hash config with the max load set to the given value
      * @throws IllegalArgumentException if the resulting hash config violates
      *         the <a href="#invariants">invariants</a>
@@ -236,7 +235,7 @@ public abstract class HashConfig {
      * Returns the grow factor of this hash config. It denotes how much a hash container's capacity
      * is increased on periodical rehashes on adding (putting) new elements (entries).
      *
-     * @return the grow factor, a value in the [{@literal 1.0},
+     * @return the grow factor, a value in the [{@code 1.0},
      *         {@link #getMaxLoad() max load} / {@link #getMinLoad() min load}] range
      * @see #withGrowFactor(double)
      */
@@ -248,9 +247,9 @@ public abstract class HashConfig {
      * <p>Grow factor allows to control memory usage -- performance tradeoff for steadily growing
      * hash tables.
      *
-     * <p>Linear hash tables can't have any grow factor other than {@literal 2.0}.
+     * <p>Linear hash tables can't have any grow factor other than 2.0.
      *
-     * @param growFactor the new grow factor, a value in the [{@literal 1.0},
+     * @param growFactor the new grow factor, a value in the [{@code 1.0},
      *                   {@link #getMaxLoad() max load} / {@link #getMinLoad() min load}] range
      * @return a copy of this hash config with the grow factor set to the given value
      * @throws IllegalArgumentException if the resulting hash config violates
@@ -266,7 +265,7 @@ public abstract class HashConfig {
      * Returns the <em>shrink condition</em> of this hash config.
      *
      * <p>Immediately after hash set or map construction from non-distinct sources (e. g. arrays)
-     * it's {@link HashContainer#currentLoad() load} could be significantly less than
+     * it's {@linkplain HashContainer#currentLoad() load} could be significantly less than
      * the target factor due to expansion. The shrink condition is a predicate which is used
      * to shrink too sparse hash containers automatically.
      *

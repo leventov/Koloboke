@@ -18,8 +18,13 @@
  * This package (and its packages) contain internal implementations. These
  * classes should <em>not</em> be accessed directly (treat them like {@code com.sun} classes.
  *
- * Advice: exclude this package and all subpackages from the auto-complete in your favourite IDE:
+ * <p>Advice: exclude this package and all subpackages from the auto-complete in your favourite IDE:
  * <a href="http://www.jetbrains.com/idea/webhelp/excluding-classes-from-auto-import.html">IDEA</a>,
  * <a href="http://stackoverflow.com/q/2073913/648955">Eclipse</a>, etc.
+ *
+ * <p>Annotation {@link javax.annotation.ParametersAreNonnullByDefault} on this package added to
+ * suppress warnings in API about not annotated method implementations. It doesn't mean that all
+ * parameters in the package are really nonnull by default.
  */
+@javax.annotation.ParametersAreNonnullByDefault
 package net.openhft.collect.impl;

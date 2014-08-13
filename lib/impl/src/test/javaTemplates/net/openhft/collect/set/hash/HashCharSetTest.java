@@ -37,9 +37,9 @@ public class HashCharSetTest extends TestCase {
                 /* elif float|double elem //HashConfigs// endif */.all(),
                 new Function</* if !(float|double elem) */CharHashConfig
                             /* elif float|double elem //HashConfig// endif */,
-                        CharSetFactory/* if obj elem //<Object>// endif */>() {
+                        CharSetFactory</* if obj elem //Object, // endif */?>>() {
                     @Override
-                    public CharSetFactory/* if obj elem //<Object>// endif */ apply(
+                    public CharSetFactory</* if obj elem //Object, // endif */?> apply(
                             /* if !(float|double elem) */CharHashConfig
                             /* elif float|double elem //HashConfig// endif */ config) {
                         return /* if !(float|double elem) */

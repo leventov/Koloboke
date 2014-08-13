@@ -142,7 +142,8 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     Short get(Object key);
 
     /* define nullValue //
-    // if obj value //{@code null}// elif !(obj value) //{@link #defaultValue() default value}// endif //
+    // if obj value //{@code null}// elif !(obj value) //{@linkplain #defaultValue() default
+    value}// endif //
     // enddefine */
 
     /**
@@ -158,7 +159,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      * // if obj value //
      * <p>If this map permits null values, then a return value of {@code null} does not
      * <i>necessarily</i> indicate that the map contains no mapping for the key; it's also possible
-     * that the map explicitly maps the key to {@code null}. The {@link #containsKey containsKey}
+     * that the map explicitly maps the key to {@code null}. The {@link #containsKey}
      * operation may be used to distinguish these two cases.// endif //
      *
      * @param key the key whose associated value is to be returned
@@ -204,6 +205,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      * contains no mapping for the key.
      *
      * @param key the key whose associated value is to be returned
+     * @param defaultValue the value to return if the specified {@code key} is absent in the map
      * @return the value to which the specified key is mapped, or
      *         {@code defaultValue} if this map contains no mapping for the key
      // if obj key //
@@ -237,7 +239,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      * differs from the entry set iterator.
      *
      * @param action The action to be performed for each entry
-     * @see <a href="../package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     void forEach(@Nonnull /*f*/CharShortConsumer action);
@@ -258,7 +260,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      * @return {@code true} if the predicate returned {@code true} for all entries of the map,
      *         {@code false} if it returned {@code false} for the entry
      * @param predicate the predicate to be checked for each entry
-     * @see <a href="../package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     boolean forEachWhile(@Nonnull /*f*/CharShortPredicate predicate);
@@ -268,7 +270,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      * entry set iterator order.
      *
      * @return a new cursor over the entries of this map
-     * @see <a href="../package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     @Nonnull
@@ -276,20 +278,17 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* with key view */
 
-    /** {@inheritDoc} */
     @Override
     @Nonnull
     CharSet/*<>*/ keySet();
     /* endwith */
 
     /* with value view */
-    /** {@inheritDoc} */
     @Override
     @Nonnull
     ShortCollection/*<>*/ values();
     /* endwith */
 
-    /** {@inheritDoc} */
     @Override
     @Nonnull
     ObjSet<Entry<Character, Short>> entrySet();
@@ -597,7 +596,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      * the resulting value with the key.
      *
      * <p>This version of {@link #addValue(//raw//char, short)} is useful if you want to count
-     * values from the different initial value, than the {@link #defaultValue() default value}
+     * values from the different initial value, than the {@linkplain #defaultValue() default value}
      * of this map.
      *
      * @param key the key to which value add the given value
@@ -825,7 +824,7 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
      * @throws UnsupportedOperationException if elements cannot be removed from this collection.
      *         Implementations may throw this exception if a matching element cannot be removed
      *         or if, in general, removal is not supported.
-     * @see <a href="package-summary.html#iteration">
+     * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
     boolean removeIf(@Nonnull /*f*/CharShortPredicate filter);

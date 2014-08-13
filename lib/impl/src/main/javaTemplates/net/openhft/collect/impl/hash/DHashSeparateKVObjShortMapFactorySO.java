@@ -100,6 +100,7 @@ public abstract class DHashSeparateKVObjShortMapFactorySO<K/* if obj value //, V
 
     /* with Mutable|Updatable mutability */
     @Override
+    @Nonnull
     public /*p1*/<K2 extends K>/**/ MutableDHashSeparateKVObjShortMapGO/*p2*/<K2>/**/ newMutableMap(
             int expectedSize) {
         MutableDHashSeparateKVObjShortMapGO/*p2*/<K2>/**/ map = uninitializedMutableMap();
@@ -109,6 +110,7 @@ public abstract class DHashSeparateKVObjShortMapFactorySO<K/* if obj value //, V
 
     /* if Updatable mutability */
     @Override
+    @Nonnull
     public /*p1*/<K2 extends K>/**/ MutableDHashSeparateKVObjShortMapGO/*p2*/<K2>/**/ newMutableMap(
             Map/*ep*/<? extends K2, Short>/**/ map, int expectedSize) {
         if (map instanceof ObjShortMap) {

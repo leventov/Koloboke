@@ -27,8 +27,8 @@ package net.openhft.collect;
  * or pretty print it, because otherwise {@code String} representation of your equivalence
  * would be {@code ""} (empty {@code String}).
  *
- * <p>See example implementations in the documentation to {@link #identity() identity} and
- * {@link #caseInsensitive() case insensitive} equivalences.
+ * <p>See example implementations in the documentation to {@linkplain #identity() identity} and
+ * {@linkplain #caseInsensitive() case insensitive} equivalences.
  */
 public abstract class StatelessEquivalence<T> extends Equivalence<T> {
 

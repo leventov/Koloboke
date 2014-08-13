@@ -23,7 +23,7 @@ package net.openhft.collect.testing.map;
 import com.google.common.collect.testing.*;
 import net.openhft.collect.testing.Mutability;
 import net.openhft.collect.map.CharShortMapFactory;
-import net.openhft.function./*f*/CharShortConsumer/**/;
+import net.openhft.function.Consumer;
 
 import java.util.List;
 import java.util.Map;
@@ -33,11 +33,14 @@ public class TestCharShortMapGenerator/*<>*/
         implements TestMapGenerator<Character, Short> {
 
     public static class Builder/*<>*/ {
-        private CharShortMapFactory/*<>*/ factory;
+        /* define ps */
+        // if obj key obj value //K, V, // elif obj key //K, // elif obj value //V, // endif //
+        /* enddefine */
+        private CharShortMapFactory</*ps*/?> factory;
         private SampleElements<? extends Character> keys;
         private SampleElements<? extends Short> values;
 
-        public Builder/*<>*/ setFactory(CharShortMapFactory/*<>*/ factory) {
+        public Builder/*<>*/ setFactory(CharShortMapFactory</*ps*/?> factory) {
             this.factory = factory;
             return this;
         }
@@ -57,12 +60,12 @@ public class TestCharShortMapGenerator/*<>*/
         }
     }
 
-    private CharShortMapFactory/*<super>*/ factory;
+    private CharShortMapFactory</*ps*/?> factory;
     private SampleElements<? extends Character> keys;
     private SampleElements<? extends Short> values;
     private Mutability mutability;
 
-    private TestCharShortMapGenerator(CharShortMapFactory/*<>*/ factory,
+    private TestCharShortMapGenerator(CharShortMapFactory</*ps*/?> factory,
             SampleElements<? extends Character> keys,
             SampleElements<? extends Short> values, Mutability mutability) {
         this.factory = factory;
@@ -89,7 +92,7 @@ public class TestCharShortMapGenerator/*<>*/
 
     @Override
     public Map<Character, Short> create(final Object... elements) {
-        net.openhft.function.Consumer</*f*/CharShortConsumer/*<>*/> supplier =
+        Consumer<net.openhft.function./*f*/CharShortConsumer/*<>*/> supplier =
                 map -> {
                     for (Object e : elements) {
                         Map.Entry entry = (Map.Entry) e;

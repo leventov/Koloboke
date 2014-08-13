@@ -23,7 +23,8 @@ package net.openhft.collect;
  * <p>Methods {@link #ensureCapacity(long)} and {@link #shrink()} make sense only for array-based
  * containers.
  *
- * <h2><a name="mutability"></a><a href="package-summary.html#mutability">Mutability</a> matrix</h2>
+ * <h2><a name="mutability"></a><a href="{@docRoot}/overview-summary.html#mutability">Mutability</a>
+ * matrix</h2>
  *
  * <table BORDER CELLPADDING=3 CELLSPACING=1>
  *   <caption>This matrix shows which methods of this

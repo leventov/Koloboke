@@ -30,11 +30,11 @@ import java.util.Iterator;
  * than {@link Iterator}, so it is preferred in performance-critical code.
  * On the other hand, isn't supported by Java's "for-each" syntax.
  *
- * <p>See the <a href="package-summary.html#iteration">comparison of iteration ways</a>
+ * <p>See the <a href="{@docRoot}/overview-summary.html#iteration">comparison of iteration ways</a>
  * in the library.
  *
  * <p>Cursors of updatable and immutable containers don't support {@link #remove()} operation.
- * <a href="package-summary.html#mutability">More about mutability profiles.</a>
+ * <a href="{@docRoot}/overview-summary.html#mutability">More about mutability profiles.</a>
  *
  * @see <a href="http://web.archive.org/web/20130603171836/http://codechaos.me/?p=22">Java Iterator
  *      vs .NET IEnumerator – The Small Things Matter</a>

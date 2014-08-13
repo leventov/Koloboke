@@ -22,24 +22,35 @@ package net.openhft.collect.map.hash;
 
 import net.openhft.collect.*;
 import net.openhft.collect.hash.*;
-import net.openhft.function./*f*/CharShortConsumer/**/;
+import net.openhft.function.Consumer;
 import net.openhft.collect.map.*;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import java.util.Map;
 
+/* define bp */
+/* if obj key obj value //K, V, // elif obj key //K, // elif obj value //V, // endif */
+/* enddefine */
 
 /**
- * An immutable factory of {@code HashCharShortMaps}
+ * An immutable factory of {@code HashCharShortMap}s.
  *
  * @see HashCharShortMap
  * @see HashCharShortMaps#getDefaultFactory()
  */
-public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/
+public interface HashCharShortMapFactory/*<>*/
+        extends CharShortMapFactory</*bp*/HashCharShortMapFactory/*<>*/>
         /* if !(float|double key) */, CharHashFactory<HashCharShortMapFactory/*<>*/>
-        /* elif float|double key */, HashContainerFactory<HashCharShortMapFactory/*<>*/>/* endif */ {
+        /* elif float|double key */, HashContainerFactory<HashCharShortMapFactory/*<>*/>/* endif */{
+
+    /* if obj key */
+    /**
+     * {@inheritDoc} Defaults to {@link Equivalence#defaultEquality()}.
+     */
+    @Override
+    @Nonnull Equivalence<Character> getKeyEquivalence();
+    /* endif */
 
     /* define p1 */
     /* if obj key obj value //<K2 extends K, V2 extends V>// elif obj key //<K2 extends K>
@@ -67,26 +78,27 @@ public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/
     /* define gv *//* if !(obj value) //Short// elif obj value //V2// endif *//* enddefine */
 
     /* if obj key */
-    <KE> HashCharShortMapFactory<KE/* if obj value */, V/* endif */>
-    withKeyEquivalence(@Nonnull Equivalence<KE> keyEquivalence);
-    /* endif */
-
-    /* if obj value */
-    @Override
-    <VE> HashCharShortMapFactory</* if obj key */K, /* endif */VE>
-    withValueEquivalence(@Nonnull Equivalence<VE> valueEquivalence);
-
-    /* elif !(obj value) */
-    @Override
-    HashCharShortMapFactory/*<>*/ withDefaultValue(short defaultValue);
+    /**
+     * Returns a copy of this factory, with exception that it constructs maps with
+     * {@linkplain HashObjShortMap#keyEquivalence() key equivalence} set to the given
+     * {@code Equivalence}.
+     *
+     * @param keyEquivalence the new key equivalence
+     * @return a copy of this factory, which constructs maps with the given {@code keyEquivalence}
+     */
+    @Nonnull
+    HashCharShortMapFactory<K/* if obj value */, Short/* endif */>
+    withKeyEquivalence(@Nonnull Equivalence<? super K> keyEquivalence);
     /* endif */
 
     /* with Mutable|Updatable|Immutable mutability */
     /* if !(Immutable mutability) */
     @Override
+    @Nonnull
     /*p1*/ HashCharShortMap/*p2*/ newMutableMap();
 
     @Override
+    @Nonnull
     /*p1*/ HashCharShortMap/*p2*/ newMutableMap(int expectedSize);
     /* endif */
 
@@ -94,86 +106,87 @@ public interface HashCharShortMapFactory/*<>*/ extends CharShortMapFactory/*<>*/
     /* define arg *//* if with expectedSize //, int expectedSize// endif *//* enddefine */
 
     /* if obj key || without expectedSize */
-    /* if with expectedSize *//**
-     * If the specified map has the same key equivalence with this factory,
-     * {@code expectedSize} is ignored.
-     *//* endif */
     @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map/*arg*/);
+    @Nonnull
+    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
+            @Nonnull Map/*ep*/<Character, Short>/**/ map/*arg*/);
     /* endif */
 
     @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
-            Map/*ep*/<Character, Short>/**/ map2/*arg*/);
+    @Nonnull
+    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(@Nonnull Map/*ep*/<Character, Short>/**/ map1,
+            @Nonnull Map/*ep*/<Character, Short>/**/ map2/*arg*/);
 
     @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
-            Map/*ep*/<Character, Short>/**/ map2, Map/*ep*/<Character, Short>/**/ map3/*arg*/);
+    @Nonnull
+    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(@Nonnull Map/*ep*/<Character, Short>/**/ map1,
+            @Nonnull Map/*ep*/<Character, Short>/**/ map2,
+            @Nonnull Map/*ep*/<Character, Short>/**/ map3/*arg*/);
 
     @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
-            Map/*ep*/<Character, Short>/**/ map2, Map/*ep*/<Character, Short>/**/ map3,
-            Map/*ep*/<Character, Short>/**/ map4/*arg*/);
+    @Nonnull
+    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(@Nonnull Map/*ep*/<Character, Short>/**/ map1,
+            @Nonnull Map/*ep*/<Character, Short>/**/ map2,
+            @Nonnull Map/*ep*/<Character, Short>/**/ map3,
+            @Nonnull Map/*ep*/<Character, Short>/**/ map4/*arg*/);
 
     @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Map/*ep*/<Character, Short>/**/ map1,
-            Map/*ep*/<Character, Short>/**/ map2, Map/*ep*/<Character, Short>/**/ map3,
-            Map/*ep*/<Character, Short>/**/ map4, Map/*ep*/<Character, Short>/**/ map5/*arg*/);
+    @Nonnull
+    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(@Nonnull Map/*ep*/<Character, Short>/**/ map1,
+            @Nonnull Map/*ep*/<Character, Short>/**/ map2,
+            @Nonnull Map/*ep*/<Character, Short>/**/ map3,
+            @Nonnull Map/*ep*/<Character, Short>/**/ map4,
+            @Nonnull Map/*ep*/<Character, Short>/**/ map5/*arg*/);
+
+
+
+    @Override
+    @Nonnull
+    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
+            @Nonnull Consumer<net.openhft.function./*f*/CharShortConsumer/*p2*/> entriesSupplier
+            /*arg*/);
+
+    @Override
+    @Nonnull
+    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
+            @Nonnull /*pk*/char/**/[] keys, @Nonnull /*pv*/short/**/[] values/*arg*/);
+
+    /* if !(obj key obj value) */
+    @Override
+    @Nonnull
+    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
+            @Nonnull /*gk*/Character/**/[] keys, @Nonnull /*gv*/Short/**/[] values/*arg*/);
+    /* endif */
+
+    @Override
+    @Nonnull
+    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(@Nonnull Iterable</*ek*/Character/**/> keys,
+            @Nonnull Iterable</*ev*/Short/**/> values/*arg*/);
 
     /* endwith */
 
     @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
-            net.openhft.function.Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier);
-
-    @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
-            net.openhft.function.Consumer</*f*/CharShortConsumer/*p2*/> entriesSupplier,
-            int expectedSize);
-
-    @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(/*pk*/char/**/[] keys, /*pv*/short/**/[] values);
-
-    @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(/*pk*/char/**/[] keys, /*pv*/short/**/[] values,
-            int expectedSize);
-
-    /* if !(obj key obj value) */
-    @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
-            /*gk*/Character/**/[] keys, /*gv*/Short/**/[] values);
-
-    @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(
-            /*gk*/Character/**/[] keys, /*gv*/Short/**/[] values, int expectedSize);
-    /* endif */
-
-    @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Iterable</*ek*/Character/**/> keys,
-            Iterable</*ev*/Short/**/> values);
-
-    @Override
-    /*p1*/ HashCharShortMap/*p2*/ newMutableMap(Iterable</*ek*/Character/**/> keys,
-            Iterable</*ev*/Short/**/> values, int expectedSize);
-
-
-    @Override
+    @Nonnull
     /*p1*/ HashCharShortMap/*p2*/ newMutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1);
 
     @Override
+    @Nonnull
     /*p1*/ HashCharShortMap/*p2*/ newMutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1,
             /*pk*/char/**/ k2, /*pv*/short/**/ v2);
 
     @Override
+    @Nonnull
     /*p1*/ HashCharShortMap/*p2*/ newMutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1,
             /*pk*/char/**/ k2, /*pv*/short/**/ v2, /*pk*/char/**/ k3, /*pv*/short/**/ v3);
 
     @Override
+    @Nonnull
     /*p1*/ HashCharShortMap/*p2*/ newMutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1,
             /*pk*/char/**/ k2, /*pv*/short/**/ v2, /*pk*/char/**/ k3, /*pv*/short/**/ v3,
             /*pk*/char/**/ k4, /*pv*/short/**/ v4);
 
     @Override
+    @Nonnull
     /*p1*/ HashCharShortMap/*p2*/ newMutableMapOf(/*pk*/char/**/ k1, /*pv*/short/**/ v1,
             /*pk*/char/**/ k2, /*pv*/short/**/ v2, /*pk*/char/**/ k3, /*pv*/short/**/ v3,
             /*pk*/char/**/ k4, /*pv*/short/**/ v4, /*pk*/char/**/ k5, /*pv*/short/**/ v5);

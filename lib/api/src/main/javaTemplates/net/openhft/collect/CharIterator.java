@@ -27,11 +27,12 @@ import java.util.Iterator;
 /**
  * Primitive specialization of {@link Iterator}<code>&lt;</code>{@link Character}<code>&gt;</code>.
  *
- * <p>See the <a href="package-summary.html#iteration">comparison of iteration ways</a>
+ * <p>See the <a href="{@docRoot}/overview-summary.html#iteration">comparison of iteration ways</a>
  * in the library.
  *
  * <p>Iterators of updatable and immutable collections don't support {@link #remove()}
- * operation. <a href="package-summary.html#mutability">More about mutability profiles.</a>
+ * operation. <a href="{@docRoot}/overview-summary.html#mutability">More about mutability profiles.
+ * </a>
  *
  * @see CharCollection#iterator()
  */

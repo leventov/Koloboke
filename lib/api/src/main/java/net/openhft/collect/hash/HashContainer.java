@@ -30,14 +30,14 @@ import javax.annotation.Nonnull;
  *
  * <p>If the capacity of new table is greater than the old, such rehash is also referred
  * as <em>expansion</em> or <em>growth</em>. It is performed when the hash container's
- * {@link #currentLoad() load} becomes too high, and operations' performance suffers, or it's simply
- * no place to insert the new entries.
+ * {@linkplain #currentLoad() load} becomes too high, and operations' performance suffers,
+ * or it's simply no place to insert the new entries.
  *
  * <p>If the capacity of new table is lesser than the old, such rehash is also called
  * <em>compaction</em> or <em>shrink</em>. It could be performed automatically after hash container
- * construction, if the {@link HashConfig#getShrinkCondition() shrink condition} of the hash
- * container's {@link #hashConfig() hash config} triggers, or manually via {@link #shrink()} method.
- * Shrink is useful for controlling hash container's memory consumption.
+ * construction, if the {@linkplain HashConfig#getShrinkCondition() shrink condition} of the hash
+ * container's {@linkplain #hashConfig() hash config} triggers, or manually via {@link #shrink()}
+ * method. Shrink is useful for controlling hash container's memory consumption.
  *
  * <p>See <a href="../Container.html#mutability">{@code Container} mutability matrix</a> for methods
  * which are supported by hash containers with the specific mutability profile. All methods defined

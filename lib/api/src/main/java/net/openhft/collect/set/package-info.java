@@ -15,6 +15,6 @@
  */
 
 /**
- * Contains interfaces of {@link java.util.Set Set} specializations and their factories.
+ * Contains interfaces of {@link java.util.Set} specializations and their factories.
  */
 package net.openhft.collect.set;

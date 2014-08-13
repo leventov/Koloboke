@@ -25,11 +25,12 @@ import java.util.Iterator;
 /**
  * Extends {@link Iterator} for the symmetry with primitive specializations.
  *
- * <p>See the <a href="package-summary.html#iteration">comparison of iteration ways</a>
+ * <p>See the <a href="{@docRoot}/overview-summary.html#iteration">comparison of iteration ways</a>
  * in the library.
  *
  * <p>Iterators of updatable and immutable collections don't support {@link #remove()}
- * operation. <a href="package-summary.html#mutability">More about mutability profiles.</a>
+ * operation. <a href="{@docRoot}/overview-summary.html#mutability">More about mutability profiles.
+ * </a>
  *
  * @param <E> the type of elements returned by this iterator
  * @see ObjCollection#iterator()

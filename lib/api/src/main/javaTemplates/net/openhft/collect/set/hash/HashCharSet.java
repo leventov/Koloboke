@@ -24,6 +24,11 @@ import net.openhft.collect.set.CharSet;
 /**
  * An interface for {@code CharSet}s, based on hash tables.
  *
+ * <p>This interface doesn't carry own specific behaviour, just combines it's superinterfaces.
+ *
+ * <p>Looking for a way to instantiate a {@code HashCharSet}? See static factory methods
+ * in {@link HashCharSets} class.
+ *
  * @see HashCharSets
  * @see HashCharSetFactory
  */

@@ -39,8 +39,8 @@ import java.util.Map;
  *
  * <p>In most cases, when {@code Equivalence} is stateless, you can extend
  * {@link StatelessEquivalence} not to bother with implementing these methods. See examples
- * in the documentation to {@link #identity() identity} and
- * {@link #caseInsensitive() case insensitive} equivalences.
+ * in the documentation to {@linkplain #identity() identity} and
+ * {@linkplain #caseInsensitive() case insensitive} equivalences.
  *
  * @param <T> type of objects compared by this equivalence
  */
@@ -304,7 +304,7 @@ public abstract class Equivalence<T> {
     /**
      * {@inheritDoc}
      *
-     * This method is made {@code abstract} to force the final implementation to override it.
+     * <p>This method is made {@code abstract} to force the final implementation to override it.
      * It is needed because, for example, {@link net.openhft.collect.map.ObjObjMap}'s equality
      * depends on key and value {@code Equivalence} equality.
      */
@@ -314,7 +314,7 @@ public abstract class Equivalence<T> {
     /**
      * {@inheritDoc}
      *
-     * This method is made {@code abstract} to force the final implementation to override it.
+     * <p>This method is made {@code abstract} to force the final implementation to override it.
      * It is needed because, {@link #equals(Object)} is needed to be overridden, and in Java
      * {@link Object#equals(Object)} and {@link Object#hashCode()} should <em>always</em>
      * be overridden simultaneously.

@@ -35,14 +35,10 @@ public interface CharCursor/*<>*/ extends Cursor {
      * direction until all elements have been processed or the action throws an exception.
      * Exceptions thrown by the action are relayed to the caller.
      *
-     * <pre>{@code
-     * cur.forEachForward(action)
-     * }</pre>
-     * is exact equivalent of
-     * <pre>{@code
+     * <p>{@code cur.forEachForward(action)} is exact equivalent of
+     * <pre> {@code
      * while (cur.moveNext())
-     *     action.accept(cur.elem());
-     * }</pre>
+     *     action.accept(cur.elem());}</pre>
      *
      * @param action the action to be performed for each element
      */

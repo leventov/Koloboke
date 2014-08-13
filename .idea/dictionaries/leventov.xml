@@ -2,8 +2,10 @@
   <dictionary name="leventov">
     <words>
       <w>algo</w>
+      <w>antipattern</w>
       <w>antlr</w>
       <w>backported</w>
+      <w>backports</w>
       <w>bytecode</w>
       <w>cond</w>
       <w>deployer</w>
@@ -28,6 +30,7 @@
       <w>ints</w>
       <w>inversed</w>
       <w>iter</w>
+      <w>iterable</w>
       <w>iterables</w>
       <w>javadocs</w>
       <w>jpsg</w>
@@ -38,7 +41,9 @@
       <w>lookups</w>
       <w>megamorphic</w>
       <w>memoized</w>
+      <w>nobr</w>
       <w>openhft</w>
+      <w>polyfills</w>
       <w>precompute</w>
       <w>qhash</w>
       <w>repl</w>
@@ -52,9 +57,12 @@
       <w>subdir</w>
       <w>subdirs</w>
       <w>subproject</w>
+      <w>superinterfaces</w>
       <w>tradeoff</w>
       <w>unary</w>
       <w>unbox</w>
+      <w>unboxed</w>
+      <w>uninstantiable</w>
       <w>updatable</w>
       <w>vals</w>
       <w>zipf</w>

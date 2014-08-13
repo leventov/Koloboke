@@ -30,6 +30,11 @@ import javax.annotation.Nonnull;
 /**
  * An interface for {@code CharShortMap}s, based on hash tables.
  *
+ * <p>This interface doesn't carry own specific behaviour, just combines it's superinterfaces.
+ *
+ * <p>Looking for a way to instantiate a {@code HashCharShortMap}? See static factory methods
+ * in {@link HashCharShortMaps} class.
+ *
  * @see HashCharShortMapFactory
  * @see HashCharShortMaps
  */
