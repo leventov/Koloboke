@@ -29,11 +29,6 @@ public final class ComputeIfAbsent extends MapQueryUpdateMethod {
     }
 
     @Override
-    public Branch mostProbableBranch() {
-        return Branch.KEY_ABSENT;
-    }
-
-    @Override
     public void ifPresent() {
         if (cxt.isObjectValue())
             gen.ifBlock(gen.value() + " != null");

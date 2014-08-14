@@ -16,8 +16,7 @@
 
 package net.openhft.jpsg.collect.algo.hash;
 
-import net.openhft.jpsg.collect.mapqu.BasicMapQueryUpdateOp;
-import net.openhft.jpsg.collect.mapqu.MapQueryUpdateMethod;
+import net.openhft.jpsg.collect.mapqu.*;
 
 
 public final class Insert extends MapQueryUpdateMethod {
@@ -25,6 +24,11 @@ public final class Insert extends MapQueryUpdateMethod {
     @Override
     public BasicMapQueryUpdateOp baseOp() {
         return BasicMapQueryUpdateOp.CUSTOM_INSERT;
+    }
+
+    @Override
+    public Branch mostProbableBranch() {
+        return Branch.KEY_ABSENT;
     }
 
     @Override
