@@ -47,8 +47,8 @@ public final class Rehash extends BulkMethod {
         gen.lines("int index;");
         String firstKey = KeySearch.firstKey(cxt, "newTab", "newKeys", key, true, false, true);
         gen.ifBlock(isNotFree(cxt, firstKey)); {
-            KeySearch.innerLoop(gen, cxt, index -> {
-                gen.ifBlock(isFree(cxt, readKeyOnly(cxt, "newTab", "newKeys", index))); {
+            KeySearch.innerLoop(gen, cxt, (firstIndex, index) -> {
+                gen.ifBlock(isFree(cxt, readKeyOnly(cxt, "newTab", "newKeys", firstIndex))); {
                     if (!index.equals("index"))
                         gen.lines("index = " + index + ";");
                     gen.lines("break;");

@@ -632,14 +632,14 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
     }
 
     private void keySearchLoop(boolean noRemoved, boolean stepPrecomputed) {
-        KeySearch.innerLoop(this, cxt, index -> {
+        KeySearch.innerLoop(this, cxt, (firstIndex, index) -> {
             String prevIndex = this.index;
             this.index = index;
             Runnable beforeBreak = () -> {
                 if (!index.equals(prevIndex))
                     lines(prevIndex + " = " + index + ";");
             };
-            String key = readKeyOrEntry(cxt, index);
+            String key = readKeyOrEntry(cxt, firstIndex);
             if (method.mostProbableBranch() == KEY_PRESENT) {
                 ifBlock("(cur = " + key + ") == " + unwrappedKey());
                 generateOrGoToPresent(beforeBreak);
@@ -670,14 +670,14 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
     private void keySearchLoopDifferentRemovedHandling(boolean stepPrecomputed) {
         if (separateAbsentRemovedSlot)
             lines(absentLabel(true) + ":").block();
-        KeySearch.innerLoop(this, cxt, index -> {
+        KeySearch.innerLoop(this, cxt, (firstIndex, index) -> {
             String prevIndex = this.index;
             this.index = index;
             Runnable beforeBreak = () -> {
                 if (!index.equals(prevIndex))
                     lines(prevIndex + " = " + index + ";");
             };
-            String key = readKeyOrEntry(cxt, index);
+            String key = readKeyOrEntry(cxt, firstIndex);
             if (method.mostProbableBranch() == KEY_PRESENT) {
                 ifBlock("(cur = " + key + ") == " + unwrappedKey());
                 generateOrGoToPresent(beforeBreak);

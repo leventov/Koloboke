@@ -16,7 +16,6 @@
 
 package net.openhft.jpsg.collect.algo.hash;
 
-import net.openhft.jpsg.PrimitiveType;
 import net.openhft.jpsg.collect.MethodContext;
 import net.openhft.jpsg.collect.MethodGenerator;
 
@@ -88,7 +87,7 @@ final class KeySearch {
     abstract static class InnerLoop {
 
         static interface Body {
-            void generate(String index);
+            void generate(String firstIndex, String index);
         }
 
         final MethodGenerator g;
@@ -123,7 +122,7 @@ final class KeySearch {
                     String increment = doubleSizedParallel(cxt) ? " += 2" : "++";
                     g.lines("index" + increment + ";");
                 }
-                body.generate("index");
+                body.generate("index", "index");
             } g.blockEnd();
         }
     }
@@ -142,8 +141,7 @@ final class KeySearch {
         @Override
         void generate() {
             g.lines("while (true)").block(); {
-                g.lines("index = (index - " + slots(1, cxt) + ") & capacityMask;");
-                body.generate("index");
+                body.generate("(index = (index - " + slots(1, cxt) + ") & capacityMask)", "index");
             } g.blockEnd();
         }
     }
@@ -159,13 +157,13 @@ final class KeySearch {
             g.lines("int bIndex = index, fIndex = index, step = " + slots(1, cxt) + ";");
             g.lines("while (true)").block(); {
                 g.lines("if ((bIndex -= step) < 0) bIndex += capacity;");
-                body.generate("bIndex");
+                body.generate("bIndex", "bIndex");
                 // This way of wrapping capacity is less clear and a bit slower than
                 // the method from indexTernaryStateUnsafeIndexing(), but it protects
                 // from possible int overflow issues
                 g.lines("int t;");
                 g.lines("if ((t = (fIndex += step) - capacity) >= 0) fIndex = t;");
-                body.generate("fIndex");
+                body.generate("fIndex", "fIndex");
                 g.lines("step += " + slots(2, cxt) + ";");
             } g.blockEnd();
         }
