@@ -1,0 +1,7 @@
+net.openhft.koloboke.collect
+net.openhft.koloboke.collect.hash
+net.openhft.koloboke.collect.map
+net.openhft.koloboke.collect.map.hash
+net.openhft.koloboke.collect.set
+net.openhft.koloboke.collect.set.hash
+net.openhft.koloboke.function
