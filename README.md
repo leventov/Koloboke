@@ -39,8 +39,8 @@ Add to your Gradle build script:
 
     dependencies {
         // `jdk8` instead of `jdk6-7` if you use Java 8
-        compile 'net.openhft:hftc-api-jdk6-7:0.5.1'
-        runtime 'net.openhft:hftc-impl-jdk6-7:0.5.1'
+        compile 'net.openhft:koloboke-api-jdk6-7:0.6'
+        runtime 'net.openhft:koloboke-impl-jdk6-7:0.6'
     }
 
 Or Maven config (don't forget about jdk6-7/jdk8 suffix):
@@ -48,13 +48,13 @@ Or Maven config (don't forget about jdk6-7/jdk8 suffix):
     <dependencies>
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>hftc-api-jdk6-7</artifactId>
-            <version>0.5.1</version>
+            <artifactId>koloboke-api-jdk6-7</artifactId>
+            <version>0.6</version>
         </dependency>
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>hftc-impl-jdk6-7</artifactId>
-            <version>0.5.1</version>
+            <artifactId>koloboke-impl-jdk6-7</artifactId>
+            <version>0.6</version>
             <scope>runtime</scope>
         </dependency>
     <dependencies>
@@ -71,9 +71,9 @@ with
     Map<Integer, Integer> map = HashIntIntMaps.newMutableMap();
 
 Next step: see [the table of equivalents of JDK collection patterns]
-(http://openhft.github.io/Koloboke/api/0.5/java8/index.html#jdk-equivalents).
+(http://openhft.github.io/Koloboke/api/0.6/java8/index.html#jdk-equivalents).
 
-### JavaDoc: [Java 6] (http://openhft.github.io/Koloboke/api/0.5/java6/index.html) | [Java 7] (http://openhft.github.io/Koloboke/api/0.5/java7/index.html) | [Java 8] (http://openhft.github.io/Koloboke/api/0.5/java8/index.html)
+### JavaDoc: [Java 6] (http://openhft.github.io/Koloboke/api/0.6/java6/index.html) | [Java 7] (http://openhft.github.io/Koloboke/api/0.6/java7/index.html) | [Java 8] (http://openhft.github.io/Koloboke/api/0.6/java8/index.html)
 
 ### [Releases (with changelog)](https://github.com/OpenHFT/Koloboke/releases)
 

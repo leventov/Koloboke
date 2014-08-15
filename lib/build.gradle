@@ -65,7 +65,7 @@ configure([apiProject, implProject]) {
     test.testLogging.exceptionFormat = 'full'
 
     group = 'net.openhft'
-    version = '0.6-SNAPSHOT'
+    version = '0.6'
 
     archivesBaseName  = "koloboke-$project.name-jdk${libTargetJava == '6' ? '6-7' : '8'}"
 
