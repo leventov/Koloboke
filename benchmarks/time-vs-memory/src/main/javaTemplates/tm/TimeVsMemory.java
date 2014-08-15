@@ -27,9 +27,9 @@ import gnu.trove.map.hash.*;
 import gnu.trove.procedure.*;
 import it.unimi.dsi.fastutil.objects.*;
 import net.openhft.bench.DimensionedJmh;
-import net.openhft.collect.hash.*;
-import net.openhft.collect.map.*;
-import net.openhft.collect.map.hash.*;
+import net.openhft.koloboke.collect.hash.*;
+import net.openhft.koloboke.collect.map.*;
+import net.openhft.koloboke.collect.map.hash.*;
 import org.apache.mahout.math.map.*;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.RunnerException;
@@ -121,18 +121,19 @@ public class TimeVsMemory {
         return dummy;
     }
 
-    private static net.openhft.collect.map.CharCharMap hftcCharCharMap(int loadLevel, int size) {
+    private static net.openhft.koloboke.collect.map.CharCharMap kolobokeCharCharMap(
+            int loadLevel, int size) {
         HashCharCharMapFactory factory = HashCharCharMaps.getDefaultFactory();
         factory = factory.withHashConfig(config(loadLevel));
         return factory.newUpdatableMap(size);
     }
 
-    private static char addValue(net.openhft.collect.map.CharCharMap map,
+    private static char addValue(net.openhft.koloboke.collect.map.CharCharMap map,
             char key, char value) {
         return map.addValue(key, value);
     }
 
-    private static long iter(net.openhft.collect.map.CharCharMap map) {
+    private static long iter(net.openhft.koloboke.collect.map.CharCharMap map) {
         long dummy = 0L;
         for (CharCharCursor cur = map.cursor(); cur.moveNext();) {
             dummy ^= cur.key() + cur.value();
@@ -223,7 +224,7 @@ public class TimeVsMemory {
     }
 
     /* define mapType */
-    /* if Hftc collections //net.openhft.collect.map.CharCharMap
+    /* if Koloboke collections //net.openhft.koloboke.collect.map.CharCharMap
     // elif Trove collections //TCharCharMap
     // elif Hppc collections //com.carrotsearch.hppc.CharCharMap
     // elif Gs collections //MutableCharCharMap
@@ -246,7 +247,7 @@ public class TimeVsMemory {
     }
 
     static class CharCharConsumer implements
-            net.openhft.function.CharCharConsumer, TCharCharProcedure, CharCharProcedure,
+            net.openhft.koloboke.function.CharCharConsumer, TCharCharProcedure, CharCharProcedure,
             com.gs.collections.api.block.procedure.primitive.CharCharProcedure {
         long dummy = 0L;
 
@@ -255,8 +256,8 @@ public class TimeVsMemory {
             dummy ^= a + b;
         }
 
-        /* with Hftc|Hppc collections */
-        public void forEach(/*mapType*/net.openhft.collect.map.CharCharMap/**/ map) {
+        /* with Koloboke|Hppc collections */
+        public void forEach(/*mapType*/net.openhft.koloboke.collect.map.CharCharMap/**/ map) {
             map.forEach(this);
         }
         /* endwith */
@@ -302,22 +303,22 @@ public class TimeVsMemory {
     }
 
     /* define consumerType */
-    // if Std|Mahout collections //Hftc// endif //CharCharConsumer
+    // if Std|Mahout collections //Koloboke// endif //CharCharConsumer
     /* enddefine */
 
-    /* with Hftc|Trove|Hppc|Gs|Fastutil|Mahout|Std collections */
+    /* with Koloboke|Trove|Hppc|Gs|Fastutil|Mahout|Std collections */
 
     @State(Scope.Thread)
-    public static class HftcCharCharMapState {
+    public static class KolobokeCharCharMapState {
         Random r;
         char[] keys;
-        /*mapType*/net.openhft.collect.map.CharCharMap/**/ map;
+        /*mapType*/net.openhft.koloboke.collect.map.CharCharMap/**/ map;
 
         @Setup(Level.Trial)
         public void allocate() {
             r = ThreadLocalRandom.current();
             keys = new char[SIZE];
-            map = hftcCharCharMap(LOAD_LEVEL, SIZE);
+            map = kolobokeCharCharMap(LOAD_LEVEL, SIZE);
         }
 
         public void generateKeys() {
@@ -333,17 +334,17 @@ public class TimeVsMemory {
         }
     }
 
-    public static class PutOpHftcCharCharMapState extends HftcCharCharMapState {
+    public static class PutOpKolobokeCharCharMapState extends KolobokeCharCharMapState {
         @Setup(Level.Invocation)
         public void clearMap() {
             generateKeys();
             /* if !(Mahout collections) */map.clear();
-            /* elif Mahout collections */map = hftcCharCharMap(LOAD_LEVEL, SIZE);
+            /* elif Mahout collections */map = kolobokeCharCharMap(LOAD_LEVEL, SIZE);
             /* endif */
         }
     }
 
-    public static class QueryUpdateOpHftcCharCharMapState extends HftcCharCharMapState {
+    public static class QueryUpdateOpKolobokeCharCharMapState extends KolobokeCharCharMapState {
         @Setup(Level.Invocation)
         public void fillMap() {
             generateKeys();
@@ -355,9 +356,9 @@ public class TimeVsMemory {
     }
 
     @GenerateMicroBenchmark
-    public long putOp_hftcCollections_charKey(PutOpHftcCharCharMapState state) {
+    public long putOp_kolobokeCollections_charKey(PutOpKolobokeCharCharMapState state) {
         char[] keys = state.keys;
-        /*mapType*/net.openhft.collect.map.CharCharMap/**/ map = state.map;
+        /*mapType*/net.openhft.koloboke.collect.map.CharCharMap/**/ map = state.map;
         for (char key : keys) {
             map.put(key, /* const key 1 */(char) 1/* endconst */);
         }
@@ -365,9 +366,9 @@ public class TimeVsMemory {
     }
 
     @GenerateMicroBenchmark
-    public long getOp_hftcCollections_charKey(QueryUpdateOpHftcCharCharMapState state) {
+    public long getOp_kolobokeCollections_charKey(QueryUpdateOpKolobokeCharCharMapState state) {
         char[] keys = state.keys;
-        /*mapType*/net.openhft.collect.map.CharCharMap/**/ map = state.map;
+        /*mapType*/net.openhft.koloboke.collect.map.CharCharMap/**/ map = state.map;
         long dummy = 0L;
         for (char key : keys) {
             dummy ^= (long) map.get(key);
@@ -377,9 +378,9 @@ public class TimeVsMemory {
 
     /* if !(Fastutil collections) */
     @GenerateMicroBenchmark
-    public long addValueOp_hftcCollections_charKey(QueryUpdateOpHftcCharCharMapState state) {
+    public long addValueOp_kolobokeCollections_charKey(QueryUpdateOpKolobokeCharCharMapState state) {
         char[] keys = state.keys;
-        /*mapType*/net.openhft.collect.map.CharCharMap/**/ map = state.map;
+        /*mapType*/net.openhft.koloboke.collect.map.CharCharMap/**/ map = state.map;
         long dummy = 0L;
         for (char key : keys) {
             dummy ^= (long) addValue(map, key, /* const key 1 */(char) 1/* endconst */);
@@ -390,7 +391,7 @@ public class TimeVsMemory {
 
     /* if !(Fastutil collections) */
     @GenerateMicroBenchmark
-    public long forEachOp_hftcCollections_charKey(QueryUpdateOpHftcCharCharMapState state) {
+    public long forEachOp_kolobokeCollections_charKey(QueryUpdateOpKolobokeCharCharMapState state) {
         /*consumerType*/CharCharConsumer/**/ c = new /*consumerType*/CharCharConsumer/**/();
         c.forEach(state.map);
         return c.dummy;
@@ -399,7 +400,7 @@ public class TimeVsMemory {
 
     /* if !(Mahout collections) */
     @GenerateMicroBenchmark
-    public long iterOp_hftcCollections_charKey(QueryUpdateOpHftcCharCharMapState state) {
+    public long iterOp_kolobokeCollections_charKey(QueryUpdateOpKolobokeCharCharMapState state) {
         return iter(state.map);
     }
     /* endif */
@@ -422,12 +423,12 @@ public class TimeVsMemory {
     static void footPrintMain() {
         int[] ss = sizes.toArray();
         loadLevels.forEach(loadLevel -> {
-            /* with Hftc|Trove|Hppc|Gs|Fastutil|Mahout|Std collections char|int key */
+            /* with Koloboke|Trove|Hppc|Gs|Fastutil|Mahout|Std collections char|int key */
             /* if int key */
             Arrays.stream(ss).forEach(size -> {
                 try {
-                    /*mapType*/net.openhft.collect.map.CharCharMap/**/ map =
-                            hftcCharCharMap(loadLevel, size);
+                    /*mapType*/net.openhft.koloboke.collect.map.CharCharMap/**/ map =
+                            kolobokeCharCharMap(loadLevel, size);
                     Random r = ThreadLocalRandom.current();
                     for (int i = 0; i < size; i++) {
                         map.put((char) r.nextLong(), /* const key 1 */
@@ -435,7 +436,7 @@ public class TimeVsMemory {
                     }
                     double footPrint =
                             (parseInstance(map).totalSize() * 1.0 / size) / 8.0 - 1.0;
-                    System.out.printf(Locale.US, "%d hftc %.3f\n", loadLevel, footPrint);
+                    System.out.printf(Locale.US, "%d koloboke %.3f\n", loadLevel, footPrint);
                 } catch (Throwable e) {
                 }
             });

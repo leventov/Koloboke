@@ -51,7 +51,7 @@ public final class Jdk8FunctionReplacer extends TemplateProcessor {
             String prefix = packageInfo ? "" : "import ";
             for (String jdk8Interface : JDK8_INTERFACES) {
                 template = template.replace(
-                        prefix + "net.openhft.function." + jdk8Interface,
+                        prefix + "net.openhft.koloboke.function." + jdk8Interface,
                         prefix + "java.util.function." + jdk8Interface
                 );
             }

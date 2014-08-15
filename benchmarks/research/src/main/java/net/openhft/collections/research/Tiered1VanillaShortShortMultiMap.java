@@ -16,7 +16,7 @@
 
 package net.openhft.collections.research;
 
-import net.openhft.function.IntConsumer;
+import net.openhft.koloboke.function.IntConsumer;
 import net.openhft.lang.io.Bytes;
 
 

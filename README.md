@@ -1,7 +1,7 @@
-## HFT Collections
+## Koloboke Collections
 
-This library extends Java Collections Framework with primitive specializations and more.
-Java 6+. Apache 2.0 license.
+This library is a carefully designed and efficient extension of the Java Collections Framework
+with primitive specializations and more. Java 6+. Apache 2.0 license.
 
 Currently only *hash sets* and *hash maps* are implemented.
 
@@ -60,7 +60,7 @@ Or Maven config (don't forget about jdk6-7/jdk8 suffix):
     <dependencies>
 
 Or similarly for your favourite build system.
-Or download jars of [the latest release](https://github.com/OpenHFT/hftc/releases/latest).
+Or download jars of [the latest release](https://github.com/OpenHFT/Koloboke/releases/latest).
 
 Then you can start using collections. Replace all lines like
 
@@ -71,13 +71,13 @@ with
     Map<Integer, Integer> map = HashIntIntMaps.newMutableMap();
 
 Next step: see [the table of equivalents of JDK collection patterns]
-(http://openhft.github.io/hftc/api/0.5/java8/index.html#jdk-equivalents).
+(http://openhft.github.io/Koloboke/api/0.5/java8/index.html#jdk-equivalents).
 
-### JavaDoc: [Java 6] (http://openhft.github.io/hftc/api/0.5/java6/index.html) | [Java 7] (http://openhft.github.io/hftc/api/0.5/java7/index.html) | [Java 8] (http://openhft.github.io/hftc/api/0.5/java8/index.html)
+### JavaDoc: [Java 6] (http://openhft.github.io/Koloboke/api/0.5/java6/index.html) | [Java 7] (http://openhft.github.io/Koloboke/api/0.5/java7/index.html) | [Java 8] (http://openhft.github.io/Koloboke/api/0.5/java8/index.html)
 
-### [Releases (with changelog)](https://github.com/OpenHFT/hftc/releases)
+### [Releases (with changelog)](https://github.com/OpenHFT/Koloboke/releases)
 
-### [Roadmap](https://github.com/OpenHFT/hftc/issues?q=is%3Aopen+label%3A"new+functionality"+is%3Aissue)
+### [Roadmap](https://github.com/OpenHFT/Koloboke/issues?q=is%3Aopen+label%3A"new+functionality"+is%3Aissue)
 
 ---
 
@@ -97,7 +97,7 @@ I would like to accept feedback from you.
  - Performance experience
  - Bugs or problems
 
-Use [issues](https://github.com/OpenHFT/hftc/issues) or drop me a line at leventov@ya.ru.
+Use [issues](https://github.com/OpenHFT/Koloboke/issues) or drop me a line at leventov@ya.ru.
 
 ### How to build and develop
 Gradle build requires Java 8 compiler, set `JAVA_HOME` environment variable to the JDK8 location,
@@ -105,8 +105,8 @@ if your default `java` is still Java 7.
 
 Then
 
-    $ git clone git@github.com:OpenHFT/hftc.git
-    $ cd hftc
+    $ git clone git@github.com:OpenHFT/Koloboke.git
+    $ cd Koloboke
     $ ./gradlew :buildMeta
     $ ./gradlew buildMain -x test -x findbugsMain
     $ ./gradlew idea
@@ -135,4 +135,14 @@ If you want to generate proper Javadocs, especially for Java 6 or 7, you should 
 for how to do that). Typical `javadocExecutable` value is `JAVA_HOME/bin/javadoc[.exe]`, `jdkSrc`
 should point to a directory which contain uncompressed JDK sources, i. e. package structure starting
 from `java`, `javax`, `sun`, etc. subdirs.
+
+---
+
+#### Project name history
+
+ - ~~Trove~~ (This project was started as a [Trove fork](https://bitbucket.org/leventov/trove),
+   but has nothing in common with Trove for already very long time.)
+ - ~~UntitledCollectionsProject, UCP~~
+ - ~~Higher Frequency Trading Collections, OpenHFT Collections, HFT Collections, HFTC~~
+ - Koloboke (Collections) -- current name!
 

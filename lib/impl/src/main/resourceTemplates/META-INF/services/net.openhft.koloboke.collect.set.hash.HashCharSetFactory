@@ -1,0 +1,2 @@
+/* with char|byte|short|int|long|float|double|obj elem */
+net.openhft.koloboke.collect.impl.hash.LHashCharSetFactoryImpl

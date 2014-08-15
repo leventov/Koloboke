@@ -1,0 +1,6 @@
+/* with
+ char|byte|short|int|long|float|double|obj key
+ short|byte|char|int|long|float|double|obj value
+ Separate|Parallel kv
+*/
+net.openhft.koloboke.collect.impl.hash.LHashSeparateKVCharShortMapFactoryImpl

@@ -17,9 +17,9 @@
 package net.openhft.collections.research;
 
 import net.openhft.bench.DimensionedJmh;
-import net.openhft.collect.set.CharSet;
-import net.openhft.collect.set.hash.HashCharSets;
-import net.openhft.function.IntConsumer;
+import net.openhft.koloboke.collect.set.CharSet;
+import net.openhft.koloboke.collect.set.hash.HashCharSets;
+import net.openhft.koloboke.function.IntConsumer;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.*;
 import org.openjdk.jmh.runner.options.*;

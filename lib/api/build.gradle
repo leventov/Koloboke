@@ -1,7 +1,7 @@
 evaluationDependsOn("$parent.path")
 
 javadoc {
-    title "HFT Collections $version API"
+    title "Koloboke Collections $version API"
     configure((CoreJavadocOptions) getOptions()) {
         links("http://jsr-305.googlecode.com/svn/trunk/javadoc/",
                 "http://docs.oracle.com/javase/$libTargetJava/docs/api/")

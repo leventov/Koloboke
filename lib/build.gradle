@@ -67,7 +67,7 @@ configure([apiProject, implProject]) {
     group = 'net.openhft'
     version = '0.6-SNAPSHOT'
 
-    archivesBaseName  = "hftc-$project.name-jdk${libTargetJava == '6' ? '6-7' : '8'}"
+    archivesBaseName  = "koloboke-$project.name-jdk${libTargetJava == '6' ? '6-7' : '8'}"
 
     task sourcesJar(type: Jar, dependsOn: classes) {
         classifier 'sources'
@@ -110,10 +110,12 @@ configure([apiProject, implProject]) {
     [installer, deployer]*.pom*.whenConfigured { pom ->
         pom.dependencies.removeAll { dep -> dep.scope == 'test' }
         pom.project {
-            name = "HFT Collections (${project == apiProject ? 'API' : 'implementation'})"
-            description = 'Trove of primitive collections with Apache 2.0 license, ' +
-                    "built for Java ${libTargetJava == '6' ? '6 or 7' : '8'}"
-            url = 'https://github.com/OpenHFT/hftc'
+            def apiOrImpl = "(${project == apiProject ? 'API' : 'implementation'})"
+            name = "Koloboke Collections $apiOrImpl"
+            description = 'Carefully designed and efficient extension ' +
+                    'of the Java Collections Framework with primitive specializations and more, ' +
+                    "built for Java ${libTargetJava == '6' ? '6 or 7' : '8'} $apiOrImpl"
+            url = 'https://github.com/OpenHFT/Koloboke'
             inceptionYear = '2013'
             organization {
                 name = 'Higher Frequency Trading'
@@ -127,9 +129,9 @@ configure([apiProject, implProject]) {
                 }
             }
             scm {
-                url = 'https://github.com/OpenHFT/hftc'
-                connection = 'scm:git:git://github.com/OpenHFT/hftc'
-                developerConnection = 'scm:git:git://github.com/OpenHFT/hftc'
+                url = 'https://github.com/OpenHFT/Koloboke'
+                connection = 'scm:git:git://github.com/OpenHFT/Koloboke'
+                developerConnection = 'scm:git:git://github.com/OpenHFT/Koloboke'
             }
             developers {
                 developer {
@@ -144,7 +146,7 @@ configure([apiProject, implProject]) {
             }
             issueManagement {
                 system = 'GitHub'
-                url = 'https://github.com/OpenHFT/hftc/issues'
+                url = 'https://github.com/OpenHFT/Koloboke/issues'
             }
         }
     }

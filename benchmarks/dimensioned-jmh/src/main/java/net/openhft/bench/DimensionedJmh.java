@@ -16,11 +16,11 @@
 
 package net.openhft.bench;
 
-import net.openhft.collect.map.ObjIntMap;
-import net.openhft.collect.map.ObjObjMapFactory;
-import net.openhft.collect.map.hash.HashObjIntMaps;
-import net.openhft.collect.map.hash.HashObjObjMaps;
-import net.openhft.function.*;
+import net.openhft.koloboke.collect.map.ObjIntMap;
+import net.openhft.koloboke.collect.map.ObjObjMapFactory;
+import net.openhft.koloboke.collect.map.hash.HashObjIntMaps;
+import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+import net.openhft.koloboke.function.ToLongFunction;
 import org.openjdk.jmh.logic.results.*;
 import org.openjdk.jmh.output.format.OutputFormat;
 import org.openjdk.jmh.output.format.OutputFormatFactory;
@@ -37,8 +37,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static net.openhft.collect.Equivalence.caseInsensitive;
-import static net.openhft.collect.set.hash.HashObjSets.newImmutableSet;
+import static net.openhft.koloboke.collect.Equivalence.caseInsensitive;
+import static net.openhft.koloboke.collect.set.hash.HashObjSets.newImmutableSet;
 
 
 public final class DimensionedJmh {
