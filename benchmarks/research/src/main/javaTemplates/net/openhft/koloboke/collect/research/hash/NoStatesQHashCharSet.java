@@ -31,6 +31,7 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
     public char freeValue = Character.MIN_VALUE;
     public char removedValue = Character.MIN_VALUE + 1;
     public char[] set;
+    public char[] reuseKeys;
 
     public NoStatesQHashCharSet(int capacity) {
         set = new char[capacity];
@@ -524,7 +525,7 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
         char free = freeValue;
         char removed = removedValue;
         char[] keys = set;
-        char[] newKeys = new char[capacity];
+        char[] newKeys = getNewKeys(capacity);
         Arrays.fill(newKeys, free);
         iterKeys:
         for (int i = keys.length - 1; i >= 0; i--) {
@@ -556,6 +557,7 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
             }
         }
         set = newKeys;
+        reuseKeys = keys;
         freeSlots = capacity - size;
         removedSlots = 0;
     }
@@ -564,7 +566,7 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
         char free = freeValue;
         char removed = removedValue;
         char[] keys = set;
-        char[] newKeys = new char[capacity];
+        char[] newKeys = getNewKeys(capacity);
         Arrays.fill(newKeys, free);
 
         long CHAR_BASE = UnsafeConstants.CHAR_BASE;
@@ -604,7 +606,16 @@ public class NoStatesQHashCharSet implements UnsafeConstants {
             }
         }
         set = newKeys;
+        reuseKeys = keys;
         freeSlots = capacity - size;
         removedSlots = 0;
+    }
+
+    public char[] getNewKeys(int capacity) {
+        if (reuseKeys != null && reuseKeys.length == capacity) {
+            return reuseKeys;
+        } else {
+            return new char[capacity];
+        }
     }
 }
