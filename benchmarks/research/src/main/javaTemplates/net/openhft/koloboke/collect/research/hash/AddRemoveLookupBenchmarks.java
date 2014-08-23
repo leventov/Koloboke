@@ -17,8 +17,7 @@
 package net.openhft.koloboke.collect.research.hash;
 
 import net.openhft.bench.DimensionedJmh;
-import net.openhft.koloboke.collect.impl.hash.DHashCapacities;
-import net.openhft.koloboke.collect.impl.hash.QHashCapacities;
+/* with QHash|DHash hash */import net.openhft.koloboke.collect.impl.hash.QHashCapacities;/*endwith*/
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.CommandLineOptionException;
@@ -66,11 +65,13 @@ public class AddRemoveLookupBenchmarks {
     static final int L_HASH_ADD_REMOVES = Q_HASH_ADD_REMOVES;
     static final int R_HOOD_SIMPLE_HASH_ADD_REMOVES = Q_HASH_ADD_REMOVES;
 
-    /* with char|byte|short|int|long key QHash|DHash|LHash|RHoodSimpleHash hash */
+    /* with char|byte|short|int|long key QHash|DHash|LHash|RHoodSimpleHash hash
+            No|ZeroMasking states */
+    /* if !(ZeroMasking states DHash|RHoodSimpleHash hash) */
 
     @AuxCounters
     @State(Scope.Thread)
-    public static class QHashCharSetState {
+    public static class NoStatesQHashCharSetState {
         Random r;
         char[] keys;
         char[] lookupKeys;
@@ -122,7 +123,8 @@ public class AddRemoveLookupBenchmarks {
     /* if QHash|DHash hash */
 
     @Benchmark
-    public int addRemoveLookup_qHash_charKey_simpleIndexing(QHashCharSetState state) {
+    public int addRemoveLookup_qHash_noStates_charKey_simpleIndexing(
+            NoStatesQHashCharSetState state) {
         int freeSlotsRehashThreshold =
                 freeSlotsRehashThreshold(Q_HASH_REHASH_LOAD, Q_HASH_CAPACITY);
         int removeI = 0, insertI = SIZE;
@@ -150,7 +152,8 @@ public class AddRemoveLookupBenchmarks {
     /* elif LHash|RHoodSimpleHash hash */
 
     @Benchmark
-    public int addRemoveLookup_qHash_charKey_simpleIndexing(QHashCharSetState state) {
+    public int addRemoveLookup_qHash_noStates_charKey_simpleIndexing(
+            NoStatesQHashCharSetState state) {
         int removeI = 0, insertI = SIZE;
         NoStatesQHashCharSet set = state.set;
         char[] keys = state.keys;
@@ -171,6 +174,8 @@ public class AddRemoveLookupBenchmarks {
 
     /* endif */
     /* endwith */
+
+    /* endif */
     /* endwith */
 
     public static void main(String[] args) throws RunnerException, CommandLineOptionException {

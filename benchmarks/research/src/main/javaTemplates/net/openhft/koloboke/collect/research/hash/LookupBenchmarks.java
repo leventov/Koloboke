@@ -82,9 +82,11 @@ public class LookupBenchmarks {
         }
     }
 
-    /* with Bit|Byte|ByteAlong|No states LHash|LSelfAdjHash|DHash|RHoodSimpleHash|QHash hash */
+    /* with Bit|Byte|ByteAlong|No|ZeroMasking states
+            LHash|LSelfAdjHash|DHash|RHoodSimpleHash|QHash hash */
     /* if !(Bit states DHash hash) &&
-          !(Bit|Byte|ByteAlong states RHoodSimpleHash|QHash|LSelfAdjHash hash) */
+          !(Bit|Byte|ByteAlong states RHoodSimpleHash|QHash|LSelfAdjHash hash) &&
+          !(ZeroMasking states RHoodSimpleHash|DHash|LSelfAdjHash hash) */
 
     @State(Scope.Thread)
     public static class BitStatesLHashCharsUniformQueries {
