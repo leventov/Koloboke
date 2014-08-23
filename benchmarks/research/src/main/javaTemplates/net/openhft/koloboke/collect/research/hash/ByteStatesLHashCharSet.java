@@ -95,7 +95,7 @@ public class ByteStatesLHashCharSet implements UnsafeConstants {
     public boolean addBinaryStateSimpleIndexing(char key) {
         byte[] states = this.states;
         char[] keys = set;
-        int capacityMask = keys.length;
+        int capacityMask = keys.length - 1;
         int index = Primitives.hashCode(key) & capacityMask;
         keyAbsent:
         if (states[index] != FREE) {
