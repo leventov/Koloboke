@@ -28,8 +28,8 @@ public class NoStatesDHashCharSet implements UnsafeConstants {
     public int size = 0;
     public int freeSlots;
     public int removedSlots = 0;
-    public char freeValue = Character.MIN_VALUE;
-    public char removedValue = Character.MIN_VALUE + 1;
+    public char freeValue = CharOps.randomExcept();
+    public char removedValue = CharOps.randomExcept(freeValue);
     public char[] set;
     public char[] reuseKeys;
 
@@ -44,6 +44,8 @@ public class NoStatesDHashCharSet implements UnsafeConstants {
             size = 0;
             freeSlots = set.length;
             removedSlots = 0;
+            freeValue = CharOps.randomExcept();
+            removedValue = CharOps.randomExcept(freeValue);
             Arrays.fill(set, freeValue);
         }
     }

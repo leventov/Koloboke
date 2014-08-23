@@ -26,7 +26,7 @@ import java.util.Arrays;
 public class NoStatesLHashCharSet implements UnsafeConstants {
 
     public int size = 0;
-    public char freeValue = Character.MIN_VALUE;
+    public char freeValue = CharOps.randomExcept();
     public char[] set;
 
     public NoStatesLHashCharSet(int capacity) {
@@ -40,6 +40,7 @@ public class NoStatesLHashCharSet implements UnsafeConstants {
     public void clear() {
         if (size != 0) {
             size = 0;
+            freeValue = CharOps.randomExcept();
             Arrays.fill(set, freeValue);
         }
     }

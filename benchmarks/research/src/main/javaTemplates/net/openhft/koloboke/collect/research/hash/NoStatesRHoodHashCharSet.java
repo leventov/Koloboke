@@ -28,7 +28,7 @@ import static net.openhft.koloboke.collect.impl.Primitives.hashCode;
 public class NoStatesRHoodHashCharSet implements UnsafeConstants {
 
     public int size = 0;
-    public char freeValue = Character.MIN_VALUE;
+    public char freeValue = CharOps.randomExcept();
     public char[] set;
 
     public NoStatesRHoodHashCharSet(int capacity) {
@@ -42,6 +42,7 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
     public void clear() {
         if (size != 0) {
             size = 0;
+            freeValue = CharOps.randomExcept();
             Arrays.fill(set, freeValue);
         }
     }
