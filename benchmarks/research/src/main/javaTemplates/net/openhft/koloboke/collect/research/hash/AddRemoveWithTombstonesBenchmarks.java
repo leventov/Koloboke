@@ -71,7 +71,7 @@ public class AddRemoveWithTombstonesBenchmarks {
         char[] keys;
         char[] lookupKeys;
         NoStatesQHashCharSet set;
-        public int operationsPerInvocation = 0;
+        public long operationsPerIteration = 0L;
 
         @Setup(Level.Trial)
         public void allocate() {
@@ -104,7 +104,7 @@ public class AddRemoveWithTombstonesBenchmarks {
 
         @Setup(Level.Iteration)
         public void resetOperationsPerInvocation() {
-            operationsPerInvocation = 0;
+            operationsPerIteration = 0L;
         }
 
         @TearDown(Level.Trial)
@@ -114,7 +114,7 @@ public class AddRemoveWithTombstonesBenchmarks {
         }
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int addRemove_qHash_charKey_withoutLookups(QHashCharSetState state) {
         int freeSlotsRehashThreshold = freeSlotsRehashThreshold(REHASH_LOAD, Q_HASH_CAPACITY);
         int i = 0, j = SIZE;
@@ -126,14 +126,14 @@ public class AddRemoveWithTombstonesBenchmarks {
             set.addTernaryStateSimpleIndexing(keys[j++]);
             if (set.freeSlots <= freeSlotsRehashThreshold) {
                 set.rehashSimpleIndexing(Q_HASH_CAPACITY);
-                state.operationsPerInvocation += i;
+                state.operationsPerIteration += i;
                 return set.size;
             }
         }
         throw new IllegalStateException();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int addRemove_qHash_charKey_withLookups(QHashCharSetState state) {
         int freeSlotsRehashThreshold = freeSlotsRehashThreshold(REHASH_LOAD, Q_HASH_CAPACITY);
         int removeI = 0, insertI = SIZE;
@@ -151,7 +151,7 @@ public class AddRemoveWithTombstonesBenchmarks {
             }
             if (set.freeSlots <= freeSlotsRehashThreshold) {
                 set.rehashSimpleIndexing(Q_HASH_CAPACITY);
-                state.operationsPerInvocation += removeI;
+                state.operationsPerIteration += removeI;
                 return set.size ^ lookupDummy;
             }
         }
@@ -166,7 +166,7 @@ public class AddRemoveWithTombstonesBenchmarks {
                 .addArgDim("lookupsPerInsertion", 4)
                 .addArgDim("loadFactor")
                 .addArgDim("rehashLoad")
-                .dynamicOperationsPerInvocation()
+                .dynamicOperationsPerIteration()
                 .run(args);
     }
 }

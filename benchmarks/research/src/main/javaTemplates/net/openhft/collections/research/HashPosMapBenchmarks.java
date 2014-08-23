@@ -83,7 +83,7 @@ public class HashPosMapBenchmarks {
         }
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int forEachValueCommonSinkIter_simpleFlavor_present(SimpleState st) {
         SinkConsumer sink = new SinkConsumer();
         SimpleVanillaShortShortMultiMap map = st.map;
@@ -93,7 +93,7 @@ public class HashPosMapBenchmarks {
         return sink.x;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int forEachValueLocalSinkIter_simpleFlavor_present(SimpleState st) {
 
         int x = 0;
@@ -106,7 +106,7 @@ public class HashPosMapBenchmarks {
         return x;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int forEachValueStatelessSinkIter_simpleFlavor_present(SimpleState st) {
         final int[] x = new int[1];
         SimpleVanillaShortShortMultiMap map = st.map;
@@ -115,7 +115,7 @@ public class HashPosMapBenchmarks {
         return x[0];
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int searchPosIter_simpleFlavor_present(SimpleState st) {
         int x = 0;
         SimpleVanillaShortShortMultiMap map = st.map;

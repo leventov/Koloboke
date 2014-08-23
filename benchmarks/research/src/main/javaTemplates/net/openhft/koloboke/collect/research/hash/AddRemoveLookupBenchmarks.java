@@ -75,7 +75,7 @@ public class AddRemoveLookupBenchmarks {
         char[] keys;
         char[] lookupKeys;
         NoStatesQHashCharSet set;
-        public int operationsPerInvocation = 0;
+        public long operationsPerIteration = 0L;
 
         @Setup(Level.Trial)
         public void allocate() {
@@ -108,7 +108,7 @@ public class AddRemoveLookupBenchmarks {
 
         @Setup(Level.Iteration)
         public void resetOperationsPerInvocation() {
-            operationsPerInvocation = 0;
+            operationsPerIteration = 0L;
         }
 
         @TearDown(Level.Trial)
@@ -121,7 +121,7 @@ public class AddRemoveLookupBenchmarks {
     /* with Simple|Unsafe indexing */
     /* if QHash|DHash hash */
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int addRemoveLookup_qHash_charKey_simpleIndexing(QHashCharSetState state) {
         int freeSlotsRehashThreshold =
                 freeSlotsRehashThreshold(Q_HASH_REHASH_LOAD, Q_HASH_CAPACITY);
@@ -140,7 +140,7 @@ public class AddRemoveLookupBenchmarks {
             }
             if (set.freeSlots <= freeSlotsRehashThreshold) {
                 set.rehashSimpleIndexing(Q_HASH_CAPACITY);
-                state.operationsPerInvocation += removeI;
+                state.operationsPerIteration += removeI;
                 return set.size ^ lookupDummy;
             }
         }
@@ -149,7 +149,7 @@ public class AddRemoveLookupBenchmarks {
 
     /* elif LHash|RHoodSimpleHash hash */
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int addRemoveLookup_qHash_charKey_simpleIndexing(QHashCharSetState state) {
         int removeI = 0, insertI = SIZE;
         NoStatesQHashCharSet set = state.set;
@@ -165,7 +165,7 @@ public class AddRemoveLookupBenchmarks {
                 lookupDummy ^= set.indexBinaryStateSimpleIndexing(lookupKeys[lookupI++]);
             }
         }
-        state.operationsPerInvocation += removeI;
+        state.operationsPerIteration += removeI;
         return set.size ^ lookupDummy;
     }
 
@@ -178,7 +178,7 @@ public class AddRemoveLookupBenchmarks {
                 .addArgDim("capacity", SMALL_CAPACITY, LARGE_CAPACITY)
                 .addArgDim("lookupsPerInsertion", 4)
                 .addArgDim("loadFactor", "0.3", "0.6", "0.9")
-                .dynamicOperationsPerInvocation()
+                .dynamicOperationsPerIteration()
                 .run(args);
     }
 }

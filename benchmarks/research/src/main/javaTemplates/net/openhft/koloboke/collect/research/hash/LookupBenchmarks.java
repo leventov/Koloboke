@@ -228,7 +228,7 @@ public class LookupBenchmarks {
     /* if !(Bit states Ternary state) && !(LHash|LSelfAdjHash|RHoodSimpleHash hash Ternary state) &&
           !(ByteAlong states Simple indexing) */
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public
     int lookup_binaryArity_lHash_bitStates_presentQueryResult_uniformQueries_charKey_simpleIndexing(
             BitStatesLHashCharsUniformQueries s) {
@@ -241,7 +241,7 @@ public class LookupBenchmarks {
     }
 
     /* if Uniform queries */
-    @GenerateMicroBenchmark
+    @Benchmark
     public
     int lookup_binaryArity_lHash_bitStates_absentQueryResult_uniformQueries_charKey_simpleIndexing(
             BitStatesLHashCharsUniformQueries s) {

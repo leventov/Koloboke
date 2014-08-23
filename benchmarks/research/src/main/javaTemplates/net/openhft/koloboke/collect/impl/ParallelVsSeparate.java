@@ -107,7 +107,7 @@ public class ParallelVsSeparate {
         }
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public long putOp_qHash_charKey(PutOpQHashCharCharMapState state) {
         char[] keys = state.keys;
         CharCharMap map = state.map;
@@ -118,7 +118,7 @@ public class ParallelVsSeparate {
         return dummy;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public long getOp_qHash_charKey(QueryUpdateOpQHashCharCharMapState state) {
         char[] keys = state.keys;
         CharCharMap map = state.map;
@@ -129,7 +129,7 @@ public class ParallelVsSeparate {
         return dummy;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public long addValueOp_qHash_charKey(QueryUpdateOpQHashCharCharMapState state) {
         char[] keys = state.keys;
         CharCharMap map = state.map;
@@ -140,7 +140,7 @@ public class ParallelVsSeparate {
         return dummy;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public long computeOp_qHash_charKey(QueryUpdateOpQHashCharCharMapState state) {
         char[] keys = state.keys;
         CharCharMap map = state.map;
@@ -151,7 +151,7 @@ public class ParallelVsSeparate {
         return dummy;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public long forEachOp_qHash_charKey(QueryUpdateOpQHashCharCharMapState state) {
         class Consumer implements CharCharConsumer {
             long dummy;
@@ -165,7 +165,7 @@ public class ParallelVsSeparate {
         return c.dummy;
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public long iterOp_qHash_charKey(QueryUpdateOpQHashCharCharMapState state) {
         long dummy = 0L;
         for (CharCharCursor cur = state.map.cursor(); cur.moveNext();) {

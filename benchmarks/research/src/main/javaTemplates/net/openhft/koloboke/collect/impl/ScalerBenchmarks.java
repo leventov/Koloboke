@@ -39,73 +39,73 @@ public class ScalerBenchmarks {
     
     /* with int|long n Lower|Upper bound */
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int by_0_25_lower_int() {
         return BY_0_25.scaleLower(intV);
     }
 
     
-    @GenerateMicroBenchmark
+    @Benchmark
     public int by_0_5_lower_int() {
         return BY_0_5.scaleLower(intV);
     }
 
     
-    @GenerateMicroBenchmark
+    @Benchmark
     public int by_golden_lower_int() {
         return GOLDEN.scaleLower(intV);
     }
 
     
-    @GenerateMicroBenchmark
+    @Benchmark
     public int by_0_75_lower_int() {
         return BY_0_75.scaleLower(intV);
     }
 
     
-    @GenerateMicroBenchmark
+    @Benchmark
     public int by_1_0_lower_int() {
         return BY_1_0.scaleLower(intV);
     }
 
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int by_1_5_lower_int() {
         return BY_1_5.scaleLower(intV);
     }
 
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int by_2_0_lower_int() {
         return BY_2_0.scaleLower(intV);
     }
 
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int by_3_0_lower_int() {
         return BY_3_0.scaleLower(intV);
     }
 
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int by_4_0_lower_int() {
         return BY_4_0.scaleLower(intV);
     }
 
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int by_pi_lower_int() {
         return PI.scaleLower(intV);
     }
 
     /* endwith */
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public int simple_div_by_golden_int() {
         return (int) (intV / GOLDEN.scale);
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public long simple_div_by_golden_long() {
         return (long) (longV / GOLDEN.scale);
     }

@@ -15,7 +15,7 @@ buildscript {
 
 subprojects {
     dependencies {
-        compile 'org.openjdk.jmh:jmh-core:0.5.6'
+        compile 'org.openjdk.jmh:jmh-core:0.9.8'
         compile (project(':lib:api'), project(':lib:impl'))
     }
 }
@@ -25,14 +25,14 @@ configure([project('research'), project('time-vs-memory')]) {
     apply plugin: 'shadow'
 
     dependencies {
-        compile 'org.openjdk.jmh:jmh-generator-annprocess:0.5.6'
+        compile 'org.openjdk.jmh:jmh-generator-annprocess:0.9.8'
         compile 'net.openhft:lang:6.3.3'
         compile project("$parent.path:dimensioned-jmh")
     }
 
     jar.manifest.attributes 'Main-Class': 'org.openjdk.jmh.Main'
 
-    shadow.outputFile = new File(libsDir, 'microbenchmarks.jar')
+    shadow.outputFile = new File(libsDir, 'benchmarks.jar')
 
     build.doLast {
         tasks.shadow.execute()

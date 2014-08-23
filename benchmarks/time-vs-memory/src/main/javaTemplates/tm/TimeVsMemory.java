@@ -355,7 +355,7 @@ public class TimeVsMemory {
         }
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public long putOp_kolobokeCollections_charKey(PutOpKolobokeCharCharMapState state) {
         char[] keys = state.keys;
         /*mapType*/net.openhft.koloboke.collect.map.CharCharMap/**/ map = state.map;
@@ -365,7 +365,7 @@ public class TimeVsMemory {
         return (long) map.size();
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public long getOp_kolobokeCollections_charKey(QueryUpdateOpKolobokeCharCharMapState state) {
         char[] keys = state.keys;
         /*mapType*/net.openhft.koloboke.collect.map.CharCharMap/**/ map = state.map;
@@ -377,7 +377,7 @@ public class TimeVsMemory {
     }
 
     /* if !(Fastutil collections) */
-    @GenerateMicroBenchmark
+    @Benchmark
     public long addValueOp_kolobokeCollections_charKey(QueryUpdateOpKolobokeCharCharMapState state) {
         char[] keys = state.keys;
         /*mapType*/net.openhft.koloboke.collect.map.CharCharMap/**/ map = state.map;
@@ -390,7 +390,7 @@ public class TimeVsMemory {
     /* endif */
 
     /* if !(Fastutil collections) */
-    @GenerateMicroBenchmark
+    @Benchmark
     public long forEachOp_kolobokeCollections_charKey(QueryUpdateOpKolobokeCharCharMapState state) {
         /*consumerType*/CharCharConsumer/**/ c = new /*consumerType*/CharCharConsumer/**/();
         c.forEach(state.map);
@@ -399,7 +399,7 @@ public class TimeVsMemory {
     /* endif */
 
     /* if !(Mahout collections) */
-    @GenerateMicroBenchmark
+    @Benchmark
     public long iterOp_kolobokeCollections_charKey(QueryUpdateOpKolobokeCharCharMapState state) {
         return iter(state.map);
     }
