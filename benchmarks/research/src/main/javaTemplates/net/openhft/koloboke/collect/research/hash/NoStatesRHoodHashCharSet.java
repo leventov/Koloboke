@@ -19,6 +19,7 @@ package net.openhft.koloboke.collect.research.hash;
 
 import net.openhft.koloboke.collect.impl.Primitives;
 import net.openhft.koloboke.collect.impl.UnsafeConstants;
+import net.openhft.koloboke.function.CharConsumer;
 
 import java.util.*;
 
@@ -44,6 +45,16 @@ public class NoStatesRHoodHashCharSet implements UnsafeConstants {
             size = 0;
             freeValue = CharOps.randomExcept();
             Arrays.fill(set, freeValue);
+        }
+    }
+
+    public void forEachBinaryState(CharConsumer action) {
+        char free = freeValue;
+        char[] keys = set;
+        for (int i = keys.length - 1; i >= 0; i--) {
+            char k;
+            if ((k = keys[i]) != free)
+                action.accept(k);
         }
     }
 

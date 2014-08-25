@@ -19,6 +19,7 @@ package net.openhft.koloboke.collect.research.hash;
 
 import net.openhft.koloboke.collect.impl.Primitives;
 import net.openhft.koloboke.collect.impl.UnsafeConstants;
+import net.openhft.koloboke.function.CharConsumer;
 
 import java.util.Arrays;
 
@@ -93,5 +94,13 @@ public class ByteAlongStatesLHashCharSet implements UnsafeConstants {
         U.putChar(table, BYTE_BASE + stateOffset + BYTE_SCALE, key);
         size++;
         return true;
+    }
+
+    public void forEachBinaryState(CharConsumer action) {
+        byte[] table = this.table;
+        for (long off = ((long) (capacityMask + 1)) * ENTRY_SCALE; (off -= ENTRY_SCALE) >= 0L;) {
+            if (U.getByte(table, BYTE_BASE + off) != FREE)
+                action.accept(U.getChar(table, BYTE_BASE + off + BYTE_SCALE));
+        }
     }
 }
