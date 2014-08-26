@@ -144,23 +144,48 @@ public class BitStatesLHashCharSet implements UnsafeConstants {
         char[] keys = set;
         int statesWordIndex = stateBits.length - 1;
         long curStatesWord = stateBits[statesWordIndex];
-        int index;
-        forEach:
+        int index = keys.length;
         while (true) {
-            while(true) {
-                if (curStatesWord != 0L) {
-                    index = (statesWordIndex << 6) + 64;
-                    break;
-                } else {
-                    if (--statesWordIndex < 0)
-                        break forEach;
+            if (curStatesWord == 0) {
+                if (--statesWordIndex >= 0) {
                     curStatesWord = stateBits[statesWordIndex];
+                    index = (statesWordIndex << 6) + 64;
+                    continue;
+                } else {
+                    break;
                 }
             }
             int shift = Long.numberOfLeadingZeros(curStatesWord) + 1;
             index -= shift;
             action.accept(keys[index]);
             curStatesWord <<= shift;
+        }
+    }
+
+    /**
+     * This is also binary state, but version without using {@link Long#numberOfLeadingZeros(long)}.
+     * Named TernaryState not to add new dimension.
+     */
+    public void forEachTernaryState(CharConsumer action) {
+        long[] stateBits = this.stateBits;
+        char[] keys = set;
+        int statesWordIndex = 0;
+        long curStatesWord = stateBits[statesWordIndex];
+        int index = 0;
+        while (true) {
+            if (curStatesWord == 0) {
+                if (++statesWordIndex < stateBits.length) {
+                    curStatesWord = stateBits[statesWordIndex];
+                    index = statesWordIndex << 6;
+                    continue;
+                } else {
+                    break;
+                }
+            }
+            if ((curStatesWord & 1L) != 0)
+                action.accept(keys[index]);
+            curStatesWord >>>= 1L;
+            index++;
         }
     }
 }

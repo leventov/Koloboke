@@ -111,8 +111,9 @@ public class ForEachBenchmarks {
     }
 
     /* with Binary|Ternary state */
-    /* if !(Bit|ByteAlong|Byte states Ternary state) &&
-          !(LHash|LSelfAdjHash|RHoodSimpleHash hash Ternary state) */
+    /* if !(ByteAlong|Byte states Ternary state) &&
+          !(LSelfAdjHash|RHoodSimpleHash hash Ternary state)  &&
+          !(No|ZeroMasking states LHash hash Ternary state) */
     @Benchmark
     public char forEach_lHash_bitStates_binaryArity_charKey(BitStatesLHashChars s) {
         s.set.forEachBinaryState(s.xor);
