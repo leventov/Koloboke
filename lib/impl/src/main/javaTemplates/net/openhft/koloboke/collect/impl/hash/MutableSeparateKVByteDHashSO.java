@@ -144,12 +144,6 @@ public abstract class MutableSeparateKVByteDHashSO extends MutableDHash
         /* endif */
         byte free = this.freeValue;
         /* if Mutable mutability && !(LHash hash) */byte removed = this.removedValue;/* endif */
-        /* if Separate kv */
-        byte[] keys = this.set;
-        /* elif Parallel kv */
-        char[] tab = this.table;
-        /* endif */
-        int capacity = capacity();
         Random random = ThreadLocalRandom.current();
         byte newFree;
         /* if byte|char|short elem */
