@@ -36,7 +36,24 @@ abstract class ByteHashFactorySO extends AbstractHashFactory {
         this.lower = lower;
         this.upper = upper;
         if ((byte) (lower - 1) == upper) {
-            randomFree = randomRemoved = true;
+            // free key = 0 by default vs. random free key:
+            //
+            // Assuming most hash table instances don't contain zero key during the lifetime,
+            // we safe one table iteration with filling free key during hash table construction,
+            // instead we sacrifice extra free key replacement if zero key is inserted
+            // into the hash.
+            //
+            // So by choosing free key = 0 by default we speedup most hash instantiation sites,
+            // and slowdown less frequent ones where zero key is very likely or always present.
+            // In the latter cases someone can specify fictional keys domain, to force this method
+            // to choose different free key.
+            //
+            // However, it requires from the library user to be familiar with this comment
+            // and to be aware, that the library never throws IllegalStateException on insertion
+            // a key out of the specified keys domain (Javadocs say that it is implementation choice
+            // to throw an exception or silently ignore this situation.)
+            randomFree = false;
+            randomRemoved = true;
             freeValue = removedValue = /* const elem 0 */0;
         } else {
             randomFree = false;
