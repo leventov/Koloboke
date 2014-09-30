@@ -464,13 +464,13 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
                 elseBlock();
             }
             firstIndexFreeCheck("cur");
-            if (cxt.isObjectKey() && !cxt.mutable()) {
+            if (cxt.isObjectKey() && !possibleRemovedSlots(cxt)) {
                 ifBlock("keyEquals(" + unwrappedKey() + ", cur)");
                 generateOrGoToPresent(() -> {});
                 elseBlock();
             }
             innerInline();
-            if (cxt.isObjectKey() && !cxt.mutable())
+            if (cxt.isObjectKey() && !possibleRemovedSlots(cxt))
                 blockEnd();
             blockEnd();
             if (separateAbsentFreeSlot && !earlyAbsentLabel)
