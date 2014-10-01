@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 public class ObjMapTest {
 
     @Test
-    public void test() {
+    public void testGetByEqualButNotIdenticalKey() {
         Map<Integer, Integer> map = HashObjObjMaps.newMutableMap(10);
         int val1 = 1024*1024;
         int val2 = 1024*1024 + 1;
@@ -41,5 +41,22 @@ public class ObjMapTest {
         assertEquals((Integer) val2, map.get(val2));
         assertEquals((Integer) val3, map.get(val3));
         assertEquals((Integer) val4, map.get(val4));
+    }
+
+    @Test
+    public void testPutEqualButNotIdenticalKey() {
+        Map<Integer, Integer> map = HashObjObjMaps.newMutableMap(10);
+        int val1 = 1024*1024;
+        int val2 = 1024*1024 + 1;
+        int val3 = 1024*1024 + 2;
+        int val4 = 1024*1024 + 3;
+        for (int i = 0; i < 2; i++) {
+            map.put(new Integer(val1), val1);
+            map.put(new Integer(val2), val2);
+            map.put(new Integer(val3), val3);
+            map.put(new Integer(val4), val4);
+        }
+
+        assertEquals(4, map.size());
     }
 }

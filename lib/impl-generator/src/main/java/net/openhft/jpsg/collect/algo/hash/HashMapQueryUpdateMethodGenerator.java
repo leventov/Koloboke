@@ -433,13 +433,13 @@ public final class HashMapQueryUpdateMethodGenerator extends MapQueryUpdateMetho
             if (separatePresent) {
                 lines("keyPresent:");
                 String keyNotEqualsCond = "cur != " + unwrappedKey();
-                if (cxt.isObjectKey() && !cxt.mutable()) {
+                if (cxt.isObjectKey() && !possibleRemovedSlots(cxt)) {
                     keyNotEqualsCond += " && !keyEquals(" + unwrappedKey() +", cur)";
                 }
                 ifBlock(keyNotEqualsCond);
             } else {
                 String keyEqualsCond = "cur == " + unwrappedKey();
-                if (cxt.isObjectKey() && !cxt.mutable()) {
+                if (cxt.isObjectKey() && !possibleRemovedSlots(cxt)) {
                     keyEqualsCond += " || keyEquals(" + unwrappedKey() + ", cur)";
                 }
                 ifBlock(keyEqualsCond);
