@@ -27,7 +27,8 @@ import net.openhft.koloboke.collect.hash.HashOverflowException;
 import net.openhft.koloboke.collect.impl.*;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import /* if JDK8 jdk //java.util.concurrent
+     /* elif JDK6 jdk */net.openhft.koloboke.collect.impl/* endif */.ThreadLocalRandom;
 
 
 public abstract class MutableSeparateKVByteDHashSO extends MutableDHash

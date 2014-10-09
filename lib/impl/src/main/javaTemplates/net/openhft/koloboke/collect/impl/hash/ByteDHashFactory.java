@@ -23,7 +23,8 @@ package net.openhft.koloboke.collect.impl.hash;
 import net.openhft.koloboke.collect.hash.*;
 
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import /* if JDK8 jdk //java.util.concurrent
+     /* elif JDK6 jdk */net.openhft.koloboke.collect.impl/* endif */.ThreadLocalRandom;
 
 
 abstract class ByteDHashFactory
