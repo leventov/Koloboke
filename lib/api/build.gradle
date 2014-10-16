@@ -2,7 +2,7 @@ evaluationDependsOn("$parent.path")
 
 javadoc {
     title "Koloboke Collections $version API"
-    configure((CoreJavadocOptions) getOptions()) {
+    configure((StandardJavadocDocletOptions) getOptions()) {
         links("http://jsr-305.googlecode.com/svn/trunk/javadoc/",
                 "http://docs.oracle.com/javase/$libTargetJava/docs/api/")
         overview "$buildDir/generated-src/jpsg/main/java/overview.html"
@@ -12,6 +12,7 @@ javadoc {
             // to suppress warnings in JDK sources
             addStringOption('tag', 'implSpec')
         addStringOption('noqualifier', 'java.lang:java.util')
+        use = true // generate Use pages
     }
     executable = project.hasProperty('javadocExecutable') ? javadocExecutable : null
 }
