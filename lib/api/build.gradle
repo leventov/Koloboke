@@ -3,8 +3,9 @@ evaluationDependsOn("$parent.path")
 javadoc {
     title "Koloboke Collections $apiVersion API"
     configure((StandardJavadocDocletOptions) getOptions()) {
+        def javaDocJava = project.hasProperty('javadocJava') ? javadocJava : libTargetJava
         links("http://jsr-305.googlecode.com/svn/trunk/javadoc/",
-                "http://docs.oracle.com/javase/$libTargetJava/docs/api/")
+                "http://docs.oracle.com/javase/$javaDocJava/docs/api/")
         overview "$buildDir/generated-src/jpsg/main/java/overview.html"
         addStringOption('sourcepath', project.hasProperty('jdkSrc') ? jdkSrc :
                 "$System.env.JAVA_HOME/src")
