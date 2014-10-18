@@ -1,3 +1,7 @@
+evaluationDependsOn("$parent.path")
+
+description = 'Gradle plugin'
+
 dependencies {
     compile project("$parent.path:core")
     compile gradleApi()

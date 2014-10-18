@@ -16,12 +16,3 @@ javadoc {
     }
     executable = project.hasProperty('javadocExecutable') ? javadocExecutable : null
 }
-
-task javadocJar(type: Jar) {
-    classifier 'javadoc'
-    from javadoc
-}
-
-artifacts{
-    archives javadocJar
-}

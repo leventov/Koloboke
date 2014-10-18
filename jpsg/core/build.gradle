@@ -1,3 +1,7 @@
+evaluationDependsOn("$parent.path")
+
+description = 'core'
+
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.5'
     runtime 'org.slf4j:slf4j-simple:1.7.5'

@@ -26,12 +26,3 @@ dependencies {
     testCompile project("$parent.path:testing")
     testCompile 'org.apache.mahout:mahout-math:0.9'
 }
-
-// Sonatype requirement
-task emptyJavadocJar(type: Jar) {
-    classifier 'javadoc'
-}
-
-artifacts{
-    archives emptyJavadocJar
-}

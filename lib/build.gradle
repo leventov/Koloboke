@@ -44,8 +44,6 @@ configure([apiProject, implProject]) {
     apply plugin: 'propdeps-idea'
     apply plugin: 'propdeps-maven'
     apply plugin: 'jacoco'
-    apply plugin: 'signing'
-    apply plugin: 'maven'
 
     setSourceCompatibility(project, "1.$libTargetJava")
 
@@ -64,91 +62,18 @@ configure([apiProject, implProject]) {
 
     test.testLogging.exceptionFormat = 'full'
 
-    group = 'net.openhft'
+    configurePublishing(project, project.is(apiProject))
+    archivesBaseName  = "koloboke-$project.name-jdk${libTargetJava == '6' ? '6-7' : '8'}"
     version = '0.6.3'
     ext.apiVersion = '0.6'
 
-    archivesBaseName  = "koloboke-$project.name-jdk${libTargetJava == '6' ? '6-7' : '8'}"
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier 'sources'
-        from sourceSets.main.allSource
-    }
-
-    artifacts {
-        archives sourcesJar
-    }
-
-    ext {
-        if (!project.hasProperty('sonatypeUrl'))
-            sonatypeUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
-        if (!project.hasProperty('sonatypeUsername')) sonatypeUsername = ''
-        if (!project.hasProperty('sonatypePassword')) sonatypePassword = ''
-    }
-
-    ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
-
-    signing {
-        required { isReleaseVersion && gradle.taskGraph.hasTask('uploadArchives') }
-        sign configurations.archives
-    }
-
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-                repository(url: sonatypeUrl) {
-                    authentication(userName: sonatypeUsername, password: sonatypePassword)
-                }
-            }
-        }
-    }
-
-    def installer = install.repositories.mavenInstaller
-    def deployer = uploadArchives.repositories.mavenDeployer
-
-    [installer, deployer]*.pom*.whenConfigured { pom ->
-        pom.dependencies.removeAll { dep -> dep.scope == 'test' }
+    poms*.whenConfigured { pom ->
         pom.project {
             def apiOrImpl = "(${project == apiProject ? 'API' : 'implementation'})"
             name = "Koloboke Collections $apiOrImpl"
             description = 'Carefully designed and efficient extension ' +
                     'of the Java Collections Framework with primitive specializations and more, ' +
                     "built for Java ${libTargetJava == '6' ? '6 or 7' : '8'} $apiOrImpl"
-            url = 'https://github.com/OpenHFT/Koloboke'
-            inceptionYear = '2013'
-            organization {
-                name = 'Higher Frequency Trading'
-                url = 'http://openhft.net'
-            }
-            licenses {
-                license {
-                    name = 'The Apache Software License, Version 2.0'
-                    url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    distribution = 'repo'
-                }
-            }
-            scm {
-                url = 'https://github.com/OpenHFT/Koloboke'
-                connection = 'scm:git:git://github.com/OpenHFT/Koloboke'
-                developerConnection = 'scm:git:git://github.com/OpenHFT/Koloboke'
-            }
-            developers {
-                developer {
-                    id = 'leventov'
-                    name = 'Roman Leventov'
-                    email = 'leventov@ya.ru'
-                    url = 'http://www.leventov.ru'
-                    organization = 'Higher Frequency Trading'
-                    organizationUrl = 'http://openhft.net'
-                    timezone = '+4'
-                }
-            }
-            issueManagement {
-                system = 'GitHub'
-                url = 'https://github.com/OpenHFT/Koloboke/issues'
-            }
         }
     }
 
