@@ -18,6 +18,7 @@
 package net.openhft.koloboke.collect.set;
 
 import net.openhft.koloboke.collect.CharCollection;
+import net.openhft.koloboke.collect.CharIterator;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -30,19 +31,25 @@ import java.util.Set;
  * A set of objects, the library's extension of the classic {@link Set} interface.
  * // endif //
  *
+ * <p>Methods, declared in this interface (i. e. not inherited from the superinterfaces),
+ * are present only to remove some compile-time ambiguities, they don't have any additional meaning
+ * over the specifications from superinterfaces.
+ *
  * @see CharSetFactory
  */
 public interface CharSet/*<>*/ extends CharCollection/*<>*/, Set<Character> {
 
     /* if !(obj elem) */
     /**
-     * Need to override this method, because Set.add(Object) -- erasure! -- conflicts with
-     * {@code CharCollection.add(Character)}.
-     *
+     *{@inheritDoc}
      * @deprecated Use specialization {@link #add(char)} instead
      */
     @Override
     @Deprecated
     boolean add(@Nonnull Character e);
     /* endif */
+
+    @Nonnull
+    @Override
+    CharIterator iterator();
 }
