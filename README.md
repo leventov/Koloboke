@@ -39,8 +39,8 @@ Add to your Gradle build script:
 
     dependencies {
         // `jdk8` instead of `jdk6-7` if you use Java 8
-        compile 'net.openhft:koloboke-api-jdk6-7:0.6.3'
-        runtime 'net.openhft:koloboke-impl-jdk6-7:0.6.3'
+        compile 'net.openhft:koloboke-api-jdk6-7:0.6.4'
+        runtime 'net.openhft:koloboke-impl-jdk6-7:0.6.4'
     }
 
 Or Maven config (don't forget about jdk6-7/jdk8 suffix):
@@ -49,22 +49,18 @@ Or Maven config (don't forget about jdk6-7/jdk8 suffix):
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>koloboke-api-jdk6-7</artifactId>
-            <version>0.6.3</version>
+            <version>0.6.4</version>
         </dependency>
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>koloboke-impl-jdk6-7</artifactId>
-            <version>0.6.3</version>
+            <version>0.6.4</version>
             <scope>runtime</scope>
         </dependency>
     <dependencies>
 
 Or similarly for your favourite build system.
 Or download jars of [the latest release](https://github.com/OpenHFT/Koloboke/releases/latest).
-
-**Temporary note:** currently the latest version of `koloboke-api-jdk8` and `koloboke-impl-jdk8`
-is `0.6.2`, because `koloboke-api-jdk6-7:0.6.3` and `koloboke-impl-jdk6-7:0.6.3` contain only
-a Java 6 specific fix.
 
 Then you can start using collections. Replace all lines like
 
