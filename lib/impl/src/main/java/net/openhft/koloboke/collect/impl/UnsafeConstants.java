@@ -60,13 +60,13 @@ public interface UnsafeConstants {
     public static final long DOUBLE_SCALE = 8L;
     public static final int DOUBLE_SCALE_SHIFT = 3;
 
-    public static final long BYTE_BASE = (long) Unsafe.ARRAY_BYTE_BASE_OFFSET;
-    public static final long CHAR_BASE = (long) Unsafe.ARRAY_CHAR_BASE_OFFSET;
-    public static final long SHORT_BASE = (long) Unsafe.ARRAY_SHORT_BASE_OFFSET;
-    public static final long INT_BASE = (long) Unsafe.ARRAY_INT_BASE_OFFSET;
-    public static final long FLOAT_BASE = (long) Unsafe.ARRAY_FLOAT_BASE_OFFSET;
-    public static final long LONG_BASE = (long) Unsafe.ARRAY_LONG_BASE_OFFSET;
-    public static final long DOUBLE_BASE = (long) Unsafe.ARRAY_DOUBLE_BASE_OFFSET;
+    public static final long BYTE_BASE = (long) U.arrayBaseOffset(byte[].class);
+    public static final long CHAR_BASE = (long) U.arrayBaseOffset(char[].class);
+    public static final long SHORT_BASE = (long) U.arrayBaseOffset(short[].class);
+    public static final long INT_BASE = (long) U.arrayBaseOffset(int[].class);
+    public static final long FLOAT_BASE = (long) U.arrayBaseOffset(float[].class);
+    public static final long LONG_BASE = (long) U.arrayBaseOffset(long[].class);
+    public static final long DOUBLE_BASE = (long) U.arrayBaseOffset(double[].class);
 
     /**
      * In parallel key-value tables keys and values sometimes are read and written as a single
