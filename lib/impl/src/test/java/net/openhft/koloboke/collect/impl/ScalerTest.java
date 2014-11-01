@@ -54,10 +54,6 @@ public class ScalerTest {
     public static final Collection<Integer> ints = new ArrayList<Integer>();
     public static final Collection<Long> longs = new ArrayList<Long>();
     static {
-        // special property of this value: multiplied by Math.PI, it results to a double value
-        // which is actually an integer, i. e. d == Math.rint(d)
-        ints.add(415069444);
-        
         for (int i = 1; i < 10000; i++) {
             ints.add(i);
             longs.add((long) i);
