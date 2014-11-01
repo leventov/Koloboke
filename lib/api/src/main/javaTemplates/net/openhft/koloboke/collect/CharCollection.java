@@ -129,9 +129,13 @@ public interface CharCollection extends Collection<Character>, Container {
      * Returns a new iterator over this collection's elements.
      *
      * @return a new iterator over this collection's elements
+     * @deprecated Instead of explicit {@code iterator()} calls, use {@link #cursor()};
+     * {@code iterator()} is still sensible only as a backing mechanism for Java 5's for-each
+     * statements.
      * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>
      */
+    @Deprecated
     @Override
     @Nonnull
     CharIterator iterator();

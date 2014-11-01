@@ -49,6 +49,13 @@ public interface CharSet/*<>*/ extends CharCollection/*<>*/, Set<Character> {
     boolean add(@Nonnull Character e);
     /* endif */
 
+    /**
+     * {@inheritDoc}
+     * @deprecated Instead of explicit {@code iterator()} calls, use {@link #cursor()};
+     * {@code iterator()} is still sensible only as a backing mechanism for Java 5's for-each
+     * statements.
+     */
+    @Deprecated
     @Nonnull
     @Override
     CharIterator iterator();
