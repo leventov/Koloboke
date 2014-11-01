@@ -139,6 +139,7 @@ public class Scaler {
     }
 
     private static final BigDecimal LONG_MAX_VALUE = valueOf(Long.MAX_VALUE);
+    private static final BigDecimal INT_MAX_VALUE = valueOf(Integer.MAX_VALUE);
 
     final double scale;
     private BigDecimal scaleAsBD;
@@ -158,13 +159,19 @@ public class Scaler {
 
     public int scaleUpper(int n) {
         check(n);
-        int lower = (int) ((double) n * scale);
+        int lower = scaleLower(n);
         return lower < Integer.MAX_VALUE ? lower + 1 : Integer.MAX_VALUE;
     }
 
     public int scaleLower(int n) {
         check(n);
-        return (int) ((double) n * scale);
+        double d = ((double) n) * scale;
+        if (d != Math.rint(d)) {
+            return (int) d;
+        } else {
+            BigDecimal lower = valueOf(n).multiply(scaleAsBD());
+            return lower.compareTo(INT_MAX_VALUE) < 0 ? lower.intValue() : Integer.MAX_VALUE;
+        }
     }
 
     public long scaleUpper(long n) {
