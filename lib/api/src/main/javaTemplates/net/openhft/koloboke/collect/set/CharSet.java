@@ -58,5 +58,5 @@ public interface CharSet/*<>*/ extends CharCollection/*<>*/, Set<Character> {
     @Deprecated
     @Nonnull
     @Override
-    CharIterator iterator();
+    CharIterator/*<>*/ iterator();
 }

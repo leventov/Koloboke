@@ -123,7 +123,7 @@ public interface CharCollection extends Collection<Character>, Container {
      *     Comparison of iteration options in the library</a>
      */
     @Nonnull
-    CharCursor cursor();
+    CharCursor/*<>*/ cursor();
 
     /**
      * Returns a new iterator over this collection's elements.
@@ -138,7 +138,7 @@ public interface CharCollection extends Collection<Character>, Container {
     @Deprecated
     @Override
     @Nonnull
-    CharIterator iterator();
+    CharIterator/*<>*/ iterator();
 
     /* if JDK8 jdk */
     /**
