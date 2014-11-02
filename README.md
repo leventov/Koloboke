@@ -43,6 +43,8 @@ Currently only *hash sets* and *hash maps* are implemented.
 All this goodness for the cost of... the library is insanely fat. Currently it takes about 20 MB
 (and that's only hash sets and maps).
 
+##### Possible solution: [roll the collection implementation only with features you need](https://github.com/OpenHFT/Koloboke/wiki/Koloboke:-roll-the-collection-implementation-with-features-you-need).
+
 ### Ultra quick start
 
 Add to your Gradle build script:
