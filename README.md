@@ -7,7 +7,7 @@ Currently only *hash sets* and *hash maps* are implemented.
 
 ### Features
 
- - Excellent compatibility with Java Collections Framework (JCF):
+ - **Excellent compatibility with Java Collections Framework (JCF)**
     - All primitive specialization collections *extend basic interfaces*
       (`Collection`, `Set`, `Map`),<br/> hence could be used as drop-in replacements
       of slow collections of boxed values
@@ -16,11 +16,21 @@ Currently only *hash sets* and *hash maps* are implemented.
     - `null` keys are (optionally) supported, just like in `java.util.HashMap`
     - `Float.NaN` and `Double.NaN` keys are treated consistently with boxed version
        (all `NaN`s are considered equal)
- - Performance:
-    - It is fast, *honestly, very* fast
+ - **Performance**
+    - Here are several performance/memory footprint comparisons (covering different use cases)
+      of collections frameworks, evidencing that in most cases Koloboke is the fastest
+      and the most memory efficient library implementing hash maps and sets,
+      typically beating the closest competitor by a large margin:
+       - [Time - memory tradeoff with the example of
+          Java Maps](http://java.dzone.com/articles/time-memory-tradeoff-example)
+       - [Large HashMap overview: JDK, FastUtil, Goldman Sachs, HPPC,
+          Koloboke, Trove](http://java-performance.info/large-hashmap-overview-jdk-fastutil-goldman-sachs-hppc-koloboke-trove)
+       - [Most efficient way to increment a Map value
+          in Java](http://stackoverflow.com/a/25354509/648955)
+       - [Hash `Set<E>` implementations comparison](http://stackoverflow.com/a/26369483/648955)
     - Every method is implemented just as fast as it even possible
     - Hash table configurations allow to control memory-time tradeoff very precisely
- - API quality:
+ - **API quality**
     - API consists exclusively of *interfaces and static factory methods*
     - Every interface is provided with dozens of factory methods
     - As already mentioned, major part of Java 8 Collections API additions (actually, everything
