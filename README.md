@@ -100,7 +100,7 @@ Next step: see [the table of equivalents of JDK collection patterns]
    either related to the collection library and not
     - [Dimensioned JMH](benchmarks/dimensioned-jmh) - a convenient JMH wrapper
     
-### Contributing
+### Contributing, Feedback & Support
 
 I would like to accept feedback from you.
 
@@ -109,7 +109,7 @@ I would like to accept feedback from you.
  - Performance experience
  - Bugs or problems
 
-Use [issues](https://github.com/OpenHFT/Koloboke/issues) or drop me a line at leventov@ya.ru.
+Use [issues](https://github.com/OpenHFT/Koloboke/issues) or ask a question in [OpenHFT Google group](https://groups.google.com/forum/#!forum/open-hft).
 
 ### How to build and develop
 Gradle build requires Java 8 compiler, set `JAVA_HOME` environment variable to the JDK8 location,
