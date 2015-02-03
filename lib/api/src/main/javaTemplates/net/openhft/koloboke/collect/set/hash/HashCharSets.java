@@ -31,9 +31,11 @@ import java.util.*;
  * @see HashCharSet
  */
 public final class HashCharSets {
-    private static final ServiceLoader<HashCharSetFactory> LOADER =
-            ServiceLoader.load(HashCharSetFactory.class);
-    private static HashCharSetFactory defaultFactory = null;
+
+    private static class DefaultFactoryHolder {
+        private static final HashCharSetFactory defaultFactory =
+                ServiceLoader.load(HashCharSetFactory.class).iterator().next();
+    }
 
     /**
      * Returns the default implementation of {@link HashCharSetFactory}, to which all static methods
@@ -46,13 +48,7 @@ public final class HashCharSets {
      */
     @Nonnull
     public static /*<>*/ HashCharSetFactory/*<>*/ getDefaultFactory() {
-        if (defaultFactory != null) {
-            return (HashCharSetFactory/*<>*/) defaultFactory;
-        } else {
-            // synchronization?
-            return (HashCharSetFactory/*<>*/)
-                    (defaultFactory = LOADER.iterator().next());
-        }
+        return (HashCharSetFactory/*<>*/) DefaultFactoryHolder.defaultFactory;
     }
     
     /* define ep */

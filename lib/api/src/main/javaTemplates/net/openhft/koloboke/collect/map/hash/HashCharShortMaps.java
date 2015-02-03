@@ -35,10 +35,11 @@ import java.util.ServiceLoader;
  * @see HashCharShortMap
  */
 public final class HashCharShortMaps {
-
-    private static final ServiceLoader<HashCharShortMapFactory> LOADER =
-            ServiceLoader.load(HashCharShortMapFactory.class);
-    private static HashCharShortMapFactory defaultFactory = null;
+    
+    private static class DefaultFactoryHolder {
+        private static final HashCharShortMapFactory defaultFactory =
+                ServiceLoader.load(HashCharShortMapFactory.class).iterator().next();
+    }
 
     /**
      * Returns the default {@link HashCharShortMapFactory} implementation, to which
@@ -54,13 +55,7 @@ public final class HashCharShortMaps {
      */
     @Nonnull
     public static /*<>*/ HashCharShortMapFactory/*<>*/ getDefaultFactory() {
-        if (defaultFactory != null) {
-            return (HashCharShortMapFactory/*<>*/) defaultFactory;
-        } else {
-            // synchronization?
-            return (HashCharShortMapFactory/*<>*/)
-                    (defaultFactory = LOADER.iterator().next());
-        }
+        return (HashCharShortMapFactory/*<>*/) DefaultFactoryHolder.defaultFactory;
     }
 
     /* define ek */
