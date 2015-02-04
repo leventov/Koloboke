@@ -64,7 +64,7 @@ configure([apiProject, implProject]) {
 
     configurePublishing(project, project.is(apiProject))
     archivesBaseName  = "koloboke-$project.name-jdk${libTargetJava == '6' ? '6-7' : '8'}"
-    version = '0.7-SNAPSHOT'
+    version = '0.6.6'
     ext.apiVersion = '0.6'
 
     poms*.whenConfigured { pom ->
