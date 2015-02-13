@@ -93,6 +93,32 @@ public abstract class Equivalence<T> {
     }
 
     /**
+     * Returns the equivalence that compares {@link CharSequence}s by their contents.
+     *
+     * <p>This equivalence could be implemented as follows (actual implementation, of cause,
+     * is more efficient and doesn't allocate garbage objects):
+     * <pre><code>
+     * final class CharSequenceEquivalence extends StatelessEquivalence&lt;CharSequence&gt; {
+     *     static final CharSequenceEquivalence INSTANCE = new CharSequenceEquivalence();
+     *     private CharSequenceEquivalence() {}
+     *     &#064;Override
+     *     public boolean equivalent(@Nonnull CharSequence a, @Nonnull CharSequence b) {
+     *         return a.toString().equals(b.toString());
+     *     }
+     *     &#064;Override
+     *     public int hash(@Nonnull CharSequence cs) {
+     *         return cs.toString().hashCode();
+     *     }
+     * }</code></pre>
+     *
+     * @return the {@link CharSequence} equivalence
+     */
+    @Nonnull
+    public static Equivalence<CharSequence> charSequence() {
+        return CHAR_SEQUENCE;
+    }
+
+    /**
      * Returns the {@link String} equivalence that uses {@link String#equalsIgnoreCase} to compare
      * strings.
      *
@@ -211,6 +237,40 @@ public abstract class Equivalence<T> {
         @Override
         public int hash(@Nonnull String s) {
             return s.toLowerCase().hashCode();
+        }
+    }
+
+    private static final Equivalence<CharSequence> CHAR_SEQUENCE = new OfCharSequence();
+
+    private static class OfCharSequence extends StatelessEquivalence<CharSequence> {
+
+        @Override
+        public boolean equivalent(@Nonnull CharSequence a, @Nonnull CharSequence b) {
+            if (a.equals(b))
+                return true;
+            if (a instanceof String)
+                return ((String) a).contentEquals(b);
+            if (b instanceof String)
+                return ((String) b).contentEquals(a);
+            int len = a.length();
+            if (len != b.length())
+                return false;
+            for (int i = 0; i < len; i++) {
+                if (a.charAt(i) != b.charAt(i))
+                    return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hash(@Nonnull CharSequence cs) {
+            if (cs instanceof String)
+                return cs.hashCode();
+            int h = 0;
+            for (int i = 0, len = cs.length(); i < len; i++) {
+                h = 31 * h + cs.charAt(i);
+            }
+            return h;
         }
     }
 
