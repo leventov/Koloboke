@@ -124,7 +124,7 @@ public abstract class HashConfig {
         }
         if (Double.isNaN(maxLoad) || maxLoad > 1.0 || maxLoad < targetLoad) {
             throw new IllegalArgumentException(String.format(
-                    "Min load must be in [%f (target load), 1.0]  range, %f given.",
+                    "Max load must be in [%f (target load), 1.0]  range, %f given.",
                     targetLoad, maxLoad));
         }
         if (Double.isNaN(growFactor) || growFactor <= 1.0 || growFactor > maxLoad / minLoad) {
