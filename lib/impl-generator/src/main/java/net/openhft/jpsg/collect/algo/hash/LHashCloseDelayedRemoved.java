@@ -48,14 +48,21 @@ public final class LHashCloseDelayedRemoved implements Method {
             lines("int capacityMask = " + capacityMask(cxt) + ";");
             declareEntry(this, cxt);
             forLoop(this, cxt, "firstDelayedRemoved", "i", true); {
-                String removed = cxt.isPrimitiveKey() ? "delayedRemoved" : "REMOVED";
+                String removed = cxt.isIntegralKey() ? "delayedRemoved" :
+                        (cxt.isFloatingKey() ? "REMOVED_BITS" : "REMOVED");
                 ifBlock(readKeyOrEntry(cxt, "i") + " == " + removed); {
                     new LHashShiftRemove(this, cxt, "i", "tab", "vals") {
+                        @Override
+                        void generate() {
+                            closeDeletion();
+                            postRemoveHook();
+                        }
+
                         @Override
                         String additionalShiftPrecondition() {
                             return "keyToShift != " + removed;
                         }
-                    }.closeDeletion();
+                    }.generate();
                 } blockEnd();
             } blockEnd();
         }

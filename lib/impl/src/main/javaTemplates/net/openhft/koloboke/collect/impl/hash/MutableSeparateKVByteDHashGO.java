@@ -225,7 +225,7 @@ public abstract class MutableSeparateKVByteDHashGO/*<>*/
 
     /* if Mutable mutability LHash hash */
     void closeDelayedRemoved(int firstDelayedRemoved
-            /* if !(obj elem) */, /* bits */byte delayedRemoved/* endif */) {
+            /* if !(obj|float|double elem) */, /* bits */byte delayedRemoved/* endif */) {
         /* template LHashCloseDelayedRemoved */ throw new NotGenerated(); /* endtemplate */
     }
     /* endif */

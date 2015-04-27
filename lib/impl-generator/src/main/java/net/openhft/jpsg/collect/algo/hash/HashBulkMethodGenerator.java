@@ -90,7 +90,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         if (isLHash(cxt) && permissions.contains(REMOVE)) {
             lines("int capacityMask = " + capacityMask(cxt) + ";");
             lines("int firstDelayedRemoved = -1;");
-            if (cxt.isPrimitiveKey()) {
+            if (cxt.isIntegralKey()) {
                 String delayedValue = ((PrimitiveType) cxt.keyOption()).bitsType().formatValue("0");
                 lines(cxt.keyUnwrappedRawType() + " delayedRemoved = " + delayedValue + ";");
             }
@@ -124,7 +124,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
         if (isLHash(cxt) && permissions.contains(REMOVE)) {
             ifBlock("firstDelayedRemoved >= 0"); {
-                String addArg = cxt.isPrimitiveKey() ? ", delayedRemoved" : "";
+                String addArg = cxt.isIntegralKey() ? ", delayedRemoved" : "";
                 lines("closeDelayedRemoved(firstDelayedRemoved" + addArg + ");");
             } blockEnd();
         }
@@ -332,8 +332,8 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             lHashShiftRemove();
         } else {
             tombstoneRemove();
+            lines("postRemoveHook();");
         }
-        lines("postRemoveHook();");
         permissions.add(REMOVE);
         return this;
     }
@@ -361,9 +361,11 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
                 ifBlock("firstDelayedRemoved < 0"); {
                     // "simple" mode
                     closeDeletion();
+                    postRemoveHook();
                 } elseBlock(); {
                     // "delayed removed" mode
-                    writeKey(g, cxt, "i", (cxt.isPrimitiveKey() ? "delayedRemoved" : "REMOVED"));
+                    writeKey(g, cxt, "i", (cxt.isIntegralKey() ? "delayedRemoved" :
+                            (cxt.isFloatingKey() ? "REMOVED_BITS" : "REMOVED")));
                 } blockEnd();
             }
 
@@ -386,13 +388,16 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
                     // of close deletion loop, and `i - 1` otherwise, but we just use `i`
                     // to simplify the code, because anyway it is a very rare branch
                     lines("firstDelayedRemoved = i;");
-                    if (cxt.isPrimitiveKey()) {
-                        // when keys are primitives, use the first key, that should be
-                        // removed, as tombstone
-                        lines("delayedRemoved = " + readKeyOnly(cxt, "indexToRemove") + ";");
+                    String delayedRemoved;
+                    if (cxt.isIntegralKey()) {
+                        lines("delayedRemoved = " + key() + ";");
+                        delayedRemoved = key();
+                    } else if (cxt.isFloatingKey()) {
+                        delayedRemoved = "REMOVED_BITS";
                     } else {
-                        writeKey(g, cxt, "indexToRemove", "REMOVED");
+                        delayedRemoved = "REMOVED";
                     }
+                    writeKey(g, cxt, "indexToRemove", delayedRemoved);
                     lines("break closeDeletion;");
                 } blockEnd();
                 ifBlock("indexToRemove == i"); {

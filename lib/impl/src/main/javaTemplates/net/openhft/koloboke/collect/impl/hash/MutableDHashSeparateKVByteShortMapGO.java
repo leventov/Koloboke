@@ -565,7 +565,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     /* if LHash hash */
     @Override
     void closeDelayedRemoved(int firstDelayedRemoved
-            /* if !(obj key) */, /* bits */byte delayedRemoved/* endif */) {
+            /* if !(obj|float|double key) */, /* bits */byte delayedRemoved/* endif */) {
         /* template LHashCloseDelayedRemoved */ throw new NotGenerated(); /* endtemplate */
     }
     /* endif */
