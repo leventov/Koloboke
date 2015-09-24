@@ -40,9 +40,6 @@ configure([apiProject, implProject, project('testing')]) {
 }
 
 configure([apiProject, implProject]) {
-    apply plugin: 'propdeps'
-    apply plugin: 'propdeps-idea'
-    apply plugin: 'propdeps-maven'
     apply plugin: 'jacoco'
 
     setSourceCompatibility(project, "1.$libTargetJava")

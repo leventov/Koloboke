@@ -1,9 +1,22 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'http://repo.springsource.org/plugins-release' }
+    }
+    dependencies {
+        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
+    }
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.0'
 }
 
 allprojects {
     apply plugin: 'idea'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-maven'
 
     task idea(overwrite: true) {
         dependsOn ideaModule
@@ -23,7 +36,7 @@ configure(leafProjects) {
     }
 
     dependencies {
-        compile 'com.google.code.findbugs:jsr305:2.0.3'
+        provided 'com.google.code.findbugs:jsr305:2.0.3'
         testCompile 'junit:junit:4.11'
         testCompile 'org.hamcrest:hamcrest-all:1.3'
     }
