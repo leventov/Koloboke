@@ -101,7 +101,15 @@ public abstract class MutableSeparateKVObjDHashSO<E> extends MutableDHash
     @Override
     public void clear() {
         super.clear();
+        /* if Separate kv */
         fillFree();
+        /* elif Parallel kv */
+        Object[] tab = table;
+        for (int i = 0; i < tab.length; i += 2) {
+            tab[i] = FREE;
+            tab[i + 1] = null;
+        }
+        /* endif */
     }
 
     private void fillFree() {
