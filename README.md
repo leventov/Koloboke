@@ -51,8 +51,8 @@ Add to your Gradle build script:
 
     dependencies {
         // `jdk8` instead of `jdk6-7` if you use Java 8
-        compile 'net.openhft:koloboke-api-jdk6-7:0.6.7'
-        runtime 'net.openhft:koloboke-impl-jdk6-7:0.6.7'
+        compile 'net.openhft:koloboke-api-jdk6-7:0.6.8'
+        runtime 'net.openhft:koloboke-impl-jdk6-7:0.6.8'
     }
 
 Or Maven config (don't forget about jdk6-7/jdk8 suffix):
@@ -61,12 +61,12 @@ Or Maven config (don't forget about jdk6-7/jdk8 suffix):
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>koloboke-api-jdk6-7</artifactId>
-            <version>0.6.7</version>
+            <version>0.6.8</version>
         </dependency>
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>koloboke-impl-jdk6-7</artifactId>
-            <version>0.6.7</version>
+            <version>0.6.8</version>
             <scope>runtime</scope>
         </dependency>
     <dependencies>
