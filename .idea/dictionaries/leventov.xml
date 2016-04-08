@@ -17,6 +17,7 @@
       <w>endif</w>
       <w>endtemplate</w>
       <w>endwith</w>
+      <w>exprs</w>
       <w>fdiv</w>
       <w>fild</w>
       <w>findbugs</w>

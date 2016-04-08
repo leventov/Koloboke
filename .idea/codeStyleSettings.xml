@@ -3,7 +3,6 @@
   <component name="ProjectCodeStyleSettingsManager">
     <option name="PER_PROJECT_SETTINGS">
       <value>
-        <option name="USE_FQ_CLASS_NAMES_IN_JAVADOC" value="false" />
         <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="3" />
         <option name="RIGHT_MARGIN" value="100" />
         <option name="JD_ALIGN_PARAM_COMMENTS" value="false" />
@@ -13,6 +12,9 @@
         <option name="JD_KEEP_EMPTY_PARAMETER" value="false" />
         <option name="JD_KEEP_EMPTY_RETURN" value="false" />
         <option name="WRAP_COMMENTS" value="true" />
+        <JavaCodeStyleSettings>
+          <option name="CLASS_NAMES_IN_JAVADOC" value="3" />
+        </JavaCodeStyleSettings>
         <XML>
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
         </XML>
