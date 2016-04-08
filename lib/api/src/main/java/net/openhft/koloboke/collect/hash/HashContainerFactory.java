@@ -48,5 +48,6 @@ public interface HashContainerFactory<F extends HashContainerFactory<F>>
      * @param config the new hash config
      * @return a copy of this factory with hash config set to the given one
      */
+    @Nonnull
     F withHashConfig(@Nonnull HashConfig config);
 }

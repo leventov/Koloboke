@@ -240,7 +240,8 @@
  * </table>
  *
  * <p>See other matrices for information if the concrete method is supported by the given
- * mutability profile: <a href="Container.html#mutability">{@code Container}</a>.
+ * mutability profile: <a href="net/openhft/koloboke/collect/Container.html#mutability">
+ * {@code Container}</a>.
  *
  * <h2><a name="iteration"></a>Comparison of iteration ways</h2>
  * In addition to the standard way// if JDK8 jdk //s// endif // &mdash;
@@ -295,14 +296,14 @@
  *     <td>Yes, by returning {@code true}</td>
  *   </tr>
  *   <tr>
- *     <td>Performance, iteration over {@link java.util.Map}</td>
- *     <td>Medium, {@link java.util.Map.Entry} objects are allocated</td>
- *     <td colspan=4 align=center>Very high</td>
- *   </tr>
- *   <tr>
  *     <td>Performance, iteration over {@link java.util.Collection}</td>
  *     <td>High, if <em>specialized</em> version of {@link java.util.Iterator#next()} method
  *         is used. Medium otherwise, because every element is boxed.</td>
+ *     <td colspan=4 align=center>Very high</td>
+ *   </tr>
+ *   <tr>
+ *     <td>Performance, iteration over {@link java.util.Map}</td>
+ *     <td>Medium, {@link java.util.Map.Entry} objects are allocated</td>
  *     <td colspan=4 align=center>Very high</td>
  *   </tr>
  * </table>

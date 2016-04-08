@@ -69,6 +69,7 @@ public interface Container {
      *
      * @param minSize the desired minimum size, which the container is expected to reach soon
      * @return {@code true} if the capacity has been increased, {@code false} if it isn't necessary
+     *         or impossible
      * @throws UnsupportedOperationException if the container doesn't support insertions
      */
     boolean ensureCapacity(long minSize);

@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
  * The root interface of sets and maps, based on hash tables.
  *
  * <p>Methods in this interface mostly regard to the specific operation on hash tables -
- * <em>rehash</em>. During rehash, entries of this container is moved from the old table
+ * <em>rehash</em>. During rehash, entries of this container are moved from the old table
  * to the new one.
  *
  * <p>If the capacity of new table is greater than the old, such rehash is also referred
