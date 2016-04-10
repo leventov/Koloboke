@@ -87,6 +87,7 @@ public final class QHashCapacities {
             int capIndex = binarySearch(REGULAR_LONG_CAPACITIES, desiredCapacity);
             if (capIndex >= 0)
                 return desiredCapacity;
+            capIndex = ~capIndex;
             long lesserCapacity = capIndex > 0 ?
                     REGULAR_LONG_CAPACITIES[capIndex - 1] : (long) MAX_REGULAR_INT_CAPACITY;
             long greaterCapacity = REGULAR_CHAR_CAPACITIES[capIndex];
