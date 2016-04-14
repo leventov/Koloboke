@@ -1,3 +1,4 @@
+/* with QHash hash */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -109,7 +110,7 @@ public final class QHashCapacities {
             return SMALL_LOOKUP_TABLE_CAPACITIES[SMALL_LOOKUP_TABLE_INDICES[desiredCapacity]];
         if (desiredCapacity <= MAX_REGULAR_CHAR_CAPACITY) {
             int capIndex = binarySearch(REGULAR_CHAR_CAPACITIES, (char) desiredCapacity);
-            // if capIndex >= 0 desiredCapacity IS a regular capacity
+            // capIndex >= 0 => desiredCapacity IS a regular capacity
             return capIndex < 0 ? REGULAR_CHAR_CAPACITIES[~capIndex] : desiredCapacity;
         }
         boolean simpleArrays = !doubleSizedArrays;
