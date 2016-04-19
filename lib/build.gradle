@@ -19,7 +19,6 @@ def implProject = project('impl')
 
 configure([apiProject, implProject, project('testing')]) {
     applyJpsg()
-    apply plugin: 'findbugs'
 
     def jpsgTasks = [generateJavaSpecializations]
     def generateTestSpecializations = tasks.findByName('generateTestJavaSpecializations')
@@ -29,13 +28,6 @@ configure([apiProject, implProject, project('testing')]) {
         addProcessor 'net.openhft.jpsg.FunctionProcessor'
         addProcessor 'net.openhft.jpsg.Jdk8FunctionReplacer'
         with "jdk=JDK$libTargetJava"
-    }
-
-    findbugs {
-        toolVersion '3.0.0'
-        effort = 'max'
-        reportLevel = 'high'
-        excludeFilter = file("$parent.projectDir/findbugs/config/excludeFilter.xml")
     }
 }
 

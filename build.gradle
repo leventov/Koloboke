@@ -30,6 +30,7 @@ allprojects {
 def leafProjects = subprojects.findAll { it.subprojects.empty }
 configure(leafProjects) {
     apply plugin: 'java'
+    apply plugin: 'findbugs'
 
     repositories {
         mavenCentral()
@@ -48,6 +49,15 @@ configure(leafProjects) {
     configure(tasks.withType(JavaCompile)) {
         options.compilerArgs << '-Xlint:all'
         options.compilerArgs += ['-Xlint:-unchecked', '-Xlint:-rawtypes', '-Xlint:-cast']
+    }
+
+    findbugs {
+        toolVersion '3.0.1'
+        effort = 'max'
+        reportLevel = 'high'
+        excludeFilter = file("$projectDir/findbugs/config/excludeFilter.xml")
+        if (!excludeFilter.exists())
+            excludeFilter = null
     }
 
     apply from: "$rootProject.projectDir/methods.gradle"

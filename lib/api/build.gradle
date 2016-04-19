@@ -1,6 +1,6 @@
 evaluationDependsOn("$parent.path")
 
-javadoc {
+configure(javadoc) {
     title "Koloboke Collections $apiVersion API"
     configure((StandardJavadocDocletOptions) getOptions()) {
         def javaDocJava = project.hasProperty('javadocJava') ? javadocJava : libTargetJava
