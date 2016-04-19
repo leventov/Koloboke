@@ -1,4 +1,4 @@
-/* with DHash|QHash hash */
+/* with DHash|QHash hash Mutable mutability */
 /*
  * Copyright 2014 the original author or authors.
  *
