@@ -1,5 +1,7 @@
 evaluationDependsOn("$parent.path")
 
+description = 'Implementation'
+
 configure([generateJavaSpecializations, generateResourceSpecializations]) {
     addProcessor 'net.openhft.jpsg.collect.MethodGeneratingProcessor'
     addProcessor 'net.openhft.jpsg.collect.algo.hash.TableTypePreProcessor'

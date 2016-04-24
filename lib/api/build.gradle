@@ -1,5 +1,7 @@
 evaluationDependsOn("$parent.path")
 
+description = 'API'
+
 configure(javadoc) {
     title "Koloboke Collections $apiVersion API"
     configure((StandardJavadocDocletOptions) getOptions()) {

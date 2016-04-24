@@ -40,7 +40,17 @@ configure([apiProject, implProject]) {
         provided 'com.google.auto.value:auto-value:1.0-rc1'
     }
 
-    compileJava {
+    idea.module {
+        excludeDirs.remove(file("$buildDir/classes"))
+        // AutoValue implementations are located there
+        sourceDirs += sourceSets*.output.classesDir
+    }
+}
+
+def compileProject = project('compile')
+
+configure([apiProject, implProject, compileProject]) {
+    configure(project.is(compileProject) ? compileTestJava : compileJava) {
         // To suppress warnings about usages of sun.misc.Unsafe API
         options.compilerArgs << '-XDignore.symbol.file'
         options.compilerArgs << '-Xlint:-deprecation' << '-Xlint:-overloads'
@@ -51,24 +61,18 @@ configure([apiProject, implProject]) {
 
     test.testLogging.exceptionFormat = 'full'
 
-    configurePublishing(project, project.is(apiProject))
+    configurePublishing(project, !project.is(implProject))
     archivesBaseName  = "koloboke-$project.name-jdk${libTargetJava == '6' ? '6-7' : '8'}"
     version = '0.7-SNAPSHOT'
     ext.apiVersion = '0.6'
 
     poms*.whenConfigured { pom ->
         pom.project {
-            def apiOrImpl = "(${project == apiProject ? 'API' : 'implementation'})"
-            name = "Koloboke Collections $apiOrImpl"
+            name = "Koloboke Collections ${project.description}"
             description = 'Carefully designed and efficient extension ' +
                     'of the Java Collections Framework with primitive specializations and more, ' +
-                    "built for Java ${libTargetJava == '6' ? '6 or 7' : '8'} $apiOrImpl"
+                    "built for Java ${libTargetJava == '6' ? '6 or 7' : '8'} " +
+                    "(${project.description})"
         }
-    }
-
-    idea.module {
-        excludeDirs.remove(file("$buildDir/classes"))
-        // AutoValue implementations are located there
-        sourceDirs += sourceSets*.output.classesDir
     }
 }
