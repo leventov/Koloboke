@@ -64,7 +64,8 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     }
 
     private boolean unsafeLoop() {
-        return !valuesUsed && !indexUsed && parallelKV(cxt) && !doubleSizedParallel(cxt);
+        return !valuesUsed && !indexUsed && INSTANCE.parallelKV(cxt) && !INSTANCE
+                .doubleSizedParallel(cxt);
     }
 
     private void innerGenerate(boolean replace) {
@@ -78,24 +79,24 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         }
         if (cxt.isIntegralKey()) {
             lines(cxt.keyType() + " free = freeValue;");
-            if (possibleRemovedSlots(cxt)) {
+            if (INSTANCE.possibleRemovedSlots(cxt)) {
                 lines(cxt.keyType() + " removed = removedValue;");
             }
         }
-        if (!parallelKV(cxt)) {
+        if (!INSTANCE.parallelKV(cxt)) {
             lines(cxt.keyUnwrappedRawType() + "[] keys = set;");
         } else {
-            copyTable(this, cxt);
+            INSTANCE.copyTable(this, cxt);
         }
-        if (isLHash(cxt) && permissions.contains(REMOVE)) {
-            lines("int capacityMask = " + capacityMask(cxt) + ";");
+        if (INSTANCE.isLHash(cxt) && permissions.contains(REMOVE)) {
+            lines("int capacityMask = " + HashMethodGeneratorCommons.INSTANCE.capacityMask(cxt) + ";");
             lines("int firstDelayedRemoved = -1;");
             if (cxt.isIntegralKey()) {
                 String delayedValue = ((PrimitiveType) cxt.keyOption()).bitsType().formatValue("0");
                 lines(cxt.keyUnwrappedRawType() + " delayedRemoved = " + delayedValue + ";");
             }
         }
-        if (valuesUsed && !parallelKV(cxt))
+        if (valuesUsed && !INSTANCE.parallelKV(cxt))
             lines(cxt.valueUnwrappedType() + "[] vals = values;");
 
         if (unsafeLoop()) {
@@ -103,12 +104,12 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             lines("long base = " + TableType.INSTANCE.apply(key).upper + "_BASE + " +
                             key.upper + "_KEY_OFFSET;");
         } else {
-            declareEntry(this, cxt);
+            INSTANCE.declareEntry(this, cxt);
         }
 
         method.rightBeforeLoop();
 
-        boolean splitLoops = possibleRemovedSlots(cxt) && !cxt.isFloatingKey();
+        boolean splitLoops = INSTANCE.possibleRemovedSlots(cxt) && !cxt.isFloatingKey();
         if (splitLoops) {
             lines("if (noRemoved()) {");
             indent();
@@ -122,7 +123,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             blockEnd();
         }
 
-        if (isLHash(cxt) && permissions.contains(REMOVE)) {
+        if (INSTANCE.isLHash(cxt) && permissions.contains(REMOVE)) {
             ifBlock("firstDelayedRemoved >= 0"); {
                 String addArg = cxt.isIntegralKey() ? ", delayedRemoved" : "";
                 lines("closeDelayedRemoved(firstDelayedRemoved" + addArg + ");");
@@ -172,7 +173,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             lines("for (long off = ((long) tab.length) << " + tableTypeUpper + "_SCALE_SHIFT; " +
                     "(off -= " + tableTypeUpper + "_SCALE) >= 0L;)").block();
         } else {
-            forLoop(this, cxt, localTableVar(cxt) + ".length", "i", false);
+            INSTANCE.forLoop(this, cxt, INSTANCE.localTableVar(cxt) + ".length", "i", false);
         } {
             int bodyStart = lines.size();
             lines("if (" + isFull() + ")").block(); {
@@ -191,7 +192,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         int keyObjUsages = countUsages(bodyStart, KEY_OBJ_SUB);
         String key;
         if (!unsafeLoop()) {
-            key = readKeyOrEntry(cxt, "i");
+            key = INSTANCE.readKeyOrEntry(cxt, "i");
         } else {
             key = cxt.unsafeGetKeyBits("tab", "base + off");
         }
@@ -250,10 +251,10 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         int valueUsages = countUsages(bodyStart, VAL_SUB);
 
         if (valueUsages > 1) {
-            replaceFirstDifferent(bodyStart, VAL_SUB, "(val = " + readValue(cxt, "i") + ")", "val");
+            replaceFirstDifferent(bodyStart, VAL_SUB, "(val = " + INSTANCE.readValue(cxt, "i") + ")", "val");
             lines.add(bodyStart, indent + cxt.valueUnwrappedType() + " val;");
         } else if (valueUsages == 1) {
-            replaceAll(bodyStart, VAL_SUB, readValue(cxt, "i"));
+            replaceAll(bodyStart, VAL_SUB, INSTANCE.readValue(cxt, "i"));
         }
     }
 
@@ -261,9 +262,10 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         if (cxt.isFloatingKey())
             return KEY_OBJ_SUB + " < FREE_BITS";
         if (!noRemoved) {
-            return KEY_OBJ_SUB + " != " + free(cxt) + " && " + KEY_OBJ_SUB + " != " + removed(cxt);
+            return KEY_OBJ_SUB + " != " + INSTANCE.free(cxt) + " && " + KEY_OBJ_SUB + " != " + INSTANCE
+                    .removed(cxt);
         } else {
-            return KEY_OBJ_SUB + " != " + free(cxt);
+            return KEY_OBJ_SUB + " != " + INSTANCE.free(cxt);
         }
     }
 
@@ -328,7 +330,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     public BulkMethodGenerator remove() {
         incrementModCount();
         lines("mc++;");
-        if (isLHash(cxt)) {
+        if (INSTANCE.isLHash(cxt)) {
             lHashShiftRemove();
         } else {
             tombstoneRemove();
@@ -340,13 +342,13 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
     private void tombstoneRemove() {
         if (!unsafeLoop()) {
-            writeKey(this, cxt, "i", removed(cxt));
+            INSTANCE.writeKey(this, cxt, "i", INSTANCE.removed(cxt));
             if (cxt.isObjectValue()) {
                 valuesUsed = true;
-                writeValue(this, cxt, "i", "null");
+                INSTANCE.writeValue(this, cxt, "i", "null");
             }
         } else {
-            cxt.unsafePutKeyBits(this, "tab", "base + off", removed(cxt));
+            cxt.unsafePutKeyBits(this, "tab", "base + off", INSTANCE.removed(cxt));
             assert !cxt.isObjectValue();
         }
     }
@@ -356,7 +358,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         new LHashShiftRemove(this, cxt, "i", "tab", "vals") {
 
             @Override
-            void generate() {
+            public void generate() {
                 lines("closeDeletion:");
                 ifBlock("firstDelayedRemoved < 0"); {
                     // "simple" mode
@@ -364,18 +366,19 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
                     postRemoveHook();
                 } elseBlock(); {
                     // "delayed removed" mode
-                    writeKey(g, cxt, "i", (cxt.isIntegralKey() ? "delayedRemoved" :
-                            (cxt.isFloatingKey() ? "REMOVED_BITS" : "REMOVED")));
+                    INSTANCE.writeKey(getG(),
+                            getCxt(), "i", (getCxt().isIntegralKey() ? "delayedRemoved" :
+                            (getCxt().isFloatingKey() ? "REMOVED_BITS" : "REMOVED")));
                 } blockEnd();
             }
 
             @Override
-            boolean rawKeys() {
+            public boolean rawKeys() {
                 return true;
             }
 
             @Override
-            void beforeShift() {
+            public void beforeShift() {
                 // This condition means indexToShift wrapped around zero and keyToShift
                 // was already passed by this bulk operation. To prevent processing it twice
                 // we enter "delayed removed" mode, in which we place tombstones each time we
@@ -389,19 +392,19 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
                     // to simplify the code, because anyway it is a very rare branch
                     lines("firstDelayedRemoved = i;");
                     String delayedRemoved;
-                    if (cxt.isIntegralKey()) {
+                    if (getCxt().isIntegralKey()) {
                         lines("delayedRemoved = " + key() + ";");
                         delayedRemoved = key();
-                    } else if (cxt.isFloatingKey()) {
+                    } else if (getCxt().isFloatingKey()) {
                         delayedRemoved = "REMOVED_BITS";
                     } else {
                         delayedRemoved = "REMOVED";
                     }
-                    writeKey(g, cxt, "indexToRemove", delayedRemoved);
+                    INSTANCE.writeKey(getG(), getCxt(), "indexToRemove", delayedRemoved);
                     lines("break closeDeletion;");
                 } blockEnd();
                 ifBlock("indexToRemove == i"); {
-                    String increment = doubleSizedParallel(cxt) ? " += 2" : "++";
+                    String increment = INSTANCE.doubleSizedParallel(getCxt()) ? " += 2" : "++";
                     lines("i" + increment + ";");
                 } blockEnd();
             }
@@ -412,7 +415,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     public BulkMethodGenerator setValue(String newValue) {
         valuesUsed = true;
         assert cxt.isMapView();
-        writeValue(this, cxt, "i", unwrapValue(newValue));
+        INSTANCE.writeValue(this, cxt, "i", unwrapValue(newValue));
         permissions.add(Permission.SET_VALUE);
         return this;
     }

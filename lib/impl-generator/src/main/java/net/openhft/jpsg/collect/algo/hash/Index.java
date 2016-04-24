@@ -29,7 +29,7 @@ public final class Index extends MapQueryUpdateMethod {
 
     @Override
     public void ifPresent() {
-        gen.ret(((HashMapQueryUpdateMethodGenerator) gen).index());
+        gen.ret(((HashMapQueryUpdateMethodGenerator) gen).indexF());
     }
 
     @Override

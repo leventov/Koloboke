@@ -40,7 +40,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
     @Override
     protected void generateConstructor() {
         commonConstructorOps(this, cxt);
-        if (!parallelKV(cxt)) {
+        if (!INSTANCE.parallelKV(cxt)) {
             if (cxt.isObjectKey()) {
                 lines(
                         "// noinspection unchecked",
@@ -52,21 +52,21 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
                         "this.keys = set;");
             }
         } else {
-            lines((needCapacityMask(cxt) ? tableType(cxt) + "[] tab = " : "") +
+            lines((needCapacityMask(cxt) ? INSTANCE.tableType(cxt) + "[] tab = " : "") +
                     "this.tab = table;");
         }
         if (needCapacityMask(cxt))
-            lines("capacityMask = " + capacityMask(cxt) + ";");
-        lines("index = " + localTableVar(cxt) + ".length;");
-        if (!cxt.isKeyView() && !parallelKV(cxt))
+            lines("capacityMask = " + HashMethodGeneratorCommons.INSTANCE.capacityMask(cxt) + ";");
+        lines("index = " + INSTANCE.localTableVar(cxt) + ".length;");
+        if (!cxt.isKeyView() && !INSTANCE.parallelKV(cxt))
             this.lines("vals = values;");
         if (cxt.isIntegralKey()) {
-            this.lines(cxt.keyUnwrappedType() + " " + free(cxt) +
-                    " = this." + free(cxt) + " = freeValue;");
-            if (possibleRemovedSlots(cxt))
-                this.lines("this." + removed(cxt) + " = removedValue;");
+            this.lines(cxt.keyUnwrappedType() + " " + INSTANCE.free(cxt) +
+                    " = this." + INSTANCE.free(cxt) + " = freeValue;");
+            if (INSTANCE.possibleRemovedSlots(cxt))
+                this.lines("this." + INSTANCE.removed(cxt) + " = removedValue;");
         }
-        lines("curKey = " + free(cxt) + ";");
+        lines("curKey = " + INSTANCE.free(cxt) + ";");
     }
 
     @Override
@@ -74,18 +74,18 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
         checkModCount(this, cxt, false);
         copyKeys(this, cxt);
         copySpecials(this, cxt);
-        declareEntry(this, cxt);
-        forLoop(this, cxt, "index", "i", false); {
+        INSTANCE.declareEntry(this, cxt);
+        INSTANCE.forLoop(this, cxt, "index", "i", false); {
             ifKeyNotFreeOrRemoved(this, cxt, "i", true); {
                 lines("index = i;");
                 lines("curKey = key;");
                 if (!cxt.isKeyView())
-                    lines("curValue = " + readValue(cxt, "i") + ";");
+                    lines("curValue = " + INSTANCE.readValue(cxt, "i") + ";");
                 lines("return true;");
             } blockEnd();
         } blockEnd();
         lines(
-                "curKey = " + free(cxt) + ";",
+                "curKey = " + INSTANCE.free(cxt) + ";",
                 "index = -1;",
                 "return false;"
         );
@@ -95,7 +95,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
     @Override
     protected void generateKey() {
         lines(cxt.keyUnwrappedRawType() + " curKey;");
-        ifBlock(isNotFree(cxt, "(curKey = this.curKey)"));
+        ifBlock(INSTANCE.isNotFree(cxt, "(curKey = this.curKey)"));
         if (cxt.isObjectKey())
             lines("// noinspection unchecked");
         ret(wrapKey(unwrappedKey()));
@@ -104,20 +104,20 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
 
     @Override
     protected void generateValue() {
-        ifBlock(isNotFree(cxt, "curKey"));
+        ifBlock(INSTANCE.isNotFree(cxt, "curKey"));
         ret(wrapValue("curValue"));
         endOfIllegalStateCheck(this, cxt);
     }
 
     @Override
     protected void generateSetValue() {
-        ifBlock(isNotFree(cxt, "curKey"));
+        ifBlock(INSTANCE.isNotFree(cxt, "curKey"));
         checkModCount(this, cxt, false);
-        writeValue(this, cxt, "index", unwrapValue("value"));
+        INSTANCE.writeValue(this, cxt, "index", unwrapValue("value"));
         if (possibleArrayCopyOnRemove(cxt)) {
-            String tableHaveCopied = parallelKV(cxt) ? "tab != table" : "vals != values";
+            String tableHaveCopied = INSTANCE.parallelKV(cxt) ? "tab != table" : "vals != values";
             ifBlock(tableHaveCopied); {
-                writeValue(this, cxt, "table", "values", "index", unwrapValue("value"));
+                INSTANCE.writeValue(this, cxt, "table", "values", "index", unwrapValue("value"));
             } blockEnd();
         }
         endOfModCountCheck(this, cxt);
@@ -127,7 +127,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
     @Override
     protected void generateEntry() {
         lines(cxt.keyUnwrappedRawType() + " curKey;");
-        ifBlock(isNotFree(cxt, "(curKey = this.curKey)"));
+        ifBlock(INSTANCE.isNotFree(cxt, "(curKey = this.curKey)"));
         if (cxt.isObjectKey())
             lines("// noinspection unchecked");
         ret(entry(cxt, "expectedModCount", "index", unwrappedKey(), "curValue"));
@@ -142,23 +142,23 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
     protected void generateRemove() {
         permissions.add(Permission.REMOVE);
         String curKeyAssignment;
-        if (isLHash(cxt)) {
+        if (INSTANCE.isLHash(cxt)) {
             lines(cxt.keyUnwrappedRawType() + " curKey;");
             curKeyAssignment = "(curKey = this.curKey)";
         } else {
             curKeyAssignment = "curKey";
         }
         if (cxt.isIntegralKey()) {
-            lines(cxt.keyType() + " " + free(cxt) + ";");
-            ifBlock(curKeyAssignment + " != (" + free(cxt) +" = this." + free(cxt) + ")");
+            lines(cxt.keyType() + " " + INSTANCE.free(cxt) + ";");
+            ifBlock(curKeyAssignment + " != (" + INSTANCE.free(cxt) +" = this." + INSTANCE.free(cxt) + ")");
         } else {
-            ifBlock(isNotFree(cxt, curKeyAssignment));
+            ifBlock(INSTANCE.isNotFree(cxt, curKeyAssignment));
         }
         ifBlock("expectedModCount++ == " + modCount());
         // Local copy still holds the current key (could be used in lHashShiftRemove())
-        lines("this.curKey = " + free(cxt) + ";");
-        if (isLHash(cxt)) {
-            declareEntry(this, cxt);
+        lines("this.curKey = " + INSTANCE.free(cxt) + ";");
+        if (INSTANCE.isLHash(cxt)) {
+            INSTANCE.declareEntry(this, cxt);
             lHashShiftRemove();
         } else {
             tombstoneRemove();
@@ -172,7 +172,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
         if (cxt.isObjectValue())
             lines("int index;");
         String indexAssignment = cxt.isObjectValue() ? "index = this.index" : "index";
-        eraseSlot(this, cxt, indexAssignment, "index");
+        HashMethodGeneratorCommons.INSTANCE.eraseSlot(this, cxt, indexAssignment, "index");
         lines("postRemoveHook();");
     }
 
@@ -190,15 +190,15 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
                 // the entry shifted to the slot at `index`.
                 // Update the local copy too, because this variable could be used
                 // later in the table copying (see IterShiftRemove.beforeShift()).
-                String increment = doubleSizedParallel(cxt) ? "(index += 2)" : "++index";
+                String increment = INSTANCE.doubleSizedParallel(getCxt()) ? "(index += 2)" : "++index";
                 lines("this.index = " + increment + ";");
             }
 
             @Override
             String keyToRemoveFromTheOriginalTable() {
                 String key = "curKey";
-                if (cxt.isObjectKey())
-                    key = "(" + cxt.keyType() + ") " + key;
+                if (getCxt().isObjectKey())
+                    key = "(" + getCxt().keyType() + ") " + key;
                 return key;
             }
         }.generate();
@@ -211,9 +211,9 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
             lines("int mc = expectedModCount;");
         copyArrays(this, cxt);
         copySpecials(this, cxt);
-        declareEntry(this, cxt);
+        INSTANCE.declareEntry(this, cxt);
         lines("int index = this.index;");
-        forLoop(this, cxt, "index", "i", false); {
+        INSTANCE.forLoop(this, cxt, "index", "i", false); {
             ifKeyNotFreeOrRemoved(this, cxt, "i", false); {
                 if (cxt.isObjectKey())
                     lines("// noinspection unchecked");
@@ -227,6 +227,6 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
             concurrentMod();
         } blockEnd();
         lines("this.index = -1;");
-        lines("curKey = " + free(cxt) + ";");
+        lines("curKey = " + INSTANCE.free(cxt) + ";");
     }
 }

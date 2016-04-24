@@ -100,7 +100,7 @@ public abstract class MethodGenerator {
         return Pattern.compile(Pattern.quote(sub)).matcher(s).replaceFirst(repl);
     }
 
-    protected final List<String> lines = new ArrayList<>();
+    protected final List<String> lines = new ArrayList<String>();
     protected String indent = "";
 
     public final MethodGenerator lines(String... lines) {

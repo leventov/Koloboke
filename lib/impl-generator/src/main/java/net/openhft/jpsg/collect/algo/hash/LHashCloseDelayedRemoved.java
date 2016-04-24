@@ -25,7 +25,7 @@ public final class LHashCloseDelayedRemoved implements Method {
 
     @Override
     public void init(net.openhft.jpsg.collect.MethodGenerator g, MethodContext cxt) {
-        assert HashMethodGeneratorCommons.isLHash(cxt);
+        assert HashMethodGeneratorCommons.INSTANCE.isLHash(cxt);
     }
 
     @Override
@@ -41,25 +41,25 @@ public final class LHashCloseDelayedRemoved implements Method {
 
             if (cxt.isIntegralKey()) {
                 lines(cxt.keyType() + " free = freeValue;");
-                if (possibleRemovedSlots(cxt) && !noRemoved(cxt))
+                if (INSTANCE.possibleRemovedSlots(cxt) && !INSTANCE.noRemoved(cxt))
                     lines(cxt.keyType() + " removed = removedValue;");
             }
-            copyArrays(this, cxt, cxt.hasValues());
-            lines("int capacityMask = " + capacityMask(cxt) + ";");
-            declareEntry(this, cxt);
-            forLoop(this, cxt, "firstDelayedRemoved", "i", true); {
-                String removed = cxt.isIntegralKey() ? "delayedRemoved" :
+            INSTANCE.copyArrays(this, cxt, cxt.hasValues());
+            lines("int capacityMask = " + HashMethodGeneratorCommons.INSTANCE.capacityMask(cxt) + ";");
+            INSTANCE.declareEntry(this, cxt);
+            INSTANCE.forLoop(this, cxt, "firstDelayedRemoved", "i", true); {
+                final String removed = cxt.isIntegralKey() ? "delayedRemoved" :
                         (cxt.isFloatingKey() ? "REMOVED_BITS" : "REMOVED");
-                ifBlock(readKeyOrEntry(cxt, "i") + " == " + removed); {
+                ifBlock(INSTANCE.readKeyOrEntry(cxt, "i") + " == " + removed); {
                     new LHashShiftRemove(this, cxt, "i", "tab", "vals") {
                         @Override
-                        void generate() {
+                        public void generate() {
                             closeDeletion();
                             postRemoveHook();
                         }
 
                         @Override
-                        String additionalShiftPrecondition() {
+                        public String additionalShiftPrecondition() {
                             return "keyToShift != " + removed;
                         }
                     }.generate();

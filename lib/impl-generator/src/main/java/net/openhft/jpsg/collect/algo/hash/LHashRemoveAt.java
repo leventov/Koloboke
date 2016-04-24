@@ -25,7 +25,7 @@ public final class LHashRemoveAt implements Method {
 
     @Override
     public void init(net.openhft.jpsg.collect.MethodGenerator g, MethodContext cxt) {
-        assert HashMethodGeneratorCommons.isLHash(cxt);
+        assert HashMethodGeneratorCommons.INSTANCE.isLHash(cxt);
     }
 
     @Override
@@ -42,12 +42,12 @@ public final class LHashRemoveAt implements Method {
 
             if (cxt.isIntegralKey()) {
                 lines(cxt.keyType() + " free = freeValue;");
-                if (possibleRemovedSlots(cxt) && !noRemoved(cxt))
+                if (INSTANCE.possibleRemovedSlots(cxt) && !INSTANCE.noRemoved(cxt))
                     lines(cxt.keyType() + " removed = removedValue;");
             }
-            copyArrays(this, cxt, cxt.hasValues());
-            lines("int capacityMask = " + capacityMask(cxt) + ";");
-            declareEntry(this, cxt);
+            INSTANCE.copyArrays(this, cxt, cxt.hasValues());
+            lines("int capacityMask = " + HashMethodGeneratorCommons.INSTANCE.capacityMask(cxt) + ";");
+            INSTANCE.declareEntry(this, cxt);
             new LHashShiftRemove(this, cxt, "index", "tab", "vals").generate();
         }
     }

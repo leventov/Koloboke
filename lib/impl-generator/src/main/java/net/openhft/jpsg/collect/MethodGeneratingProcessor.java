@@ -137,7 +137,9 @@ public final class MethodGeneratingProcessor extends TemplateProcessor {
                 Class<? extends MethodGenerator> generatorClass =
                         GENERATORS_BY_ALGO_FAMILY.get("hash").get(method.generatorBase());
                 generator = generatorClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }

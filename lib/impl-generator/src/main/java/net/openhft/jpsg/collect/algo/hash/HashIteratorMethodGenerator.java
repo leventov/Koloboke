@@ -38,8 +38,8 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
     }
 
     private void loop() {
-        declareEntry(this, cxt);
-        String decrement = doubleSizedParallel(cxt) ? "(nextI -= 2)" : "--nextI";
+        INSTANCE.declareEntry(this, cxt);
+        String decrement = INSTANCE.doubleSizedParallel(cxt) ? "(nextI -= 2)" : "--nextI";
         lines("while (" + decrement + " >= 0)").block();
         ifKeyNotFreeOrRemoved(this, cxt, "nextI", false);
         if (cxt.isObjectKey())
@@ -53,7 +53,7 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
     @Override
     protected void generateConstructor() {
         commonConstructorOps(this, cxt);
-        if (!parallelKV(cxt)) {
+        if (!INSTANCE.parallelKV(cxt)) {
             if (cxt.isObjectKey()) {
                 lines(
                         "// noinspection unchecked",
@@ -63,22 +63,22 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
                 lines(cxt.keyUnwrappedType() + "[] keys = this.keys = set;");
             }
         } else {
-            lines(tableType(cxt) + "[] tab = this.tab = table;");
+            lines(INSTANCE.tableType(cxt) + "[] tab = this.tab = table;");
         }
         if (needCapacityMask(cxt)) {
-            lines("capacityMask = " + capacityMask(cxt) + ";");
+            lines("capacityMask = " + HashMethodGeneratorCommons.INSTANCE.capacityMask(cxt) + ";");
         }
-        if (!parallelKV(cxt) && (cxt.isValueView() || cxt.isEntryView()))
+        if (!INSTANCE.parallelKV(cxt) && (cxt.isValueView() || cxt.isEntryView()))
             this.lines(cxt.valueUnwrappedType() + "[] vals = this.vals = values;");
         if (cxt.isIntegralKey()) {
-            this.lines(cxt.keyType() + " " + free(cxt) + " = this." + free(cxt) + " = freeValue;");
-            if (possibleRemovedSlots(cxt)) {
+            this.lines(cxt.keyType() + " " + INSTANCE.free(cxt) + " = this." + INSTANCE.free(cxt) + " = freeValue;");
+            if (INSTANCE.possibleRemovedSlots(cxt)) {
                 this.lines(
-                        (noRemoved(cxt) ? "" : cxt.keyType() + " " + removed(cxt) + " = ") +
-                        "this." + removed(cxt) + " = removedValue;");
+                        (INSTANCE.noRemoved(cxt) ? "" : cxt.keyType() + " " + INSTANCE.removed(cxt) + " = ") +
+                        "this." + INSTANCE.removed(cxt) + " = removedValue;");
             }
         }
-        lines("int nextI = " + localTableVar(cxt) + ".length;");
+        lines("int nextI = " + INSTANCE.localTableVar(cxt) + ".length;");
         loop();
     }
 
@@ -112,8 +112,8 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
         ifBlock("(index = this.index) >= 0");
         ifBlock("expectedModCount++ == " + modCount());
         lines("this.index = -1;");
-        if (isLHash(cxt)) {
-            declareEntry(this, cxt);
+        if (INSTANCE.isLHash(cxt)) {
+            INSTANCE.declareEntry(this, cxt);
             lHashShiftRemove();
         } else {
             tombstoneRemove();
@@ -124,7 +124,7 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
 
     private void tombstoneRemove() {
         incrementModCount();
-        eraseSlot(this, cxt, "index", "index");
+        HashMethodGeneratorCommons.INSTANCE.eraseSlot(this, cxt, "index", "index");
         lines("postRemoveHook();");
     }
 
@@ -136,21 +136,21 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
                 // on the next iteration, the key is removed from the original table
                 // by `justRemove(keys[index])` call, i. e. if we will copy just `nextIndex`
                 // entries, `keys[index]` indexing will be out of `keys` array bounds.
-                return "nextIndex + " + slots(1, cxt);
+                return "nextIndex + " + INSTANCE.slots(1, getCxt());
             }
 
             @Override
             void onInitialSlotSubstitution() {
                 lines("this.nextIndex = index;");
-                ifBlock("indexToShift < index - " + slots(1, cxt)); {
+                ifBlock("indexToShift < index - " + INSTANCE.slots(1, getCxt())); {
                     lines("this.next = " +
-                            makeNext(cxt, modCount(), "keyToShift", "indexToShift", false) + ";");
+                            makeNext(getCxt(), modCount(), "keyToShift", "indexToShift", false) + ";");
                 } blockEnd();
             }
 
             @Override
             String keyToRemoveFromTheOriginalTable() {
-                return readKeyOnly(cxt, "index");
+                return INSTANCE.readKeyOnly(getCxt(), "index");
             }
         }.generate();
     }
@@ -162,9 +162,9 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
             lines("int mc = expectedModCount;");
         copyArrays(this, cxt);
         copySpecials(this, cxt);
-        declareEntry(this, cxt);
+        INSTANCE.declareEntry(this, cxt);
         lines("int nextI = nextIndex;");
-        forLoop(this, cxt, "nextI", "i", true); {
+        INSTANCE.forLoop(this, cxt, "nextI", "i", true); {
             ifKeyNotFreeOrRemoved(this, cxt, "i", false); {
                 if (cxt.isObjectKey())
                     lines("// noinspection unchecked");

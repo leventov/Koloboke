@@ -25,7 +25,7 @@ import static net.openhft.jpsg.collect.algo.hash.HashMethodGeneratorCommons.*;
 
 final class KeySearch {
     static boolean tryPrecomputeStep(MethodGenerator g, MethodContext cxt) {
-        if (isDHash(cxt) && !cxt.isNullKey()) {
+        if (INSTANCE.isDHash(cxt) && !cxt.isNullKey()) {
             dHashStep(g, cxt);
             return true;
         } else {
@@ -35,14 +35,14 @@ final class KeySearch {
 
     static InnerLoop innerLoop(MethodGenerator g, MethodContext cxt, InnerLoop.Body body,
             boolean stepPrecomputed) {
-        if (isLHash(cxt)) {
+        if (INSTANCE.isLHash(cxt)) {
             assert !stepPrecomputed;
             return new LHashInnerLoop(g, cxt, body);
-        } else if (isDHash(cxt)) {
+        } else if (INSTANCE.isDHash(cxt)) {
             return new DHashInnerLoop(g, cxt, body, stepPrecomputed);
         } else {
             assert !stepPrecomputed;
-            assertHash(cxt, isQHash(cxt));
+            INSTANCE.assertHash(cxt, INSTANCE.isQHash(cxt));
             return new QHashInnerLoop(g, cxt, body);
         }
     }
@@ -56,31 +56,32 @@ final class KeySearch {
         String indexAssignment;
         if (!cxt.isNullKey()) {
             String modulo;
-            if (isLHash(cxt)) {
+            if (INSTANCE.isLHash(cxt)) {
                 modulo = capacityAssigned ? " & capacityMask" :
-                        (" & (capacityMask = " + capacityMask(cxt, parallelKV(cxt) ? table : keys) +
+                        (" & (capacityMask = " + INSTANCE
+                                .capacityMask(cxt, INSTANCE.parallelKV(cxt) ? table : keys) +
                                 ")");
             } else {
                 modulo = capacityAssigned ? " % capacity" :
-                        (" % (capacity = " + (parallelKV(cxt) ? table : keys) + ".length)");
+                        (" % (capacity = " + (INSTANCE.parallelKV(cxt) ? table : keys) + ".length)");
             }
-            String hashAssignment = keyHash(cxt, key, distinctNullKey);
-            if (isDHash(cxt))
+            String hashAssignment = INSTANCE.keyHash(cxt, key, distinctNullKey);
+            if (INSTANCE.isDHash(cxt))
                 hashAssignment = "(hash = " + hashAssignment + ")";
             indexAssignment = "index = " + hashAssignment + modulo;
         } else {
             indexAssignment = "index = 0";
         }
         if (readKeyOnly) {
-            return readKeyOnly(cxt, table, keys, indexAssignment);
+            return INSTANCE.readKeyOnly(cxt, table, keys, indexAssignment);
         } else {
-            return readKeyOrEntry(cxt, table, keys, indexAssignment);
+            return INSTANCE.readKeyOrEntry(cxt, table, keys, indexAssignment);
         }
     }
 
     static int innerLoopBodies(MethodContext cxt) {
-        if (isDHash(cxt) || isLHash(cxt)) return 1;
-        assertHash(cxt, isQHash(cxt));
+        if (INSTANCE.isDHash(cxt) || INSTANCE.isLHash(cxt)) return 1;
+        INSTANCE.assertHash(cxt, INSTANCE.isQHash(cxt));
         return 2;
     }
 
@@ -119,7 +120,7 @@ final class KeySearch {
                 if (!cxt.isNullKey()) {
                     g.lines("if ((index -= step) < 0) index += capacity; // nextIndex");
                 } else {
-                    String increment = doubleSizedParallel(cxt) ? " += 2" : "++";
+                    String increment = INSTANCE.doubleSizedParallel(cxt) ? " += 2" : "++";
                     g.lines("index" + increment + ";");
                 }
                 body.generate("index", "index");
@@ -128,7 +129,8 @@ final class KeySearch {
     }
 
     private static void dHashStep(MethodGenerator g, MethodContext cxt) {
-        String step = "(hash % (capacity - " + slots(2, cxt) + ")) + " + slots(1, cxt);
+        String step = "(hash % (capacity - " + INSTANCE.slots(2, cxt) + ")) + " + INSTANCE
+                .slots(1, cxt);
         g.lines("int step = " + step + ";");
     }
 
@@ -141,7 +143,7 @@ final class KeySearch {
         @Override
         void generate() {
             g.lines("while (true)").block(); {
-                body.generate("(index = (index - " + slots(1, cxt) + ") & capacityMask)", "index");
+                body.generate("(index = (index - " + INSTANCE.slots(1, cxt) + ") & capacityMask)", "index");
             } g.blockEnd();
         }
     }
@@ -154,7 +156,7 @@ final class KeySearch {
 
         @Override
         void generate() {
-            g.lines("int bIndex = index, fIndex = index, step = " + slots(1, cxt) + ";");
+            g.lines("int bIndex = index, fIndex = index, step = " + INSTANCE.slots(1, cxt) + ";");
             g.lines("while (true)").block(); {
                 g.lines("if ((bIndex -= step) < 0) bIndex += capacity;");
                 body.generate("bIndex", "bIndex");
@@ -164,7 +166,7 @@ final class KeySearch {
                 g.lines("int t;");
                 g.lines("if ((t = (fIndex += step) - capacity) >= 0) fIndex = t;");
                 body.generate("fIndex", "fIndex");
-                g.lines("step += " + slots(2, cxt) + ";");
+                g.lines("step += " + INSTANCE.slots(2, cxt) + ";");
             } g.blockEnd();
         }
     }
