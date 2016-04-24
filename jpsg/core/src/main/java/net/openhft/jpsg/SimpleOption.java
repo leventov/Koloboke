@@ -64,7 +64,7 @@ public final class SimpleOption implements Option {
         }
         if (upper.length() != title.length() + parts - 1) {
             throw new IllegalArgumentException(
-                    "Source file: " + Generator.currentSourceFile() + "\n" +
+                    "Source file: " + Generator.Companion.currentSourceFile() + "\n" +
                     "Simple options should be CamelCased, " + title + " is given");
         }
         this.upper = upper;

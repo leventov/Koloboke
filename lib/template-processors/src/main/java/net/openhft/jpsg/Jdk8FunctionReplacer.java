@@ -16,13 +16,13 @@
 
 package net.openhft.jpsg;
 
+import kotlin.io.FilesKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
-import java.util.*;
-
-import static java.util.stream.Collectors.toList;
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 
 public final class Jdk8FunctionReplacer extends TemplateProcessor {
@@ -30,7 +30,7 @@ public final class Jdk8FunctionReplacer extends TemplateProcessor {
     public static final int PRIORITY = DEFAULT_PRIORITY - 10000;
 
     @Override
-    protected int priority() {
+    public int priority() {
         return PRIORITY;
     }
 
@@ -38,9 +38,9 @@ public final class Jdk8FunctionReplacer extends TemplateProcessor {
 
     @Override
     protected void process(StringBuilder sb, Context source, Context target, String template) {
-        Path currentSourceFile = Generator.currentSourceFile();
-        boolean packageInfo = currentSourceFile.endsWith("package-info.java") ||
-                currentSourceFile.endsWith("html");
+        File currentSourceFile = Generator.Companion.currentSourceFile();
+        boolean packageInfo = FilesKt.endsWith(currentSourceFile, new File("package-info.java")) ||
+                currentSourceFile.getName().endsWith("html");
         if (JDK8.equals(target.getOption("jdk")) &&
                 // Heuristic that we are at the end of the template class
                 (template.trim().endsWith("}") || packageInfo)) {

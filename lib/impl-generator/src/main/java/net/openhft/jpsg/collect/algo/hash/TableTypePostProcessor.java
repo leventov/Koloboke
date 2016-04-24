@@ -27,7 +27,7 @@ public final class TableTypePostProcessor extends PrimitiveTypeModifierPostProce
     }
 
     @Override
-    protected int priority() {
+    public int priority() {
         return BitsModifierPostProcessor.PRIORITY + 5;
     }
 }

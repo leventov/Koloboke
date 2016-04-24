@@ -42,7 +42,7 @@ public final class OptionProcessor extends TemplateProcessor {
             Option option = e.getValue();
             template = option.intermediateReplace(template, dim);
         }
-        List<String> dims = new ArrayList<>();
+        List<String> dims = new ArrayList<String>();
         for (Map.Entry<String, Option> e : target) {
             dims.add(e.getKey());
         }

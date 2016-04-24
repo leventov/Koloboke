@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public final class FunctionProcessor extends TemplateProcessor {
     // after blocks processor, before options processor
     public static final int PRIORITY =
-            (Generator.BlocksProcessor.PRIORITY + OptionProcessor.PRIORITY) / 2;
+            (Generator.BLOCKS_PROCESSOR_PRIORITY + OptionProcessor.PRIORITY) / 2;
 
     private static final Pattern FUNCTION_P = RegexpUtils.compile(
             "/[\\*/]f[\\*/]/([a-z]+)(/[\\*/][\\*/]/)?+|([a-z]+)/[\\*/]ef[\\*/]/");
@@ -88,14 +88,14 @@ public final class FunctionProcessor extends TemplateProcessor {
     }
 
     @Override
-    protected int priority() {
+    public int priority() {
         return PRIORITY;
     }
 
     @Override
     protected void process(StringBuilder sb, Context source, Context target, String template) {
         Map<String, String> titleToDim = new HashMap<>();
-        for (Map.Entry<String, Option> e : source) {
+        for (Map.Entry<? extends String, ? extends Option> e : source) {
             Option opt = e.getValue();
             if (opt instanceof PrimitiveType) {
                 titleToDim.put(((PrimitiveType) opt).title, e.getKey());

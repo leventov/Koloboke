@@ -16,10 +16,15 @@
 
 package net.openhft.jpsg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 /**
  * Subclasses must have public no-arg constructor.
  */
 public abstract class TemplateProcessor {
+    private static final Logger LOG = LoggerFactory.getLogger(TemplateProcessor.class);
     public static final int DEFAULT_PRIORITY = 0;
 
     private Dimensions.Parser dimensionsParser;

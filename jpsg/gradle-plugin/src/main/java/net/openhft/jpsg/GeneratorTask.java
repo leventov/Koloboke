@@ -112,7 +112,7 @@ public class GeneratorTask extends ConventionTask {
     }
 
     public GeneratorTask setSource(Path source) {
-        g.setSource(source);
+        g.setSource(source.toFile());
         return this;
     }
 
@@ -131,9 +131,8 @@ public class GeneratorTask extends ConventionTask {
         return this;
     }
 
-
     public GeneratorTask setTarget(Path target) {
-        g.setTarget(target);
+        g.setTarget(target.toFile());
         return this;
     }
 

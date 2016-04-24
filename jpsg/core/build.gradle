@@ -1,8 +1,24 @@
 evaluationDependsOn("$parent.path")
+buildscript {
+    ext.kotlin_version = '1.0.1-2'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
 
 description = 'core'
 
+apply plugin: 'kotlin'
+
+setSourceCompatibility(1.6)
+
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.5'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     runtime 'org.slf4j:slf4j-simple:1.7.5'
 }

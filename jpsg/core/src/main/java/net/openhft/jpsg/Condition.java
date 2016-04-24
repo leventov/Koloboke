@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
-import static net.openhft.jpsg.Generator.DIMENSIONS;
 
 public final class Condition {
 
@@ -30,7 +29,8 @@ public final class Condition {
      */
 
     private static final String POSSIBLY_NEGATED_DIMENSIONS =
-            format("(%s|!?\\(%s\\))", DIMENSIONS, DIMENSIONS);
+            format("(%s|!?\\(%s\\))", Generator.Companion.getDIMENSIONS(),
+                    Generator.Companion.getDIMENSIONS());
 
     static final String CONDITION =
             format("((%s\\s*\\|\\|\\s*)*|(%s\\s*&&\\s*)*)\\s*%s",
@@ -76,8 +76,8 @@ public final class Condition {
     }
 
     private Op op;
-    private final List<Dimensions> allDims = new ArrayList<>();
-    private final List<Boolean> negated = new ArrayList<>();
+    private final List<Dimensions> allDims = new ArrayList<Dimensions>();
+    private final List<Boolean> negated = new ArrayList<Boolean>();
 
     private boolean dimsResult(int i, Context target) {
         boolean res = allDims.get(i).checkAsCondition(target);

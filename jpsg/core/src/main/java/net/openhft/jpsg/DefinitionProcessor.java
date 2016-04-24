@@ -21,7 +21,7 @@ import java.util.Map;
 
 
 public final class DefinitionProcessor extends TemplateProcessor {
-    public static final int PRIORITY = Generator.BlocksProcessor.PRIORITY + 100;
+    public static final int PRIORITY = Generator.BLOCKS_PROCESSOR_PRIORITY + 100;
 
     private static final String DEF_PREFIX = "/[\\*/]\\s*define";
     private static final CheckingPattern DEF_P = CheckingPattern.compile(DEF_PREFIX,
@@ -39,7 +39,7 @@ public final class DefinitionProcessor extends TemplateProcessor {
     protected void process(StringBuilder builder, Context source, Context target, String template) {
         CheckingMatcher matcher = DEF_P.matcher(template);
         StringBuilder sb = new StringBuilder();
-        Map<String, String> definitions = new HashMap<>();
+        Map<String, String> definitions = new HashMap<String, String>();
         while(matcher.find()) {
             definitions.put(matcher.group("name"), matcher.group("body").trim());
             matcher.appendSimpleReplacement(sb, "");
@@ -57,7 +57,7 @@ public final class DefinitionProcessor extends TemplateProcessor {
             String body = e.getValue();
             StringBuilder sb = new StringBuilder();
             CheckingMatcher m = defPattern.matcher(template);
-            Map<String, String> withoutCurrentDef = new HashMap<>(definitions);
+            Map<String, String> withoutCurrentDef = new HashMap<String, String>(definitions);
             withoutCurrentDef.remove(name);
             while (m.find()) {
                 m.appendSimpleReplacement(sb, replaceDefinitions(withoutCurrentDef, body));

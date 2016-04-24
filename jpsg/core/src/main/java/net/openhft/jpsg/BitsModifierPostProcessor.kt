@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-package net.openhft.jpsg.collect.algo.hash;
+package net.openhft.jpsg
 
-import net.openhft.jpsg.BitsModifierPreProcessor;
-import net.openhft.jpsg.PrimitiveTypeModifierPreProcessor;
+import java.util.function.Predicate
+import java.util.function.UnaryOperator
 
-
-public final class TableTypePreProcessor extends PrimitiveTypeModifierPreProcessor {
-
-    public TableTypePreProcessor() {
-        super("tt", TableType.INSTANCE, TableTypeDimFilter.INSTANCE);
-    }
-
-    @Override
-    public int priority() {
-        return BitsModifierPreProcessor.PRIORITY - 5;
-    }
-}
-
+class BitsModifierPostProcessor : PrimitiveTypeModifierPostProcessor(
+        "bits", UnaryOperator { it.bitsType() }, Predicate { dim -> true })

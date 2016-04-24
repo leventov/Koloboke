@@ -37,6 +37,6 @@ public final class CheckingPattern {
     }
 
     public CheckingMatcher matcher(CharSequence input) {
-        return CheckingMatcher.create(input, checkingPattern, targetPattern);
+        return CheckingMatcher.Companion.create(input, checkingPattern, targetPattern);
     }
 }

@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public final class GenericsProcessor extends TemplateProcessor {
 
     private static List<Map.Entry<String, Option>> getViewOptions(Context context) {
-        List<Map.Entry<String, Option>> options = new ArrayList<>();
+        List<Map.Entry<String, Option>> options = new ArrayList<Map.Entry<String, Option>>();
         for (Map.Entry<String, Option> e : context) {
             options.add(e);
         }
@@ -33,7 +33,7 @@ public final class GenericsProcessor extends TemplateProcessor {
             Option viewOption = context.getOption(viewDim);
             if (viewOption != null) {
                 options = Arrays.<Map.Entry<String, Option>>asList(
-                        new AbstractMap.SimpleImmutableEntry<>(viewDim, viewOption));
+                        new AbstractMap.SimpleImmutableEntry<String, Option>(viewDim, viewOption));
             }
         }
         return options;

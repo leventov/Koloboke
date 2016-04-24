@@ -25,7 +25,8 @@ import static java.lang.String.format;
 
 final class IntermediateOption {
 
-    private static final Map<String, IntermediateOption> cache = new HashMap<>();
+    private static final Map<String, IntermediateOption> cache =
+            new HashMap<String, IntermediateOption>();
 
     public static IntermediateOption of(String dim) {
         IntermediateOption opt;

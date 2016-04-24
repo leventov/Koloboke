@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package net.openhft.jpsg;
+package net.openhft.jpsg
 
-public final class BitsModifierPreProcessor extends PrimitiveTypeModifierPreProcessor {
+import java.util.function.Predicate
+import java.util.function.UnaryOperator
 
-    public BitsModifierPreProcessor() {
-        super("bits", PrimitiveType::bitsType, dim -> true);
-    }
-}
+class BitsModifierPreProcessor : PrimitiveTypeModifierPreProcessor(
+        "bits", UnaryOperator { it.bitsType() }, Predicate { dim -> true })

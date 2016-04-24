@@ -27,7 +27,6 @@ import java.io.StringWriter;
 import java.util.*;
 
 import static java.lang.String.format;
-import static net.openhft.jpsg.Generator.DIMENSIONS;
 
 
 public final class MethodGeneratingProcessor extends TemplateProcessor {
@@ -37,7 +36,7 @@ public final class MethodGeneratingProcessor extends TemplateProcessor {
             "(?<indentSpaces>[^\\S\\n]*+)/[\\*/]\\s*template";
     private static final CheckingPattern METHOD_BODY_P = CheckingPattern.compile(METHOD_BODY_PREFIX,
             METHOD_BODY_PREFIX + "\\s+(?<methodName>\\S+)" +
-                    format("\\s*(with%s)?", DIMENSIONS) +
+                    format("\\s*(with%s)?", Generator.Companion.getDIMENSIONS()) +
                     "\\s*[\\*/]/" +
                     "([^\\S\\n]*$|[^/]*?/[\\*/]\\s*endtemplate\\s*[\\*/]/)");
 
@@ -146,7 +145,7 @@ public final class MethodGeneratingProcessor extends TemplateProcessor {
     }
 
     @Override
-    protected int priority() {
+    public int priority() {
         return PRIORITY;
     }
 

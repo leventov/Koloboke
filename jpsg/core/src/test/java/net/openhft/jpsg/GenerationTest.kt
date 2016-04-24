@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-package net.openhft.jpsg;
+package net.openhft.jpsg
 
+import org.junit.Assert.assertEquals
+import org.junit.Test
+import java.io.File
 
-public final class BitsModifierPostProcessor extends PrimitiveTypeModifierPostProcessor {
+class GenerationTest {
 
-    public BitsModifierPostProcessor() {
-        super("bits", PrimitiveType::bitsType, dim -> true);
+    @Test
+    fun generationTest() {
+        val generator = Generator()
+        generator.init()
+        Generator.setCurrentSourceFile(File("package-info.java"))
+        val cxt = Context.builder().put("jdk", SimpleOption("JDK6")).makeContext()
+        val result = generator.generate(source = cxt, target = cxt, template = "package-info.java")
+        assertEquals("package-info.java", result)
     }
 }
+
+

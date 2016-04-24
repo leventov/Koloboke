@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package net.openhft.jpsg.collect.algo.hash;
+package net.openhft.jpsg.concurrent
 
-import net.openhft.jpsg.BitsModifierPreProcessor;
-import net.openhft.jpsg.PrimitiveTypeModifierPreProcessor;
+import java.util.concurrent.Callable
+import java.util.concurrent.ForkJoinTask
 
+internal class RealForkJoinTasks : ForkJoinTasks {
 
-public final class TableTypePreProcessor extends PrimitiveTypeModifierPreProcessor {
-
-    public TableTypePreProcessor() {
-        super("tt", TableType.INSTANCE, TableTypeDimFilter.INSTANCE);
+    override fun <T> adapt(callable: Callable<out T>): ForkJoinTaskShim<T> {
+        return RealForkJoinTask(ForkJoinTask.adapt(callable))
     }
 
-    @Override
-    public int priority() {
-        return BitsModifierPreProcessor.PRIORITY - 5;
+    override fun <T> invokeAll(tasks: Iterable<ForkJoinTaskShim<T>>) {
+        ForkJoinTask.invokeAll(tasks.map { (it as RealForkJoinTask<T>).delegate })
     }
+
+}
+
+private class RealForkJoinTask<T>(val delegate: ForkJoinTask<T>) : ForkJoinTaskShim<T> {
+    override fun get(): T = delegate.get()
 }
 

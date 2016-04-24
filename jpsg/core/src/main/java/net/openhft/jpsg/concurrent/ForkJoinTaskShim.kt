@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-package net.openhft.jpsg.collect.algo.hash;
-
-import net.openhft.jpsg.BitsModifierPreProcessor;
-import net.openhft.jpsg.PrimitiveTypeModifierPreProcessor;
+package net.openhft.jpsg.concurrent
 
 
-public final class TableTypePreProcessor extends PrimitiveTypeModifierPreProcessor {
-
-    public TableTypePreProcessor() {
-        super("tt", TableType.INSTANCE, TableTypeDimFilter.INSTANCE);
-    }
-
-    @Override
-    public int priority() {
-        return BitsModifierPreProcessor.PRIORITY - 5;
-    }
+interface ForkJoinTaskShim<out T> {
+    fun get(): T
 }
-
