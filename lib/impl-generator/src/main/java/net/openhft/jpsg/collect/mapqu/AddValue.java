@@ -25,27 +25,42 @@ public class AddValue extends MapQueryUpdateMethod {
 
     @Override
     public final BasicMapQueryUpdateOp baseOp() {
-        return BasicMapQueryUpdateOp.INSERT;
+        return BasicMapQueryUpdateOp.CUSTOM_INSERT;
     }
 
     String toAdd() {
         return "value";
     }
 
+    String defaultValue() {
+        return gen.defaultValue();
+    }
+
     @Override
     public final void ifPresent() {
-        String newValue = gen.value() + " + " + toAdd();
-        Option mvo = cxt.mapValueOption();
-        if (mvo == BYTE || mvo == CHAR || mvo == SHORT) {
-            newValue = "(" + cxt.valueType() + ") (" + newValue + ")";
-        }
-        gen.lines(cxt.valueType() + " newValue = " + newValue + ";");
+        declareNewValue(gen.value());
         gen.setValue("newValue");
         gen.ret("newValue");
     }
 
     @Override
-    public void ifAbsent() {
-        gen.ret("value");
+    public final void ifAbsent() {
+        declareNewValue(defaultValue());
+        gen.insert("newValue");
+        gen.ret("newValue");
+    }
+
+    @Override
+    public String nullArgs() {
+        return "value";
+    }
+
+    private void declareNewValue(String baseValue) {
+        String newValue = baseValue + " + " + toAdd();
+        Option mvo = cxt.mapValueOption();
+        if (mvo == BYTE || mvo == CHAR || mvo == SHORT) {
+            newValue = "(" + cxt.valueType() + ") (" + newValue + ")";
+        }
+        gen.lines(cxt.valueType() + " newValue = " + newValue + ";");
     }
 }

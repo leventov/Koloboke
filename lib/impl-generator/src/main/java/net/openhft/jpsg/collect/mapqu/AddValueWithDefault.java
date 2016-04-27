@@ -16,22 +16,7 @@
 
 package net.openhft.jpsg.collect.mapqu;
 
-import net.openhft.jpsg.Option;
-
-import static net.openhft.jpsg.PrimitiveType.*;
-
-
 public final class AddValueWithDefault extends AddValue {
-
-    @Override
-    public void beginning() {
-        String value = "defaultValue + addition";
-        Option mvo = cxt.mapValueOption();
-        if (mvo == BYTE || mvo == CHAR || mvo == SHORT) {
-            value = "(" + cxt.valueType() + ") (" + value + ")";
-        }
-        gen.lines(cxt.valueType() + " value = " + value + ";");
-    }
 
     @Override
     String toAdd() {
@@ -39,7 +24,12 @@ public final class AddValueWithDefault extends AddValue {
     }
 
     @Override
-    public void ifAbsent() {
-        gen.ret("value");
+    String defaultValue() {
+        return "defaultValue";
+    }
+
+    @Override
+    public String nullArgs() {
+        return "addition, defaultValue";
     }
 }
