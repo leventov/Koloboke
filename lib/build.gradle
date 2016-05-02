@@ -4,7 +4,7 @@ buildscript {
         maven { url 'http://repo.springsource.org/plugins-release' }
     }
     dependencies {
-	    classpath project(':jpsg:gradle-plugin')
+        classpath project(':jpsg:gradle-plugin')
         classpath project('template-processors')
         classpath project('impl-generator')
 	    classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
@@ -47,10 +47,8 @@ configure([apiProject, implProject]) {
     }
 }
 
-def compileProject = project('compile')
-
-configure([apiProject, implProject, compileProject]) {
-    configure(project.is(compileProject) ? compileTestJava : compileJava) {
+configure([apiProject, implProject]) {
+    configure(compileJava) {
         // To suppress warnings about usages of sun.misc.Unsafe API
         options.compilerArgs << '-XDignore.symbol.file'
         options.compilerArgs << '-Xlint:-deprecation' << '-Xlint:-overloads'
