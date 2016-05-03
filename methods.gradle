@@ -74,10 +74,6 @@ def configurePublishing(project, generateJavadoc = true) { configure(project) {
         pom.project {
             url = 'https://github.com/OpenHFT/Koloboke'
             inceptionYear = '2013'
-            organization {
-                name = 'Higher Frequency Trading'
-                url = 'http://openhft.net'
-            }
             licenses {
                 license {
                     name = 'The Apache Software License, Version 2.0'
@@ -96,9 +92,6 @@ def configurePublishing(project, generateJavadoc = true) { configure(project) {
                     name = 'Roman Leventov'
                     email = 'leventov@ya.ru'
                     url = 'http://www.leventov.ru'
-                    organization = 'Higher Frequency Trading'
-                    organizationUrl = 'http://openhft.net'
-                    timezone = '+4'
                 }
             }
             issueManagement {
