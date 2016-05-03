@@ -15,9 +15,10 @@ if (libTargetJava != '6' && libTargetJava != '8')
     throw new GradleException('libTargetJava should be either 6 or 8')
 
 def apiProject = project('api')
+def implCommonProject = project('impl-common')
 def implProject = project('impl')
 
-configure([apiProject, implProject, project('testing')]) {
+configure([apiProject, implCommonProject, implProject, project('testing')]) {
     applyJpsg()
 
     def jpsgTasks = [generateJavaSpecializations]
@@ -31,7 +32,14 @@ configure([apiProject, implProject, project('testing')]) {
     }
 }
 
-configure([apiProject, implProject]) {
+configure([implCommonProject, implProject]) {
+    configure(generateJavaSpecializations) {
+        addProcessor 'net.openhft.jpsg.collect.algo.hash.TableTypePreProcessor'
+        addProcessor 'net.openhft.jpsg.collect.algo.hash.TableTypePostProcessor'
+    }
+}
+
+configure([apiProject, implCommonProject, implProject]) {
     apply plugin: 'jacoco'
 
     setSourceCompatibility(project, "1.$libTargetJava")
@@ -47,7 +55,7 @@ configure([apiProject, implProject]) {
     }
 }
 
-configure([apiProject, implProject]) {
+configure([apiProject, implCommonProject, implProject]) {
     configure(compileJava) {
         // To suppress warnings about usages of sun.misc.Unsafe API
         options.compilerArgs << '-XDignore.symbol.file'
@@ -59,7 +67,7 @@ configure([apiProject, implProject]) {
 
     test.testLogging.exceptionFormat = 'full'
 
-    configurePublishing(project, !project.is(implProject))
+    configurePublishing(project, project.is(apiProject))
     archivesBaseName  = "koloboke-$project.name-jdk${libTargetJava == '6' ? '6-7' : '8'}"
     version = '0.7-SNAPSHOT'
     ext.apiVersion = '0.6'

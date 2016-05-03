@@ -4,8 +4,6 @@ description = 'Implementation'
 
 configure([generateJavaSpecializations, generateResourceSpecializations]) {
     addProcessor 'net.openhft.jpsg.collect.MethodGeneratingProcessor'
-    addProcessor 'net.openhft.jpsg.collect.algo.hash.TableTypePreProcessor'
-    addProcessor 'net.openhft.jpsg.collect.algo.hash.TableTypePostProcessor'
     never 'DHash'
     with 'parallelKV=Enabled'
     exclude(
@@ -25,6 +23,7 @@ configure([generateJavaSpecializations, generateResourceSpecializations]) {
 
 dependencies {
     compile project("$parent.path:api")
+    compile project("$parent.path:impl-common")
     testCompile project("$parent.path:testing")
     testCompile 'org.apache.mahout:mahout-math:0.9'
 }

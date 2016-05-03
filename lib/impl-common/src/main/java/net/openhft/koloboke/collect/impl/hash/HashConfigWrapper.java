@@ -28,7 +28,7 @@ public final class HashConfigWrapper {
     private final Scaler maxLoad, maxLoadInverse;
     private final Scaler growFactor;
 
-    HashConfigWrapper(HashConfig config) {
+    public HashConfigWrapper(HashConfig config) {
         this.config = config;
         minLoadInverse = Scaler.by(
                 // minLoad can be 0.0
@@ -39,7 +39,7 @@ public final class HashConfigWrapper {
         growFactor = Scaler.by(config.getGrowFactor());
     }
 
-    HashConfig config() {
+    public HashConfig config() {
         return config;
     }
 

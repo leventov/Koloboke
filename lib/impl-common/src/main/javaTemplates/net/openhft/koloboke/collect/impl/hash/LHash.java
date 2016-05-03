@@ -20,19 +20,19 @@ package net.openhft.koloboke.collect.impl.hash;
 public interface LHash extends Hash {
 
     /** = round(2 ^ 32 * (sqrt(5) - 1)), Java form of unsigned 2654435769 */
-    static final int INT_PHI_MAGIC = -1640531527;
+    int INT_PHI_MAGIC = -1640531527;
     /** ~= round(2 ^ 64 * (sqrt(5) - 1)), Java form of 11400714819323198485 */
-    static final long LONG_PHI_MAGIC = -7046029254386353131L;
+    long LONG_PHI_MAGIC = -7046029254386353131L;
 
-    static final int BYTE_MIX_SHIFT = 6;
-    static final int CHAR_MIX_SHIFT = 10, SHORT_MIX_SHIFT = CHAR_MIX_SHIFT;
-    static final int INT_MIX_SHIFT = 16, FLOAT_MIX_SHIFT = INT_MIX_SHIFT;
+    int BYTE_MIX_SHIFT = 6;
+    int CHAR_MIX_SHIFT = 10, SHORT_MIX_SHIFT = CHAR_MIX_SHIFT;
+    int INT_MIX_SHIFT = 16, FLOAT_MIX_SHIFT = INT_MIX_SHIFT;
 
     /* with Separate|Parallel kv */
 
     /* with byte|char|short|int|float key */
-    static class SeparateKVByteKeyMixing {
-        static int mix(/* bits */byte key) {
+    class SeparateKVByteKeyMixing {
+        public static int mix(/* bits */byte key) {
             int h = key * INT_PHI_MAGIC;
             return h ^ (h >> BYTE_MIX_SHIFT);
         }
@@ -40,8 +40,8 @@ public interface LHash extends Hash {
     /* endwith */
 
     /* with double|long key */
-    static class SeparateKVDoubleKeyMixing {
-        static int mix(long key) {
+    class SeparateKVDoubleKeyMixing {
+        public static int mix(long key) {
             long h = key * LONG_PHI_MAGIC;
             h ^= h >> 32;
             return (int) (h ^ (h >> INT_MIX_SHIFT));
@@ -49,8 +49,8 @@ public interface LHash extends Hash {
     }
     /* endwith */
 
-    static class SeparateKVObjKeyMixing {
-        static int mix(int hash) {
+    class SeparateKVObjKeyMixing {
+        public static int mix(int hash) {
             return hash ^ (hash >> INT_MIX_SHIFT);
         }
     }

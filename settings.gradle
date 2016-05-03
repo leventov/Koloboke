@@ -1,4 +1,5 @@
 include 'jpsg:core', 'jpsg:gradle-plugin', 'jpsg:cli'
-include 'lib:api', 'lib:impl-generator', 'lib:impl', 'lib:testing', 'lib:template-processors'
+include 'lib:impl-generator', 'lib:template-processors'
+include 'lib:api', 'lib:impl-common', 'lib:impl', 'lib:testing'
 include 'compile'
 include 'benchmarks:dimensioned-jmh', 'benchmarks:research', 'benchmarks:time-vs-memory'

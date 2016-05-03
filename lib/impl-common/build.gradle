@@ -1,0 +1,7 @@
+evaluationDependsOn("$parent.path")
+
+description = 'Implementation Commons (for Implementation Library and Koloboke Compile)'
+
+dependencies {
+    compile project("$parent.path:api")
+}

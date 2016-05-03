@@ -31,7 +31,7 @@ public final class CommonByteShortMapOps {
 
     public static boolean containsAllEntries(final InternalByteShortMapOps/*<?>*/ map,
             Map<?, ?> another) {
-        if ( map == another )
+        if (map == another)
             throw new IllegalArgumentException();
         if (another instanceof ByteShortMap) {
             ByteShortMap m2 = (ByteShortMap) another;
@@ -64,8 +64,8 @@ public final class CommonByteShortMapOps {
                 }
             });
         }
-        for ( Map.Entry<?, ?> e : another.entrySet() ) {
-            if ( !map.containsEntry(/* if !(obj key) */(Byte) /* endif */e.getKey(),
+        for (Map.Entry<?, ?> e : another.entrySet()) {
+            if (!map.containsEntry(/* if !(obj key) */(Byte) /* endif */e.getKey(),
                     /* if !(obj value) */(Short) /* endif */e.getValue()))
                 return false;
         }

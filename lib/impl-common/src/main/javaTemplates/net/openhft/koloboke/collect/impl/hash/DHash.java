@@ -1,4 +1,4 @@
-/* with QHash hash */
+/* with DHash hash */
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -17,38 +17,35 @@
 
 package net.openhft.koloboke.collect.impl.hash;
 
-import static net.openhft.koloboke.collect.impl.hash.LHash.*;
 
+public interface DHash extends Hash {
 
-public interface QHash extends Hash {
     /* with Separate|Parallel kv */
 
     /* with byte|char|short|int|float key */
-    static class SeparateKVByteKeyMixing {
-        static int mix(/* bits */byte key) {
-            return (key * INT_PHI_MAGIC) & Integer.MAX_VALUE;
+    class SeparateKVByteKeyMixing {
+        public static int mix(/* bits */byte key) {
+            return key/* if !(char key) */ & Integer.MAX_VALUE/* endif */;
         }
     }
     /* endwith */
 
     /* with double|long key */
-    static class SeparateKVDoubleKeyMixing {
-        static int mix(long key) {
-            long h = key * LONG_PHI_MAGIC;
+    class SeparateKVDoubleKeyMixing {
+        public static int mix(long key) {
+            // not to loose information about 31-32 and 63-64-th bits
+            long h = key ^ (key >> 40) ^ (key >> 24);
             /* if Separate kv */
-            h ^= h >> 32;
             return ((int) h) & Integer.MAX_VALUE;
             /* elif Parallel kv */
-            // not to loose information about 63-64-th bits
-            h ^= (h >> 40) ^ (h >> 24);
-            return ((((int) h) << 2) >>> 1);
+            return (((int) h) << 2) >>> 1;
             /* endif */
         }
     }
     /* endwith */
 
-    static class SeparateKVObjKeyMixing {
-        static int mix(int hash) {
+    class SeparateKVObjKeyMixing {
+        public static int mix(int hash) {
             /* if Separate kv */
             return hash & Integer.MAX_VALUE;
             /* elif Parallel kv */

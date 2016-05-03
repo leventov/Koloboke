@@ -1,0 +1,11 @@
+<FindBugsFilter>
+    <Match>
+        <Class name="net.openhft.koloboke.collect.impl.AbstractSetView" />
+        <Method name="equals" />
+        <Bug pattern="NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT" />
+    </Match>
+    <Match>
+        <Class name="net.openhft.koloboke.collect.impl.ScalerTest" />
+        <Bug pattern="MS_MUTABLE_COLLECTION" />
+    </Match>
+</FindBugsFilter>

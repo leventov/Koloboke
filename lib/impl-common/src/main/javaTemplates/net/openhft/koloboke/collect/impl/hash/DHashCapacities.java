@@ -1,3 +1,4 @@
+/* with DHash hash */
 /*
  * Copyright 2014 the original author or authors.
  *
