@@ -17,6 +17,7 @@
 package net.openhft.jpsg.concurrent
 
 import java.util.concurrent.Callable
+import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.ForkJoinTask
 
 internal class RealForkJoinTasks : ForkJoinTasks {
@@ -32,6 +33,16 @@ internal class RealForkJoinTasks : ForkJoinTasks {
 }
 
 private class RealForkJoinTask<T>(val delegate: ForkJoinTask<T>) : ForkJoinTaskShim<T> {
-    override fun get(): T = delegate.get()
+    override fun get() = delegate.get()
+    override fun forkJoin() = pool.submit(delegate).join()
+
+    companion object {
+        val pool: ForkJoinPool = try {
+            val commonPool = ForkJoinPool::class.java.getMethod("commonPool")
+            commonPool.invoke(null) as ForkJoinPool
+        } catch (e: Exception) {
+            ForkJoinPool()
+        }
+    }
 }
 

@@ -246,9 +246,9 @@ class Generator {
 
                 }
             }
-            DirGeneration(source!!).call()
+            ForkJoinTasks.adapt(DirGeneration(source!!)).forkJoin()
         } else {
-            doGenerate(source!!, target!!)
+            ForkJoinTasks.adapt(Callable<Unit> { doGenerate(source!!, target!!) }).forkJoin()
         }
     }
 
@@ -358,6 +358,12 @@ class Generator {
     }
 
     fun generate(sourceFile: File, rawContent: String): Map<File, String> {
+        return ForkJoinTasks.adapt(Callable<Map<File, String>> {
+            doGenerate(sourceFile, rawContent)
+        }).forkJoin()
+    }
+
+    private fun doGenerate(sourceFile: File, rawContent: String): Map<File, String> {
         var rawContent = rawContent
         init()
         setCurrentGenerator(this)

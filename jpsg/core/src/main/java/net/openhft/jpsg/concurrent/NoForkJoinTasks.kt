@@ -29,7 +29,8 @@ internal class NoForkJoinTasks : ForkJoinTasks {
 }
 
 private class NoForkJoinTask<V>(val callable: Callable<V>) : ForkJoinTaskShim<V> {
-    override fun get(): V = callable.call()
+    override fun get() = callable.call()
+    override fun forkJoin() = callable.call()
 }
 
 

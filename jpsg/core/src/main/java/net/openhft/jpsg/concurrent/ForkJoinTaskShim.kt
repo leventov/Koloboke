@@ -19,4 +19,9 @@ package net.openhft.jpsg.concurrent
 
 interface ForkJoinTaskShim<out T> {
     fun get(): T
+    /**
+     * Real FJT: fork().join()
+     * No FJT: just call the task in this thread
+     */
+    fun forkJoin(): T
 }
