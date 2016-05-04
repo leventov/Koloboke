@@ -42,7 +42,7 @@ configure([implCommonProject, implProject]) {
 configure([apiProject, implCommonProject, implProject]) {
     apply plugin: 'jacoco'
 
-    setSourceCompatibility(project, "1.$libTargetJava")
+    projectCompatibility(project, "1.$libTargetJava")
 
     dependencies {
         provided 'com.google.auto.value:auto-value:1.0-rc1'

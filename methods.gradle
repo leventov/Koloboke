@@ -1,5 +1,23 @@
-def setSourceCompatibility(project, level) { configure(project) {
-    sourceCompatibility = level
+def compileCompatibility(javaCompile, level) {
+    configure(javaCompile) {
+        if (sourceCompatibility.toString() != level.toString()) {
+            sourceCompatibility = level
+            targetCompatibility = level
+            options.fork = true
+            options.forkOptions.executable =
+                    "${System.properties['java.home']}/../../jdk$level/bin/javac"
+        }
+    }
+}
+
+def projectCompatibility(project, level) { configure(project) {
+    if (sourceCompatibility.toString() != level.toString()) {
+        tasks.withType(JavaCompile) { javaCompile ->
+            compileCompatibility(javaCompile, level)
+        }
+        sourceCompatibility = level
+        targetCompatibility = level
+    }
     def langLevel = 'JDK_' + level.toString().replace('.', '_')
     idea.module.iml { withXml {
         it.asNode().component.find {
@@ -102,6 +120,7 @@ def configurePublishing(project, generateJavadoc = true) { configure(project) {
     }
 } }
 
-ext.setSourceCompatibility = this.&setSourceCompatibility
+ext.projectCompatibility = this.&projectCompatibility
+ext.compileCompatibility = this.&compileCompatibility
 ext.applyJpsg = this.&applyJpsg
 ext.configurePublishing = this.&configurePublishing
