@@ -348,9 +348,9 @@
  *     <li>Collections of primitives don't support {@code null} element, key or value. Obviously,
  *     this is by design and can't be fixed.</li>
  *     <li>Collections don't implement {@link java.lang.Cloneable} yet. To be fixed, see
- *     <a href="https://github.com/OpenHFT/Koloboke/issues/14">the issue</a>.</li>
+ *     <a href="https://github.com/leventov/Koloboke/issues/14">the issue</a>.</li>
  *     <li>Collections don't implement {@link java.io.Serializable} yet. To be fixed, see
- *     <a href="https://github.com/OpenHFT/Koloboke/issues/15">the issue</a>.</li>
+ *     <a href="https://github.com/leventov/Koloboke/issues/15">the issue</a>.</li>
  *     <li>Hash sets and maps with {@code byte}, {@code char} or {@code short} keys
  *     can't be complete, i. e. contain <i>all</i> keys of the type, unlike {@code HashSet<Byte>},
  *     {@code HashSet<Character>} and {@code HashSet<Short>}. There should be 1-2 absent keys.
@@ -386,7 +386,7 @@
  *     of {@link java.util.Collection#remove(Object)}, but have a different name (the same
  *     for {@link net.openhft.koloboke.collect.LongCollection},
  *     {@link net.openhft.koloboke.collect.FloatCollection}, etc.
- *     for symmetry. This is because {@code remove(int)}
+ *     for symmetry). This is because {@code remove(int)}
  *     in {@link net.openhft.koloboke.collect.IntCollection} will conflict with
  *     {@link java.util.List#remove(int)} method in {@code IntList} (not implemented yet, however).
  *     </li>

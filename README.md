@@ -43,7 +43,7 @@ Currently only *hash sets* and *hash maps* are implemented.
 All this goodness for the cost of... the library is insanely fat. Currently it takes about 20 MB
 (and that's only hash sets and maps).
 
-##### Possible solution: [roll the collection implementation only with features you need](https://github.com/OpenHFT/Koloboke/wiki/Koloboke:-roll-the-collection-implementation-with-features-you-need).
+##### Possible solution: [roll the collection implementation only with features you need](https://github.com/leventov/Koloboke/wiki/Koloboke:-roll-the-collection-implementation-with-features-you-need).
 
 ### Ultra quick start
 
@@ -72,7 +72,7 @@ Or Maven config (don't forget about jdk6-7/jdk8 suffix):
     <dependencies>
 
 Or similarly for your favourite build system.
-Or download jars of [the latest release](https://github.com/OpenHFT/Koloboke/releases/latest).
+Or download jars of [the latest release](https://github.com/leventov/Koloboke/releases/latest).
 
 Then you can start using collections. Replace all lines like
 
@@ -83,13 +83,13 @@ with
     Map<Integer, Integer> map = HashIntIntMaps.newMutableMap();
 
 Next step: see [the table of equivalents of JDK collection patterns]
-(http://openhft.github.io/Koloboke/api/0.6/java8/index.html#jdk-equivalents).
+(http://leventov.github.io/Koloboke/api/0.6/java8/index.html#jdk-equivalents).
 
-### JavaDoc: [Java 6] (http://openhft.github.io/Koloboke/api/0.6/java6/index.html) | [Java 7] (http://openhft.github.io/Koloboke/api/0.6/java7/index.html) | [Java 8] (http://openhft.github.io/Koloboke/api/0.6/java8/index.html)
+### JavaDoc: [Java 6] (http://leventov.github.io/Koloboke/api/0.6/java6/index.html) | [Java 7] (http://leventov.github.io/Koloboke/api/0.6/java7/index.html) | [Java 8] (http://leventov.github.io/Koloboke/api/0.6/java8/index.html)
 
-### [Releases (with changelog)](https://github.com/OpenHFT/Koloboke/releases)
+### [Releases (with changelog)](https://github.com/leventov/Koloboke/releases)
 
-### [Roadmap](https://github.com/OpenHFT/Koloboke/issues?q=is%3Aopen+label%3A"new+functionality"+is%3Aissue)
+### [Roadmap](https://github.com/leventov/Koloboke/issues?q=is%3Aopen+label%3A"new+functionality"+is%3Aissue)
 
 ---
 
@@ -109,7 +109,7 @@ I would like to accept feedback from you.
  - Performance experience
  - Bugs or problems
 
-Use [issues](https://github.com/OpenHFT/Koloboke/issues) or ask a question in [OpenHFT Google group](https://groups.google.com/forum/#!forum/open-hft).
+Use [issues](https://github.com/leventov/Koloboke/issues) or ask a question in [OpenHFT Google group](https://groups.google.com/forum/#!forum/open-hft).
 
 ### How to build and develop
 Gradle build requires Java 8 compiler, set `JAVA_HOME` environment variable to the JDK8 location,
@@ -117,7 +117,7 @@ if your default `java` is still Java 7.
 
 Then
 
-    $ git clone git@github.com:OpenHFT/Koloboke.git
+    $ git clone git@github.com:leventov/Koloboke.git
     $ cd Koloboke
     $ ./gradlew :buildMeta
     $ ./gradlew buildMain -x test -x findbugsMain

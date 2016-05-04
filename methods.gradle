@@ -90,7 +90,7 @@ def configurePublishing(project, generateJavadoc = true) { configure(project) {
     poms*.whenConfigured { pom ->
         pom.dependencies.removeAll { dep -> dep.scope == 'test' }
         pom.project {
-            url = 'https://github.com/OpenHFT/Koloboke'
+            url = 'https://github.com/leventov/Koloboke'
             inceptionYear = '2013'
             licenses {
                 license {
@@ -100,9 +100,9 @@ def configurePublishing(project, generateJavadoc = true) { configure(project) {
                 }
             }
             scm {
-                url = 'https://github.com/OpenHFT/Koloboke'
-                connection = 'scm:git:git://github.com/OpenHFT/Koloboke'
-                developerConnection = 'scm:git:git://github.com/OpenHFT/Koloboke'
+                url = 'https://github.com/leventov/Koloboke'
+                connection = 'scm:git:git://github.com/leventov/Koloboke'
+                developerConnection = 'scm:git:git://github.com/leventov/Koloboke'
             }
             developers {
                 developer {
@@ -114,7 +114,7 @@ def configurePublishing(project, generateJavadoc = true) { configure(project) {
             }
             issueManagement {
                 system = 'GitHub'
-                url = 'https://github.com/OpenHFT/Koloboke/issues'
+                url = 'https://github.com/leventov/Koloboke/issues'
             }
         }
     }
