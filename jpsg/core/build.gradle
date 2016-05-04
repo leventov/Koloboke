@@ -16,7 +16,6 @@ apply plugin: 'kotlin'
 setSourceCompatibility(1.6)
 
 dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.5'
+    compile "org.slf4j:slf4j-api:$slf4j_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    runtime 'org.slf4j:slf4j-simple:1.7.5'
 }
