@@ -16,14 +16,14 @@
 
 package net.openhft.jpsg;
 
+import net.openhft.jpsg.function.Predicate;
+import net.openhft.jpsg.function.UnaryOperator;
 import org.gradle.api.internal.ConventionTask;
 import org.gradle.api.tasks.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 
 public class GeneratorTask extends ConventionTask {

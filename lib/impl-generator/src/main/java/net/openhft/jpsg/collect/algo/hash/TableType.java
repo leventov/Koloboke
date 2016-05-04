@@ -17,8 +17,7 @@
 package net.openhft.jpsg.collect.algo.hash;
 
 import net.openhft.jpsg.PrimitiveType;
-
-import java.util.function.UnaryOperator;
+import net.openhft.jpsg.function.UnaryOperator;
 
 import static net.openhft.jpsg.PrimitiveType.CHAR;
 import static net.openhft.jpsg.PrimitiveType.INT;

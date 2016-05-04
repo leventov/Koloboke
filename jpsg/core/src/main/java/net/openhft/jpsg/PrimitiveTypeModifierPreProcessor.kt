@@ -16,12 +16,14 @@
 
 package net.openhft.jpsg
 
-import java.util.function.Predicate
-import java.util.function.UnaryOperator
+import net.openhft.jpsg.function.Predicate
+import net.openhft.jpsg.function.UnaryOperator
 
 
-open class PrimitiveTypeModifierPreProcessor(private val keyword: String,
-                                             private val typeMapper: UnaryOperator<PrimitiveType>, private val dimFilter: Predicate<String>) : TemplateProcessor() {
+open class PrimitiveTypeModifierPreProcessor(
+        private val keyword: String,
+        private val typeMapper: UnaryOperator<PrimitiveType>,
+        private val dimFilter: Predicate<String>) : TemplateProcessor() {
 
     override fun priority(): Int {
         return PRIORITY

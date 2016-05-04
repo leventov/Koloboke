@@ -16,8 +16,8 @@
 
 package net.openhft.jpsg
 
-import java.util.function.Predicate
-import java.util.function.UnaryOperator
+import net.openhft.jpsg.function.Predicate
+import net.openhft.jpsg.function.UnaryOperator
 
 class BitsModifierPreProcessor : PrimitiveTypeModifierPreProcessor(
         "bits", UnaryOperator { it.bitsType() }, Predicate { dim -> true })

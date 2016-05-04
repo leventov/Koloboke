@@ -14,17 +14,9 @@
  * limitations under the License.
  */
 
-package net.openhft.jpsg.collect.algo.hash;
+package net.openhft.jpsg.function;
 
-import net.openhft.jpsg.function.Predicate;
+public interface UnaryOperator<T> {
 
-
-enum TableTypeDimFilter implements Predicate<String> {
-    INSTANCE;
-
-    @Override
-    public boolean test(String dim) {
-        return "key".equals(dim) || "elem".equals(dim);
-    }
-
+    T apply(T t);
 }

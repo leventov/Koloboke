@@ -136,7 +136,7 @@ class FunctionProcessor : TemplateProcessor() {
             for (i in args.indices) {
                 val arg = args.get(i)
                 if (arg is PrimitiveType) {
-                    prefix += (arg as PrimitiveType).title
+                    prefix += arg.title
                 } else {
                     if (args.size > 1)
                         prefix += (arg as ObjectType).idStyle.title

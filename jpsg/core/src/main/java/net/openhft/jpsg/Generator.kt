@@ -25,17 +25,16 @@ import net.openhft.jpsg.ObjectType.IdentifierStyle.SHORT
 import net.openhft.jpsg.RegexpUtils.removeSubGroupNames
 import net.openhft.jpsg.concurrent.ForkJoinTaskShim
 import net.openhft.jpsg.concurrent.ForkJoinTasks
+import net.openhft.jpsg.function.Predicate
+import net.openhft.jpsg.function.UnaryOperator
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 import java.lang.String.format
-import java.nio.charset.StandardCharsets.UTF_8
 import java.util.*
 import java.util.AbstractMap.SimpleImmutableEntry
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
-import java.util.function.Predicate
-import java.util.function.UnaryOperator
 import java.util.regex.Pattern
 
 
@@ -103,8 +102,9 @@ class Generator {
         return this
     }
 
-    fun addPrimitiveTypeModifierProcessors(keyword: String,
-                                           typeMapper: UnaryOperator<PrimitiveType>, dimFilter: Predicate<String>): Generator {
+    fun addPrimitiveTypeModifierProcessors(
+            keyword: String, typeMapper: UnaryOperator<PrimitiveType>,
+            dimFilter: Predicate<String>): Generator {
         addProcessor(PrimitiveTypeModifierPreProcessor(keyword, typeMapper, dimFilter))
         addProcessor(PrimitiveTypeModifierPostProcessor(keyword, typeMapper, dimFilter))
         return this
@@ -300,7 +300,7 @@ class Generator {
         log.info("Processing file: {}", sourceFile)
         val sourceFileName = sourceFile.name
         var targetDims = dimensionsParser!!.parseClassName(sourceFileName)
-        var rawContent = sourceFile.readText(UTF_8)
+        var rawContent = sourceFile.readText()
         val fileDimsM = CONTEXT_START_P.matcher(rawContent)
         if (fileDimsM.find() && fileDimsM.start() == 0) {
             targetDims = dimensionsParser!!.parseForContext(
@@ -344,7 +344,7 @@ class Generator {
                                 "$generatedFileName in $targetDir is a directory, " +
                                         "$mainContext, $target, $sourceFileName")
                     }
-                    val targetContent = generatedFile.readText(UTF_8)
+                    val targetContent = generatedFile.readText()
                     if (generatedContent == targetContent) {
                         log.warn("Already generated: {}", generatedFileName)
                         return@Callable
@@ -424,7 +424,7 @@ class Generator {
 
     @Throws(IOException::class)
     internal fun writeFile(file: File, content: String) {
-        file.writeText(content, UTF_8)
+        file.writeText(content)
     }
 
     fun generate(source: Context, target: Context, template: String): String {
