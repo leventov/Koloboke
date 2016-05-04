@@ -37,7 +37,7 @@ configure(leafProjects) {
     }
 
     dependencies {
-        provided 'com.google.code.findbugs:jsr305:2.0.3'
+        provided 'com.google.code.findbugs:jsr305:3.0.1'
         testCompile 'junit:junit:4.11'
         testCompile 'org.hamcrest:hamcrest-all:1.3'
     }
