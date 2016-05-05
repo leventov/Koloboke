@@ -59,7 +59,7 @@ public abstract class MutableDHashSeparateKVByteObjMapSO</* if obj key //K, // e
     /* endif */
 
     boolean nullableValueEquals(@Nullable V a, @Nullable V b) {
-        return a == b || (a != null && a.equals(b));
+        return a == b || (a != null && valueEquals(a, b));
     }
 
     boolean valueEquals(@Nonnull V a, @Nullable V b) {
@@ -67,7 +67,7 @@ public abstract class MutableDHashSeparateKVByteObjMapSO</* if obj key //K, // e
     }
 
     int nullableValueHashCode(@Nullable V value) {
-        return value != null ? value.hashCode() : 0;
+        return value != null ? valueHashCode(value) : 0;
     }
 
     int valueHashCode(@Nonnull V value) {

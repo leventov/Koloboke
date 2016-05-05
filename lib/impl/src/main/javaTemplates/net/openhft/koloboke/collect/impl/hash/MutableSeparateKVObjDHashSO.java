@@ -58,7 +58,7 @@ public abstract class MutableSeparateKVObjDHashSO<E> extends MutableDHash
     }
 
     boolean nullableKeyEquals(@Nullable E a, @Nullable E b) {
-        return a == b || (a != null && a.equals(b));
+        return a == b || (a != null && keyEquals(a, b));
     }
 
     boolean keyEquals(@Nonnull E a, @Nullable E b) {
@@ -66,7 +66,7 @@ public abstract class MutableSeparateKVObjDHashSO<E> extends MutableDHash
     }
 
     int nullableKeyHashCode(@Nullable E key) {
-        return key != null ? key.hashCode() : 0;
+        return key != null ? keyHashCode(key) : 0;
     }
 
     int keyHashCode(@Nonnull E key) {
