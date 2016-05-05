@@ -8,6 +8,8 @@ configure([generateJavaSpecializations, generateResourceSpecializations]) {
     with 'parallelKV=Enabled'
     with 'project=impl'
     with 'nullKeyAllowed=true'
+    with 'keyType=Generic'
+    with 'valueType=Generic'
     exclude(
             'kv=Parallel,key=byte,value=char|short|int|long|float|double|obj',
             'kv=Parallel,key=char|short,value=byte|int|long|float|double|obj',

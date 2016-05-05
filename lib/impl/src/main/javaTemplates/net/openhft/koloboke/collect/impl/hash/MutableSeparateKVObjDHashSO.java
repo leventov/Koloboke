@@ -34,7 +34,7 @@ public abstract class MutableSeparateKVObjDHashSO<E> extends MutableDHash
         implements SeparateKVObjDHash, DHash {
 
     /* if Separate kv */
-    Object[] set;
+    /* if Generic keyType */Object/* elif Specific keyType //E// endif */[] set;
     /* elif Parallel kv */
     Object[] table;
     /* endif */
@@ -91,7 +91,7 @@ public abstract class MutableSeparateKVObjDHashSO<E> extends MutableDHash
     @Override
     void allocateArrays(int capacity) {
         /* if Separate kv */
-        set = new Object[capacity];
+        set = new /* if Generic keyType */Object/* elif Specific keyType //E// endif */[capacity];
         /* elif Parallel kv */
         table = new Object[capacity * 2];
         /* endif */

@@ -121,7 +121,11 @@ public abstract class MutableDHashSeparateKVByteObjMapSO</* if obj key //K, // e
     void allocateArrays(int capacity) {
         super.allocateArrays(capacity);
         // noinspection unchecked
+        /* if Generic valueType */
         values = (V[]) new Object[capacity];
+        /* elif Specific valueType //
+        values = new V[capacity];
+        // endif */
     }
 
     @Override
