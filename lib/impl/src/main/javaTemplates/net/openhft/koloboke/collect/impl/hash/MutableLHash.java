@@ -28,7 +28,16 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
 
     /* if LHash hash */
     static void verifyConfig(HashConfig config) {
+        /* if impl project */
         assert config.getGrowFactor() == 2.0;
+        /* elif compile project */
+        if (config.getGrowFactor() != 2.0) {
+            throw new IllegalArgumentException(config + " passed to a hashtable implementation " +
+                    "with linear probing must have growFactor == 2.0. If you need an ability to " +
+                    "configure a different grow factor, please annotate this Koloboke collection " +
+                    "with @QuadraticProbing");
+        }
+        /* endif */
     }
     /* endif */
 
