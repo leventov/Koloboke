@@ -853,7 +853,13 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
                 k2 = /* unwrap key */(Byte) e2.getKey()/**/;
                 v2 = /* unwrap value */(Short) e2.getValue()/**/;
                 return /* if !(obj key) */key() == k2
-                        /* elif obj key //nullableKeyEquals(key(), k2)// endif */
+                        /* elif obj key //
+                        // if false nullKeyAllowed //
+                        keyEquals(key(), k2)
+                        // elif true nullKeyAllowed //
+                        nullableKeyEquals(key(), k2)
+                        // endif //
+                        // endif */
                         &&
                         /* if !(obj value) */value() == v2
                         /* elif obj value //nullableValueEquals(value(), v2)// endif */;

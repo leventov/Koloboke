@@ -112,7 +112,8 @@ internal object HashMethodGeneratorCommons {
         if (distinctNullKey && cxt.isNullKey) {
             return "0"
         } else if (cxt.isObjectOrNullKey) {
-            hash = (if (distinctNullKey) "keyHashCode" else "nullableKeyHashCode") + "(" + key + ")"
+            val nullImpossible = distinctNullKey || !cxt.nullKeyAllowed()
+            hash = (if (nullImpossible) "keyHashCode" else "nullableKeyHashCode") + "(" + key + ")"
             mixingClass += "Obj"
         } else {
             hash = key
@@ -149,7 +150,7 @@ internal object HashMethodGeneratorCommons {
 
     fun free(cxt: MethodContext): String {
         if (!cxt.isPrimitiveKey) {
-            return "FREE"
+            return if (cxt.nullKeyAllowed()) "FREE" else "null";
         } else if (cxt.isIntegralKey) {
             return "free"
         } else {

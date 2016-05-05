@@ -189,7 +189,7 @@ public abstract class MutableSeparateKVByteDHashGO/*<>*/
 
     /* if !(obj elem) */
     boolean removeAll(@Nonnull HashByteSet/*<>*/ thisC, @Nonnull ByteCollection c) {
-        /* template RemoveAll with given this*/ throw new NotGenerated(); /* endtemplate */
+        /* template RemoveAll with given this */ throw new NotGenerated(); /* endtemplate */
     }
 
     /* if float|double elem */

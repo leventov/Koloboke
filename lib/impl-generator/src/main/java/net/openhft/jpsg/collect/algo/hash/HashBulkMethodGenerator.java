@@ -262,8 +262,8 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         if (cxt.isFloatingKey())
             return KEY_OBJ_SUB + " < FREE_BITS";
         if (!noRemoved) {
-            return KEY_OBJ_SUB + " != " + INSTANCE.free(cxt) + " && " + KEY_OBJ_SUB + " != " + INSTANCE
-                    .removed(cxt);
+            return KEY_OBJ_SUB + " != " + INSTANCE.free(cxt) + " && " +
+                    KEY_OBJ_SUB + " != " + INSTANCE.removed(cxt);
         } else {
             return KEY_OBJ_SUB + " != " + INSTANCE.free(cxt);
         }

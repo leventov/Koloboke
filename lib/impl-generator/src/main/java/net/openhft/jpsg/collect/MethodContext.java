@@ -28,6 +28,8 @@ public final class MethodContext {
 
     private static final SimpleOption NULL = new SimpleOption("null");
 
+    private static final SimpleOption TRUE = new SimpleOption("true");
+
     private static final SimpleOption KEY_VIEW = new SimpleOption("key");
     private static final SimpleOption VALUE_VIEW = new SimpleOption("value");
     private static final SimpleOption MAP_VIEW = new SimpleOption("map");
@@ -249,6 +251,10 @@ public final class MethodContext {
 
     public boolean internalVersion() {
         return INTERNAL.equals(getOption("version"));
+    }
+
+    public boolean nullKeyAllowed() {
+        return TRUE.equals(getOption("nullKeyAllowed"));
     }
 
     public String unsafeGetKeyBits(String object, String offset) {

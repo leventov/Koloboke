@@ -38,7 +38,9 @@ public abstract class HashCode extends BulkMethod {
         if (cxt.isPrimitiveKey()) {
             keyHash = primitiveHash((PrimitiveType) cxt.keyOption(), key);
         } else {
-            keyHash = "nullableKeyHashCode(" + key + ")";
+            String keyHashCodeMethod = cxt.nullKeyAllowed() ?
+                    "nullableKeyHashCode" : "keyHashCode";
+            keyHash = keyHashCodeMethod + "(" + key + ")";
         }
         String value = gen.unwrappedValue(), valueHash;
         if (cxt.isPrimitiveValue()) {

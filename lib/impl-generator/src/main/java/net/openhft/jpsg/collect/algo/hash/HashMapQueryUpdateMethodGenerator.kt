@@ -568,7 +568,14 @@ class HashMapQueryUpdateMethodGenerator : MapQueryUpdateMethodGenerator() {
 
     private fun inlineBeginning() {
         if (cxt.isObjectKey) {
-            ifBlock("key != null")
+            if (!cxt.nullKeyAllowed()) {
+                lines("if (key == null)")
+                lines("""    throw new java.lang.NullPointerException(
+                        "This hashtable implementation doesn't allow null keys");""")
+
+            } else {
+                ifBlock("key != null")
+            }
             if (method!!.baseOp() == GET) {
                 lines(
                         "// noinspection unchecked",
@@ -619,7 +626,7 @@ class HashMapQueryUpdateMethodGenerator : MapQueryUpdateMethodGenerator() {
                 blockEnd()
             }
         }
-        if (cxt.isObjectKey) {
+        if (cxt.isObjectKey && cxt.nullKeyAllowed()) {
             elseBlock()
             lines("return " + method!!.name() + "NullKey(" + method!!.nullArgs() + ");")
             blockEnd()

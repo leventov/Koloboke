@@ -95,8 +95,12 @@ public abstract class MutableSeparateKVObjDHashSO<E> extends MutableDHash
         /* elif Parallel kv */
         table = new Object[capacity * 2];
         /* endif */
-        fillFree();
+        /* if true nullKeyAllowed */fillFree();/* endif */
     }
+
+    /* define objFree */
+    // if true nullKeyAllowed //FREE// elif false nullKeyAllowed //null// endif //
+    // enddefine */
 
     @Override
     public void clear() {
@@ -106,7 +110,7 @@ public abstract class MutableSeparateKVObjDHashSO<E> extends MutableDHash
         /* elif Parallel kv */
         Object[] tab = table;
         for (int i = 0; i < tab.length; i += 2) {
-            tab[i] = FREE;
+            tab[i] = /* objFree */FREE/**/;
             tab[i + 1] = null;
         }
         /* endif */
@@ -114,11 +118,11 @@ public abstract class MutableSeparateKVObjDHashSO<E> extends MutableDHash
 
     private void fillFree() {
         /* if Separate kv */
-        Arrays.fill(set, FREE);
+        Arrays.fill(set, /* objFree */FREE/**/);
         /* elif Parallel kv */
         Object[] tab = table;
         for (int i = 0; i < tab.length; i += 2) {
-            tab[i] = FREE;
+            tab[i] = /* objFree */FREE/**/;
         }
         /* endif */
     }
