@@ -37,7 +37,7 @@ public class ToString extends BulkMethod {
             gen.lines("sb.append(' ');");
             String key = gen.key();
             if (cxt.isObjectKey()) {
-                key = key + " != this ? " + key + " : " + thisContainer;
+                key = key + " != (Object) this ? " + key + " : " + thisContainer;
             }
             gen.lines("sb.append(" + key + ");");
             gen.lines("sb.append(\'=\');");
@@ -45,14 +45,14 @@ public class ToString extends BulkMethod {
             if (cxt.isObjectValue()) {
                 gen.lines("Object val = " + value + ";");
 
-                value = "val != this ? val : " + thisContainer;
+                value = "val != (Object) this ? val : " + thisContainer;
             }
             gen.lines("sb.append(" + value + ");");
             gen.lines("sb.append(',');");
         } else {
             String value = gen.viewElem();
             if (cxt.isObjectView()) {
-                value = value + " != this ? " + value + " : " + thisContainer;
+                value = value + " != (Object) this ? " + value + " : " + thisContainer;
             }
             gen.lines("sb.append(' ').append(" + value + ").append(',');");
         }

@@ -150,10 +150,66 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         return new NoRemovedMapCursor(/* if !(Immutable mutability) */mc/* endif */);
     }
 
+    /* if compile project */
+    /**
+     * This method is needed because of problems with comparing this with other map, when they
+     * have incompatible types (if map interface/class annotated with @KolobokeMap doesn't extend
+     * java.util.Map). If just if ((Object) this == m), redundant (Object) cast is omitted
+     * by JDT compiler or Spoon(?)
+     */
+    private static boolean identical(Object a, Object b) {
+        return a == b;
+    }
+    /* endif */
 
     @Override
     public boolean containsAllEntries(Map<?, ?> m) {
+        /* if impl project */
         return CommonByteShortMapOps.containsAllEntries(this, m);
+        /* elif compile project */
+        if (identical(this, m))
+            throw new IllegalArgumentException();
+        if (m instanceof ByteShortMap) {
+            ByteShortMap m2 = (ByteShortMap) m;
+            /* if obj key || obj value */
+            if (
+                // if obj key //
+                    m2.keyEquivalence().equals(this.keyEquivalence())
+                            // endif //
+                /* if obj key obj value */ && /* endif */
+                            // if obj value //
+                            m2.valueEquivalence().equals(this.valueEquivalence())
+                // endif //
+                    ) {
+            /* endif */
+                if (this.size() < m2.size())
+                    return false;
+                if (InternalByteShortMapOps.class.isAssignableFrom(getClass()) &&
+                        m2 instanceof InternalByteShortMapOps) {
+                    //noinspection unchecked
+                    return ((InternalByteShortMapOps) m2).allEntriesContainingIn(
+                            (InternalByteShortMapOps/*<?>*/)
+                                    InternalByteShortMapOps.class.cast(this));
+                }
+            /* if obj key || obj value */
+            }
+            // noinspection unchecked
+            /* endif */
+            return m2.forEachWhile(new
+                   /*f*/ByteShortPredicate/**/() {
+                @Override
+                public boolean test(/* raw */byte a, /* raw */short b) {
+                    return containsEntry(a, b);
+                }
+            });
+        }
+        for (Map.Entry<?, ?> e : m.entrySet()) {
+            if (!containsEntry(/* if !(obj key) */(Byte) /* endif */e.getKey(),
+                    /* if !(obj value) */(Short) /* endif */e.getValue()))
+                return false;
+        }
+        return true;
+        /* endif */
     }
 
     @Override
@@ -182,7 +238,23 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
 
     @Override
     public boolean equals(Object o) {
+        /* if impl project */
         return CommonMapOps.equals(this, o);
+        /* elif compile project */
+        if (this == o) { return true; }
+        if (!(o instanceof Map)) {
+            return false;
+        }
+        Map<?, ?> that = (Map<?, ?>) o;
+        if (that.size() != this.size()) { return false; }
+        try {
+            return this.containsAllEntries(that);
+        } catch (ClassCastException e) {
+            return false;
+        } catch (NullPointerException e) {
+            return false;
+        }
+        /* endif */
     }
 
     @Override
@@ -363,7 +435,33 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
 
     @Override
     public void putAll(@Nonnull Map<? extends Byte, ? extends Short> m) {
+        /* if impl project */
         CommonByteShortMapOps.putAll(this, m);
+        /* elif compile project */
+        if (identical(this, m))
+            throw new IllegalArgumentException();
+        long maxPossibleSize = sizeAsLong() + Containers.sizeAsLong(m);
+        ensureCapacity(maxPossibleSize);
+        if (m instanceof ByteShortMap) {
+            if (InternalByteShortMapOps.class.isAssignableFrom(getClass()) &&
+                    m instanceof InternalByteShortMapOps) {
+                ((InternalByteShortMapOps) m).reversePutAllTo(
+                        (InternalByteShortMapOps/*<super>*/)
+                                InternalByteShortMapOps.class.cast(this));
+            } else {
+                ((ByteShortMap) m).forEach(new /*f*/ByteShortConsumer/*<>*/() {
+                    @Override
+                    public void accept(byte key, short value) {
+                        justPut(key, value);
+                    }
+                });
+            }
+        } else {
+            for (Map.Entry<? extends Byte, ? extends Short> e : m.entrySet()) {
+                justPut(e.getKey(), e.getValue());
+            }
+        }
+        /* endif */
     }
 
 

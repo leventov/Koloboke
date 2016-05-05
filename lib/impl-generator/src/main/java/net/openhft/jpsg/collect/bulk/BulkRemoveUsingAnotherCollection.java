@@ -49,7 +49,7 @@ public abstract class BulkRemoveUsingAnotherCollection extends BulkMethod  {
     @Override
     public void beginning() {
         String thisC = givenThis() ? "thisC" : "this";
-        gen.lines("if (" + thisC + " == c)");
+        gen.lines("if (" + thisC + " == (Object) c)");
         gen.lines("    throw new IllegalArgumentException();");
     }
 

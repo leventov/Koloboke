@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 
 public final class MutableDHashByteSet/*<>*/ extends MutableDHashByteSetGO/*<>*/ {
 
-    /* if obj elem */
+    /* if obj elem impl project */
     static final class WithCustomEquivalence<E> extends MutableDHashObjSetGO<E> {
         Equivalence<? super E> equivalence;
 

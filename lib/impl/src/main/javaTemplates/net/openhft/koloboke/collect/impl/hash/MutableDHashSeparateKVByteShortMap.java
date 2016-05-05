@@ -33,6 +33,8 @@ final class MutableDHashSeparateKVByteShortMap/*<>*/
 
     /* define andV *//* if obj value //, V// endif *//* enddefine */
 
+    /* if impl project */
+
     /* if obj key */
     static final class WithCustomKeyEquivalence<K/*andV*/>
             extends MutableDHashSeparateKVObjShortMapGO<K/*andV*/> {
@@ -145,5 +147,7 @@ final class MutableDHashSeparateKVByteShortMap/*<>*/
 
         /* valueMethods */
     }
+    /* endif */
+
     /* endif */
 }

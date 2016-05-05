@@ -6,6 +6,7 @@ configure([generateJavaSpecializations, generateResourceSpecializations]) {
     addProcessor 'net.openhft.jpsg.collect.MethodGeneratingProcessor'
     never 'DHash'
     with 'parallelKV=Enabled'
+    with 'project=impl'
     with 'nullKeyAllowed=true'
     exclude(
             'kv=Parallel,key=byte,value=char|short|int|long|float|double|obj',

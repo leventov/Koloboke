@@ -23,7 +23,11 @@ package net.openhft.koloboke.collect.impl.hash;
 
 import net.openhft.koloboke.collect.*;
 import net.openhft.koloboke.collect.impl.*;
+import net.openhft.koloboke.collect.set.ByteSet;
 import net.openhft.koloboke.collect.set.hash.HashByteSet;
+import net.openhft.koloboke.function./*f*/ByteConsumer/**/;
+import net.openhft.koloboke.function./*f*/BytePredicate/**/;
+
 import javax.annotation.Nonnull;
 
 import java.util.*;
@@ -59,12 +63,80 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
 
     @Override
     public boolean equals(Object obj) {
+        /* if impl project */
         return CommonSetOps.equals(this, obj);
+        /* elif compile project */
+        if (set == obj)
+            return true;
+        if (!(obj instanceof Set))
+            return false;
+        Set<?> another = (Set<?>) obj;
+        if (another.size() != this.size())
+            return false;
+        try {
+            return containsAll(another);
+        } catch (ClassCastException e) {
+            return false;
+        } catch (NullPointerException e) {
+            return false;
+        }
+        /* endif */
     }
+
+    /* if compile project */
+    /**
+     * This method is needed because of problems with comparing this with other collection, when
+     * they have incompatible types (if set interface/class annotated with @KolobokeSet doesn't
+     * extend java.util.Set). If just if ((Object) this == c), redundant (Object) cast is omitted
+     * by JDT compiler or Spoon(?)
+     */
+    private static boolean identical(Object a, Object b) {
+        return a == b;
+    }
+    /* endif */
 
     @Override
     public boolean containsAll(@Nonnull Collection<?> c) {
+        /* if impl project */
         return CommonByteCollectionOps.containsAll(this, c);
+        /* elif compile project */
+        if (identical(this, c))
+            return true;
+        if (c instanceof ByteCollection) {
+            ByteCollection c2 = (ByteCollection) c;
+            /* if obj elem */
+            if (this.equivalence().equals(c2.equivalence())) {
+            /* endif */
+                if (ByteSet.class.isAssignableFrom(getClass()) && c2 instanceof ByteSet &&
+                        this.size() < c.size()) {
+                    return false;
+                }
+                if (ByteCollection.class.isAssignableFrom(getClass()) &&
+                        c2 instanceof InternalByteCollectionOps) {
+                    // noinspection unchecked
+                    return ((InternalByteCollectionOps) c2).allContainingIn(
+                            (ByteCollection/*<?>*/) ByteCollection.class.cast(this));
+                }
+            /* if obj elem */
+            }
+            // noinspection unchecked
+            /* endif */
+            return c2.forEachWhile(new
+                    /*f*/BytePredicate/**/() {
+                @Override
+                public boolean test(/* raw */byte value) {
+                    return contains(value);
+                }
+            });
+        } else {
+            for (Object o : c) {
+                if (!this.contains(/* if !(obj elem) */((Byte) o).byteValue()
+                        /* elif obj elem //o// endif */))
+                    return false;
+            }
+            return true;
+        }
+        /* endif */
     }
 
     @Nonnull
@@ -99,7 +171,38 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
 
     @Override
     public boolean addAll(@Nonnull Collection<? extends Byte> c) {
+        /* if impl project */
         return CommonByteCollectionOps.addAll(this, c);
+        /* elif compile project */
+        if (identical(this, c))
+            throw new IllegalArgumentException();
+        long maxPossibleSize = this.sizeAsLong() + Containers.sizeAsLong(c);
+        this.ensureCapacity(maxPossibleSize);
+        if (c instanceof ByteCollection) {
+            if (ByteCollection.class.isAssignableFrom(getClass()) &&
+                    c instanceof InternalByteCollectionOps) {
+                return ((InternalByteCollectionOps) c).reverseAddAllTo(
+                        (ByteCollection/*<super>*/) ByteCollection.class.cast(this));
+            } else {
+                class AddAll implements /*f*/ByteConsumer/*<>*/ {
+                    boolean collectionChanged = false;
+                    @Override
+                    public void accept(byte value) {
+                        collectionChanged |= add(value);
+                    }
+                }
+                AddAll addAll = new AddAll();
+                ((ByteCollection) c).forEach(addAll);
+                return addAll.collectionChanged;
+            }
+        } else {
+            boolean collectionChanged = false;
+            for (Byte v : c) {
+                collectionChanged |= this.add(v/* if !(obj elem) */.byteValue()/* endif */);
+            }
+            return collectionChanged;
+        }
+        /* endif */
     }
 
     @Override
@@ -143,27 +246,73 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
         /* if !(obj elem) */
         if (c instanceof ByteCollection) {
         /* endif */
-            if (c instanceof InternalByteCollectionOps) {
+            if (/* if compile project */
+                    ByteSet.class.isAssignableFrom(getClass()) &&/* endif */
+                    c instanceof InternalByteCollectionOps) {
                 InternalByteCollectionOps c2 = (InternalByteCollectionOps) c;
                 if (c2.size() < this.size()/* if obj elem //
                             && equivalence().equals(c2.equivalence())
                             // endif */) {
                     /* if obj elem */// noinspection unchecked/* endif */
-                    return c2.reverseRemoveAllFrom(this);
+                    return c2.reverseRemoveAllFrom(
+                            /* if impl project //this
+                            /* elif compile project */(ByteSet/*<?>*/)
+                                    ByteSet.class.cast(this)
+                                    /* endif */);
                 }
             }
         /* if !(obj elem) */
+            /* if impl project */
             return removeAll(this, (ByteCollection) c);
+            /* elif compile project */
+            /* template RemoveAll */ throw new NotGenerated(); /* endtemplate */
+            /* endif */
         }
         /* endif */
+        /* if impl project */
         return removeAll(this, c);
+        /* elif compile project */
+        /* template RemoveAll with generic version */ throw new NotGenerated();
+        /* endtemplate */
+        /* endif */
         /* elif !(Mutable mutability) //
         throw new UnsupportedOperationException();
         // endif */
     }
 
+    /* if float|double elem compile project */
+    boolean removeAll(@Nonnull InternalByteCollectionOps c) {
+        /* template RemoveAll with internal version */ throw new NotGenerated();
+        /* endtemplate */
+    }
+    /* endif */
+
     @Override
     public boolean retainAll(@Nonnull Collection<?> c) {
+        /* if impl project */
         return retainAll(this, c);
+        /* elif compile project */
+        /* if !(obj elem) */
+        if (c instanceof ByteCollection)
+            return retainAll((ByteCollection) c);
+        /* endif */
+        /* template RetainAll with generic version */ throw new NotGenerated();
+        /* endtemplate */
+        /* endif */
     }
+
+    /* if compile project */
+    /* if !(obj elem) */
+    private boolean retainAll(@Nonnull ByteCollection c) {
+        /* template RetainAll */ throw new NotGenerated(); /* endtemplate */
+    }
+
+    /* if float|double elem */
+    private boolean retainAll(@Nonnull InternalByteCollectionOps c) {
+        /* template RetainAll with internal version */ throw new NotGenerated();
+        /* endtemplate */
+    }
+    /* endif */
+    /* endif */
+    /* endif */
 }
