@@ -34,7 +34,7 @@ internal class RealForkJoinTasks : ForkJoinTasks {
 
 private class RealForkJoinTask<T>(val delegate: ForkJoinTask<T>) : ForkJoinTaskShim<T> {
     override fun get() = delegate.get()
-    override fun forkJoin() = pool.submit(delegate).join()
+    override fun forkAndGet() = pool.submit(delegate).get()
 
     companion object {
         val pool: ForkJoinPool = try {

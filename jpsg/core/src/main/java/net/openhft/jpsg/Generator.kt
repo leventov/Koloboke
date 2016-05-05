@@ -40,6 +40,7 @@ import java.util.regex.Pattern
 
 class Generator {
 
+    private var isInit = false
     private var source: File? = null
     internal var target: File? = null
 
@@ -246,14 +247,17 @@ class Generator {
 
                 }
             }
-            ForkJoinTasks.adapt(DirGeneration(source!!)).forkJoin()
+            ForkJoinTasks.adapt(DirGeneration(source!!)).forkAndGet()
         } else {
-            ForkJoinTasks.adapt(Callable<Unit> { doGenerate(source!!, target!!) }).forkJoin()
+            ForkJoinTasks.adapt(Callable<Unit> { doGenerate(source!!, target!!) }).forkAndGet()
         }
     }
 
 
-    fun init() {
+    @Synchronized fun init() {
+        if (isInit)
+            return
+        isInit = true
         for (i in defaultTypes.indices) {
             val defaultType = defaultTypes[i]
             if (defaultType is ObjectType) {
@@ -358,14 +362,14 @@ class Generator {
     }
 
     fun generate(sourceFile: File, rawContent: String): Map<File, String> {
+        init()
         return ForkJoinTasks.adapt(Callable<Map<File, String>> {
             doGenerate(sourceFile, rawContent)
-        }).forkJoin()
+        }).forkAndGet()
     }
 
     private fun doGenerate(sourceFile: File, rawContent: String): Map<File, String> {
         var rawContent = rawContent
-        init()
         setCurrentGenerator(this)
         setCurrentSourceFile(sourceFile)
         log.info("Processing file: {}", sourceFile)

@@ -23,5 +23,5 @@ interface ForkJoinTaskShim<out T> {
      * Real FJT: fork().join()
      * No FJT: just call the task in this thread
      */
-    fun forkJoin(): T
+    fun forkAndGet(): T
 }
