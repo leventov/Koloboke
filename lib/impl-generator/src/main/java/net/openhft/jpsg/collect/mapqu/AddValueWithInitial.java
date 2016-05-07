@@ -16,7 +16,7 @@
 
 package net.openhft.jpsg.collect.mapqu;
 
-public final class AddValueWithDefault extends AddValue {
+public final class AddValueWithInitial extends AddValue {
 
     @Override
     String toAdd() {
@@ -24,12 +24,12 @@ public final class AddValueWithDefault extends AddValue {
     }
 
     @Override
-    String defaultValue() {
-        return "defaultValue";
+    String initialValue() {
+        return "initialValue";
     }
 
     @Override
     public String nullArgs() {
-        return "addition, defaultValue";
+        return "addition, initialValue";
     }
 }

@@ -81,7 +81,7 @@ public final class MethodGeneratingProcessor extends TemplateProcessor {
                     put(PutIfAbsent.class);
                     put(JustPut.class);
                     put(AddValue.class);
-                    put(AddValueWithDefault.class);
+                    put(AddValueWithInitial.class);
                     put(Compute.class);
                     put(ComputeIfAbsent.class);
                     put(ComputeIfPresent.class);

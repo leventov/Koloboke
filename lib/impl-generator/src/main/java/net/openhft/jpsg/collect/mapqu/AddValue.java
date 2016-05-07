@@ -32,7 +32,7 @@ public class AddValue extends MapQueryUpdateMethod {
         return "value";
     }
 
-    String defaultValue() {
+    String initialValue() {
         return gen.defaultValue();
     }
 
@@ -45,7 +45,7 @@ public class AddValue extends MapQueryUpdateMethod {
 
     @Override
     public final void ifAbsent() {
-        declareNewValue(defaultValue());
+        declareNewValue(initialValue());
         gen.insert("newValue");
         gen.ret("newValue");
     }

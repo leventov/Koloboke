@@ -577,12 +577,12 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
     /* if !(obj value) */
     /**
-     * Adds the given {@code addition} value to the value associated with the specified key,
-     * or // nullValue // if this map contains no mapping for the key, and associates the resulting
-     * value with the key.
+     * Adds the given value {@code addition} to the value associated with the specified key,
+     * or to the {@linkplain #defaultValue() default value} if this map contains no mapping for
+     * the key, and associates the resulting value with the key.
      *
      * @param key the key to which value add the given value
-     * @param addition the value to add
+     * @param addition the value addition
      * @return the new value associated with the specified key
      // npeIfKeyNull //
      // computeCCE //
@@ -591,23 +591,24 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     short addValue(char key, short addition);
 
     /**
-     * Adds the given {@code addition} value to the value associated with the specified key,
-     * or {@code defaultValue} if this map contains no mapping for the key, and associates
+     * Adds the given value {@code addition} to the value associated with the specified key,
+     * or the given {@code initialValue} if this map contains no mapping for the key, and associates
      * the resulting value with the key.
      *
-     * <p>This version of {@link #addValue(//raw//char, short)} is useful if you want to count
-     * values from the different initial value, than the {@linkplain #defaultValue() default value}
-     * of this map.
+     * <p>This version of {@link #addValue(//raw//char, short)} method is useful if you want
+     * to accumulate values from the different initial value, than the {@linkplain #defaultValue()
+     * default value} of this map.
      *
      * @param key the key to which value add the given value
-     * @param addition the value to add
-     * @param defaultValue the value to be used if the map contains no mapping for the given key
+     * @param addition the value addition
+     * @param initialValue the value to add the given value {@code addition} to, if the map contains
+     * no mapping for the given key
      * @return the new value associated with the specified key
      // npeIfKeyNull //
      // computeCCE //
      // putNotSupported //
      */
-    short addValue(char key, short addition, short defaultValue);
+    short addValue(char key, short addition, short initialValue);
     /* endif */
 
     /* if !(obj key obj value) */
