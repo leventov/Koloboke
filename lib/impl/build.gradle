@@ -31,3 +31,5 @@ dependencies {
     testCompile project("$parent.path:testing")
     testCompile 'org.apache.mahout:mahout-math:0.9'
 }
+
+compileCompatibility(compileTestJava, 1.8)

@@ -5,3 +5,5 @@ description = 'Implementation Commons (for Implementation Library and Koloboke C
 dependencies {
     compile project("$parent.path:api")
 }
+
+compileCompatibility(compileTestJava, 1.8)
