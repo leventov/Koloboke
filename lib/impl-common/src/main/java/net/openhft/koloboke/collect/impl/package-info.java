@@ -15,8 +15,8 @@
  */
 
 /**
- * This package (and its packages) contain internal implementations. These
- * classes should <em>not</em> be accessed directly (treat them like {@code com.sun} classes.
+ * This package (and its subpackages) contain internal implementations. These
+ * classes should <em>not</em> be accessed directly (treat them like {@code com.sun} classes).
  *
  * <p>Advice: exclude this package and all subpackages from the auto-complete in your favourite IDE:
  * <a href="http://www.jetbrains.com/idea/webhelp/excluding-classes-from-auto-import.html">IDEA</a>,
