@@ -39,7 +39,7 @@ def configurePublishing(project, generateJavadoc = true) { configure(project) {
     apply plugin: 'signing'
     apply plugin: 'maven'
 
-    group = 'net.openhft'
+    group = 'com.koloboke'
 
     task sourcesJar(type: Jar, dependsOn: classes) {
         classifier 'sources'

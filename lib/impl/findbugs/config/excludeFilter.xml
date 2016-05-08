@@ -1,11 +1,11 @@
 <FindBugsFilter>
     <Match>
-        <Class name="net.openhft.koloboke.collect.impl.*" />
+        <Class name="com.koloboke.collect.impl.*" />
         <Bug pattern="EI_EXPOSE_REP" />
         <Priority value="2" />
     </Match>
     <Match>
-        <Class name="~net.openhft.koloboke.collect.impl.hash.Mutable.*HashSO" />
+        <Class name="~com.koloboke.collect.impl.hash.Mutable.*HashSO" />
         <Method name="~copy|move" />
         <Field name="removedValue" />
         <Bug pattern="SA_FIELD_DOUBLE_ASSIGNMENT" />

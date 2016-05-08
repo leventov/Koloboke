@@ -109,7 +109,8 @@ I would like to accept feedback from you.
  - Performance experience
  - Bugs or problems
 
-Use [issues](https://github.com/leventov/Koloboke/issues) or ask a question in [OpenHFT Google group](https://groups.google.com/forum/#!forum/open-hft).
+Use [issues](https://github.com/leventov/Koloboke/issues) or ask a question on
+[StackOverflow](stackoverflow.com/questions/tagged/koloboke).
 
 ### How to build and develop
 Gradle build requires Java 8 compiler, set `JAVA_HOME` environment variable to the JDK8 location,

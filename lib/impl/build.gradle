@@ -3,7 +3,7 @@ evaluationDependsOn("$parent.path")
 description = 'Implementation'
 
 configure([generateJavaSpecializations, generateResourceSpecializations]) {
-    addProcessor 'net.openhft.jpsg.collect.MethodGeneratingProcessor'
+    addProcessor 'com.koloboke.jpsg.collect.MethodGeneratingProcessor'
     never 'DHash'
     with 'parallelKV=Enabled'
     with 'project=impl'

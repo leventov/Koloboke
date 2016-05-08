@@ -16,10 +16,10 @@
 
 package net.openhft.collections.research;
 
-import net.openhft.bench.DimensionedJmh;
-import net.openhft.koloboke.collect.set.CharSet;
-import net.openhft.koloboke.collect.set.hash.HashCharSets;
-import net.openhft.koloboke.function.IntConsumer;
+import com.koloboke.bench.DimensionedJmh;
+import com.koloboke.collect.set.CharSet;
+import com.koloboke.collect.set.hash.HashCharSets;
+import com.koloboke.function.IntConsumer;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.*;
 import org.openjdk.jmh.runner.options.*;

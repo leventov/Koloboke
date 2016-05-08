@@ -26,16 +26,16 @@ configure([apiProject, implCommonProject, implProject, project('testing')]) {
     if (generateTestSpecializations != null)
         jpsgTasks << generateTestSpecializations
     configure(jpsgTasks) {
-        addProcessor 'net.openhft.jpsg.FunctionProcessor'
-        addProcessor 'net.openhft.jpsg.Jdk8FunctionReplacer'
+        addProcessor 'com.koloboke.jpsg.FunctionProcessor'
+        addProcessor 'com.koloboke.jpsg.Jdk8FunctionReplacer'
         with "jdk=JDK$libTargetJava"
     }
 }
 
 configure([implCommonProject, implProject]) {
     configure(generateJavaSpecializations) {
-        addProcessor 'net.openhft.jpsg.collect.algo.hash.TableTypePreProcessor'
-        addProcessor 'net.openhft.jpsg.collect.algo.hash.TableTypePostProcessor'
+        addProcessor 'com.koloboke.jpsg.collect.algo.hash.TableTypePreProcessor'
+        addProcessor 'com.koloboke.jpsg.collect.algo.hash.TableTypePostProcessor'
     }
 }
 
