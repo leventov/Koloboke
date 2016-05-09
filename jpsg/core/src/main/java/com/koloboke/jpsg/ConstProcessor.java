@@ -16,8 +16,6 @@
 
 package com.koloboke.jpsg;
 
-import java.util.Map;
-
 import static com.koloboke.jpsg.RegexpUtils.JAVA_ID_OR_CONST;
 
 
@@ -25,13 +23,11 @@ public final class ConstProcessor extends TemplateProcessor {
     // after option processor because constant "(char) 0" is generated
     public static final int PRIORITY = OptionProcessor.PRIORITY - 10;
 
-    private static CheckingPattern valuePattern(String dim) {
-        String prefix = "/[\\*/]\\s*const\\s+" + dim;
-        String pattern = prefix + "\\s+(?<value>-?\\d+|min|max)\\s*[\\*/]/" +
-                "([^/]*?/[\\*/] endconst [\\*/]/|" +
-                "\\s*+" + JAVA_ID_OR_CONST + ")";
-        return CheckingPattern.compile(prefix, pattern);
-    }
+    private static String PREFIX = "/[\\*/]\\s*const\\s+(?<dim>[a-zA-Z]+)";
+    private static CheckingPattern CONST_PATTERN = CheckingPattern.compile(PREFIX,
+            PREFIX + "\\s+(?<value>-?\\d+|min|max)\\s*[\\*/]/" +
+            "([^/]*?/[\\*/]\\s*endconst\\s*[\\*/]/|" +
+            "\\s*+" + JAVA_ID_OR_CONST + ")");
 
     private static String replaceValue(String value, Option option) {
         PrimitiveType type = ( PrimitiveType ) option;
@@ -42,18 +38,20 @@ public final class ConstProcessor extends TemplateProcessor {
 
     @Override
     protected void process(StringBuilder builder, Context source, Context target, String template) {
-        for (Map.Entry<String, Option> e : target) {
-            String dim = e.getKey();
-            Option option = e.getValue();
-
-            CheckingMatcher valueM = valuePattern(dim).matcher(template);
-            StringBuilder sb = new StringBuilder();
-            while (valueM.find()) {
+        CheckingMatcher valueM = CONST_PATTERN.matcher(template);
+        StringBuilder sb = new StringBuilder();
+        while (valueM.find()) {
+            String dim = valueM.group("dim");
+            Option option = target.getOption(dim);
+            if (option != null) {
                 valueM.appendSimpleReplacement(sb, replaceValue(valueM.group("value"), option));
+            } else {
+                throw MalformedTemplateException.near(template, valueM.start(),
+                        "Nonexistent dimension: " + dim + ", available dims: " + target);
             }
-            valueM.appendTail(sb);
-            template = sb.toString();
         }
+        valueM.appendTail(sb);
+        template = sb.toString();
         postProcess(builder, source, target, template);
     }
 
