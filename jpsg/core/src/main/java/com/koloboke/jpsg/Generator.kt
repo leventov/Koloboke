@@ -60,7 +60,8 @@ class Generator {
             BitsModifierPreProcessor(),
             BitsModifierPostProcessor(),
             ArticleProcessor(),
-            OverviewProcessor()
+            OverviewProcessor(),
+            PrintProcessor()
     )
 
     private val with = ArrayList<String>()
