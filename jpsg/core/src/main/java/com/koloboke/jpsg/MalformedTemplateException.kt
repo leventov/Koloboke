@@ -18,14 +18,15 @@ package com.koloboke.jpsg
 
 import java.lang.Math.max
 import java.lang.Math.min
-import java.util.*
 
 
 class MalformedTemplateException private constructor(message: String) : RuntimeException(message) {
     companion object {
 
         @JvmStatic
-        @JvmOverloads fun near(input: CharSequence, pos: Int, message: String = "Malformed template near"): MalformedTemplateException {
+        @JvmOverloads fun near(input: CharSequence, pos: Int,
+                               message: String = "Malformed template near")
+                : MalformedTemplateException {
             return MalformedTemplateException(makeMessageNear(input, pos, message))
         }
 
@@ -35,9 +36,10 @@ class MalformedTemplateException private constructor(message: String) : RuntimeE
         }
 
         private fun makeMessageNear(input: CharSequence, pos: Int, message: String): String {
-            val joiner = StringJoiner("")
-            joiner.add("Source file: " + Generator.currentSourceFile() + "\n")
-            joiner.add(message + ":\n")
+            val messageNear = StringBuilder()
+
+            messageNear.append("Source file: " + Generator.currentSourceFile() + "\n")
+            messageNear.append(message + ":\n")
 
             val s = input.toString()
             val lines = lines(s)
@@ -52,12 +54,12 @@ class MalformedTemplateException private constructor(message: String) : RuntimeE
                 charCount += line.length
             }
             val firstLine = max(targetLine - 2, 0)
-            lines.subList(firstLine, targetLine + 1).forEach({ joiner.add(it) })
+            lines.subList(firstLine, targetLine + 1).forEach({ messageNear.append(it) })
             val pointer = String(CharArray(pos - charCount)).replace('\u0000', ' ') + "^\n"
-            joiner.add(pointer)
+            messageNear.append(pointer)
             val lastLine = min(targetLine + 3, lines.size)
-            lines.subList(targetLine + 1, lastLine).forEach({ joiner.add(it) })
-            return joiner.toString()
+            lines.subList(targetLine + 1, lastLine).forEach({ messageNear.append(it) })
+            return messageNear.toString()
         }
     }
 }
