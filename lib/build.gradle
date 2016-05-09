@@ -61,8 +61,7 @@ configure([apiProject, implCommonProject, implProject]) {
         options.compilerArgs << '-XDignore.symbol.file'
         options.compilerArgs << '-Xlint:-deprecation' << '-Xlint:-overloads'
         options.fork = true
-        def javac = System.env['JAVA_HOME'] ? System.env['JAVA_HOME'] + '/bin/javac' : 'javac'
-        options.forkOptions.executable = javac
+        options.forkOptions.executable = "${System.properties['java.home']}/../../jdk-9/bin/javac"
     }
 
     test.testLogging.exceptionFormat = 'full'

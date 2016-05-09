@@ -207,7 +207,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     @Override
     @Nonnull
     public /*p1*/ UpdatableDHashSeparateKVByteShortMapGO/*p2*/ newUpdatableMap() {
-        return newUpdatableMap(getDefaultExpectedSize());
+        return this./*p2*/newUpdatableMap(getDefaultExpectedSize());
     }
     /* endwith */
 
@@ -216,9 +216,9 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     public /*p1*/ UpdatableDHashSeparateKVByteShortMapGO/*p2*/ newUpdatableMap(
             Map/*ep*/<Byte, Short>/**/ map) {
         /* if !(obj key) */
-        return shrunk(super.newUpdatableMap(map));
+        return shrunk(super./*p2*/newUpdatableMap(map));
         /* elif obj key //
-        return newUpdatableMap(map, map.size());
+        return this.//p2//newUpdatableMap(map, map.size());
         // endif */
     }
 
@@ -228,7 +228,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
             Map/*ep*/<Byte, Short>/**/ map1, Map/*ep*/<Byte, Short>/**/ map2) {
         long expectedSize = (long) map1.size();
         expectedSize += (long) map2.size();
-        return newUpdatableMap(map1, map2, sizeAsInt(expectedSize));
+        return this./*p2*/newUpdatableMap(map1, map2, sizeAsInt(expectedSize));
     }
 
     @Override
@@ -239,7 +239,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
         long expectedSize = (long) map1.size();
         expectedSize += (long) map2.size();
         expectedSize += (long) map3.size();
-        return newUpdatableMap(map1, map2, map3, sizeAsInt(expectedSize));
+        return this./*p2*/newUpdatableMap(map1, map2, map3, sizeAsInt(expectedSize));
     }
 
     @Override
@@ -251,7 +251,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
         expectedSize += (long) map2.size();
         expectedSize += (long) map3.size();
         expectedSize += (long) map4.size();
-        return newUpdatableMap(map1, map2, map3, map4, sizeAsInt(expectedSize));
+        return this./*p2*/newUpdatableMap(map1, map2, map3, map4, sizeAsInt(expectedSize));
     }
 
     @Override
@@ -265,7 +265,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
         expectedSize += (long) map3.size();
         expectedSize += (long) map4.size();
         expectedSize += (long) map5.size();
-        return newUpdatableMap(map1, map2, map3, map4, map5, sizeAsInt(expectedSize));
+        return this./*p2*/newUpdatableMap(map1, map2, map3, map4, map5, sizeAsInt(expectedSize));
     }
 
     /* if obj key */
@@ -273,7 +273,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     @Nonnull
     public /*p1*/ UpdatableDHashSeparateKVByteShortMapGO/*p2*/ newUpdatableMap(
             Map/*ep*/<Byte, Short>/**/ map, int expectedSize) {
-        return shrunk(super.newUpdatableMap(map, expectedSize));
+        return shrunk(super./*p2*/newUpdatableMap(map, expectedSize));
     }
     /* endif */
 
@@ -334,7 +334,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     @Nonnull
     public /*p1*/ UpdatableDHashSeparateKVByteShortMapGO/*p2*/ newUpdatableMap(
             Consumer<com.koloboke.function./*f*/ByteShortConsumer/*p2*/> entriesSupplier) {
-        return newUpdatableMap(entriesSupplier, getDefaultExpectedSize());
+        return this./*p2*/newUpdatableMap(entriesSupplier, getDefaultExpectedSize());
     }
 
     @Override
@@ -356,7 +356,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     @Nonnull
     public /*p1*/ UpdatableDHashSeparateKVByteShortMapGO/*p2*/ newUpdatableMap(
             /*pk*/byte/**/[] keys, /*pv*/short/**/[] values) {
-        return newUpdatableMap(keys, values, keys.length);
+        return this./*p2*/newUpdatableMap(keys, values, keys.length);
     }
 
     @Override
@@ -378,7 +378,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     @Nonnull
     public /*p1*/ UpdatableDHashSeparateKVByteShortMapGO/*p2*/ newUpdatableMap(
             /*gk*/Byte/**/[] keys, /*gv*/Short/**/[] values) {
-        return newUpdatableMap(keys, values, keys.length);
+        return this./*p2*/newUpdatableMap(keys, values, keys.length);
     }
 
     @Override
@@ -402,7 +402,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
             Iterable</*ek*/Byte/**/> keys, Iterable</*ev*/Short/**/> values) {
         int expectedSize = keys instanceof Collection ? ((Collection) keys).size() :
                 getDefaultExpectedSize();
-        return newUpdatableMap(keys, values, expectedSize);
+        return this./*p2*/newUpdatableMap(keys, values, expectedSize);
     }
 
     @Override
@@ -492,7 +492,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     public /*p1*/ HashByteShortMap/*p2*/ newMutableMap(
             Map/*ep*/<Byte, Short>/**/ map/*arg*/) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ res = uninitializedMutableMap();
-        res.move(newUpdatableMap(map/*apply*/));
+        res.move(this./*p2*/newUpdatableMap(map/*apply*/));
         return res;
     }
     /* endif */
@@ -502,7 +502,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     public /*p1*/ HashByteShortMap/*p2*/ newMutableMap(Map/*ep*/<Byte, Short>/**/ map1,
             Map/*ep*/<Byte, Short>/**/ map2/*arg*/) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ res = uninitializedMutableMap();
-        res.move(newUpdatableMap(map1, map2/*apply*/));
+        res.move(this./*p2*/newUpdatableMap(map1, map2/*apply*/));
         return res;
     }
 
@@ -511,7 +511,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     public /*p1*/ HashByteShortMap/*p2*/ newMutableMap(Map/*ep*/<Byte, Short>/**/ map1,
             Map/*ep*/<Byte, Short>/**/ map2, Map/*ep*/<Byte, Short>/**/ map3/*arg*/) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ res = uninitializedMutableMap();
-        res.move(newUpdatableMap(map1, map2, map3/*apply*/));
+        res.move(this./*p2*/newUpdatableMap(map1, map2, map3/*apply*/));
         return res;
     }
 
@@ -521,7 +521,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
             Map/*ep*/<Byte, Short>/**/ map2, Map/*ep*/<Byte, Short>/**/ map3,
             Map/*ep*/<Byte, Short>/**/ map4/*arg*/) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ res = uninitializedMutableMap();
-        res.move(newUpdatableMap(map1, map2, map3, map4/*apply*/));
+        res.move(this./*p2*/newUpdatableMap(map1, map2, map3, map4/*apply*/));
         return res;
     }
 
@@ -531,7 +531,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
             Map/*ep*/<Byte, Short>/**/ map2, Map/*ep*/<Byte, Short>/**/ map3,
             Map/*ep*/<Byte, Short>/**/ map4, Map/*ep*/<Byte, Short>/**/ map5/*arg*/) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ res = uninitializedMutableMap();
-        res.move(newUpdatableMap(map1, map2, map3, map4, map5/*apply*/));
+        res.move(this./*p2*/newUpdatableMap(map1, map2, map3, map4, map5/*apply*/));
         return res;
     }
 
@@ -543,7 +543,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
             Consumer<com.koloboke.function./*f*/ByteShortConsumer/*p2*/> entriesSupplier
             /*arg*/) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
-        map.move(newUpdatableMap(entriesSupplier/*apply*/));
+        map.move(this./*p2*/newUpdatableMap(entriesSupplier/*apply*/));
         return map;
     }
 
@@ -552,7 +552,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     public /*p1*/ HashByteShortMap/*p2*/ newMutableMap(/*pk*/byte/**/[] keys,
             /*pv*/short/**/[] values/*arg*/) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
-        map.move(newUpdatableMap(keys, values/*apply*/));
+        map.move(this./*p2*/newUpdatableMap(keys, values/*apply*/));
         return map;
     }
 
@@ -562,7 +562,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     public /*p1*/ HashByteShortMap/*p2*/ newMutableMap(
             /*gk*/Byte/**/[] keys, /*gv*/Short/**/[] values/*arg*/) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
-        map.move(newUpdatableMap(keys, values/*apply*/));
+        map.move(this./*p2*/newUpdatableMap(keys, values/*apply*/));
         return map;
     }
     /* endif */
@@ -572,7 +572,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     public /*p1*/ HashByteShortMap/*p2*/ newMutableMap(Iterable</*ek*/Byte/**/> keys,
             Iterable</*ev*/Short/**/> values/*arg*/) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
-        map.move(newUpdatableMap(keys, values/*apply*/));
+        map.move(this./*p2*/newUpdatableMap(keys, values/*apply*/));
         return map;
     }
 
@@ -582,7 +582,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     @Nonnull
     public /*p1*/ HashByteShortMap/*p2*/ newMutableMapOf(/*pk*/byte/**/ k1, /*pv*/short/**/ v1) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
-        map.move(newUpdatableMapOf(k1, v1));
+        map.move(this./*p2*/newUpdatableMapOf(k1, v1));
         return map;
     }
 
@@ -591,7 +591,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     public /*p1*/ HashByteShortMap/*p2*/ newMutableMapOf(/*pk*/byte/**/ k1, /*pv*/short/**/ v1,
              /*pk*/byte/**/ k2, /*pv*/short/**/ v2) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
-        map.move(newUpdatableMapOf(k1, v1, k2, v2));
+        map.move(this./*p2*/newUpdatableMapOf(k1, v1, k2, v2));
         return map;
     }
 
@@ -600,7 +600,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
     public /*p1*/ HashByteShortMap/*p2*/ newMutableMapOf(/*pk*/byte/**/ k1, /*pv*/short/**/ v1,
              /*pk*/byte/**/ k2, /*pv*/short/**/ v2, /*pk*/byte/**/ k3, /*pv*/short/**/ v3) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
-        map.move(newUpdatableMapOf(k1, v1, k2, v2, k3, v3));
+        map.move(this./*p2*/newUpdatableMapOf(k1, v1, k2, v2, k3, v3));
         return map;
     }
 
@@ -610,7 +610,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
              /*pk*/byte/**/ k2, /*pv*/short/**/ v2, /*pk*/byte/**/ k3, /*pv*/short/**/ v3,
              /*pk*/byte/**/ k4, /*pv*/short/**/ v4) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
-        map.move(newUpdatableMapOf(k1, v1, k2, v2, k3, v3, k4, v4));
+        map.move(this./*p2*/newUpdatableMapOf(k1, v1, k2, v2, k3, v3, k4, v4));
         return map;
     }
 
@@ -620,7 +620,7 @@ public abstract class DHashSeparateKVByteShortMapFactoryGO/*<>*/
              /*pk*/byte/**/ k2, /*pv*/short/**/ v2, /*pk*/byte/**/ k3, /*pv*/short/**/ v3,
              /*pk*/byte/**/ k4, /*pv*/short/**/ v4, /*pk*/byte/**/ k5, /*pv*/short/**/ v5) {
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
-        map.move(newUpdatableMapOf(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5));
+        map.move(this./*p2*/newUpdatableMapOf(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5));
         return map;
     }
     /* endwith */

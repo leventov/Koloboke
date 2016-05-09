@@ -87,7 +87,7 @@ public final class HashCharShortMaps {
      */
     @Nonnull
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap() {
-        return getDefaultFactory().newMutableMap();
+        return getDefaultFactory()./*<>*/newMutableMap();
     }
 
     /**
@@ -102,7 +102,7 @@ public final class HashCharShortMaps {
      */
     @Nonnull
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(int expectedSize) {
-        return getDefaultFactory().newMutableMap(expectedSize);
+        return getDefaultFactory()./*<>*/newMutableMap(expectedSize);
     }
     /* endif */
 
@@ -136,7 +136,7 @@ public final class HashCharShortMaps {
     @Nonnull
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(
             @Nonnull Map/*ep*/<Character, Short>/**/ map/*arg*/) {
-        return getDefaultFactory().newMutableMap(map/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableMap(map/*apply*/);
     }
     /* endif */
 
@@ -159,7 +159,7 @@ public final class HashCharShortMaps {
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(
             @Nonnull Map/*ep*/<Character, Short>/**/ map1,
             @Nonnull Map/*ep*/<Character, Short>/**/ map2/*arg*/) {
-        return getDefaultFactory().newMutableMap(map1, map2/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableMap(map1, map2/*apply*/);
     }
 
     /**
@@ -183,7 +183,7 @@ public final class HashCharShortMaps {
             @Nonnull Map/*ep*/<Character, Short>/**/ map1,
             @Nonnull Map/*ep*/<Character, Short>/**/ map2,
             @Nonnull Map/*ep*/<Character, Short>/**/ map3/*arg*/) {
-        return getDefaultFactory().newMutableMap(map1, map2, map3/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableMap(map1, map2, map3/*apply*/);
     }
 
     /**
@@ -209,7 +209,7 @@ public final class HashCharShortMaps {
             @Nonnull Map/*ep*/<Character, Short>/**/ map2,
             @Nonnull Map/*ep*/<Character, Short>/**/ map3,
             @Nonnull Map/*ep*/<Character, Short>/**/ map4/*arg*/) {
-        return getDefaultFactory().newMutableMap(map1, map2, map3, map4/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableMap(map1, map2, map3, map4/*apply*/);
     }
 
     /**
@@ -237,7 +237,7 @@ public final class HashCharShortMaps {
             @Nonnull Map/*ep*/<Character, Short>/**/ map3,
             @Nonnull Map/*ep*/<Character, Short>/**/ map4,
             @Nonnull Map/*ep*/<Character, Short>/**/ map5/*arg*/) {
-        return getDefaultFactory().newMutableMap(map1, map2, map3, map4, map5/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableMap(map1, map2, map3, map4, map5/*apply*/);
     }
 
     /**
@@ -261,7 +261,7 @@ public final class HashCharShortMaps {
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(@Nonnull
             Consumer<com.koloboke.function./*f*/CharShortConsumer/*<>*/> entriesSupplier
             /*arg*/) {
-        return getDefaultFactory().newMutableMap(entriesSupplier/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableMap(entriesSupplier/*apply*/);
     }
 
     /**
@@ -286,7 +286,7 @@ public final class HashCharShortMaps {
     @Nonnull
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(
             @Nonnull char[] keys, @Nonnull short[] values/*arg*/) {
-        return getDefaultFactory().newMutableMap(keys, values/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableMap(keys, values/*apply*/);
     }
 
     /* if !(obj key obj value) */
@@ -312,7 +312,7 @@ public final class HashCharShortMaps {
     @Nonnull
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(
             @Nonnull Character[] keys, @Nonnull Short[] values/*arg*/) {
-        return getDefaultFactory().newMutableMap(keys, values/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableMap(keys, values/*apply*/);
     }
     /* endif */
 
@@ -338,7 +338,7 @@ public final class HashCharShortMaps {
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMap(
             @Nonnull Iterable</*ek*/Character/**/> keys, @Nonnull Iterable</*ev*/Short/**/> values
             /*arg*/) {
-        return getDefaultFactory().newMutableMap(keys, values/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableMap(keys, values/*apply*/);
     }
     /* endwith */
 
@@ -357,7 +357,7 @@ public final class HashCharShortMaps {
     @Nonnull
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMapOf(
             char k1, short v1) {
-        return getDefaultFactory().newMutableMapOf(k1, v1);
+        return getDefaultFactory()./*<>*/newMutableMapOf(k1, v1);
     }
 
     /**
@@ -377,7 +377,7 @@ public final class HashCharShortMaps {
     @Nonnull
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMapOf(
             char k1, short v1, char k2, short v2) {
-        return getDefaultFactory().newMutableMapOf(k1, v1, k2, v2);
+        return getDefaultFactory()./*<>*/newMutableMapOf(k1, v1, k2, v2);
     }
 
     /**
@@ -401,7 +401,7 @@ public final class HashCharShortMaps {
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMapOf(
             char k1, short v1, char k2, short v2,
             char k3, short v3) {
-        return getDefaultFactory().newMutableMapOf(k1, v1, k2, v2, k3, v3);
+        return getDefaultFactory()./*<>*/newMutableMapOf(k1, v1, k2, v2, k3, v3);
     }
 
     /**
@@ -427,7 +427,7 @@ public final class HashCharShortMaps {
     public static /*<>*/ HashCharShortMap/*<>*/ newMutableMapOf(
             char k1, short v1, char k2, short v2,
             char k3, short v3, char k4, short v4) {
-        return getDefaultFactory().newMutableMapOf(k1, v1, k2, v2, k3, v3, k4, v4);
+        return getDefaultFactory()./*<>*/newMutableMapOf(k1, v1, k2, v2, k3, v3, k4, v4);
     }
 
     /**
@@ -456,7 +456,7 @@ public final class HashCharShortMaps {
             char k1, short v1, char k2, short v2,
             char k3, short v3, char k4, short v4,
             char k5, short v5) {
-        return getDefaultFactory().newMutableMapOf(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
+        return getDefaultFactory()./*<>*/newMutableMapOf(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
     }
     /* endwith */
 

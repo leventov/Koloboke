@@ -73,7 +73,7 @@ public final class HashCharSets {
      */
     @Nonnull
     public static /*<>*/ HashCharSet/*<>*/ newMutableSet() {
-        return getDefaultFactory().newMutableSet();
+        return getDefaultFactory()./*<>*/newMutableSet();
     }
 
     /**
@@ -88,7 +88,7 @@ public final class HashCharSets {
      */
     @Nonnull
     public static /*<>*/ HashCharSet/*<>*/ newMutableSet(int expectedSize) {
-        return getDefaultFactory().newMutableSet(expectedSize);
+        return getDefaultFactory()./*<>*/newMutableSet(expectedSize);
     }
     /* endif*/
 
@@ -123,7 +123,7 @@ public final class HashCharSets {
     @Nonnull
     public static /*<>*/ HashCharSet/*<>*/ newMutableSet(
             @Nonnull Iterable/*ep*/<Character>/**/ elements/*arg*/) {
-        return getDefaultFactory().newMutableSet(elements/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableSet(elements/*apply*/);
     }
 
     /**
@@ -143,7 +143,7 @@ public final class HashCharSets {
     public static /*<>*/ HashCharSet/*<>*/ newMutableSet(
             @Nonnull Iterable/*ep*/<Character>/**/ elems1,
             @Nonnull Iterable/*ep*/<Character>/**/ elems2/*arg*/) {
-        return getDefaultFactory().newMutableSet(elems1, elems2/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableSet(elems1, elems2/*apply*/);
     }
 
     /**
@@ -165,7 +165,7 @@ public final class HashCharSets {
             @Nonnull Iterable/*ep*/<Character>/**/ elems1,
             @Nonnull Iterable/*ep*/<Character>/**/ elems2,
             @Nonnull Iterable/*ep*/<Character>/**/ elems3/*arg*/) {
-        return getDefaultFactory().newMutableSet(elems1, elems2, elems3/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableSet(elems1, elems2, elems3/*apply*/);
     }
 
     /**
@@ -189,7 +189,7 @@ public final class HashCharSets {
             @Nonnull Iterable/*ep*/<Character>/**/ elems2,
             @Nonnull Iterable/*ep*/<Character>/**/ elems3,
             @Nonnull Iterable/*ep*/<Character>/**/ elems4/*arg*/) {
-        return getDefaultFactory().newMutableSet(elems1, elems2, elems3, elems4/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableSet(elems1, elems2, elems3, elems4/*apply*/);
     }
 
     /**
@@ -215,7 +215,7 @@ public final class HashCharSets {
             @Nonnull Iterable/*ep*/<Character>/**/ elems3,
             @Nonnull Iterable/*ep*/<Character>/**/ elems4,
             @Nonnull Iterable/*ep*/<Character>/**/ elems5/*arg*/) {
-        return getDefaultFactory().newMutableSet(elems1, elems2, elems3, elems4, elems5/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableSet(elems1, elems2, elems3, elems4, elems5/*apply*/);
     }
 
     /**
@@ -233,7 +233,7 @@ public final class HashCharSets {
     @Nonnull
     public static /*<>*/ HashCharSet/*<>*/ newMutableSet(
             @Nonnull Iterator/*ep*/<Character>/**/ elements/*arg*/) {
-        return getDefaultFactory().newMutableSet(elements/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableSet(elements/*apply*/);
     }
 
     /**
@@ -255,7 +255,7 @@ public final class HashCharSets {
     public static /*<>*/ HashCharSet/*<>*/ newMutableSet(@Nonnull
             Consumer<com.koloboke.function./*f*/CharConsumer/*<>*/> elementsSupplier
             /*arg*/) {
-        return getDefaultFactory().newMutableSet(elementsSupplier/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableSet(elementsSupplier/*apply*/);
     }
 
     /**
@@ -272,7 +272,7 @@ public final class HashCharSets {
      */
     @Nonnull
     public static /*<>*/ HashCharSet/*<>*/ newMutableSet(@Nonnull char[] elements/*arg*/) {
-        return getDefaultFactory().newMutableSet(elements/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableSet(elements/*apply*/);
     }
     
     /* if !(obj elem) */
@@ -291,7 +291,7 @@ public final class HashCharSets {
      */
     @Nonnull
     public static HashCharSet newMutableSet(@Nonnull Character[] elements/*arg*/) {
-        return getDefaultFactory().newMutableSet(elements/*apply*/);
+        return getDefaultFactory()./*<>*/newMutableSet(elements/*apply*/);
     }
     /* endif */
 
@@ -310,7 +310,7 @@ public final class HashCharSets {
      */
     @Nonnull
     public static /*<>*/ HashCharSet/*<>*/ newMutableSetOf(char e1) {
-        return getDefaultFactory().newMutableSetOf(e1);
+        return getDefaultFactory()./*<>*/newMutableSetOf(e1);
     }
 
     /**
@@ -327,7 +327,7 @@ public final class HashCharSets {
      */
     @Nonnull
     public static /*<>*/ HashCharSet/*<>*/ newMutableSetOf(char e1, char e2) {
-        return getDefaultFactory().newMutableSetOf(e1, e2);
+        return getDefaultFactory()./*<>*/newMutableSetOf(e1, e2);
     }
 
     /**
@@ -345,7 +345,7 @@ public final class HashCharSets {
      */
     @Nonnull
     public static /*<>*/ HashCharSet/*<>*/ newMutableSetOf(char e1, char e2, char e3) {
-        return getDefaultFactory().newMutableSetOf(e1, e2, e3);
+        return getDefaultFactory()./*<>*/newMutableSetOf(e1, e2, e3);
     }
 
     /**
@@ -364,7 +364,7 @@ public final class HashCharSets {
      */
     @Nonnull
     public static /*<>*/ HashCharSet/*<>*/ newMutableSetOf(char e1, char e2, char e3, char e4) {
-        return getDefaultFactory().newMutableSetOf(e1, e2, e3, e4);
+        return getDefaultFactory()./*<>*/newMutableSetOf(e1, e2, e3, e4);
     }
 
     /**
@@ -386,7 +386,7 @@ public final class HashCharSets {
     @Nonnull
     public static /*<>*/ HashCharSet/*<>*/ newMutableSetOf(char e1, char e2, char e3, char e4,
             char e5, char... restElements) {
-        return getDefaultFactory().newMutableSetOf(e1, e2, e3, e4, e5, restElements);
+        return getDefaultFactory()./*<>*/newMutableSetOf(e1, e2, e3, e4, e5, restElements);
     }
     /* endwith */
 

@@ -113,15 +113,17 @@ Use [issues](https://github.com/leventov/Koloboke/issues) or ask a question on
 [StackOverflow](stackoverflow.com/questions/tagged/koloboke).
 
 ### How to build and develop
-Gradle build requires Java 8 compiler, set `JAVA_HOME` environment variable to the JDK8 location,
-if your default `java` is still Java 7.
+Gradle build requires Java 8 compiler, set `JAVA_HOME` environment variable to the JDK 8 location.
+Next to your JDK 8 location (i. e. a `jdk1.8` directory), *JDK 9 installation has to be present in
+a `jdk-9` directory*. For meta projects development, JDK 6 and JDK 7 also have to be present in
+`jdk1.6` and `jdk1.7` directories sibling to the `jdk1.8` directory.
 
 Then
 
     $ git clone git@github.com:leventov/Koloboke.git
     $ cd Koloboke
     $ ./gradlew :buildMeta
-    $ ./gradlew buildMain -x test -x findbugsMain
+    $ ./gradlew buildMain -x test -x findbugsMain -x findbugsTest
     $ ./gradlew idea
 
 Then you can open the project in IntelliJ IDEA.
