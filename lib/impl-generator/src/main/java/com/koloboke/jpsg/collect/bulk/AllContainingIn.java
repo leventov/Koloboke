@@ -31,7 +31,7 @@ public final class AllContainingIn extends BulkMethod {
     @Override
     public void beginning() {
         gen.lines(
-                "if (isEmpty())",
+                "if (this.isEmpty())",
                 "    return true;",
                 "boolean containsAll = true;"
         );

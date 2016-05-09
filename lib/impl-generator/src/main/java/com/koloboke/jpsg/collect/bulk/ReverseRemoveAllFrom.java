@@ -39,7 +39,7 @@ public final class ReverseRemoveAllFrom extends BulkMethod {
     @Override
     public void beginning() {
         gen.lines(
-                "if (isEmpty() || s.isEmpty())",
+                "if (this.isEmpty() || s.isEmpty())",
                 "    return false;",
                 "boolean changed = false;"
         );

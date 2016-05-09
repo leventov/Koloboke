@@ -22,7 +22,7 @@ public class ToString extends BulkMethod {
     @Override
     public void beginning() {
         gen.lines(
-                "if (isEmpty())",
+                "if (this.isEmpty())",
                 "    return \"" + (cxt.isMapView() ? "{}" : "[]") + "\";",
                 "StringBuilder sb = new StringBuilder();",
                 "int elementCount = 0;"

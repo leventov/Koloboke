@@ -26,7 +26,7 @@ public final class ValueIndex extends BulkMethod {
 
     @Override
     public void beginning() {
-        gen.lines("if (isEmpty())");
+        gen.lines("if (this.isEmpty())");
         gen.lines("    return -1;");
         if (cxt.isFloatingValue() && !cxt.internalVersion()) {
             gen.lines(cxt.valueUnwrappedType() + " val = " +

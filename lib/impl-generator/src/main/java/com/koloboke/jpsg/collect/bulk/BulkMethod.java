@@ -63,7 +63,7 @@ public abstract class BulkMethod implements Method {
 
     final void escapeIfEmpty() {
         gen.lines(
-                "if (isEmpty())",
+                "if (this.isEmpty())",
                 "    return;"
         );
     }

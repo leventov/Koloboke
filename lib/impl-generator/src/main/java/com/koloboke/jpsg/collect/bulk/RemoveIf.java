@@ -22,7 +22,7 @@ public final class RemoveIf extends BulkMethod {
     public void beginning() {
         gen.requireNonNull("filter");
         gen.lines(
-                "if (isEmpty())",
+                "if (this.isEmpty())",
                 "    return false;",
                 "boolean changed = false;"
         );

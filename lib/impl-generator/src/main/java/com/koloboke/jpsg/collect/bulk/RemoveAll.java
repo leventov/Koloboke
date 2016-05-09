@@ -22,7 +22,7 @@ public final class RemoveAll extends BulkRemoveUsingAnotherCollection {
     public void beginning() {
         super.beginning();
         gen.lines(
-                "if (isEmpty() || c.isEmpty())",
+                "if (this.isEmpty() || c.isEmpty())",
                 "    return false;",
                 "boolean changed = false;"
         );

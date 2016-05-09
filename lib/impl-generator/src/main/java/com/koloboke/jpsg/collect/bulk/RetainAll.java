@@ -22,7 +22,7 @@ public final class RetainAll extends BulkRemoveUsingAnotherCollection {
     public void beginning() {
         super.beginning();
         gen.lines(
-                "if (isEmpty())",
+                "if (this.isEmpty())",
                 "    return false;"
         );
         gen.lines("if (c.isEmpty())").block();

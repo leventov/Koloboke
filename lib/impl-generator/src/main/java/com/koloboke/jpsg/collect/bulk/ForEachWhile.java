@@ -22,7 +22,7 @@ public final class ForEachWhile extends BulkMethod {
     public void beginning() {
         gen.requireNonNull("predicate");
         gen.lines(
-                "if (isEmpty())",
+                "if (this.isEmpty())",
                 "    return true;",
                 "boolean terminated = false;"
         );

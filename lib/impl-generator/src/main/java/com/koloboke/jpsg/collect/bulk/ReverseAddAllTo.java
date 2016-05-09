@@ -26,7 +26,7 @@ public final class ReverseAddAllTo extends BulkMethod {
     @Override
     public void beginning() {
         gen.lines(
-                "if (isEmpty())",
+                "if (this.isEmpty())",
                 "    return false;",
                 "boolean changed = false;"
         );
