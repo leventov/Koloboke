@@ -25,10 +25,13 @@ public final class SimpleOption implements Option {
     private static boolean isContextOption(String title) {
         boolean hasLow = false, hasUp = false;
         for (int i = 0; i < title.length(); i++) {
-            if (Character.isLowerCase(title.charAt(i))) {
+            char c = title.charAt(i);
+            if (!Character.isLetterOrDigit(c))
+                return true;
+            if (Character.isLowerCase(c)) {
                 hasLow = true;
             }
-            if (Character.isUpperCase(title.charAt(i))) {
+            if (Character.isUpperCase(c)) {
                 hasUp = true;
             }
         }
