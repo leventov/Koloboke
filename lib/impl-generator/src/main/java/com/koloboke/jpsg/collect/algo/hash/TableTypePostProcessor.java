@@ -28,6 +28,6 @@ public final class TableTypePostProcessor extends PrimitiveTypeModifierPostProce
 
     @Override
     public int priority() {
-        return BitsModifierPostProcessor.PRIORITY + 5;
+        return BitsModifierPostProcessor.getPRIORITY() + 5;
     }
 }

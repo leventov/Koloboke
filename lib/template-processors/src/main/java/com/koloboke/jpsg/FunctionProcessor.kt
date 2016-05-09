@@ -102,7 +102,7 @@ class FunctionProcessor : TemplateProcessor() {
 
     companion object {
         // after blocks processor, before options processor
-        val PRIORITY = (Generator.BLOCKS_PROCESSOR_PRIORITY + OptionProcessor.PRIORITY) / 2
+        val PRIORITY = (OptionProcessor.PRIORITY + Generator.BLOCKS_PROCESSOR_PRIORITY) / 2
 
         private val FUNCTION_P = RegexpUtils.compile(
                 "/[\\*/]f[\\*/]/([a-z]+)(/[\\*/][\\*/]/)?+|([a-z]+)/[\\*/]ef[\\*/]/")

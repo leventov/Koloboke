@@ -23,7 +23,7 @@ public final class RawModifierProcessor extends TemplateProcessor {
     /**
      * {@code RawModifierProcessor} should run before any {@link PrimitiveTypeModifierPreProcessor}
      */
-    public static final int PRIORITY = PrimitiveTypeModifierPreProcessor.PRIORITY + 10;
+    public static final int PRIORITY = PrimitiveTypeModifierPreProcessor.getPRIORITY() + 10;
 
     private static final String RAW = OptionProcessor.modifier("raw");
 

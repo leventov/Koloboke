@@ -20,7 +20,8 @@ import java.util.*;
 
 
 public final class OptionProcessor extends TemplateProcessor {
-    public static final int PRIORITY = DEFAULT_PRIORITY;
+    /** After blocks processor, to account //with// contexts */
+    public static final int PRIORITY = Generator.BLOCKS_PROCESSOR_PRIORITY - 100;
 
     static String prefixPattern(String prefix, String primitive) {
         return prefix + primitive + "(?![A-Za-z0-9_$#])";

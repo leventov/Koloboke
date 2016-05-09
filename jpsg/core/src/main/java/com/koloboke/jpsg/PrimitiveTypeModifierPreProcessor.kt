@@ -55,6 +55,7 @@ open class PrimitiveTypeModifierPreProcessor(
     }
 
     companion object {
-        const val PRIORITY = OptionProcessor.PRIORITY + 10
+        @JvmStatic
+        val PRIORITY = OptionProcessor.PRIORITY + 10
     }
 }

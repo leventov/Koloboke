@@ -28,7 +28,7 @@ public final class TableTypePreProcessor extends PrimitiveTypeModifierPreProcess
 
     @Override
     public int priority() {
-        return BitsModifierPreProcessor.PRIORITY - 5;
+        return BitsModifierPreProcessor.getPRIORITY() - 5;
     }
 }
 

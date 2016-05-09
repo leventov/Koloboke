@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 
 public final class ArticleProcessor extends TemplateProcessor {
-    public static final int PRIORITY = PrimitiveTypeModifierPostProcessor.PRIORITY - 10;
+    public static final int PRIORITY = PrimitiveTypeModifierPostProcessor.getPRIORITY() - 10;
 
     private static final Pattern ARTICLE_PATTERN = RegexpUtils.compile("/[\\*/](a)[\\*/]/");
     private static final Pattern LETTER_PATTERN = RegexpUtils.compile("[a-z]");

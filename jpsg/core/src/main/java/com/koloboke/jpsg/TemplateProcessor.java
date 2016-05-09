@@ -38,6 +38,9 @@ public abstract class TemplateProcessor {
     protected abstract void process(StringBuilder sb,
             Context source, Context target, String template);
 
+    /**
+     * Higher priority -- processor is called earlier
+     */
     protected int priority() {
         return DEFAULT_PRIORITY;
     }
