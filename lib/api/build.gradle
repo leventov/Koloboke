@@ -6,7 +6,7 @@ configure(javadoc) {
     title "Koloboke Collections $apiVersion API"
     configure((StandardJavadocDocletOptions) getOptions()) {
         def javaDocJava = project.hasProperty('javadocJava') ? javadocJava : libTargetJava
-        links("http://static.javadoc.io/com.google.code.findbugs/jsr305/3.0.1/",
+        links("https://static.javadoc.io/com.google.code.findbugs/annotations/3.0.1u2/",
                 "http://docs.oracle.com/javase/$javaDocJava/docs/api/")
         overview "$buildDir/generated-src/jpsg/main/java/overview.html"
         addStringOption('sourcepath', project.hasProperty('jdkSrc') ? jdkSrc :

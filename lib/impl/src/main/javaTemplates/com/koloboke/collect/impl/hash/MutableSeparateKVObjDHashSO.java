@@ -74,11 +74,11 @@ public abstract class MutableSeparateKVObjDHashSO<E> extends MutableDHash
     }
 
 
-    public boolean contains(@Nullable Object key) {
+    public boolean contains(/* if true nullKeyAllowed */@Nullable/* endif */ Object key) {
         return index(key) >= 0;
     }
 
-    int index(@Nullable Object key) {
+    int index(/* if true nullKeyAllowed */@Nullable/* endif */ Object key) {
         /* template Index */ throw new NotGenerated(); /* endtemplate */
     }
 

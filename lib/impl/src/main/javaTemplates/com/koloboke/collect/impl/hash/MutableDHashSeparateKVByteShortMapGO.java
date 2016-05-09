@@ -43,6 +43,7 @@ import com.koloboke.function.Predicate;
 import com.koloboke.function./*f*/ShortBinaryOperator/**/;
 import com.koloboke.function./*f*/ShortConsumer/**/;
 import com.koloboke.function./*f*/ShortPredicate/**/;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -162,6 +163,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     }
     /* endif */
 
+    /* if compile project */@SuppressFBWarnings("BC_IMPOSSIBLE_CAST")/* endif */
     @Override
     public boolean containsAllEntries(Map<?, ?> m) {
         /* if impl project */
@@ -262,6 +264,9 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         /* template SetHashCode */ throw new NotGenerated(); /* endtemplate */
     }
 
+    /* if compile project Specific|BoundedGeneric keyType ||
+          compile project Specific|BoundedGeneric valueType */
+    @SuppressFBWarnings("EC_UNRELATED_TYPES_USING_POINTER_EQUALITY")/* endif */
     @Override
     public String toString() {
         /* template ToString */ throw new NotGenerated(); /* endtemplate */
@@ -433,6 +438,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     /* endif */
 
 
+    /* if compile project */@SuppressFBWarnings("BC_IMPOSSIBLE_CAST")/* endif */
     @Override
     public void putAll(@Nonnull Map<? extends Byte, ? extends Short> m) {
         /* if impl project */
@@ -867,6 +873,9 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
             return MutableDHashSeparateKVByteShortMapGO.this.hashCode();
         }
 
+        /* if compile project Specific|BoundedGeneric keyType ||
+              compile project Specific|BoundedGeneric valueType */
+        @SuppressFBWarnings("EC_UNRELATED_TYPES_USING_POINTER_EQUALITY")/* endif */
         @Override
         public String toString() {
             /* template ToString */ throw new NotGenerated(); /* endtemplate */
@@ -1218,6 +1227,8 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         /* endif */
 
 
+        /* if compile project Specific|BoundedGeneric valueType */
+        @SuppressFBWarnings("EC_UNRELATED_TYPES_USING_POINTER_EQUALITY")/* endif */
         @Override
         public String toString() {
             /* template ToString */ throw new NotGenerated(); /* endtemplate */

@@ -27,6 +27,7 @@ import com.koloboke.collect.set.ByteSet;
 import com.koloboke.collect.set.hash.HashByteSet;
 import com.koloboke.function./*f*/ByteConsumer/**/;
 import com.koloboke.function./*f*/BytePredicate/**/;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.annotation.Nonnull;
 
@@ -95,6 +96,7 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
     }
     /* endif */
 
+    /* if compile project */@SuppressFBWarnings("BC_IMPOSSIBLE_CAST")/* endif */
     @Override
     public boolean containsAll(@Nonnull Collection<?> c) {
         /* if impl project */
@@ -169,6 +171,7 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
     }
     /* endif */
 
+    /* if compile project */@SuppressFBWarnings("BC_IMPOSSIBLE_CAST")/* endif */
     @Override
     public boolean addAll(@Nonnull Collection<? extends Byte> c) {
         /* if impl project */
@@ -240,6 +243,7 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
     /* endif */
 
 
+    /* if compile project Mutable mutability */@SuppressFBWarnings("BC_IMPOSSIBLE_CAST")/* endif */
     @Override
     public boolean removeAll(@Nonnull Collection<?> c) {
         /* if Mutable mutability */

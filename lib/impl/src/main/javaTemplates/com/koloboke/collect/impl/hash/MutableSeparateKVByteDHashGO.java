@@ -33,6 +33,8 @@ import com.koloboke.function.Predicate;
 import com.koloboke.collect.impl.NotGenerated;
 
 import com.koloboke.collect.set.ByteSet;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import javax.annotation.Nonnull;
 
 import java.util.*;
@@ -165,6 +167,8 @@ public abstract class MutableSeparateKVByteDHashGO/*<>*/
         /* template SetHashCode */ throw new NotGenerated(); /* endtemplate */
     }
 
+    /* if compile project Specific|BoundedGeneric keyType */
+    @SuppressFBWarnings("EC_UNRELATED_TYPES_USING_POINTER_EQUALITY")/* endif */
     public String setToString() {
         /* template ToString */ throw new NotGenerated(); /* endtemplate */
     }
