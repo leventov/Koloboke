@@ -64,7 +64,7 @@ public class CharShortMapRemoveIfTester/*<>*/ extends AbstractCharShortMapTester
         boolean shouldRemove = !getMap().isEmpty();
         assertEquals(shouldRemove, getMap().removeIf(alwaysTrue));
         expectContents();
-        expectMissing(samples.e0, samples.e1, samples.e2);
+        expectMissing(samples.e0(), samples.e1(), samples.e2());
     }
 
     /* if Some removed */@CollectionSize.Require(absent = ZERO)/* endif */

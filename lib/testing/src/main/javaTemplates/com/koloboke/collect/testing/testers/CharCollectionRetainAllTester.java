@@ -70,14 +70,14 @@ public class CharCollectionRetainAllTester/*<>*/ extends AbstractCharCollectionT
         super.setUp();
 
         empty = new Target(emptyCollection(), "empty");
-        List<Character> disjointList = Arrays.asList(samples.e3, samples.e4);
+        List<Character> disjointList = Arrays.asList(samples.e3(), samples.e4());
         disjoint = new Target(disjointList, "disjoint");
         superset = new Target(MinimalCollection.of(
-                samples.e0, samples.e1, samples.e2, samples.e3, samples.e4),
+                samples.e0(), samples.e1(), samples.e2(), samples.e3(), samples.e4()),
                 "superset");
-        nonEmptyProperSubset = new Target(MinimalCollection.of(samples.e1), "subset");
+        nonEmptyProperSubset = new Target(MinimalCollection.of(samples.e1()), "subset");
         sameElements = new Target(Arrays.asList(createSamplesArray()), "sameElements");
-        partialOverlap = new Target(MinimalCollection.of(samples.e2, samples.e3),
+        partialOverlap = new Target(MinimalCollection.of(samples.e2(), samples.e3()),
                 "partialOverlap");
         /* if obj|float|double elem */
         specialSingleton =
@@ -113,7 +113,7 @@ public class CharCollectionRetainAllTester/*<>*/ extends AbstractCharCollectionT
         /* if Some removed */remove();/* endif */
         expectReturnsTrue(simple(empty));
         expectContents();
-        expectMissing(samples.e0, samples.e1, samples.e2);
+        expectMissing(samples.e0(), samples.e1(), samples.e2());
     }
     /* endwith */
 
@@ -150,7 +150,7 @@ public class CharCollectionRetainAllTester/*<>*/ extends AbstractCharCollectionT
         /* if Some removed */remove();/* endif */
         expectReturnsTrue(simple(disjoint));
         expectContents();
-        expectMissing(samples.e0, samples.e1, samples.e2);
+        expectMissing(samples.e0(), samples.e1(), samples.e2());
     }
     /* endwith */
 
@@ -224,7 +224,7 @@ public class CharCollectionRetainAllTester/*<>*/ extends AbstractCharCollectionT
     public void testRetainAll_partialOverlap_simpleRetainCollection_noRemoved() {
         /* if Some removed */remove();/* endif */
         expectReturnsTrue(simple(partialOverlap));
-        expectContents(samples.e2);
+        expectContents(samples.e2());
     }
     /* endwith */
 

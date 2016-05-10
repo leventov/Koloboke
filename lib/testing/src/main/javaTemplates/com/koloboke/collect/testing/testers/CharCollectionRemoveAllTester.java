@@ -57,7 +57,7 @@ public class CharCollectionRemoveAllTester/*<>*/ extends AbstractCharCollectionT
     public void testRemoveAll_nonePresent_simpleRemoveCollection_noRemoved() {
         /* if Some removed */remove();/* endif */
         assertFalse("removeAll(disjointCollection) should return false",
-                collection.removeAll(simple(MinimalCollection.of(samples.e3))));
+                collection.removeAll(simple(MinimalCollection.of(samples.e3()))));
         expectContents(noRemoved(getOrderedElements()));
     }
 
@@ -65,7 +65,7 @@ public class CharCollectionRemoveAllTester/*<>*/ extends AbstractCharCollectionT
     @CollectionSize.Require(absent = {ZERO/* if Some removed */, ONE/* endif */})
     public void testRemoveAll_allPresent_simpleRemoveCollection_noRemoved() {
         /* if Some removed */remove();/* endif */
-        Character e = samples./* if No removed */e0/* elif Some removed //e1// endif */;
+        Character e = samples./* if No removed */e0()/* elif Some removed //e1()// endif */;
         assertTrue("removeAll(intersectingCollection) should return true",
                 collection.removeAll(simple(MinimalCollection.of(e))));
         expectMissing(e);
@@ -75,9 +75,9 @@ public class CharCollectionRemoveAllTester/*<>*/ extends AbstractCharCollectionT
     @CollectionSize.Require(absent = {ZERO/* if Some removed */, ONE/* endif */})
     public void testRemoveAll_somePresent_simpleRemoveCollection_noRemoved() {
         /* if Some removed */remove();/* endif */
-        Character e = samples./* if No removed */e0/* elif Some removed //e1// endif */;
+        Character e = samples./* if No removed */e0()/* elif Some removed //e1()// endif */;
         assertTrue("removeAll(intersectingCollection) should return true",
-                collection.removeAll(simple(MinimalCollection.of(e, samples.e3))));
+                collection.removeAll(simple(MinimalCollection.of(e, samples.e3()))));
         expectMissing(e);
     }
 
@@ -88,7 +88,7 @@ public class CharCollectionRemoveAllTester/*<>*/ extends AbstractCharCollectionT
         try {
             /* if Some removed */remove();/* endif */
             Iterator<Character> iterator = collection.iterator();
-            assertTrue(collection.removeAll(simple(MinimalCollection.of(samples.e1, samples.e3))));
+            assertTrue(collection.removeAll(simple(MinimalCollection.of(samples.e1(), samples.e3()))));
             iterator.next();
             fail("Expected ConcurrentModificationException");
         } catch (ConcurrentModificationException expected) {
@@ -114,7 +114,7 @@ public class CharCollectionRemoveAllTester/*<>*/ extends AbstractCharCollectionT
         try {
             assertFalse("removeAll(disjointCollection) should return false or throw "
                             + "UnsupportedOperationException",
-                    collection.removeAll(simple(MinimalCollection.of(samples.e3))));
+                    collection.removeAll(simple(MinimalCollection.of(samples.e3()))));
         } catch (UnsupportedOperationException tolerated) {
         }
         expectUnchanged();
@@ -124,13 +124,13 @@ public class CharCollectionRemoveAllTester/*<>*/ extends AbstractCharCollectionT
     @CollectionSize.Require(absent = ZERO)
     public void testRemoveAll_unsupportedPresent_simpleRemoveCollection() {
         try {
-            collection.removeAll(simple(MinimalCollection.of(samples.e0)));
+            collection.removeAll(simple(MinimalCollection.of(samples.e0())));
             fail("removeAll(intersectingCollection) should throw "
                     + "UnsupportedOperationException");
         } catch (UnsupportedOperationException expected) {
         }
         expectUnchanged();
-        assertTrue(collection.contains(samples.e0));
+        assertTrue(collection.contains(samples.e0()));
     }
 
     /* if obj elem Specialized removeCollection */

@@ -57,7 +57,7 @@ public abstract class AbstractCharCollectionTester/*<>*/
     /* endif */
 
     protected void remove() {
-        c()./* if !(obj elem) */removeChar/* elif obj elem //remove// endif */(samples.e0);
+        c()./* if !(obj elem) */removeChar/* elif obj elem //remove// endif */(samples.e0());
     }
 
     protected Collection<Character> noRemoved(Collection<Character> elements) {
@@ -66,7 +66,7 @@ public abstract class AbstractCharCollectionTester/*<>*/
 
     protected Collection<Character> someRemoved(Collection<Character> elements) {
         elements = new ArrayList<>(elements);
-        elements.remove(samples.e0);
+        elements.remove(samples.e0());
         return elements;
     }
 

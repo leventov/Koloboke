@@ -34,12 +34,12 @@ public class CharShortMapContainsKeyTester/*<>*/ extends AbstractCharShortMapTes
     @CollectionSize.Require(absent = ZERO)
     public void testContains_yes() {
         assertTrue("containsKey(present) should return true",
-                getMap().containsKey(samples.e0.getKey().charValue()));
+                getMap().containsKey(samples.e0().getKey().charValue()));
     }
 
     public void testContains_no() {
         assertFalse("containsKey(notPresent) should return false",
-                getMap().containsKey(samples.e3.getKey().charValue()));
+                getMap().containsKey(samples.e3().getKey().charValue()));
     }
 
     /* if float|double key */
@@ -52,7 +52,7 @@ public class CharShortMapContainsKeyTester/*<>*/ extends AbstractCharShortMapTes
     public void testContains_nonSpecialWhenSpecialContained() {
         initMapWithSpecialKey();
         assertFalse("containsKey(notPresent) should return false",
-                getMap().containsKey(samples.e3.getKey().charValue()));
+                getMap().containsKey(samples.e3().getKey().charValue()));
     }
 
     @CollectionSize.Require(absent = ZERO)

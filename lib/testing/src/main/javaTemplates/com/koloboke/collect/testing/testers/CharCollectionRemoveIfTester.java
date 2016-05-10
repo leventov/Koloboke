@@ -58,7 +58,7 @@ public class CharCollectionRemoveIfTester/*<>*/ extends AbstractCharCollectionTe
         boolean shouldRemove = !c().isEmpty();
         assertEquals(shouldRemove, c().removeIf(alwaysTrue));
         expectContents();
-        expectMissing(samples.e0, samples.e1, samples.e2);
+        expectMissing(samples.e0(), samples.e1(), samples.e2());
     }
 
     /* if Some removed */@CollectionSize.Require(absent = ZERO)/* endif */

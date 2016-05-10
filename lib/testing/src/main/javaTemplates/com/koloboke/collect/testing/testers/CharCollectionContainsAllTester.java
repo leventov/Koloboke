@@ -50,7 +50,7 @@ public class CharCollectionContainsAllTester/*<>*/ extends AbstractCharCollectio
     @CollectionSize.Require(absent =  {ZERO/* if Some removed */, ONE/* endif */})
     public void testContainsAll_subset_simpleContainsCollection_noRemoved() {
         /* if Some removed */remove();/* endif */
-        Character e = samples./* if No removed */e0/* elif Some removed //e1// endif */;
+        Character e = samples./* if No removed */e0()/* elif Some removed //e1()// endif */;
         assertTrue("containsAll(subset) should return true",
                 collection.containsAll(simple(MinimalCollection.of(e))));
     }
@@ -75,9 +75,9 @@ public class CharCollectionContainsAllTester/*<>*/ extends AbstractCharCollectio
     /* endif */
     public void testContainsAll_partialOverlap_simpleContainsCollection_noRemoved() {
         /* if Some removed */remove();/* endif */
-        Character e = samples./* if No removed */e0/* elif Some removed //e1// endif */;
+        Character e = samples./* if No removed */e0()/* elif Some removed //e1()// endif */;
         assertFalse("containsAll(partialOverlap) should return false",
-                collection.containsAll(simple(MinimalCollection.of(e, samples.e3))));
+                collection.containsAll(simple(MinimalCollection.of(e, samples.e3()))));
     }
 
     /* if Some removed */
@@ -87,7 +87,7 @@ public class CharCollectionContainsAllTester/*<>*/ extends AbstractCharCollectio
     public void testContainsAll_disjoint_simpleContainsCollection_noRemoved() {
         /* if Some removed */remove();/* endif */
         assertFalse("containsAll(disjoint) should return false",
-                collection.containsAll(simple(MinimalCollection.of(samples.e3))));
+                collection.containsAll(simple(MinimalCollection.of(samples.e3()))));
     }
 
     /* endwith */

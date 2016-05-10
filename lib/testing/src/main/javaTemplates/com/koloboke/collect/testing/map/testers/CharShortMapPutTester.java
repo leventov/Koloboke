@@ -49,39 +49,39 @@ public class CharShortMapPutTester/*<>*/ extends AbstractCharShortMapTester/*<>*
     @Override public void setUp() throws Exception {
         super.setUp();
         /* if obj|float|double key */
-        specialKeyEntry = entry(specialKey(), samples.e3.getValue());/* endif */
+        specialKeyEntry = entry(specialKey(), samples.e3().getValue());/* endif */
         /* if obj|float|double value */
-        specialValueEntry = entry(samples.e3.getKey(), specialValue());/* endif */
+        specialValueEntry = entry(samples.e3().getKey(), specialValue());/* endif */
         /* if obj|float|double key obj|float|double value */
         specialKeyValueEntry = entry(specialKey(), specialValue());/* endif */
         /* if obj|float|double value */
-        presentKeySpecialValueEntry = entry(samples.e0.getKey(), specialValue());/* endif */
+        presentKeySpecialValueEntry = entry(samples.e0().getKey(), specialValue());/* endif */
     }
 
     @MapFeature.Require(SUPPORTS_PUT)
     public void testPut_supportedNotPresent() {
         assertDefaultValue("put(notPresent, value) should return " + defaultValue(),
-                put(samples.e3));
-        expectAdded(samples.e3);
+                put(samples.e3()));
+        expectAdded(samples.e3());
     }
 
     @MapFeature.Require(absent = SUPPORTS_PUT)
     public void testPut_unsupportedNotPresent() {
         try {
-            put(samples.e3);
+            put(samples.e3());
             fail("put(notPresent, value) should throw");
         } catch (UnsupportedOperationException expected) {
         }
         expectUnchanged();
-        expectMissing(samples.e3);
+        expectMissing(samples.e3());
     }
 
     @MapFeature.Require(SUPPORTS_PUT)
     @CollectionSize.Require(absent = ZERO)
     public void testPut_supportedPresentExistingValue() {
         assertEquals("put(present, existingValue) should return present or throw",
-                samples.e0.getValue()/* if !(obj value) */.shortValue()/* endif */,
-                put(samples.e0));
+                samples.e0().getValue()/* if !(obj value) */.shortValue()/* endif */,
+                put(samples.e0()));
         expectUnchanged();
     }
 
@@ -90,8 +90,8 @@ public class CharShortMapPutTester/*<>*/ extends AbstractCharShortMapTester/*<>*
     public void testPut_unsupportedPresentExistingValue() {
         try {
             assertEquals("put(present, existingValue) should return present or throw",
-                    samples.e0.getValue()/* if !(obj value) */.shortValue()/* endif */,
-                    put(samples.e0));
+                    samples.e0().getValue()/* if !(obj value) */.shortValue()/* endif */,
+                    put(samples.e0()));
         } catch (UnsupportedOperationException tolerated) {
         }
         expectUnchanged();
@@ -101,8 +101,8 @@ public class CharShortMapPutTester/*<>*/ extends AbstractCharShortMapTester/*<>*
     @CollectionSize.Require(absent = ZERO)
     public void testPut_unsupportedPresentDifferentValue() {
         try {
-            getMap().put(samples.e0.getKey()/* if !(obj key) */.charValue()/* endif */,
-                    samples.e3.getValue()/* if !(obj value) */.shortValue()/* endif */);
+            getMap().put(samples.e0().getKey()/* if !(obj key) */.charValue()/* endif */,
+                    samples.e3().getValue()/* if !(obj value) */.shortValue()/* endif */);
             fail("put(present, differentValue) should throw");
         } catch (UnsupportedOperationException expected) {
         }
@@ -120,7 +120,7 @@ public class CharShortMapPutTester/*<>*/ extends AbstractCharShortMapTester/*<>*
     @MapFeature.Require({SUPPORTS_PUT/* if obj key */, ALLOWS_NULL_KEYS/* endif */})
     @CollectionSize.Require(absent = ZERO)
     public void testPut_specialKeySupportedPresent() {
-        Map.Entry<Character, Short> newEntry = entry(specialKey(), samples.e3.getValue());
+        Map.Entry<Character, Short> newEntry = entry(specialKey(), samples.e3().getValue());
         initMapWithSpecialKey();
         assertEquals("put(present, value) should return the associated value",
                 getValueForSpecialKey(), put(newEntry));
@@ -157,7 +157,7 @@ public class CharShortMapPutTester/*<>*/ extends AbstractCharShortMapTester/*<>*
     @CollectionSize.Require(absent = ZERO)
     public void testPut_replaceWithSpecialValueSupported() {
         assertEquals("put(present, " + specialValue() + ") should return the associated value",
-                samples.e0.getValue()/* if !(obj value) */.shortValue()/* endif */,
+                samples.e0().getValue()/* if !(obj value) */.shortValue()/* endif */,
                 put(presentKeySpecialValueEntry));
         expectReplacement(presentKeySpecialValueEntry);
     }
@@ -176,7 +176,7 @@ public class CharShortMapPutTester/*<>*/ extends AbstractCharShortMapTester/*<>*
     @CollectionSize.Require(absent = ZERO)
     public void testPut_replaceSpecialValueWithNonSpecialSupported() {
         Map.Entry<Character, Short> newEntry =
-                entry(getKeyForSpecialValue(), samples.e3.getValue());
+                entry(getKeyForSpecialValue(), samples.e3().getValue());
         initMapWithSpecialValue();
         assertEquals("put(present, value) should return the associated value (" + specialValue() +
                 ")", specialValue(), put(newEntry));
@@ -252,7 +252,7 @@ public class CharShortMapPutTester/*<>*/ extends AbstractCharShortMapTester/*<>*
 
     private void putAbsentConcurrentWithIteration(Iteration it) {
         try {
-            put(samples.e3);
+            put(samples.e3());
             it.next();
             fail("Expected ConcurrentModificationException");
         } catch (ConcurrentModificationException expected) {

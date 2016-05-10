@@ -34,12 +34,12 @@ public class CharShortMapContainsValueTester/*<>*/ extends AbstractCharShortMapT
     @CollectionSize.Require(absent = ZERO)
     public void testContains_yes() {
         assertTrue("containsValue(present) should return true",
-                getMap().containsValue(samples.e0.getValue().shortValue()));
+                getMap().containsValue(samples.e0().getValue().shortValue()));
     }
 
     public void testContains_no() {
         assertFalse("containsValue(notPresent) should return false",
-                getMap().containsValue(samples.e3.getValue().shortValue()));
+                getMap().containsValue(samples.e3().getValue().shortValue()));
     }
 
     /* if float|double value */
@@ -52,7 +52,7 @@ public class CharShortMapContainsValueTester/*<>*/ extends AbstractCharShortMapT
     public void testContains_nonSpecialWhenSpecialContained() {
         initMapWithSpecialValue();
         assertFalse("containsValue(notPresent) should return false",
-                getMap().containsValue(samples.e3.getValue().shortValue()));
+                getMap().containsValue(samples.e3().getValue().shortValue()));
     }
 
     @CollectionSize.Require(absent = ZERO)

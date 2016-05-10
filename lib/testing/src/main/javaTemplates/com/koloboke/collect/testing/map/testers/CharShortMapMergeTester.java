@@ -46,11 +46,11 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
     @Override public void setUp() throws Exception {
         super.setUp();
         /* if obj|float|double key */
-        specialKeyEntry = entry(specialKey(), samples.e3.getValue());/* endif */
+        specialKeyEntry = entry(specialKey(), samples.e3().getValue());/* endif */
         /* if obj|float|double value */
-        specialValueEntry = entry(samples.e3.getKey(), specialValue());/* endif */
+        specialValueEntry = entry(samples.e3().getKey(), specialValue());/* endif */
         /* if obj|float|double value */
-        presentKeySpecialValueEntry = entry(samples.e0.getKey(), specialValue());/* endif */
+        presentKeySpecialValueEntry = entry(samples.e0().getKey(), specialValue());/* endif */
     }
 
     /* with Primitive|Generic kind */
@@ -59,34 +59,34 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
     @Require(SUPPORTS_PUT)
     public void testMerge_supportedNotPresent_primitive() {
         assertEquals("merge(notPresent, value, remappingFunction) should return the given value",
-                samples.e3.getValue(),
-                (Short) primitiveMerge(samples.e3, (v1, v2) -> {
+                samples.e3().getValue(),
+                (Short) primitiveMerge(samples.e3(), (v1, v2) -> {
                     fail("merge(notPresent, value, remappingFunction) shouldn't call the function");
                     return v2;
                 }));
-        expectAdded(samples.e3);
+        expectAdded(samples.e3());
     }
 
     @Require(absent = SUPPORTS_PUT)
     public void testMerge_unsupportedNotPresent_primitive() {
         try {
-            primitiveMerge(samples.e3, (v1, v2) -> v2);
+            primitiveMerge(samples.e3(), (v1, v2) -> v2);
             fail("merge(notPresent, value, remappingFunction) should throw");
         } catch (UnsupportedOperationException expected) {
         }
         expectUnchanged();
-        expectMissing(samples.e3);
+        expectMissing(samples.e3());
     }
 
     @Require(SUPPORTS_PUT)
     @CollectionSize.Require(absent = ZERO)
     public void testMerge_supportedPresentExistingValue_primitive() {
         assertEquals("merge(present, existingValue, remappingFunction) should remap value",
-                samples.e3.getValue(),
-                (Short) primitiveMerge(samples.e0, (v1, v2) -> samples.e3.getValue()));
-        assertEquals(samples.e3.getValue(),
+                samples.e3().getValue(),
+                (Short) primitiveMerge(samples.e0(), (v1, v2) -> samples.e3().getValue()));
+        assertEquals(samples.e3().getValue(),
                 (Short) getMap().get/* if obj key && !(obj value) //$Short// endif */(
-                        samples.e0.getKey()/* if !(obj key) */.charValue()/* endif */));
+                        samples.e0().getKey()/* if !(obj key) */.charValue()/* endif */));
     }
 
     /* if obj|float|double key */
@@ -94,7 +94,7 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
     public void testMerge_specialKeySupportedNotPresent_primitive() {
         assertEquals("merge(" + specialKey() + ", value, remappingFunction) " +
                         "should return the given value",
-                samples.e3.getValue(),
+                samples.e3().getValue(),
                 (Short) primitiveMerge(specialKeyEntry, (v1, v2) -> {
                     fail("merge(" + specialKey() + ", value, remappingFunction) " +
                             "shouldn't call the function");
@@ -106,14 +106,14 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
     @Require({SUPPORTS_PUT/* if obj key */, ALLOWS_NULL_KEYS/* endif */})
     @CollectionSize.Require(absent = ZERO)
     public void testMerge_specialKeySupportedPresent_primitive() {
-        Map.Entry<Character, Short> newEntry = entry(specialKey(), samples.e3.getValue());
+        Map.Entry<Character, Short> newEntry = entry(specialKey(), samples.e3().getValue());
         initMapWithSpecialKey();
         assertEquals("merge(present, value, remappingFunction) should remap value",
-                samples.e4.getValue(),
-                (Short) primitiveMerge(newEntry, (v1, v2) -> samples.e4.getValue()));
+                samples.e4().getValue(),
+                (Short) primitiveMerge(newEntry, (v1, v2) -> samples.e4().getValue()));
 
         Map.Entry<Character, Short>[] expected = createArrayWithSpecialKey();
-        expected[getSpecialLocation()] = entry(specialKey(), samples.e4.getValue());
+        expected[getSpecialLocation()] = entry(specialKey(), samples.e4().getValue());
         expectContents(expected);
     }
     /* endif */
@@ -162,7 +162,7 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
     @CollectionSize.Require(absent = ZERO)
     public void testMerge_existingNullValue() {
         initMapWithSpecialValue();
-        Map.Entry<Character, Short> entry = entry(getKeyForSpecialValue(), samples.e4.getValue());
+        Map.Entry<Character, Short> entry = entry(getKeyForSpecialValue(), samples.e4().getValue());
         assertEquals("merge(keyMappingToNull, value, remappingFunction) " +
                         "should return the given value",
                 entry.getValue(),
@@ -183,9 +183,9 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
     @CollectionSize.Require(absent = ZERO)
     public void testMerge_remapToNull_removeSupported() {
         assertNull("merge(present, value, (v1, v2) -> null) should return null",
-                genericMerge(samples.e0, (v1, v2) -> null));
+                genericMerge(samples.e0(), (v1, v2) -> null));
         assertFalse("merge(present, value, (v1, v2) -> null) should remove the entry",
-                getMap().containsKey(samples.e0.getKey()/* if !(obj key) */.charValue()/* endif */)
+                getMap().containsKey(samples.e0().getKey()/* if !(obj key) */.charValue()/* endif */)
         );
     }
 
@@ -193,7 +193,7 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
     @CollectionSize.Require(absent = ZERO)
     public void testMerge_remapToNull_removeUnsupported() {
         try {
-            genericMerge(samples.e0, (v1, v2) -> null);
+            genericMerge(samples.e0(), (v1, v2) -> null);
             fail("merge(present, value, (v1, v2) -> null) should throw");
         } catch (UnsupportedOperationException expected) {
             // expected
@@ -231,7 +231,7 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
     @Require(SUPPORTS_PUT)
     public void testMerge_nullValue_putSupported() {
         try {
-            genericMerge(entry(samples.e0.getKey(), null), (v1, v2) -> v2);
+            genericMerge(entry(samples.e0().getKey(), null), (v1, v2) -> v2);
             fail("merge(key, null, remappingFunction) should throw");
         } catch (NullPointerException expected) {
             // expected
@@ -242,7 +242,7 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
     @Require(absent = SUPPORTS_PUT)
     public void testMerge_nullValue_putUnsupported() {
         try {
-            genericMerge(entry(samples.e0.getKey(), null), (v1, v2) -> v2);
+            genericMerge(entry(samples.e0().getKey(), null), (v1, v2) -> v2);
             fail("merge(key, null, remappingFunction) should throw");
         } catch (NullPointerException | UnsupportedOperationException expected) {
             // expected
@@ -253,7 +253,7 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
     @Require(SUPPORTS_PUT)
     public void testMerge_nullRemappingFunction_putSupported() {
         try {
-            genericMerge(samples.e0, null);
+            genericMerge(samples.e0(), null);
             fail("merge(key, value, null) should throw");
         } catch (NullPointerException expected) {
             // expected
@@ -264,7 +264,7 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
     @Require(absent = SUPPORTS_PUT)
     public void testMerge_nullRemappingFunction_putUnsupported() {
         try {
-            genericMerge(samples.e0, null);
+            genericMerge(samples.e0(), null);
             fail("merge(key, value, null) should throw");
         } catch (NullPointerException | UnsupportedOperationException expected) {
             // expected
@@ -299,7 +299,7 @@ public class CharShortMapMergeTester/*<>*/ extends AbstractCharShortMapTester/*<
 
     private void putAbsentConcurrentWithIteration_primitive(Iteration it) {
         try {
-            primitiveMerge(samples.e3, (v1, v2) -> v2);
+            primitiveMerge(samples.e3(), (v1, v2) -> v2);
             it.next();
             fail("Expected ConcurrentModificationException");
         } catch (ConcurrentModificationException expected) {

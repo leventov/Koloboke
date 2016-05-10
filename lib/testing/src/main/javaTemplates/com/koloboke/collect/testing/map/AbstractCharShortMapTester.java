@@ -122,7 +122,7 @@ public abstract class AbstractCharShortMapTester/*<>*/ extends AbstractMapTester
 
     protected void remove() {
         getMap().remove/* if obj key && !(obj value) //AsShort// endif */(
-                samples.e0.getKey()/* if !(obj key) */.charValue()/* endif */
+                samples.e0().getKey()/* if !(obj key) */.charValue()/* endif */
         );
     }
 
@@ -134,7 +134,7 @@ public abstract class AbstractCharShortMapTester/*<>*/ extends AbstractMapTester
     protected Collection<Map.Entry<Character, Short>> someRemoved(
             Collection<Map.Entry<Character, Short>> elements) {
         elements = new ArrayList<>(elements);
-        elements.remove(samples.e0);
+        elements.remove(samples.e0());
         return elements;
     }
 }

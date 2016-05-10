@@ -38,13 +38,13 @@ public class CharShortMapGetTester/*<>*/ extends AbstractCharShortMapTester/*<>*
     @CollectionSize.Require(absent = ZERO)
     public void testGet_yes() {
         assertEquals("get(present) should return the associated value",
-                samples.e0.getValue()/* if !(obj value) */.shortValue()/* endif */,
-                specializedGet(samples.e0.getKey()));
+                samples.e0().getValue()/* if !(obj value) */.shortValue()/* endif */,
+                specializedGet(samples.e0().getKey()));
     }
 
     public void testGet_no() {
         assertDefaultValue("get(notPresent) should return " + defaultValue(),
-                specializedGet(samples.e3.getKey()));
+                specializedGet(samples.e3().getKey()));
     }
 
     /* if obj|float|double key */
@@ -59,7 +59,7 @@ public class CharShortMapGetTester/*<>*/ extends AbstractCharShortMapTester/*<>*
     public void testGet_nonNullWhenNullContained() {
         initMapWithSpecialKey();
         assertDefaultValue("get(notPresent) should return " + defaultValue(),
-               specializedGet(samples.e3.getKey()));
+               specializedGet(samples.e3().getKey()));
     }
 
     /* if obj key */@MapFeature.Require(ALLOWS_NULL_KEYS)/* endif */
