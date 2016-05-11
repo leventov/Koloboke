@@ -9,7 +9,9 @@ configure([generateJavaSpecializations, generateResourceSpecializations]) {
     with 'project=impl'
     with 'nullKeyAllowed=true'
     with 'keyType=Generic'
+    with 'newKeyArrayType=java.lang.Object'
     with 'valueType=Generic'
+    with 'newValueArrayType=java.lang.Object'
     exclude(
             'kv=Parallel,key=byte,value=char|short|int|long|float|double|obj',
             'kv=Parallel,key=char|short,value=byte|int|long|float|double|obj',
