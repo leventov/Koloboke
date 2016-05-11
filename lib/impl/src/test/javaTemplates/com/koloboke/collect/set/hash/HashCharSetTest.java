@@ -21,8 +21,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import com.google.common.collect.testing.features.CollectionFeature;
+import com.koloboke.collect.testing.CharSamples;
 import junit.framework.*;
-import com.koloboke.collect.*;
 import com.koloboke.collect.hash.*;
 import com.koloboke.collect.set.*;
 import com.koloboke.collect.testing.set.HyperCharSetTestSuiteBuilder;

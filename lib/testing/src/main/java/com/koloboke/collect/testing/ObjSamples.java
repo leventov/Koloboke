@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.koloboke.collect;
+package com.koloboke.collect.testing;
 
 import com.google.common.collect.testing.SampleElements;
 
