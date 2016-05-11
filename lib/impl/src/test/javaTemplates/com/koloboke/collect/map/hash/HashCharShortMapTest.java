@@ -35,7 +35,7 @@ public class HashCharShortMapTest extends TestCase {
 
     public static Test suite() {
         HyperCharShortMapTestSuiteBuilder builder = new HyperCharShortMapTestSuiteBuilder()
-                .setKeySamples(CharSamples.allKeys()).setValueSamples(ShortSamples.allKeys());
+                .setKeySamples(CharSamples.allKeys()).setValueSamples(ShortSamples.allValues());
         /* define pp */
         /* if obj key obj value //Object, Object, // elif obj key || obj value //Object, // endif */
         /* enddefine */
