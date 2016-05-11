@@ -32,10 +32,11 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
         assert config.getGrowFactor() == 2.0;
         /* elif compile project */
         if (config.getGrowFactor() != 2.0) {
-            throw new IllegalArgumentException(config + " passed to a hashtable implementation " +
-                    "with linear probing must have growFactor == 2.0. If you need an ability to " +
-                    "configure a different grow factor, please annotate this Koloboke collection " +
-                    "with @QuadraticProbing");
+            throw new IllegalArgumentException(config + " passed, HashConfig for a hashtable " +
+                    "implementation with linear probing must have growFactor of 2.0. A Koloboke " +
+                    "Compile-generated hashtable implementation could have a different grow " +
+                    "factor, if annotated with " +
+                    "@com.koloboke.compile.hash.algo.openaddressing.QuadraticProbing");
         }
         /* endif */
     }
