@@ -88,7 +88,8 @@ public class CharCollectionRemoveAllTester/*<>*/ extends AbstractCharCollectionT
         try {
             /* if Some removed */remove();/* endif */
             Iterator<Character> iterator = collection.iterator();
-            assertTrue(collection.removeAll(simple(MinimalCollection.of(samples.e1(), samples.e3()))));
+            assertTrue(collection.removeAll(
+                    simple(MinimalCollection.of(samples.e1(), samples.e3()))));
             iterator.next();
             fail("Expected ConcurrentModificationException");
         } catch (ConcurrentModificationException expected) {
@@ -145,11 +146,13 @@ public class CharCollectionRemoveAllTester/*<>*/ extends AbstractCharCollectionT
         }
         expectUnchanged();
     }
+    /* endif */
 
+    /* if obj elem Simple removeCollection */
     @CollectionFeature.Require(SUPPORTS_REMOVE)
     public void testRemoveAll_containsWrongType_simpleRemoveCollection() {
         try {
-            Collection<WrongType> wrong = HashObjSets.newImmutableSetOf(WrongType.VALUE);
+            Collection<WrongType> wrong = MinimalCollection.of(WrongType.VALUE);
             assertFalse("removeAll(containsWrongType) should return false or throw",
                     collection.removeAll(wrong));
         } catch (ClassCastException tolerated) {
@@ -158,7 +161,7 @@ public class CharCollectionRemoveAllTester/*<>*/ extends AbstractCharCollectionT
     }
     /* endif */
 
-    /* if obj|float|double elem */
+    /* if obj elem Simple removeCollection || float|double elem */
     @CollectionFeature.Require({SUPPORTS_REMOVE/* if obj elem */, ALLOWS_NULL_QUERIES/* endif */})
     public void testRemoveAll_containsSpecialNoButAllowed_simpleRemoveCollection() {
         Collection<Character> containsSpecial = simple(MinimalCollection.of(special()));

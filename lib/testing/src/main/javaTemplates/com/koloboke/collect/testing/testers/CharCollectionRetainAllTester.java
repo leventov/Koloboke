@@ -19,6 +19,7 @@
 package com.koloboke.collect.testing.testers;
 
 import com.google.common.collect.testing.MinimalCollection;
+import com.google.common.collect.testing.UnhashableObject;
 import com.google.common.collect.testing.features.CollectionFeature;
 import com.google.common.collect.testing.features.CollectionSize;
 import com.koloboke.collect.set.hash.HashCharSets;
@@ -235,7 +236,7 @@ public class CharCollectionRetainAllTester/*<>*/ extends AbstractCharCollectionT
         expectUnchanged();
     }
 
-    /* if obj|float|double elem */
+    /* if obj elem Simple retainCollection || float|double elem */
     // retainAll(specialSingleton)
 
     @CollectionFeature.Require(SUPPORTS_REMOVE)
@@ -288,7 +289,13 @@ public class CharCollectionRetainAllTester/*<>*/ extends AbstractCharCollectionT
     }
 
     private Target specialized(Target target) {
-        return new Target(HashCharSets.newImmutableSet(target.toRetain),
+        Collection<Character> toRetain = target.toRetain;
+        /* if obj elem */
+        if (toRetain.size() > 0 && toRetain.iterator().next() instanceof UnhashableObject) {
+            return new Target(toRetain, "not specialized  " + target.description);
+        }
+        /* endif */
+        return new Target(HashCharSets.newImmutableSet(toRetain),
                 "specialized " + target.description);
     }
 

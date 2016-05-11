@@ -18,6 +18,7 @@
 package com.koloboke.collect.testing;
 
 import com.google.common.collect.testing.AbstractCollectionTester;
+import com.google.common.collect.testing.UnhashableObject;
 import com.koloboke.collect.CharCollection;
 import com.koloboke.collect.set.hash.HashCharSets;
 
@@ -75,6 +76,11 @@ public abstract class AbstractCharCollectionTester/*<>*/
     }
 
     protected Collection<Character> specialized(Collection<Character> c) {
+        /* if obj elem */
+        if (c.size() > 0 && c.iterator().next() instanceof UnhashableObject)
+            return c;
+        /* endif */
         return HashCharSets.newImmutableSet(c);
+
     }
 }

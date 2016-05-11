@@ -22,8 +22,7 @@ package com.koloboke.collect.testing.map;
 
 import com.google.common.collect.testing.*;
 import com.google.common.collect.testing.features.*;
-import com.google.common.collect.testing.testers.CollectionClearTester;
-import com.google.common.collect.testing.testers.MapClearTester;
+import com.google.common.collect.testing.testers.*;
 import junit.framework.*;
 import com.koloboke.collect.testing.Mutability;
 import com.koloboke.collect.map.CharShortMapFactory;
@@ -124,6 +123,11 @@ public class HyperCharShortMapTestSuiteBuilder/*<>*/ {
                                 throw new AssertionError(e);
                             }
                         }
+                        /* if obj value */
+                        if (values instanceof SampleElements.Unhashables) {
+                            b.suppressing(MapHashCodeTester.class.getDeclaredMethods());
+                        }
+                        /* endif */
                         Test mutableTests = b.createTestSuite();
                         suite.addTest(mutableTests);
                     }
