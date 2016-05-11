@@ -44,7 +44,7 @@ public class ParallelVsSeparate {
     static final int SMALL_SIZE = SMALL_CHAR_SIZE, LARGE_SIZE = 1000 * 1000;
 
     static final HashConfig L_HASH_CONFIG = HashConfig.getDefault();
-    static final HashConfig Q_HASH_CONFIG = L_HASH_CONFIG.withGrowFactor(1.999);
+    static final HashConfig Q_HASH_CONFIG = L_HASH_CONFIG.withGrowthFactor(1.999);
 
     private static int getSize(String sizeHint, String keyType) {
         switch (keyType) {

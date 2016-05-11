@@ -125,7 +125,7 @@ public final class LHashCapacities {
     }
 
     static boolean configIsSuitableForMutableLHash(HashConfig conf) {
-        return conf.getGrowFactor() == 2.0 && conf.getMinLoad() < 0.5;
+        return conf.getGrowthFactor() == 2.0 && conf.getMinLoad() < 0.5;
     }
 
     private LHashCapacities() {}

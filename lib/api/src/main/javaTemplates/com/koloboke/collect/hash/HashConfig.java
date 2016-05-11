@@ -52,14 +52,14 @@ import javax.annotation.Nullable;
  * use <a href="http://en.wikipedia.org/wiki/Open_addressing">open addressing</a>
  * method of collision resolution.
  *
- * <p>Also {@code HashConfig} allows to configure the <em>grow factor</em>. When elements
+ * <p>Also {@code HashConfig} allows to configure the <em>growth factor</em>. When elements
  * are inserted into the hash container and it grows, when
  * {@linkplain HashContainer#currentLoad() the hash container load} reaches the <em>max load</em>,
- * hash table's capacity is multiplied by the grow factor, immediately after that the current load
+ * hash table's capacity is multiplied by the growth factor, immediately after that the current load
  * is supposed to be at or a bit higher than the <em>min load</em>. That is why {@code HashConfig}
  * keeps one more invariant:
  * <pre>{@code
- * 1.0 < grow factor <= max load / min load}</pre>
+ * 1.0 < growth factor <= max load / min load}</pre>
  *
  * <p>The schema explained above allows much more precise control over
  * memory footprint -- performance tradeoff of hash containers, than a single load factor
@@ -77,12 +77,12 @@ public abstract class HashConfig {
     private static final double DEFAULT_MIN_LOAD = 1.0 / 3.0;
     private static final double DEFAULT_MAX_LOAD = 2.0 / 3.0;
     private static final double DEFAULT_TARGET_LOAD = 0.5;
-    private static final double DEFAULT_GROW_FACTOR = 2.0;
+    private static final double DEFAULT_GROWTH_FACTOR = 2.0;
     private static final HashConfig DEFAULT = create(
-            DEFAULT_MIN_LOAD, DEFAULT_TARGET_LOAD, DEFAULT_MAX_LOAD, DEFAULT_GROW_FACTOR, null);
+            DEFAULT_MIN_LOAD, DEFAULT_TARGET_LOAD, DEFAULT_MAX_LOAD, DEFAULT_GROWTH_FACTOR, null);
 
     /**
-     * Returns a hash config with 0.(3) min load, 0.5 target load, 0.(6) max load, 2.0 grow factor
+     * Returns a hash config with 0.(3) min load, 0.5 target load, 0.(6) max load, 2.0 growth factor
      * and {@code null} shrink condition.
      *
      * @return the default hash config
@@ -93,7 +93,7 @@ public abstract class HashConfig {
     }
 
     /**
-     * Returns a new hash config with the given loads and the grow factor set to
+     * Returns a new hash config with the given loads and the growth factor set to
      * {@code maxLoad / minLoad}.
      *
      * <p>The shrink condition in the returned hash config is left default, i. e. {@code null}.
@@ -101,7 +101,7 @@ public abstract class HashConfig {
      * @param minLoad the min load, should be in the {@code [0.0, targetLoad]} range
      * @param targetLoad the target load, should be in the {@code [minLoad, maxLoad]} range
      * @param maxLoad the max load, should be in the {@code [targetLoad, 1.0]} range
-     * @return a hash config with the given loads and the grow factor of {@code maxLoad / minLoad}
+     * @return a hash config with the given loads and the growth factor of {@code maxLoad / minLoad}
      * @throws IllegalArgumentException if the given loads violate
      *         the hash config <a href="#invariants">invariants</a>
      */
@@ -111,7 +111,7 @@ public abstract class HashConfig {
     }
 
     private static HashConfig create(
-            double minLoad, double targetLoad, double maxLoad, double growFactor,
+            double minLoad, double targetLoad, double maxLoad, double growthFactor,
             @Nullable com.koloboke.function.Predicate<HashContainer> shrinkCondition) {
         if (Double.isNaN(targetLoad) || targetLoad <= 0.0 || targetLoad >= 1.0) {
             throw new IllegalArgumentException("Target load must be in (0.0, 1.0) range, " +
@@ -127,13 +127,13 @@ public abstract class HashConfig {
                     "Max load must be in [%f (target load), 1.0]  range, %f given.",
                     targetLoad, maxLoad));
         }
-        if (Double.isNaN(growFactor) || growFactor <= 1.0 || growFactor > maxLoad / minLoad) {
+        if (Double.isNaN(growthFactor) || growthFactor <= 1.0 || growthFactor > maxLoad / minLoad) {
             throw new IllegalArgumentException(String.format(
-                    "Grow factor must be in [1.0, max load / min load = %f]  range, %f given.",
-                    maxLoad / minLoad, growFactor));
+                    "Growth factor must be in [1.0, max load / min load = %f]  range, %f given.",
+                    maxLoad / minLoad, growthFactor));
         }
         return new AutoValue_HashConfig(minLoad, targetLoad,
-                maxLoad, growFactor, shrinkCondition);
+                maxLoad, growthFactor, shrinkCondition);
     }
 
 
@@ -169,7 +169,7 @@ public abstract class HashConfig {
      * @see #getMinLoad()
      */
     public final HashConfig withMinLoad(double minLoad) {
-        return create(minLoad, getTargetLoad(), getMaxLoad(), getGrowFactor(),
+        return create(minLoad, getTargetLoad(), getMaxLoad(), getGrowthFactor(),
                 getShrinkCondition());
     }
 
@@ -199,7 +199,7 @@ public abstract class HashConfig {
      * @see #getTargetLoad()
      */
     public final HashConfig withTargetLoad(double targetLoad) {
-        return create(getMinLoad(), targetLoad, getMaxLoad(), getGrowFactor(),
+        return create(getMinLoad(), targetLoad, getMaxLoad(), getGrowthFactor(),
                 getShrinkCondition());
     }
 
@@ -227,37 +227,37 @@ public abstract class HashConfig {
      * @see #getMaxLoad()
      */
     public final HashConfig withMaxLoad(double maxLoad) {
-        return create(getMinLoad(), getTargetLoad(), maxLoad, getGrowFactor(),
+        return create(getMinLoad(), getTargetLoad(), maxLoad, getGrowthFactor(),
                 getShrinkCondition());
     }
 
     /**
-     * Returns the grow factor of this hash config. It denotes how much a hash container's capacity
-     * is increased on periodical rehashes on adding (putting) new elements (entries).
+     * Returns the growth factor of this hash config. It denotes how much a hash container's
+     * capacity is increased on periodical rehashes on adding (putting) new elements (entries).
      *
-     * @return the grow factor, a value in the [{@code 1.0},
+     * @return the growth factor, a value in the [{@code 1.0},
      *         {@link #getMaxLoad() max load} / {@link #getMinLoad() min load}] range
-     * @see #withGrowFactor(double)
+     * @see #withGrowthFactor(double)
      */
-    public abstract double getGrowFactor();
+    public abstract double getGrowthFactor();
 
     /**
-     * Returns a copy of this hash config with the grow factor set to the given value.
+     * Returns a copy of this hash config with the growth factor set to the given value.
      *
-     * <p>Grow factor allows to control memory usage -- performance tradeoff for steadily growing
+     * <p>Growth factor allows to control memory usage -- performance tradeoff for steadily growing
      * hash tables.
      *
-     * <p>Linear hash tables can't have any grow factor other than 2.0.
+     * <p>Linear hash tables can't have any growth factor other than 2.0.
      *
-     * @param growFactor the new grow factor, a value in the [{@code 1.0},
+     * @param growthFactor the new growth factor, a value in the [{@code 1.0},
      *                   {@link #getMaxLoad() max load} / {@link #getMinLoad() min load}] range
-     * @return a copy of this hash config with the grow factor set to the given value
+     * @return a copy of this hash config with the growth factor set to the given value
      * @throws IllegalArgumentException if the resulting hash config violates
      *         the <a href="#invariants">invariants</a>
-     * @see #getGrowFactor()
+     * @see #getGrowthFactor()
      */
-    public final HashConfig withGrowFactor(double growFactor) {
-        return create(getMinLoad(), getTargetLoad(), getMaxLoad(), growFactor,
+    public final HashConfig withGrowthFactor(double growthFactor) {
+        return create(getMinLoad(), getTargetLoad(), getMaxLoad(), growthFactor,
                 getShrinkCondition());
     }
 
@@ -304,6 +304,6 @@ public abstract class HashConfig {
      */
     public final HashConfig withShrinkCondition(
             @Nullable com.koloboke.function.Predicate<HashContainer> condition) {
-        return create(getMinLoad(), getTargetLoad(), getMaxLoad(), getGrowFactor(), condition);
+        return create(getMinLoad(), getTargetLoad(), getMaxLoad(), getGrowthFactor(), condition);
     }
 }

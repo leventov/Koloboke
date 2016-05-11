@@ -26,7 +26,7 @@ public final class HashConfigWrapper {
     private final Scaler minLoadInverse;
     private final Scaler targetLoadInverse;
     private final Scaler maxLoad, maxLoadInverse;
-    private final Scaler growFactor;
+    private final Scaler growthFactor;
 
     public HashConfigWrapper(HashConfig config) {
         this.config = config;
@@ -36,7 +36,7 @@ public final class HashConfigWrapper {
         targetLoadInverse = Scaler.by(1.0 / config.getTargetLoad());
         maxLoad = Scaler.by(config.getMaxLoad());
         maxLoadInverse = Scaler.by(1.0 / config.getMaxLoad());
-        growFactor = Scaler.by(config.getGrowFactor());
+        growthFactor = Scaler.by(config.getGrowthFactor());
     }
 
     public HashConfig config() {
@@ -125,30 +125,30 @@ public final class HashConfigWrapper {
     }
 
     /**
-     * Computes grown hash table capacity for the given capacity
-     * and grow factor of this config.
+     * Computes grown hash table capacity for the given capacity and growth factor of this config.
      *
      * @param capacity capacity of the hash table to grow
      * @return if the given capacity is non-negative, returns the least int capacity
-     *         such that |new capacity - the given capacity * {@code config().getGrowFactor()}| < 1,
-     *         or {@code Integer.MAX_VALUE} if there is no such capacity.
+     *         such that |new capacity - the given capacity * {@code config().getGrowthFactor()}| <
+     *         1, or {@code Integer.MAX_VALUE} if there is no such capacity.
      *         If the given capacity is negative, result is undefined.
      */
     public int grow(int capacity) {
-        return growFactor.scaleLower(capacity);
+        return growthFactor.scaleLower(capacity);
     }
 
     /**
      * Computes grown hash table capacity for the given capacity
-     * and grow factor of this config.
+     * and growth factor of this config.
      *
      * @param capacity capacity of the hash table to grow
      * @return if the given capacity is non-negative, returns the least long capacity
-     *         such that |new capacity - the given capacity * {@code config().getGrowFactor()}| < 1.
+     *         such that
+     *         |new capacity - the given capacity * {@code config().getGrowthFactor()}| < 1.
      *         If there is no such capacity or the given capacity is negative, result is undefined.
      */
     public long grow(long capacity) {
-        return growFactor.scaleLower(capacity);
+        return growthFactor.scaleLower(capacity);
     }
 
     @Override

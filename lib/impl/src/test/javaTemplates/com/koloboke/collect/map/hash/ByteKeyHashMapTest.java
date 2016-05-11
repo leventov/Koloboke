@@ -37,7 +37,7 @@ public class ByteKeyHashMapTest {
     public void testCorrectFreeAndRemovedValuesReplacement() {
         ByteIntMapFactory factory = getDefaultFactory()
                 // to ensure DHash will be created
-                .withHashConfig(HashConfig.getDefault().withGrowFactor(1.999))
+                .withHashConfig(HashConfig.getDefault().withGrowthFactor(1.999))
                 .withKeysDomainComplement((byte) 0, (byte) 0);
         for (int i = Byte.MIN_VALUE; i <= Byte.MAX_VALUE; i++) {
             for (int j = Byte.MIN_VALUE; j <= Byte.MAX_VALUE; j++) {
@@ -79,7 +79,7 @@ public class ByteKeyHashMapTest {
                 .withHashConfig(HashConfig.getDefault()
                         .withMaxLoad(0.999)
                         // to ensure DHash will be created
-                        .withGrowFactor(1.999))
+                        .withGrowthFactor(1.999))
                 .withKeysDomainComplement((byte) 0, (byte) 1);
 
         ByteIntMap map;

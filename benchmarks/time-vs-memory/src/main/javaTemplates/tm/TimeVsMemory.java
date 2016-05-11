@@ -86,8 +86,8 @@ public class TimeVsMemory {
     }
 
     private static HashConfig config(double minLoad, double targetLoad, double maxLoad,
-            double growFactor) {
-        HashConfig config = HashConfig.getDefault().withGrowFactor(growFactor);
+            double growthFactor) {
+        HashConfig config = HashConfig.getDefault().withGrowthFactor(growthFactor);
         if (minLoad < config.getMinLoad()) {
             return config.withMinLoad(minLoad).withTargetLoad(targetLoad).withMaxLoad(maxLoad);
         } else {

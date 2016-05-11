@@ -25,7 +25,7 @@ public final class HashConfigs {
     public static List<HashConfig> all() {
         return Arrays.asList(
                 HashConfig.getDefault(),
-                HashConfig.getDefault().withGrowFactor(1.999)
+                HashConfig.getDefault().withGrowthFactor(1.999)
         );
     }
 

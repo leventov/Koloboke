@@ -39,9 +39,9 @@ public class HashConfigTest {
         HashConfig conf5 = conf4.withMaxLoad(maxLoad + 0.01);
         assertEquals(conf4, conf5.withMaxLoad(maxLoad));
 
-        double growFactor = conf5.getGrowFactor();
-        HashConfig conf6 = conf5.withGrowFactor(growFactor + 0.01);
-        assertEquals(conf5, conf6.withGrowFactor(growFactor));
+        double growthFactor = conf5.getGrowthFactor();
+        HashConfig conf6 = conf5.withGrowthFactor(growthFactor + 0.01);
+        assertEquals(conf5, conf6.withGrowthFactor(growthFactor));
 
         Predicate<HashContainer> shrinkCondition = conf6.getShrinkCondition();
         HashConfig conf7 = conf6.withShrinkCondition(new Predicate<HashContainer>() {
@@ -58,10 +58,10 @@ public class HashConfigTest {
         assertEquals(
                 "HashConfig{" +
                         "getMinLoad=" + (1.0 / 3.0) + ", getTargetLoad=" + 0.5 + ", " +
-                        "getMaxLoad=" + (2.0 / 3.0) + ", getGrowFactor=" + 2.0 + ", " +
+                        "getMaxLoad=" + (2.0 / 3.0) + ", getGrowthFactor=" + 2.0 + ", " +
                         "getShrinkCondition=null}",
                 HashConfig.getDefault().withMinLoad(1.0 / 3.0).withTargetLoad(0.5)
-                        .withMaxLoad(2.0 / 3.0).withGrowFactor(2.0).withShrinkCondition(null)
+                        .withMaxLoad(2.0 / 3.0).withGrowthFactor(2.0).withShrinkCondition(null)
                         .toString()
         );
     }

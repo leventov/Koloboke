@@ -32,7 +32,7 @@ public class HashConfigWrapperTest {
                     .withMinLoad(0.25).withTargetLoad(0.5).withMaxLoad(0.75)),
             new HashConfigWrapper(HashConfig.getDefault()
                     .withMinLoad(0.0).withTargetLoad(0.01).withMaxLoad(0.02)),
-            new HashConfigWrapper(HashConfig.getDefault().withGrowFactor(1.0001)
+            new HashConfigWrapper(HashConfig.getDefault().withGrowthFactor(1.0001)
                     .withMaxLoad(1.0).withTargetLoad(0.99).withMinLoad(0.98))
     };
 
