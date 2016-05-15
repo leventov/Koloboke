@@ -961,15 +961,15 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
                 v2 = /* unwrap value */(Short) e2.getValue()/**/;
                 return /* if !(obj key) */key() == k2
                         /* elif obj key //
-                        // if false nullKeyAllowed //
-                        keyEquals(key(), k2)
-                        // elif true nullKeyAllowed //
-                        nullableKeyEquals(key(), k2)
-                        // endif //
+                        // This is important to pass Koloboke's key as the second parameter
+                        // and always call nullableKeyEquivalence() (that checks keys are identical
+                        // before calling keyEquals()) for compliance with @CustomKeyEquivalence
+                        // contract
+                        nullableKeyEquals(k2, key())
                         // endif */
                         &&
                         /* if !(obj value) */value() == v2
-                        /* elif obj value //nullableValueEquals(value(), v2)// endif */;
+                        /* elif obj value //nullableValueEquals(v2, value())// endif */;
             } catch (ClassCastException e) {
                 return false;
             } catch (NullPointerException e) {
