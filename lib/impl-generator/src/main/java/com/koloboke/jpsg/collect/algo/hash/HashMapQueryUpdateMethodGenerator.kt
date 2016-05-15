@@ -571,7 +571,10 @@ class HashMapQueryUpdateMethodGenerator : MapQueryUpdateMethodGenerator() {
             if (!cxt.nullKeyAllowed()) {
                 lines("if (key == null)")
                 lines("""    throw new java.lang.NullPointerException(
-                        "This hashtable implementation doesn't allow null keys");""")
+                        "This hashtable implementation doesn't allow null keys.\n" +
+                        "A Koloboke Compile-generated hashtable implementation could contain\n" +
+                        "null keys if the implemented type is annotated with\n" +
+                        "@com.koloboke.compile.NullKeyAllowed");""")
 
             } else {
                 ifBlock("key != null")
