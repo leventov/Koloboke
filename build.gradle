@@ -63,7 +63,7 @@ configure(leafProjects) {
     apply from: "$rootProject.projectDir/methods.gradle"
 
     ext.slf4j_version = '1.7.21'
-    ext.kotlin_version = '1.0.1-2'
+    ext.kotlin_version = '1.0.2'
     projectCompatibility(project, 1.8)
 }
 
