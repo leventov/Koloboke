@@ -100,11 +100,7 @@ public abstract class MutableSeparateKVObjDHashSO<E> extends MutableDHash
         set = new Object[capacity];
         /* elif (false nullKeyAllowed LHash hash) ||
                 (false nullKeyAllowed Updatable|Immutable mutability) */
-        /* if Generic|BoundedGeneric keyType */
         set = (E[]) new /* print newKeyArrayType */Object/* endprint */[capacity];
-        /* elif Specific keyType */
-        set = new E[capacity];
-        /* endif */
         /* endif */
         /* elif Parallel kv */
         table = new Object[capacity * 2];
