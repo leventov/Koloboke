@@ -49,7 +49,7 @@ public class GuavaCharShortMapTestSuiteBuilder/*<>*/ extends MapTestSuiteBuilder
     }
 
     @Override
-    protected MapTestSuiteBuilder<Character, Short> usingGenerator(
+    public MapTestSuiteBuilder<Character, Short> usingGenerator(
             TestMapGenerator<Character, Short> subjectGenerator) {
         return super.usingGenerator(subjectGenerator);
     }
