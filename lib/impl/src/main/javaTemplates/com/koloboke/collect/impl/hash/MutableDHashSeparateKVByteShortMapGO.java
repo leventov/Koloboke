@@ -640,6 +640,8 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     }
     /* endif */
 
+    /* if compile project */
+    @SuppressFBWarnings("EC_UNRELATED_TYPES_USING_POINTER_EQUALITY")/* endif */
     @Override
     public boolean removeAll(@Nonnull HashByteSet/*<>*/ thisC, @Nonnull Collection<?> c) {
         /* template RemoveAll with given this */ throw new NotGenerated(); /* endtemplate */
@@ -660,6 +662,8 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     /* endif */
     /* endif */
 
+    /* if compile project */
+    @SuppressFBWarnings("EC_UNRELATED_TYPES_USING_POINTER_EQUALITY")/* endif */
     @Override
     public boolean retainAll(@Nonnull HashByteSet/*<>*/ thisC, @Nonnull Collection<?> c) {
         /* if !(obj key) */

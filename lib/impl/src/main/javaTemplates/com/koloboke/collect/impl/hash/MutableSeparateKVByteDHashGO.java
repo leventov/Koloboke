@@ -188,6 +188,8 @@ public abstract class MutableSeparateKVByteDHashGO/*<>*/
     }
     /* endif */
 
+    /* if compile project */
+    @SuppressFBWarnings("EC_UNRELATED_TYPES_USING_POINTER_EQUALITY")/* endif */
     boolean removeAll(@Nonnull HashByteSet/*<>*/ thisC, @Nonnull Collection<?> c) {
         /* template RemoveAll with generic version given this */ throw new NotGenerated();
         /* endtemplate */
@@ -206,6 +208,8 @@ public abstract class MutableSeparateKVByteDHashGO/*<>*/
     /* endif */
     /* endif */
 
+    /* if compile project */
+    @SuppressFBWarnings("EC_UNRELATED_TYPES_USING_POINTER_EQUALITY")/* endif */
     boolean retainAll(@Nonnull HashByteSet/*<>*/ thisC, @Nonnull Collection<?> c) {
         /* if !(obj elem) */
         if (c instanceof ByteCollection)

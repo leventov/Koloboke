@@ -248,7 +248,8 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
     /* endif */
 
 
-    /* if compile project Mutable mutability */@SuppressFBWarnings("BC_IMPOSSIBLE_CAST")/* endif */
+    /* if compile project */@SuppressFBWarnings({"EC_UNRELATED_TYPES_USING_POINTER_EQUALITY"
+            /* if Mutable mutability */, "BC_IMPOSSIBLE_CAST"/* endif */})/* endif */
     @Override
     public boolean removeAll(@Nonnull Collection<?> c) {
         /* if Mutable mutability */
@@ -296,6 +297,8 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
     }
     /* endif */
 
+    /* if compile project */
+    @SuppressFBWarnings("EC_UNRELATED_TYPES_USING_POINTER_EQUALITY")/* endif */
     @Override
     public boolean retainAll(@Nonnull Collection<?> c) {
         /* if impl project */
