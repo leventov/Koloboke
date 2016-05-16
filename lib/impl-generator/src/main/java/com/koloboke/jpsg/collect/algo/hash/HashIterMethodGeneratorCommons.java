@@ -44,7 +44,7 @@ final class HashIterMethodGeneratorCommons {
         if (needCapacityMask(cxt)) {
             g.lines("final int capacityMask;");
         }
-        if (!cxt.immutable()) {
+        if (cxt.concurrentModificationChecked()) {
             g.lines("int expectedModCount;");
         }
         generateMutableEntryClassAwareOfPossibleCopyOnRemove(g, cxt);
@@ -59,13 +59,12 @@ final class HashIterMethodGeneratorCommons {
     }
 
     static void commonConstructorOps(MethodGenerator g, MethodContext cxt) {
-        if (!cxt.immutable()) {
+        if (cxt.concurrentModificationChecked())
             g.lines("expectedModCount = mc;");
-        }
     }
 
     static void checkModCount(MethodGenerator g, MethodContext cxt, boolean copyModCount) {
-        if (!cxt.immutable()) {
+        if (cxt.concurrentModificationChecked()) {
             String mc;
             if (cxt.isEntryView() && copyModCount) {
                 g.lines("int mc;");
@@ -78,7 +77,7 @@ final class HashIterMethodGeneratorCommons {
     }
 
     static void endOfModCountCheck(MethodGenerator g, MethodContext cxt) {
-        if (!cxt.immutable()) {
+        if (cxt.concurrentModificationChecked()) {
             g.elseBlock();
             g.concurrentMod();
             g.blockEnd();
@@ -145,8 +144,10 @@ final class HashIterMethodGeneratorCommons {
         if (!cxt.immutable()) {
             String mutableEntryClass = "MutableEntry";
             if (possibleArrayCopyOnRemove(cxt)) mutableEntryClass += "2";
-            return "new " + mutableEntryClass + "(" +
-                    mc + ", " + index + ", " + key + ", " + value + ")";
+            String entry = "new " + mutableEntryClass + "(";
+            if (cxt.concurrentModificationChecked())
+                entry += mc + ", ";
+            return entry + index + ", " + key + ", " + value + ")";
         } else {
             return "new ImmutableEntry(" + key + ", " + value + ")";
         }
@@ -159,10 +160,13 @@ final class HashIterMethodGeneratorCommons {
         g.lines("");
         g.lines("class MutableEntry2 extends MutableEntry").block(); {
             g.lines(
-                    "MutableEntry2(int modCount, int index, " +
+                    "MutableEntry2(" +
+                            (cxt.concurrentModificationChecked() ? "int modCount, " : "") +
+                            "int index, " +
                             cxt.keyUnwrappedType() + " key, " + cxt.valueUnwrappedType() +
                             " value) {",
-                    "    super(modCount, index, key, value);",
+                    "    super(" + (cxt.concurrentModificationChecked() ? "modCount, " : "") +
+                            "index, key, value);",
                     "}",
                     "",
                     "@Override"
@@ -174,18 +178,20 @@ final class HashIterMethodGeneratorCommons {
                     INSTANCE.writeValue(g, cxt, "index", "newValue");
                 } g.elseBlock(); {
                     g.lines("justPut(key, newValue);");
-                    // This check ensures that justPut (one line above) was an update, as expected,
-                    // rather than insertion put. As far as this hash table implementation isn't
-                    // fully thread-safe, this check is excessive, because there is one
-                    // in setValue() prologue.
-                    //
-                    // (The explanation above is the result of investigation,
-                    // because I didn't remember the purpose of the check. I would remove the check,
-                    // if I was 100% sure that had correctly recalled my own intents when added this
-                    // check.)
-                    g.ifBlock("this.modCount != " + modCount()); {
-                        g.illegalState();
-                    } g.blockEnd();
+                    if (cxt.concurrentModificationChecked()) {
+                        // This check ensures that justPut (one line above) was an update, as
+                        // expected, rather than insertion put. As far as this hash table
+                        // implementation isn't fully thread-safe, this check is excessive, because
+                        // there is one in setValue() prologue.
+                        //
+                        // (The explanation above is the result of investigation,
+                        // because I didn't remember the purpose of the check. I would remove
+                        // the check, if I was 100% sure that had correctly recalled my own intents
+                        // when added this check.)
+                        g.ifBlock("this.modCount != " + modCount()); {
+                            g.illegalState();
+                        } g.blockEnd();
+                    }
                 } g.blockEnd();
             } g.blockEnd();
         } g.blockEnd();

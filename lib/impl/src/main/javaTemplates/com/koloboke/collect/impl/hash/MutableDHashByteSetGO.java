@@ -2,6 +2,7 @@
  DHash|QHash|LHash hash
  byte|char|short|int|long|float|double|obj elem
  Mutable|Updatable|Immutable mutability
+ true|false concurrentModificationChecked
 */
 /*
  * Copyright 2014 the original author or authors.
@@ -39,17 +40,21 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
 
     @Override
     final void copy(SeparateKVByteDHash hash) {
-        int myMC = modCount(), hashMC = hash.modCount();
+        int /* if true concurrentModificationChecked */myMC = modCount(), /* endif */
+                hashMC = hash.modCount();
         super.copy(hash);
-        if (myMC != modCount() || hashMC != hash.modCount())
+        if (/* if true concurrentModificationChecked */myMC != modCount() ||/* endif */
+                hashMC != hash.modCount())
             throw new ConcurrentModificationException();
     }
 
     @Override
     final void move(SeparateKVByteDHash hash) {
-        int myMC = modCount(), hashMC = hash.modCount();
+        int /* if true concurrentModificationChecked */myMC = modCount(), /* endif */
+                hashMC = hash.modCount();
         super.move(hash);
-        if (myMC != modCount() || hashMC != hash.modCount())
+        if (/* if true concurrentModificationChecked */myMC != modCount() ||/* endif */
+                hashMC != hash.modCount())
             throw new ConcurrentModificationException();
     }
 

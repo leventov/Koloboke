@@ -212,7 +212,8 @@ public abstract class MethodGenerator {
     }
 
     public final void incrementModCount() {
-        lines("incrementModCount();");
+        if (cxt.concurrentModificationChecked())
+            lines("incrementModCount();");
     }
 
     protected int countUsages(int fromLine, String s) {

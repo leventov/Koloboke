@@ -259,6 +259,15 @@ public final class MethodContext {
         return TRUE.equals(getOption("delayedRemoved"));
     }
 
+    public boolean concurrentModificationChecked() {
+        Option concurrentModificationChecked = getOption("concurrentModificationChecked");
+        if (concurrentModificationChecked == null) {
+            throw new IllegalStateException(
+                    "concurrentModificationChecked should be present in the context");
+        }
+        return TRUE.equals(concurrentModificationChecked);
+    }
+
     public String unsafeGetKeyBits(String object, String offset) {
         return unsafeGet(object, offset, ((PrimitiveType) keyOption()).bitsType());
     }

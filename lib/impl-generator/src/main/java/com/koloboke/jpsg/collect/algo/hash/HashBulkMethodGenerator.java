@@ -74,9 +74,8 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
         if (cxt.isEntryView() && method.entryType() == EntryType.REUSABLE)
             lines("ReusableEntry e = new ReusableEntry();");
 
-        if (!cxt.immutable()) {
+        if (cxt.concurrentModificationChecked())
             lines("int mc = modCount();");
-        }
         if (cxt.isIntegralKey()) {
             lines(cxt.keyType() + " free = freeValue;");
             if (INSTANCE.possibleRemovedSlots(cxt)) {
@@ -130,7 +129,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             } blockEnd();
         }
 
-        if (!cxt.immutable()) {
+        if (cxt.concurrentModificationChecked()) {
             lines(
                     "if (mc != modCount())",
                     "    throw new java.util.ConcurrentModificationException();"
@@ -282,7 +281,10 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
     private String entry() {
         if (method.entryType() == EntryType.SIMPLE) {
             if (!cxt.immutable()) {
-                return "new MutableEntry(mc, i, " + unwrappedKeyAndValue() + ")";
+                String args = "i, " + unwrappedKeyAndValue();
+                if (cxt.concurrentModificationChecked())
+                    args = "mc, " + args;
+                return "new MutableEntry(" + args + ")";
             } else {
                 return "new ImmutableEntry(" + unwrappedKeyAndValue() + ")";
             }
@@ -328,8 +330,10 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
 
     @Override
     public BulkMethodGenerator remove() {
-        incrementModCount();
-        lines("mc++;");
+        if (cxt.concurrentModificationChecked()) {
+            incrementModCount();
+            lines("mc++;");
+        }
         if (INSTANCE.isLHash(cxt)) {
             lHashShiftRemove();
         } else {

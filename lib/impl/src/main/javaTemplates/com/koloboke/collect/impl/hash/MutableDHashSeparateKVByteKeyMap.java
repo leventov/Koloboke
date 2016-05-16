@@ -3,6 +3,7 @@
  byte|char|short|int|long|float|double|obj key
  Mutable|Updatable|Immutable mutability
  Separate|Parallel kv
+ true|false concurrentModificationChecked
 */
 /* if (Separate kv) || (Enabled parallelKV) */
 /*
@@ -156,7 +157,13 @@ public abstract class MutableDHashSeparateKVByteKeyMap/*<>*/
 
         @Override
         public int modCount() {
+            /* if true concurrentModificationChecked */
             return MutableDHashSeparateKVByteKeyMap.this.modCount();
+            /* elif false concurrentModificationChecked */
+            // not calling outer class modCount() to let Compile remove outer that method
+            // if never used elsewhere
+            return 0;
+            /* endif */
         }
 
         @Override

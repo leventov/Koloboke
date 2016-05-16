@@ -103,7 +103,8 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
         permissions.add(Permission.REMOVE);
         lines("int index;");
         ifBlock("(index = this.index) >= 0");
-        ifBlock("expectedModCount++ == " + modCount());
+        if (cxt.concurrentModificationChecked())
+            ifBlock("expectedModCount++ == " + modCount());
         lines("this.index = -1;");
         if (INSTANCE.isLHash(cxt)) {
             INSTANCE.declareEntry(this, cxt);
@@ -151,7 +152,7 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
     @Override
     protected void generateForEachRemaining() {
         requireNonNull("action");
-        if (!cxt.immutable())
+        if (cxt.concurrentModificationChecked())
             lines("int mc = expectedModCount;");
         copyArrays(this, cxt);
         copySpecials(this, cxt);
@@ -165,7 +166,7 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
             } blockEnd();
         } blockEnd();
         String concurrentModCond = "nextI != nextIndex";
-        if (!cxt.immutable())
+        if (cxt.concurrentModificationChecked())
             concurrentModCond += " || mc != " + modCount();
         ifBlock(concurrentModCond); {
             concurrentMod();

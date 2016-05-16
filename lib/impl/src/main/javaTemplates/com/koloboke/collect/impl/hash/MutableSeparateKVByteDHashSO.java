@@ -3,6 +3,7 @@
  byte|char|short|int|long elem
  Mutable|Updatable|Immutable mutability
  Separate|Parallel kv
+ true|false concurrentModificationChecked
 */
 /* if (Separate kv) || (Enabled parallelKV) */
 /*
@@ -135,7 +136,7 @@ public abstract class MutableSeparateKVByteDHashSO extends MutableDHash
     /* if !(Immutable mutability) */
     private byte findNewFreeOrRemoved() {
         /* if byte|char|short elem */
-        int mc = modCount();
+        /* if true concurrentModificationChecked */int mc = modCount();/* endif */
         int size = size();
         if (size >= BYTE_CARDINALITY -
                 /* if Mutable mutability && !(LHash hash) */2
@@ -160,8 +161,8 @@ public abstract class MutableSeparateKVByteDHashSO extends MutableDHash
                     break searchForFree;
                 }
             }
-            if (mc != modCount())
-                throw new ConcurrentModificationException();
+            /* if true concurrentModificationChecked */if (mc != modCount())
+                throw new ConcurrentModificationException();/* endif */
             throw new AssertionError("Impossible state");
         }
         else /* endif */ {
@@ -177,27 +178,29 @@ public abstract class MutableSeparateKVByteDHashSO extends MutableDHash
 
 
     byte changeFree() {
-        int mc = modCount();
+        /* if true concurrentModificationChecked */int mc = modCount();/* endif */
         byte newFree = findNewFreeOrRemoved();
+        /* if true concurrentModificationChecked */
         incrementModCount();
-        mc++;
+        mc++;/* endif */
         /* if Separate kv */
         ByteArrays.replaceAll(set, freeValue, newFree);
         /* elif Parallel kv */
         ByteArrays.replaceAllKeys(table, freeValue, newFree);
         /* endif */
         this.freeValue = newFree;
-        if (mc != modCount())
-            throw new ConcurrentModificationException();
+        /* if true concurrentModificationChecked */if (mc != modCount())
+            throw new ConcurrentModificationException();/* endif */
         return newFree;
     }
 
     /* if Mutable mutability && !(LHash hash) */
     byte changeRemoved() {
-        int mc = modCount();
+        /* if true concurrentModificationChecked */int mc = modCount();/* endif */
         byte newRemoved = findNewFreeOrRemoved();
+        /* if true concurrentModificationChecked */
         incrementModCount();
-        mc++;
+        mc++;/* endif */
         if (!noRemoved()) {
             /* if Separate kv */
             ByteArrays.replaceAll(set, removedValue, newRemoved);
@@ -206,8 +209,8 @@ public abstract class MutableSeparateKVByteDHashSO extends MutableDHash
             /* endif */
         }
         this.removedValue = newRemoved;
-        if (mc != modCount())
-            throw new ConcurrentModificationException();
+        /* if true concurrentModificationChecked */if (mc != modCount())
+            throw new ConcurrentModificationException();/* endif */
         return newRemoved;
     }
     /* endif */

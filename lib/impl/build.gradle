@@ -26,6 +26,8 @@ configure([generateJavaSpecializations, generateResourceSpecializations]) {
             'kv=Separate,key=long|double,value=long|double',
             'kv=Separate,key=obj,value=obj'
     )
+    exclude 'concurrentModificationChecked=true,mutability=Immutable'
+    exclude 'concurrentModificationChecked=false,mutability=Mutable|Updatable'
 }
 
 dependencies {

@@ -2,6 +2,7 @@
  DHash|QHash|LHash hash
  byte|char|short|int|long|float|double|obj elem
  Mutable|Updatable|Immutable mutability
+ true|false concurrentModificationChecked
 */
 /*
  * Copyright 2014 the original author or authors.
@@ -39,7 +40,7 @@ public abstract class MutableByteDHashSetSO/*<>*/
     @Override
     void removeAt(int index) {
         // if !(LHash hash) */
-        incrementModCount();
+        /* if true concurrentModificationChecked */incrementModCount();/* endif */
         super.removeAt(index);
         postRemoveHook();
         /* elif LHash hash //
@@ -56,10 +57,10 @@ public abstract class MutableByteDHashSetSO/*<>*/
 
     @Override
     public void clear() {
-        int mc = modCount() + 1;
+        /* if true concurrentModificationChecked */int mc = modCount() + 1;/* endif */
         super.clear();
-        if (mc != modCount())
-            throw new ConcurrentModificationException();
+        /* if true concurrentModificationChecked */if (mc != modCount())
+            throw new ConcurrentModificationException();/* endif */
     }
     /* endif */
 }

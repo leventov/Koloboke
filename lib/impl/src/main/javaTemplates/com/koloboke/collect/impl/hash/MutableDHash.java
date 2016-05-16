@@ -1,4 +1,8 @@
-/* with DHash|QHash hash Mutable mutability */
+/* with
+ DHash|QHash hash
+ Mutable mutability
+ true|false concurrentModificationChecked
+*/
 /*
  * Copyright 2014 the original author or authors.
  *
@@ -67,7 +71,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
     private int removedSlots;
 
 
-    private int modCount = 0;
+    /* if true concurrentModificationChecked */ private int modCount = 0;/* endif */
 
 
     /////////////////////////////
@@ -109,12 +113,18 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
 
     @Override
     public final int modCount() {
+        /* if true concurrentModificationChecked */
         return modCount;
+        /* elif false concurrentModificationChecked //
+        return 0;
+        // endif */
     }
 
+    /* if true concurrentModificationChecked */
     final void incrementModCount() {
         modCount++;
     }
+    /* endif */
 
     /** For tests */
     public final int maxSize() {
@@ -217,7 +227,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
      * {@link #rehash(int)} implementation.
      */
     final void initForRehash(int newCapacity) {
-        modCount++;
+        /* if true concurrentModificationChecked */modCount++;/* endif */
         internalInit(newCapacity);
     }
 
@@ -230,7 +240,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
      */
     @Override
     public void clear() {
-        modCount++;
+        /* if true concurrentModificationChecked */modCount++;/* endif */
         size = 0;
         freeSlots = capacity();
         removedSlots = 0;

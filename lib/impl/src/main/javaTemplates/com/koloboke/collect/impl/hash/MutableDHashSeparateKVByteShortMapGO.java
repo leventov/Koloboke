@@ -4,6 +4,7 @@
  short|byte|char|int|long|float|double|obj value
  Mutable|Updatable|Immutable mutability
  Separate|Parallel kv
+ true|false concurrentModificationChecked
 */
 /*
  * Copyright 2014 the original author or authors.
@@ -54,17 +55,21 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
 
     /* if Separate kv */@Override/* endif */
     final void copy(SeparateKVByteShortDHash hash) {
-        int myMC = modCount(), hashMC = hash.modCount();
+        int /* if true concurrentModificationChecked */myMC = modCount(),/* endif */
+                hashMC = hash.modCount();
         super.copy(hash);
-        if (myMC != modCount() || hashMC != hash.modCount())
+        if (/* if true concurrentModificationChecked */myMC != modCount() ||/* endif */
+                hashMC != hash.modCount())
             throw new ConcurrentModificationException();
     }
 
     /* if Separate kv */@Override/* endif */
     final void move(SeparateKVByteShortDHash hash) {
-        int myMC = modCount(), hashMC = hash.modCount();
+        int /* if true concurrentModificationChecked */myMC = modCount(),/* endif */
+                hashMC = hash.modCount();
         super.move(hash);
-        if (myMC != modCount() || hashMC != hash.modCount())
+        if (/* if true concurrentModificationChecked */myMC != modCount() || /* endif */
+                hashMC != hash.modCount())
             throw new ConcurrentModificationException();
     }
 
@@ -143,12 +148,13 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     @Nonnull
     @Override
     public ByteShortCursor/*<>*/ cursor() {
-        /* if !(Immutable mutability) */int mc = modCount();/* endif */
+        /* if true concurrentModificationChecked */int mc = modCount();/* endif */
         /* if Mutable mutability && !(LHash hash) //
         if (!noRemoved())
-            return new SomeRemovedMapCursor(// if !(Immutable mutability) //mc// endif //);
+            return new SomeRemovedMapCursor(
+                // if true concurrentModificationChecked //mc// endif //);
         // endif */
-        return new NoRemovedMapCursor(/* if !(Immutable mutability) */mc/* endif */);
+        return new NoRemovedMapCursor(/* if true concurrentModificationChecked */mc/* endif */);
     }
 
     /* if compile project */
@@ -515,10 +521,10 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     /* if !(Immutable mutability) */
     @Override
     public void clear() {
-        int mc = modCount() + 1;
+        /* if true concurrentModificationChecked */int mc = modCount() + 1;/* endif */
         super.clear();
-        if (mc != modCount())
-            throw new ConcurrentModificationException();
+        /* if true concurrentModificationChecked */if (mc != modCount())
+            throw new ConcurrentModificationException();/* endif */
     }
     /* endif */
 
@@ -527,7 +533,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     @Override
     void removeAt(int index) {
         // if !(LHash hash) */
-        incrementModCount();
+        /* if true concurrentModificationChecked */incrementModCount();/* endif */
         super.removeAt(index);
         /* if Separate kv obj value */
         values[index] = null;
@@ -690,22 +696,24 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
 
     @Override
     public ByteIterator/*<>*/ iterator() {
-        /* if !(Immutable mutability) */int mc = modCount();/* endif */
+        /* if true concurrentModificationChecked */int mc = modCount();/* endif */
         /* if !(LHash hash) //
         if (!noRemoved())
-            return new SomeRemovedKeyIterator(// if !(Immutable mutability) //mc// endif //);
+            return new SomeRemovedKeyIterator(
+                // if true concurrentModificationChecked //mc// endif //);
         // endif */
-        return new NoRemovedKeyIterator(/* if !(Immutable mutability) */mc/* endif */);
+        return new NoRemovedKeyIterator(/* if true concurrentModificationChecked */mc/* endif */);
     }
 
     @Override
     public ByteCursor/*<>*/ setCursor() {
-        /* if !(Immutable mutability) */int mc = modCount();/* endif */
+        /* if true concurrentModificationChecked */int mc = modCount();/* endif */
         /* if !(LHash hash) //
         if (!noRemoved())
-            return new SomeRemovedKeyCursor(// if !(Immutable mutability) //mc// endif //);
+            return new SomeRemovedKeyCursor(
+                // if true concurrentModificationChecked //mc// endif //);
         // endif */
-        return new NoRemovedKeyCursor(/* if !(Immutable mutability) */mc/* endif */);
+        return new NoRemovedKeyCursor(/* if true concurrentModificationChecked */mc/* endif */);
     }
 
     /* with No|Some removed */
@@ -719,8 +727,8 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         /* if !(LHash hash) */final/* endif */ /* bits */short[] vals;
         /* endif */
 
-        private NoRemovedKeyIterator(/* if !(Immutable mutability) */int mc/* endif */) {
-            super(mc);
+        private NoRemovedKeyIterator(/* if true concurrentModificationChecked */int mc/* endif */) {
+            super(/* if true concurrentModificationChecked */mc/* endif */);
             /* if Separate kv */vals = values;/* endif */
         }
 
@@ -736,8 +744,8 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         /* if !(LHash hash) */final/* endif */ /* bits */short[] vals;
         /* endif */
 
-        private NoRemovedKeyCursor(/* if !(Immutable mutability) */int mc/* endif */) {
-            super(mc);
+        private NoRemovedKeyCursor(/* if true concurrentModificationChecked */int mc/* endif */) {
+            super(/* if true concurrentModificationChecked */mc/* endif */);
             /* if Separate kv */vals = values;/* endif */
         }
 
@@ -829,23 +837,27 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         @Override
         @Nonnull
         public ObjIterator<Map.Entry<Byte, Short>> iterator() {
-            /* if !(Immutable mutability) */int mc = modCount();/* endif */
+            /* if true concurrentModificationChecked */int mc = modCount();/* endif */
             /* if Mutable mutability && !(LHash hash) //
             if (!noRemoved())
-                return new SomeRemovedEntryIterator(// if !(Immutable mutability) //mc// endif //);
+                return new SomeRemovedEntryIterator(
+                    // if true concurrentModificationChecked //mc// endif //);
             // endif */
-            return new NoRemovedEntryIterator(/* if !(Immutable mutability) */mc/* endif */);
+            return new NoRemovedEntryIterator(
+                    /* if true concurrentModificationChecked */mc/* endif */);
         }
 
         @Nonnull
         @Override
         public ObjCursor<Map.Entry<Byte, Short>> cursor() {
-            /* if !(Immutable mutability) */int mc = modCount();/* endif */
+            /* if true concurrentModificationChecked */int mc = modCount();/* endif */
             /* if Mutable mutability && !(LHash hash) //
             if (!noRemoved())
-                return new SomeRemovedEntryCursor(// if !(Immutable mutability) //mc// endif //);
+                return new SomeRemovedEntryCursor(
+                    // if true concurrentModificationChecked //mc// endif //);
             // endif */
-            return new NoRemovedEntryCursor(/* if !(Immutable mutability) */mc/* endif */);
+            return new NoRemovedEntryCursor(
+                    /* if true concurrentModificationChecked */mc/* endif */);
         }
 
         @Override
@@ -991,13 +1003,14 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     /* if !(Immutable mutability) */
     /* with Mutable mutability */
     class MutableEntry extends ByteShortEntry {
-        final int modCount;
+        /* if true concurrentModificationChecked */final int modCount;/* endif */
         private final int index;
         final /* bits */byte key;
         private /* bits */short value;
 
-        MutableEntry(int modCount, int index, /* bits */byte key, /* bits */short value) {
-            this.modCount = modCount;
+        MutableEntry(/* if true concurrentModificationChecked */int modCount,/* endif */
+                int index, /* bits */byte key, /* bits */short value) {
+            /* if true concurrentModificationChecked */this.modCount = modCount;/* endif */
             this.index = index;
             this.key = key;
             this.value = value;
@@ -1015,8 +1028,8 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
 
         @Override
         public Short setValue(Short newValue) {
-            if (modCount != modCount())
-                throw new IllegalStateException();
+            /* if true concurrentModificationChecked */if (modCount != modCount())
+                throw new IllegalStateException();/* endif */
             short oldValue = /* wrap value */value;
             /* bits */short unwrappedNewValue = /* unwrap value */newValue;
             value = unwrappedNewValue;
@@ -1182,23 +1195,27 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
         @Override
         @Nonnull
         public ShortIterator/*<>*/ iterator() {
-            /* if !(Immutable mutability) */int mc = modCount();/* endif */
+            /* if true concurrentModificationChecked */int mc = modCount();/* endif */
             /* if Mutable mutability && !(LHash hash) //
             if (!noRemoved())
-                return new SomeRemovedValueIterator(// if !(Immutable mutability) //mc// endif //);
+                return new SomeRemovedValueIterator(
+                    // if true concurrentModificationChecked //mc// endif //);
             // endif */
-            return new NoRemovedValueIterator(/* if !(Immutable mutability) */mc/* endif */);
+            return new NoRemovedValueIterator(
+                    /* if true concurrentModificationChecked */mc/* endif */);
         }
 
         @Nonnull
         @Override
         public ShortCursor/*<>*/ cursor() {
-            /* if !(Immutable mutability) */int mc = modCount();/* endif */
+            /* if true concurrentModificationChecked */int mc = modCount();/* endif */
             /* if Mutable mutability && !(LHash hash) //
             if (!noRemoved())
-                return new SomeRemovedValueCursor(// if !(Immutable mutability) //mc// endif //);
+                return new SomeRemovedValueCursor(
+                    // if true concurrentModificationChecked //mc// endif //);
             // endif */
-            return new NoRemovedValueCursor(/* if !(Immutable mutability) */mc/* endif */);
+            return new NoRemovedValueCursor(
+                    /* if true concurrentModificationChecked */mc/* endif */);
         }
 
         @Override
@@ -1327,7 +1344,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     class NoRemovedEntryIterator implements ObjIterator<Map.Entry<Byte, Short>> {
         /* template Iterator.fields */
 
-        NoRemovedEntryIterator(/* if !(Immutable mutability) */int mc/* endif */) {
+        NoRemovedEntryIterator(/* if true concurrentModificationChecked */int mc/* endif */) {
             /* template Iterator.constructor */
         }
 
@@ -1356,7 +1373,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     class NoRemovedEntryCursor implements ObjCursor<Map.Entry<Byte, Short>> {
         /* template Cursor.fields */
 
-        NoRemovedEntryCursor(/* if !(Immutable mutability) */int mc/* endif */) {
+        NoRemovedEntryCursor(/* if true concurrentModificationChecked */int mc/* endif */) {
             /* template Cursor.constructor */
         }
 
@@ -1391,7 +1408,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     class NoRemovedValueIterator implements ShortIterator/*<>*/ {
         /* template Iterator.fields */
 
-        NoRemovedValueIterator(/* if !(Immutable mutability) */int mc/* endif */) {
+        NoRemovedValueIterator(/* if true concurrentModificationChecked */int mc/* endif */) {
             /* template Iterator.constructor */
         }
 
@@ -1438,7 +1455,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     class NoRemovedValueCursor implements ShortCursor/*<>*/ {
         /* template Cursor.fields */
 
-        NoRemovedValueCursor(/* if !(Immutable mutability) */int mc/* endif */) {
+        NoRemovedValueCursor(/* if true concurrentModificationChecked */int mc/* endif */) {
             /* template Cursor.constructor */
         }
 
@@ -1472,7 +1489,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     class NoRemovedMapCursor implements ByteShortCursor/*<>*/ {
         /* template Cursor.fields */
 
-        NoRemovedMapCursor(/* if !(Immutable mutability) */int mc/* endif */) {
+        NoRemovedMapCursor(/* if true concurrentModificationChecked */int mc/* endif */) {
             /* template Cursor.constructor */
         }
 

@@ -3,6 +3,7 @@
  object elem
  Mutable|Updatable|Immutable mutability
  Separate|Parallel kv
+ true|false concurrentModificationChecked
 */
 /* if (Separate kv) || (Enabled parallelKV) */
 /*

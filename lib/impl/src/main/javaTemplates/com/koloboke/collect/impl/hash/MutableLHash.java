@@ -1,4 +1,8 @@
-/* with LHash|QHash|DHash hash Mutable|Updatable mutability */
+/* with
+ LHash|QHash|DHash hash
+ Mutable|Updatable mutability
+  true|false concurrentModificationChecked
+*/
 /* if !(QHash|DHash hash Mutable mutability) */
 /*
  * Copyright 2014 the original author or authors.
@@ -52,7 +56,7 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
 
     private int maxSize;
 
-    private int modCount = 0;
+    /* if true concurrentModificationChecked */private int modCount = 0;/* endif */
 
 
     /////////////////////////////
@@ -70,12 +74,18 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
 
     @Override
     public final int modCount() {
+        /* if true concurrentModificationChecked */
         return modCount;
+        /* elif false concurrentModificationChecked */
+        return 0;
+        /* endif */
     }
 
+    /* if true concurrentModificationChecked */
     final void incrementModCount() {
         modCount++;
     }
+    /* endif */
 
 
     ////////////////////////
@@ -141,7 +151,7 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
      * in {@link #rehash(int)} implementation.
      */
     final void initForRehash(int newCapacity) {
-        modCount++;
+        /* if true concurrentModificationChecked */modCount++;/* endif */
         internalInit(newCapacity);
     }
 
@@ -154,7 +164,7 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
      */
     @Override
     public void clear() {
-        modCount++;
+        /* if true concurrentModificationChecked */modCount++;/* endif */
         size = 0;
     }
 

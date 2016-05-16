@@ -4,6 +4,7 @@
  short|byte|char|int|long|float|double value
  Mutable|Updatable|Immutable mutability
  Separate|Parallel kv
+ true|false concurrentModificationChecked
 */
 /*
  * Copyright 2014 the original author or authors.

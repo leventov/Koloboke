@@ -3,6 +3,7 @@
  byte|char|short|int|long|float|double|obj elem
  Mutable|Updatable|Immutable mutability
  Separate|Parallel kv
+ true|false concurrentModificationChecked
 */
 /* if (Separate kv) || (Enabled parallelKV) */
 /*
@@ -122,21 +123,22 @@ public abstract class MutableSeparateKVByteDHashGO/*<>*/
 
 
     public ByteIterator/*<>*/ iterator() {
-        /* if !(Immutable mutability) */int mc = modCount();/* endif */
+        /* if true concurrentModificationChecked */int mc = modCount();/* endif */
         /* if Mutable mutability && !(LHash hash) //
         if (!noRemoved())
-            return new SomeRemovedIterator(// if !(Immutable mutability) //mc// endif //);
+            return new SomeRemovedIterator(
+                // if true concurrentModificationChecked //mc// endif //);
         // endif */
-        return new NoRemovedIterator(/* if !(Immutable mutability) */mc/* endif */);
+        return new NoRemovedIterator(/* if true concurrentModificationChecked */mc/* endif */);
     }
 
     public ByteCursor/*<>*/ setCursor() {
-        /* if !(Immutable mutability) */int mc = modCount();/* endif */
+        /* if true concurrentModificationChecked */int mc = modCount();/* endif */
         /* if Mutable mutability && !(LHash hash) //
         if (!noRemoved())
-            return new SomeRemovedCursor(// if !(Immutable mutability) //mc// endif //);
+            return new SomeRemovedCursor(// if true concurrentModificationChecked //mc// endif //);
         // endif */
-        return new NoRemovedCursor(/* if !(Immutable mutability) */mc/* endif */);
+        return new NoRemovedCursor(/* if true concurrentModificationChecked */mc/* endif */);
     }
 
     @Nonnull
@@ -241,7 +243,7 @@ public abstract class MutableSeparateKVByteDHashGO/*<>*/
     class NoRemovedIterator implements ByteIterator/*<>*/ {
         /* template Iterator.fields */
 
-        NoRemovedIterator(/* if !(Immutable mutability) */int mc/* endif */) {
+        NoRemovedIterator(/* if true concurrentModificationChecked */int mc/* endif */) {
             /* template Iterator.constructor */
         }
 
@@ -288,7 +290,7 @@ public abstract class MutableSeparateKVByteDHashGO/*<>*/
     class NoRemovedCursor implements ByteCursor/*<>*/ {
         /* template Cursor.fields */
 
-        NoRemovedCursor(/* if !(Immutable mutability) */int mc/* endif */) {
+        NoRemovedCursor(/* if true concurrentModificationChecked */int mc/* endif */) {
             /* template Cursor.constructor */
         }
 

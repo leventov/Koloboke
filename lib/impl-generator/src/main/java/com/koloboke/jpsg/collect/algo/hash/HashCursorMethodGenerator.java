@@ -146,7 +146,8 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
         } else {
             ifBlock(INSTANCE.isNotFree(cxt, curKeyAssignment));
         }
-        ifBlock("expectedModCount++ == " + modCount());
+        if (cxt.concurrentModificationChecked())
+            ifBlock("expectedModCount++ == " + modCount());
         // Local copy still holds the current key (could be used in lHashShiftRemove())
         lines("this.curKey = " + INSTANCE.free(cxt) + ";");
         if (INSTANCE.isLHash(cxt)) {
@@ -196,7 +197,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
     @Override
     protected void generateForEachForward() {
         requireNonNull("action");
-        if (!cxt.immutable())
+        if (cxt.concurrentModificationChecked())
             lines("int mc = expectedModCount;");
         copyArrays(this, cxt);
         copySpecials(this, cxt);
@@ -210,7 +211,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
             } blockEnd();
         } blockEnd();
         String concurrentModCond = "index != this.index";
-        if (!cxt.immutable())
+        if (cxt.concurrentModificationChecked())
             concurrentModCond += " || mc != " + modCount();
         ifBlock(concurrentModCond); {
             concurrentMod();

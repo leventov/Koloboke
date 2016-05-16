@@ -32,7 +32,8 @@ class Rehash : BulkMethod() {
 
     override fun rightBeforeLoop() {
         gen.lines("initForRehash(newCapacity);")
-        gen.lines("mc++; // modCount is incremented in initForRehash()")
+        if (cxt.concurrentModificationChecked())
+            gen.lines("mc++; // modCount is incremented in initForRehash()")
         if (!parallelKV(cxt)) {
             gen.lines("${keyArrayType(cxt)}[] newKeys = set;")
         } else {
