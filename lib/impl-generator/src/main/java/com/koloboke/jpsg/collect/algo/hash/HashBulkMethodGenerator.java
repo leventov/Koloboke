@@ -84,7 +84,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             }
         }
         if (!INSTANCE.parallelKV(cxt)) {
-            lines(cxt.keyUnwrappedRawType() + "[] keys = set;");
+            INSTANCE.copyUnwrappedKeys(this, cxt);
         } else {
             INSTANCE.copyTable(this, cxt);
         }
@@ -205,7 +205,7 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
             replaceAll(bodyStart, KEY_OBJ_SUB, key);
         } else if (keyUsages == 0) {
             replaceFirstDifferent(bodyStart, KEY_OBJ_SUB, "(key = " + key + ")", "key");
-            lines.add(bodyStart, indent + cxt.keyUnwrappedRawType() + " key;");
+            lines.add(bodyStart, indent + INSTANCE.keyArrayType(cxt) + " key;");
         } else {
             boolean replacedFirst = false;
             for (int i = bodyStart; i < lines.size(); i++) {
@@ -370,11 +370,6 @@ public class HashBulkMethodGenerator extends BulkMethodGenerator {
                             getCxt(), "i", (getCxt().isIntegralKey() ? "delayedRemoved" :
                             (getCxt().isFloatingKey() ? "REMOVED_BITS" : "REMOVED")));
                 } blockEnd();
-            }
-
-            @Override
-            public boolean rawKeys() {
-                return true;
             }
 
             @Override

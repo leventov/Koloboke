@@ -29,7 +29,7 @@ final class HashIterMethodGeneratorCommons {
     static void commonFields(MethodGenerator g, MethodContext cxt) {
         String arrayCopiesMod = possibleArrayCopyOnRemove(cxt) ? "" : "final ";
         if (!INSTANCE.parallelKV(cxt)) {
-            g.lines(arrayCopiesMod + cxt.keyUnwrappedType() + "[] keys;");
+            g.lines(arrayCopiesMod + INSTANCE.keyArrayType(cxt) + "[] keys;");
             if (!cxt.isKeyView())
                 g.lines(arrayCopiesMod + cxt.valueUnwrappedType() + "[] vals;");
         } else {
@@ -95,7 +95,7 @@ final class HashIterMethodGeneratorCommons {
             String indexVariableName, boolean forceCopyKey) {
         String keyAssignment = INSTANCE.readKeyOrEntry(cxt, indexVariableName);
         if (forceCopyKey || (!INSTANCE.noRemoved(cxt) && !cxt.isFloatingKey()) || !cxt.isValueView()) {
-            gen.lines(cxt.keyUnwrappedRawType() + " key;");
+            gen.lines(INSTANCE.keyArrayType(cxt) + " key;");
             keyAssignment = "(key = " + keyAssignment + ")";
         }
         String cond = cxt.isFloatingKey() ?
@@ -213,7 +213,7 @@ final class HashIterMethodGeneratorCommons {
 
     static void copyKeys(MethodGenerator g, MethodContext cxt) {
         if (!INSTANCE.parallelKV(cxt)) {
-            g.lines(cxt.keyUnwrappedType() + "[] keys = this.keys;");
+            g.lines(INSTANCE.keyArrayType(cxt) + "[] keys = this.keys;");
         } else {
             g.lines(INSTANCE.tableType(cxt) + "[] tab = this.tab;");
         }
@@ -240,7 +240,10 @@ final class HashIterMethodGeneratorCommons {
             getG().elseBlock(); {
                 // Remove from the original table. Local copy of curKey is used
                 // (see the comment in generateRemove()).
-                getG().lines("justRemove(" + keyToRemoveFromTheOriginalTable() + ");");
+                String keyToRemove = keyToRemoveFromTheOriginalTable();
+                if (!INSTANCE.specializedKeysArray(getCxt()))
+                    keyToRemove = "(" + getCxt().keyType() + ") " + keyToRemove;
+                getG().lines("justRemove(" + keyToRemove + ");");
                 // These removals in the table copy only for GC.
                 // keys[index] won't be accessed anymore (moveNext() will start from index - 1),
                 // that is why we can set it to null instead of REMOVED special object.
@@ -280,9 +283,7 @@ final class HashIterMethodGeneratorCommons {
                             // is erased. But we should erase in the table copy the current slot,
                             // that we are going to substitute with a shifted slot (or erase),
                             // because shift deletion continues in the original table.
-                            String keys = getCxt().isObjectOrNullKey() ? "((Object[]) this.keys)" :
-                                    "this.keys";
-                            INSTANCE.writeKey(getG(), getCxt(), "this.tab", keys, "indexToRemove", INSTANCE
+                            INSTANCE.writeKey(getG(), getCxt(), "this.tab", "this.keys", "indexToRemove", INSTANCE
                                     .removed(getCxt()));
                             if (getCxt().isObjectValue()) {
                                 INSTANCE.writeValue(getG(), getCxt(), "this.tab", "this.vals", "indexToRemove",

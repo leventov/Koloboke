@@ -54,14 +54,7 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
     protected void generateConstructor() {
         commonConstructorOps(this, cxt);
         if (!INSTANCE.parallelKV(cxt)) {
-            if (cxt.isObjectKey()) {
-                lines(
-                        "// noinspection unchecked",
-                        cxt.keyType() + "[] keys = this.keys = (" + cxt.keyType() + "[]) set;"
-                );
-            } else {
-                lines(cxt.keyUnwrappedType() + "[] keys = this.keys = set;");
-            }
+            lines(INSTANCE.keyArrayType(cxt) + "[] keys = this.keys = set;");
         } else {
             lines(INSTANCE.tableType(cxt) + "[] tab = this.tab = table;");
         }
@@ -143,8 +136,8 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
             void onInitialSlotSubstitution() {
                 lines("this.nextIndex = index;");
                 ifBlock("indexToShift < index - " + INSTANCE.slots(1, getCxt())); {
-                    lines("this.next = " +
-                            makeNext(getCxt(), modCount(), "keyToShift", "indexToShift", false) + ";");
+                    lines("this.next = " + makeNext(getCxt(), modCount(), castedKeyToShift(),
+                            "indexToShift", false) + ";");
                 } blockEnd();
             }
 

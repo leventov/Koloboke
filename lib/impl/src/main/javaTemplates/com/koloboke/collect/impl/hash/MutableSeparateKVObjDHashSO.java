@@ -34,10 +34,10 @@ public abstract class MutableSeparateKVObjDHashSO<E> extends MutableDHash
         implements SeparateKVObjDHash, DHash {
 
     /* if Separate kv */
-    /* if true nullKeyAllowed || (QHash|DHash hash Mutable mutability) */
+    /* if true nullKeyAllowed || true delayedRemoved || (QHash|DHash hash Mutable mutability) */
     Object[] set;
-    /* elif (false nullKeyAllowed LHash hash) ||
-            (false nullKeyAllowed Updatable|Immutable mutability) //
+    /* elif (false nullKeyAllowed false delayedRemoved LHash hash) ||
+            (false nullKeyAllowed false delayedRemoved Updatable|Immutable mutability) //
     E[] set;
     // endif */
     /* elif Parallel kv */
@@ -96,10 +96,10 @@ public abstract class MutableSeparateKVObjDHashSO<E> extends MutableDHash
     @Override
     void allocateArrays(int capacity) {
         /* if Separate kv */
-        /* if true nullKeyAllowed || (QHash|DHash hash Mutable mutability) */
+        /* if true nullKeyAllowed || true delayedRemoved || (QHash|DHash hash Mutable mutability) */
         set = new Object[capacity];
-        /* elif (false nullKeyAllowed LHash hash) ||
-                (false nullKeyAllowed Updatable|Immutable mutability) */
+        /* elif (false nullKeyAllowed false delayedRemoved LHash hash) ||
+                (false nullKeyAllowed false delayedRemoved Updatable|Immutable mutability) */
         set = (E[]) new /* print newKeyArrayType */Object/* endprint */[capacity];
         /* endif */
         /* elif Parallel kv */

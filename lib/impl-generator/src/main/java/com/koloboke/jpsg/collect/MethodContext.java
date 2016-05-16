@@ -128,12 +128,10 @@ public final class MethodContext {
 
     /** @return K or char..double */
     public String keyType() {
-        if (isObjectKey()) {
+        if (isObjectKey() || isNullKey()) {
             return ObjectType.genericParamName(keyDim());
         } else if (isPrimitiveKey()) {
             return ((PrimitiveType) keyOption()).standalone;
-        } else if (isNullKey()) {
-            return "Object";
         } else {
             throw new IllegalStateException();
         }
@@ -255,6 +253,10 @@ public final class MethodContext {
 
     public boolean nullKeyAllowed() {
         return TRUE.equals(getOption("nullKeyAllowed"));
+    }
+
+    public boolean delayedRemoved() {
+        return TRUE.equals(getOption("delayedRemoved"));
     }
 
     public String unsafeGetKeyBits(String object, String offset) {

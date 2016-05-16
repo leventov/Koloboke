@@ -21,6 +21,7 @@ import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.isDHash
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.isFree
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.isLHash
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.isNotFree
+import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.keyArrayType
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.parallelKV
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.readKeyOnly
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.tableType
@@ -33,7 +34,7 @@ class Rehash : BulkMethod() {
         gen.lines("initForRehash(newCapacity);")
         gen.lines("mc++; // modCount is incremented in initForRehash()")
         if (!parallelKV(cxt)) {
-            gen.lines(cxt.keyUnwrappedRawType() + "[] newKeys = set;")
+            gen.lines("${keyArrayType(cxt)}[] newKeys = set;")
         } else {
             gen.lines(tableType(cxt) + "[] newTab = table;")
         }

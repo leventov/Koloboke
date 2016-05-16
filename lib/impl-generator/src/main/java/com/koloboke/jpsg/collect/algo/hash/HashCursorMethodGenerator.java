@@ -30,7 +30,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
         commonFields(this, cxt);
         lines(
                 "int index;",
-                cxt.keyUnwrappedRawType() + " curKey;"
+                INSTANCE.keyArrayType(cxt) + " curKey;"
         );
         if (!cxt.isKeyView()) {
             lines(cxt.valueUnwrappedType() + " curValue;");
@@ -41,16 +41,8 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
     protected void generateConstructor() {
         commonConstructorOps(this, cxt);
         if (!INSTANCE.parallelKV(cxt)) {
-            if (cxt.isObjectKey()) {
-                lines(
-                        "// noinspection unchecked",
-                        (needCapacityMask(cxt) ? cxt.keyType() + "[] keys = " : "") +
-                                "this.keys = (" + cxt.keyUnwrappedType() + "[]) set;"
-                );
-            } else {
-                lines((needCapacityMask(cxt) ? cxt.keyUnwrappedType() + "[] keys = " : "") +
-                        "this.keys = set;");
-            }
+            lines((needCapacityMask(cxt) ? INSTANCE.keyArrayType(cxt) + "[] keys = " : "") +
+                    "this.keys = set;");
         } else {
             lines((needCapacityMask(cxt) ? INSTANCE.tableType(cxt) + "[] tab = " : "") +
                     "this.tab = table;");
@@ -94,7 +86,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
 
     @Override
     protected void generateKey() {
-        lines(cxt.keyUnwrappedRawType() + " curKey;");
+        lines(INSTANCE.keyArrayType(cxt) + " curKey;");
         ifBlock(INSTANCE.isNotFree(cxt, "(curKey = this.curKey)"));
         if (cxt.isObjectKey())
             lines("// noinspection unchecked");
@@ -126,7 +118,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
 
     @Override
     protected void generateEntry() {
-        lines(cxt.keyUnwrappedRawType() + " curKey;");
+        lines(INSTANCE.keyArrayType(cxt) + " curKey;");
         ifBlock(INSTANCE.isNotFree(cxt, "(curKey = this.curKey)"));
         if (cxt.isObjectKey())
             lines("// noinspection unchecked");
@@ -135,7 +127,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
     }
 
     private String unwrappedKey() {
-        return (cxt.isObjectKey() ? "(" + cxt.keyType() + ") " : "") + "curKey";
+        return (!INSTANCE.specializedKeysArray(cxt) ? "(" + cxt.keyType() + ") " : "") + "curKey";
     }
 
     @Override
@@ -143,7 +135,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
         permissions.add(Permission.REMOVE);
         String curKeyAssignment;
         if (INSTANCE.isLHash(cxt)) {
-            lines(cxt.keyUnwrappedRawType() + " curKey;");
+            lines(INSTANCE.keyArrayType(cxt) + " curKey;");
             curKeyAssignment = "(curKey = this.curKey)";
         } else {
             curKeyAssignment = "curKey";
@@ -196,10 +188,7 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
 
             @Override
             String keyToRemoveFromTheOriginalTable() {
-                String key = "curKey";
-                if (getCxt().isObjectKey())
-                    key = "(" + getCxt().keyType() + ") " + key;
-                return key;
+                return "curKey";
             }
         }.generate();
     }

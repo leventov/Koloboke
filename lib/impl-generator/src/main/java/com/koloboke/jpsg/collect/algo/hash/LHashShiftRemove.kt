@@ -22,10 +22,12 @@ import com.koloboke.jpsg.collect.MethodGenerator
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.doubleSizedParallel
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.eraseSlot
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.isFree
+import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.keyArrayType
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.keyHash
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.readKeyOrEntry
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.readValue
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.slots
+import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.specializedKeysArray
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.writeKeyAndValue
 
 
@@ -45,16 +47,16 @@ internal open class LHashShiftRemove(val g: MethodGenerator, val cxt: MethodCont
         g.lines("while (true)").block()
         run {
             g.lines("indexToShift = (indexToShift - " + slots(1, cxt) + ") & capacityMask;")
-            g.lines(cxt.keyUnwrappedType() + " keyToShift;")
-            var key = readKeyOrEntry(cxt, "indexToShift")
-            if (cxt.isObjectKey && rawKeys()) {
-                key = "(" + cxt.keyType() + ") " + key
-            }
+            g.lines("${keyArrayType(cxt)} keyToShift;")
+            val key = readKeyOrEntry(cxt, "indexToShift")
             g.ifBlock(isFree(cxt, "(keyToShift = $key)"))
             run { g.lines("break;") }
             g.blockEnd()
-            val keyDistance = "((" + keyHash(cxt, "keyToShift", false) +
-                    " - indexToShift) & capacityMask)"
+            if (!specializedKeysArray(cxt)) {
+                g.lines("${cxt.keyType()} castedKeyToShift = (${cxt.keyType()}) keyToShift;")
+            }
+            val keyDistance =
+                    "((${keyHash(cxt, castedKeyToShift(), false)} - indexToShift) & capacityMask)"
             var shiftCondition = keyDistance + " >= shiftDistance"
             val shiftPrecondition = additionalShiftPrecondition()
             if (!shiftPrecondition.isEmpty()) {
@@ -63,7 +65,7 @@ internal open class LHashShiftRemove(val g: MethodGenerator, val cxt: MethodCont
             g.ifBlock(shiftCondition)
             run {
                 beforeShift()
-                writeKeyAndValue(g, cxt, table, "keys", values, "indexToRemove", "keyToShift",
+                writeKeyAndValue(g, cxt, table, "keys", values, "indexToRemove", castedKeyToShift(),
                         { readValue(cxt, table, values, "indexToShift") }, false,
                         cxt.hasValues())
                 g.lines("indexToRemove = indexToShift;")
@@ -87,15 +89,16 @@ internal open class LHashShiftRemove(val g: MethodGenerator, val cxt: MethodCont
             g.blockEnd()
         }
         g.blockEnd()
-        eraseSlot(g, cxt, "indexToRemove", "indexToRemove", !rawKeys(), values)
+        eraseSlot(g, cxt, "indexToRemove", "indexToRemove", values)
+    }
+
+    fun castedKeyToShift(): String = when {
+        specializedKeysArray(cxt) -> "keyToShift"
+        else -> "castedKeyToShift"
     }
 
     fun postRemoveHook() {
         g.lines("postRemoveHook();")
-    }
-
-    open fun rawKeys(): Boolean {
-        return false
     }
 
     open fun additionalShiftPrecondition(): String {

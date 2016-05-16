@@ -182,9 +182,8 @@ internal object HashMethodGeneratorCommons {
     }
 
     @JvmOverloads fun eraseSlot(g: MethodGenerator, cxt: MethodContext,
-                                indexForKeys: String, indexForValues: String, genericKeys: Boolean = true, values: String = "vals") {
-        val keys = if (cxt.isObjectOrNullKey && genericKeys) "((Object[]) keys)" else "keys"
-        writeKey(g, cxt, "tab", keys, indexForKeys, removed(cxt))
+                                indexForKeys: String, indexForValues: String, values: String = "vals") {
+        writeKey(g, cxt, "tab", "keys", indexForKeys, removed(cxt))
         if (cxt.isObjectValue)
             writeValue(g, cxt, "tab", values, indexForValues, "null")
     }
@@ -195,15 +194,29 @@ internal object HashMethodGeneratorCommons {
     }
 
     fun copyUnwrappedKeys(g: MethodGenerator, cxt: MethodContext) {
-        if (cxt.isObjectOrNullKey)
-            g.lines("// noinspection unchecked")
-        g.lines(cxt.keyUnwrappedType() + "[] keys = " +
-                (if (cxt.isObjectOrNullKey) "(" + cxt.keyUnwrappedType() + "[]) " else "") +
-                "set;")
+        g.lines("${keyArrayType(cxt)}[] keys = set;")
     }
 
     fun copyTable(g: MethodGenerator, cxt: MethodContext) {
         g.lines(tableType(cxt) + "[] tab = table;")
+    }
+
+    fun specializedKeysArray(cxt: MethodContext): Boolean {
+        return when {
+            cxt.isObjectOrNullKey -> when {
+                cxt.delayedRemoved() -> false
+                cxt.nullKeyAllowed() -> false
+                isLHash(cxt) -> true
+                isQHash(cxt) || isDHash(cxt) -> !cxt.mutable()
+                else -> throw AssertionError()
+            }
+            else -> true
+        }
+    }
+
+    fun keyArrayType(cxt: MethodContext): String = when {
+        specializedKeysArray(cxt) -> cxt.keyUnwrappedType()
+        else -> cxt.keyUnwrappedRawType()
     }
 
     fun copyArrays(g: MethodGenerator, cxt: MethodContext, copyValues: Boolean) {
@@ -225,8 +238,11 @@ internal object HashMethodGeneratorCommons {
             return "$keys[$index]"
         } else if (doubleSizedParallel(cxt)) {
             var key = "$table[$index]"
-            if (cxt.isObjectOrNullKey)
-                key = "(" + cxt.keyUnwrappedType() + ") " + key
+            if (cxt.isObjectOrNullKey) {
+                val keyArrayType = keyArrayType(cxt)
+                if (keyArrayType != "Object")
+                    key = "($keyArrayType) $key"
+            }
             return key
         } else {
             return "(" + cxt.keyUnwrappedType() + ") (entry = " + table + "[" + index + "])"

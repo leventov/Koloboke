@@ -37,12 +37,14 @@ import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.isNotFree
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.isNotRemoved
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.isQHash
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.isRemoved
+import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.keyArrayType
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.localTableVar
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.parallelKV
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.possibleRemovedSlots
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.readKeyOrEntry
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.readValue
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.removed
+import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.specializedKeysArray
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.tableEntryType
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.tableType
 import com.koloboke.jpsg.collect.algo.hash.HashMethodGeneratorCommons.writeKey
@@ -441,13 +443,13 @@ class HashMapQueryUpdateMethodGenerator : MapQueryUpdateMethodGenerator() {
                 lines("keyPresent:")
                 var keyNotEqualsCond = "cur != " + unwrappedKey()
                 if (cxt.isObjectKey && !possibleRemovedSlots(cxt)) {
-                    keyNotEqualsCond += " && !keyEquals(" + unwrappedKey() + ", cur)"
+                    keyNotEqualsCond += " && !$keyEquals"
                 }
                 ifBlock(keyNotEqualsCond)
             } else {
                 var keyEqualsCond = "cur == " + unwrappedKey()
                 if (cxt.isObjectKey && !possibleRemovedSlots(cxt)) {
-                    keyEqualsCond += " || keyEquals(" + unwrappedKey() + ", cur)"
+                    keyEqualsCond += " || $keyEquals"
                 }
                 ifBlock(keyEqualsCond)
                 generatePresent()
@@ -472,7 +474,7 @@ class HashMapQueryUpdateMethodGenerator : MapQueryUpdateMethodGenerator() {
             }
             firstIndexFreeCheck("cur")
             if (cxt.isObjectKey && !possibleRemovedSlots(cxt)) {
-                ifBlock("keyEquals(" + unwrappedKey() + ", cur)")
+                ifBlock(keyEquals)
                 generateOrGoToPresent { }
                 elseBlock()
             }
@@ -497,11 +499,11 @@ class HashMapQueryUpdateMethodGenerator : MapQueryUpdateMethodGenerator() {
             ifBlock(isNotRemoved(cxt, "cur"))
             if (cxt.isObjectKey) {
                 if (method!!.mostProbableBranch() == KEY_PRESENT) {
-                    ifBlock("keyEquals(" + unwrappedKey() + ", cur)")
+                    ifBlock(keyEquals)
                     generateOrGoToPresent { }
                     elseBlock()
                 } else {
-                    ifBlock("!keyEquals(" + unwrappedKey() + ", cur)")
+                    ifBlock("!$keyEquals")
                 }
             }
             ifBlock("noRemoved()")
@@ -557,7 +559,7 @@ class HashMapQueryUpdateMethodGenerator : MapQueryUpdateMethodGenerator() {
             locals = if (!cxt.isNullKey) "capacity, hash, " else ""
         }
         lines("int " + locals + "index;")
-        lines(cxt.keyUnwrappedType() + " cur;")
+        lines("${keyArrayType(cxt)} cur;")
         if (parallelKV(cxt) && !doubleSizedParallel(cxt))
             lines(tableEntryType(cxt) + " entry;")
     }
@@ -709,7 +711,7 @@ class HashMapQueryUpdateMethodGenerator : MapQueryUpdateMethodGenerator() {
             }
             if (cxt.isObjectKey) {
                 elseIf(isNotRemoved(cxt, "cur"))
-                ifBlock("keyEquals(" + unwrappedKey() + ", cur)")
+                ifBlock(keyEquals)
                 generateOrGoToPresent(beforeBreak)
                 blockEnd()
                 elseIf("firstRemoved < 0")
@@ -736,8 +738,17 @@ class HashMapQueryUpdateMethodGenerator : MapQueryUpdateMethodGenerator() {
 
     private fun objectKeyEqualsCond(noRemoved: Boolean): String {
         return (if (possibleRemovedSlots(cxt) && !noRemoved) "cur != REMOVED && " else "") +
-                "keyEquals(" + unwrappedKey() + ", cur)"
+                keyEquals
     }
+
+    private val keyEquals: String
+        get() = "keyEquals(${unwrappedKey()}, $castedCur)"
+
+    private val castedCur: String
+        get() = when {
+            cxt.isObjectOrNullKey && !specializedKeysArray(cxt) -> "(${cxt.keyUnwrappedType()}) cur"
+            else -> "cur"
+        }
 
     private fun determineBranchFeatures() {
         generateAbsent(false, false, false)

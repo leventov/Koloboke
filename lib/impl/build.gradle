@@ -8,6 +8,7 @@ configure([generateJavaSpecializations, generateResourceSpecializations]) {
     with 'parallelKV=Enabled'
     with 'project=impl'
     with 'nullKeyAllowed=true'
+    with 'delayedRemoved=true'
     with 'keyType=Generic'
     with 'newKeyArrayType=java.lang.Object'
     with 'valueType=Generic'
