@@ -114,7 +114,7 @@ final class KeySearch {
 
         @Override
         void generate() {
-            if (!stepPrecomputed)
+            if (!stepPrecomputed && !cxt.isNullKey())
                 dHashStep(g, cxt);
             g.lines("while (true)").block(); {
                 if (!cxt.isNullKey()) {
