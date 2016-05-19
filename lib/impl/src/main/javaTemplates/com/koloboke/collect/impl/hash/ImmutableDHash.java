@@ -26,7 +26,7 @@ public abstract class ImmutableDHash extends HashWithoutRemovedSlots implements 
     private HashConfigWrapper configWrapper;
 
     /** The current number of occupied slots in the hash. */
-    private int size;
+    int size;
 
 
     final void copy(DHash hash) {

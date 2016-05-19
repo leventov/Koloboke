@@ -57,7 +57,7 @@ public abstract class MutableDHash extends AbstractContainer implements DHash {
 
 
     /** The current number of occupied slots in the hash. */
-    private int size;
+    int size;
 
     private int maxSize;
 

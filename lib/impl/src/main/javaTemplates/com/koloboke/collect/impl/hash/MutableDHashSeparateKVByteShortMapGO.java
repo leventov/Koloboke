@@ -521,6 +521,10 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     /* if !(Immutable mutability) */
     @Override
     public void clear() {
+        doClear();
+    }
+
+    private void doClear() {
         /* if true concurrentModificationChecked */int mc = modCount() + 1;/* endif */
         super.clear();
         /* if true concurrentModificationChecked */if (mc != modCount())
@@ -792,7 +796,9 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
 
         @Override
         public int size() {
-            return MutableDHashSeparateKVByteShortMapGO.this.size();
+            // Read field instead of calling size() to avoid infinite recursive calls in Koloboke
+            // Compile-generated map, if it extends AbstractMap
+            return size;
         }
 
         @Override
@@ -943,7 +949,13 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
 
         @Override
         public void clear() {
-            MutableDHashSeparateKVByteShortMapGO.this.clear();
+            // Don't call map.clear() directly to avoid infinite recursive calls in Koloboke
+            // Compile-generated map, if it extends AbstractMap
+            /* if !(Immutable mutability) */
+            MutableDHashSeparateKVByteShortMapGO.this.doClear();
+            /* elif Immutable mutability */
+            throw new UnsupportedOperationException();
+            /* endif */
         }
     }
     /* endwith */

@@ -1,7 +1,7 @@
 /* with
  LHash|QHash|DHash hash
  Mutable|Updatable mutability
-  true|false concurrentModificationChecked
+ true|false concurrentModificationChecked
 */
 /* if !(QHash|DHash hash Mutable mutability) */
 /*
@@ -52,7 +52,7 @@ public abstract class MutableLHash extends HashWithoutRemovedSlots implements LH
 
     private HashConfigWrapper configWrapper;
 
-    private int size;
+    int size;
 
     private int maxSize;
 
