@@ -1,6 +1,6 @@
 configure([project('core'), project('gradle-plugin')]) {
     configurePublishing(project)
-    archivesBaseName  = "jpsg-$project.name"
+    archivesBaseName = "jpsg-$project.name"
     version = '1.0'
     poms*.whenConfigured { pom ->
         pom.project {

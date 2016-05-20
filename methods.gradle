@@ -10,7 +10,7 @@ def compileCompatibility(javaCompile, level) {
     }
 }
 
-def projectCompatibility(project, level) { configure(project) {
+def setSourceCompatibility(project, level) { configure(project) {
     if (sourceCompatibility.toString() != level.toString()) {
         tasks.withType(JavaCompile) { javaCompile ->
             compileCompatibility(javaCompile, level)
@@ -120,7 +120,7 @@ def configurePublishing(project, generateJavadoc = true) { configure(project) {
     }
 } }
 
-ext.projectCompatibility = this.&projectCompatibility
+ext.setSourceCompatibility = this.&setSourceCompatibility
 ext.compileCompatibility = this.&compileCompatibility
 ext.applyJpsg = this.&applyJpsg
 ext.configurePublishing = this.&configurePublishing

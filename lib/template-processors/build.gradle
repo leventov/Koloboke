@@ -10,7 +10,7 @@ buildscript {
 
 apply plugin: 'kotlin'
 
-projectCompatibility(1.6)
+setSourceCompatibility(1.6)
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

@@ -13,7 +13,7 @@ description = 'core'
 
 apply plugin: 'kotlin'
 
-projectCompatibility(1.6)
+setSourceCompatibility(1.6)
 
 dependencies {
     compile "org.slf4j:slf4j-api:$slf4j_version"
