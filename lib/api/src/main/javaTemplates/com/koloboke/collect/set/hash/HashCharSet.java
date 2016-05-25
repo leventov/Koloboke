@@ -19,6 +19,7 @@ package com.koloboke.collect.set.hash;
 
 import com.koloboke.collect.hash.HashContainer;
 import com.koloboke.collect.set.CharSet;
+import com.koloboke.compile.KolobokeSet;
 
 
 /**
@@ -31,6 +32,7 @@ import com.koloboke.collect.set.CharSet;
  *
  * @see HashCharSets
  * @see HashCharSetFactory
+ * @see KolobokeSet @KolobokeSet
  */
 public interface HashCharSet/*<>*/ extends CharSet/*<>*/, HashContainer {
 }

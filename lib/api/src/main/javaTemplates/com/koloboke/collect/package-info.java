@@ -135,14 +135,15 @@
  * <h3>Updatable</h3>
  *
  * <p>Everything is allowed, except removals of <em>individual</em> elements (entries),
- * typically these operations' names contain word "remove" or "retain". Emphasis on "individual"
- * means that {@link com.koloboke.collect.Container#clear()} is allowed.
+ * typically names of these operations include "remove" or "retain" verb. Emphasis on "individual"
+ * means that {@link com.koloboke.collect.Container#clear()} (i. e. removal all elements or entries
+ * at once) is allowed.
  *
  * <p>Think about updatable containers as "non-decreasing", which could be "reset"
- * from time to time by {@code clear()}.
+ * from time to time by calling {@code clear()}.
  *
  * <p>In real practice individual removals are rarely needed, so most of the time you should use
- * updatable containers rather than fully mutable ones. On the other hand, prohibit of removals
+ * updatable containers rather than fully mutable ones. On the other hand, prohibition of removals
  * permits faster implementation of {@linkplain com.koloboke.collect.hash.HashContainer hash
  * containers} and iterators over many data structures.
  *
@@ -150,97 +151,132 @@
  *
  * <p>All operations are allowed.
  *
- * <h3><a name="collection-mutability"></a>{@link java.util.Collection} mutability matrix</h3>
+ * <p>In Koloboke Compile, the {@link com.koloboke.compile.mutability.Updatable @Updatable} and
+ * {@link com.koloboke.compile.mutability.Mutable @Mutable} annotations specify that Koloboke
+ * Compile should generate an updatable or a mutable implementation of a container interface,
+ * respectively.
+ *
+ * <h3><a name="collection-mutability"></a>{@code Collection} mutability matrix</h3>
  *
  * <table BORDER CELLPADDING=3 CELLSPACING=1>
- *   <caption>This matrix shows which methods of the {@link java.util.Collection}
- *   interface are supported by collections with different mutability profiles.</caption>
+ *   <caption>This matrix shows which methods in the {@link com.koloboke.collect.ObjCollection},
+ *   {@link com.koloboke.collect.IntCollection}, etc. interfaces are supported by collections with
+ *   different mutability profiles.</caption>
  *   <tr><td>Method \ Mutability</td><td>Mutable</td><td>Updatable</td><td>Immutable</td></tr>
- *   <tr><td>{@link java.util.Collection#contains(Object) contains(Object)}</td>
+ *   <tr><td>{@link java.util.Collection#size() size()}</td>
  *          <td>✓</td><td>✓</td><td>✓</td></tr>
- *   <tr><td>{@link java.util.Collection#containsAll(java.util.Collection) containsAll(Collection)}
+ *   <tr><td>{@link com.koloboke.collect.Container#sizeAsLong() sizeAsLong()}</td>
+ *          <td>✓</td><td>✓</td><td>✓</td></tr>
+ *   <tr><td>{@link java.util.Collection#isEmpty() isEmpty()}</td>
+ *          <td>✓</td><td>✓</td><td>✓</td></tr>
+ *   <tr><td>{@code contains(e)}</td>
+ *          <td>✓</td><td>✓</td><td>✓</td></tr>
+ *   <tr><td>{@link java.util.Collection#containsAll(java.util.Collection) containsAll(c)}
  *     </td><td>✓</td><td>✓</td><td>✓</td></tr>
- *   <tr><td>{@link java.util.Collection#iterator() iterator()}</td>
- *          <td>✓</td><td>✓</td><td>✓</td></tr>
  *   <tr><td>{@link java.util.Collection#toArray() toArray()}</td>
  *          <td>✓</td><td>✓</td><td>✓</td></tr>
- *   <tr><td>{@link java.util.Collection#toArray(Object[]) toArray(Object[])}</td>
+ *   <tr><td>{@link java.util.Collection#toArray(Object[]) toArray(array)}</td>
  *          <td>✓</td><td>✓</td><td>✓</td></tr>
- *   <tr><td>{@link java.util.Collection#add(Object) add(Object)}</td>
+ *   <tr><td>{@link java.util.Collection#iterator() iterator()}</td>
+ *          <td>✓</td><td colspan=2>✓, except {@link java.util.Iterator#remove()}</td></tr>
+ *   <tr><td>{@code cursor()}</td>
+ *          <td>✓</td><td colspan=2>✓, except {@link com.koloboke.collect.Cursor#remove()}</td>
+ *          </tr>
+ *   <tr><td>{@link com.koloboke.collect.Container#ensureCapacity(long) ensureCapacity(minSize)}
+ *     </td><td>✓</td><td>✓</td><td>-</td></tr>
+ *   <tr><td>{@link com.koloboke.collect.Container#shrink() shrink()}</td>
  *          <td>✓</td><td>✓</td><td>-</td></tr>
- *   <tr><td>{@link java.util.Collection#addAll(java.util.Collection) addAll(Collection)}</td>
+ *   <tr><td>{@link java.util.Collection#clear() clear()}</td>
  *          <td>✓</td><td>✓</td><td>-</td></tr>
- *   <tr><td>{@link java.util.Collection#remove(Object) remove(Object)}</td>
+ *   <tr><td>{@code add(e)}</td>
+ *          <td>✓</td><td>✓</td><td>-</td></tr>
+ *   <tr><td>{@link java.util.Collection#addAll(java.util.Collection) addAll(c)}</td>
+ *          <td>✓</td><td>✓</td><td>-</td></tr>
+ *   <tr><td>{@code remove(e)}</td>
  *          <td>✓</td><td>-</td><td>-</td></tr>
- *   <tr><td>{@link java.util.Collection#removeAll(java.util.Collection) removeAll(Collection)}</td>
+ *   <tr><td>{@link java.util.Collection#removeAll(java.util.Collection) removeAll(c)}</td>
  *          <td>✓</td><td>-</td><td>-</td></tr>
- *   <tr><td>{@link java.util.Collection#retainAll(java.util.Collection) retainAll(Collection)}</td>
+ *   <tr><td>{@link java.util.Collection#retainAll(java.util.Collection) retainAll(c)}</td>
  *          <td>✓</td><td>-</td><td>-</td></tr>
- *   // if JDK8 jdk //
- *   <tr><td>{@link java.util.Collection#removeIf(java.util.function.Predicate) removeIf(Predicate)}
- *     </td><td>✓</td><td>-</td><td>-</td></tr>// endif //
+ *   <tr><td>{@code removeIf(filter)}</td><td>✓</td><td>-</td><td>-</td></tr>
  * </table>
  *
- * <h3><a name="map-mutability"></a>{@link java.util.Map} mutability matrix</h3>
+ * <h3><a name="map-mutability"></a>{@code Map} mutability matrix</h3>
  *
  * <table BORDER CELLPADDING=3 CELLSPACING=1>
- *   <caption>This matrix shows which methods of the {@link java.util.Map}
- *   interface are supported by maps with different mutability profiles.</caption>
+ *   <caption>This matrix shows which methods in the {@link com.koloboke.collect.map.ObjObjMap},
+ *   {@link com.koloboke.collect.map.ObjIntMap}, {@link com.koloboke.collect.map.LongObjMap}, etc.
+ *   interfaces are supported by maps with different mutability profiles.</caption>
  *   <tr><td>Method \ Mutability</td><td>Mutable</td><td>Updatable</td><td>Immutable</td></tr>
- *   <tr><td>{@link java.util.Map#containsKey(Object) containsKey(Object)}</td>
+ *   <tr><td>{@link java.util.Map#size() size()}</td>
  *          <td>✓</td><td>✓</td><td>✓</td></tr>
- *   <tr><td>{@link java.util.Map#containsValue(Object) containsValue(Object)}</td>
+ *   <tr><td>{@link com.koloboke.collect.Container#sizeAsLong() sizeAsLong()}</td>
  *          <td>✓</td><td>✓</td><td>✓</td></tr>
- *   <tr><td>{@link java.util.Map#get(Object) get(Object)}</td>
+ *   <tr><td>{@link java.util.Map#isEmpty() isEmpty()}</td>
  *          <td>✓</td><td>✓</td><td>✓</td></tr>
- *   // if JDK8 jdk //
- *   <tr><td>{@link java.util.Map#getOrDefault(Object, Object) getOrDefault(Object, Object)}</td>
- *          <td>✓</td><td>✓</td><td>✓</td></tr>// endif //
+ *   <tr><td>{@code containsKey(key)}</td>
+ *          <td>✓</td><td>✓</td><td>✓</td></tr>
+ *   <tr><td>{@code containsValue(value)}</td>
+ *          <td>✓</td><td>✓</td><td>✓</td></tr>
+ *   <tr><td>{@code get(key)}</td>
+ *          <td>✓</td><td>✓</td><td>✓</td></tr>
+ *   <tr><td>{@code getOrDefault(key, defaultValue)}</td>
+ *          <td>✓</td><td>✓</td><td>✓</td></tr>
+ *   <tr><td>{@code forEach(action)}</td>
+ *          <td>✓</td><td>✓</td><td>✓</td></tr>
+ *   <tr><td>{@code cursor()}</td>
+ *          <td>✓</td><td colspan=2>✓,
+ *          except {@link com.koloboke.collect.Cursor#remove()}</td></tr>
  *   <tr><td>{@link java.util.Map#keySet() keySet()}</td>
- *          <td>✓</td><td>✓</td><td>✓</td></tr>
- *   <tr><td>{@link java.util.Map#entrySet() entrySet()}</td>
- *          <td>✓</td><td>✓</td><td>✓</td></tr>
+ *          <td>✓</td><td colspan=2>✓, same mutability
+ *          <a href="#collection-mutability">applied</a> to the returned {@code Set}</td></tr>
  *   <tr><td>{@link java.util.Map#values() values()}</td>
- *          <td>✓</td><td>✓</td><td>✓</td></tr>
- *   // if JDK8 jdk //
- *   <tr><td>{@link java.util.Map#forEach(java.util.function.BiConsumer) forEach(BiConsumer)}</td>
- *          <td>✓</td><td>✓</td><td>✓</td></tr>// endif //
- *   <tr><td>{@link java.util.Map#put(Object, Object) put(Object, Object)}</td>
+ *          <td>✓</td><td colspan=2>✓, same mutability <a
+ *          href="#collection-mutability">applied</a> to the returned {@code Collection}</td></tr>
+ *   <tr><td>{@link java.util.Map#entrySet() entrySet()}</td>
+ *          <td>✓</td><td colspan=2>✓, same mutability
+ *          <a href="#collection-mutability">applied</a> to the returned {@code Set},<br>
+ *          if Immutable - additionally, {@link java.util.Map.Entry#setValue(java.lang.Object)
+ *          Map.Entry.setValue(value)} not supported</td></tr>
+ *   <tr><td>{@link com.koloboke.collect.Container#ensureCapacity(long) ensureCapacity(minSize)}
+ *     </td><td>✓</td><td>✓</td><td>-</td></tr>
+ *   <tr><td>{@link com.koloboke.collect.Container#shrink() shrink()}</td>
  *          <td>✓</td><td>✓</td><td>-</td></tr>
- *   // if JDK8 jdk //
- *   <tr><td>{@link java.util.Map#putIfAbsent(Object, Object) putIfAbsent(Object, Object)}</td>
+ *   <tr><td>{@link java.util.Map#clear() clear()}</td>
  *          <td>✓</td><td>✓</td><td>-</td></tr>
- *   <tr><td>{@link java.util.Map#computeIfAbsent(Object, java.util.function.Function)
- *                  computeIfAbsent(Object, Function)}</td>
+ *   <tr><td>{@code put(key, value)}</td>
  *          <td>✓</td><td>✓</td><td>-</td></tr>
- *   <tr><td>{@link java.util.Map#replace(Object, Object) replace(Object, Object)}</td>
+ *   <tr><td>{@code putIfAbsent(key, value)}</td>
  *          <td>✓</td><td>✓</td><td>-</td></tr>
- *   <tr><td>{@link java.util.Map#replace(Object, Object, Object) replace(Object, Object, Object)}
- *   </td>  <td>✓</td><td>✓</td><td>-</td></tr>// endif //
- *   <tr><td>{@link java.util.Map#putAll(java.util.Map) putAll(Map)}</td>
+ *   <tr><td>{@code computeIfAbsent(key, mappingFunction)}</td>
  *          <td>✓</td><td>✓</td><td>-</td></tr>
- *   // if JDK8 jdk //
- *   <tr><td>{@link java.util.Map#replaceAll(java.util.function.BiFunction) replaceAll(BiFunction)}
- *   </td>  <td>✓</td><td>✓</td><td>-</td></tr>
- *   <tr><td>{@link java.util.Map#compute(Object, java.util.function.BiFunction)
- *                  compute(Object, BiFunction)}</td>
- *          <td>✓</td><td>✓, except removing on returning {@code null}</td><td>-</td></tr>
- *   <tr><td>{@link java.util.Map#computeIfPresent(Object, java.util.function.BiFunction)
- *                  computeIfPresent(Object, BiFunction)}</td>
- *          <td>✓</td><td>✓, except removing on returning {@code null}</td><td>-</td></tr>
- *   <tr><td>{@link java.util.Map#merge(Object, Object, java.util.function.BiFunction)
- *                  merge(Object, Object, BiFunction)}</td>
- *          <td>✓</td><td>✓, except removing on returning {@code null}</td><td>-</td></tr>
- *   // endif //
- *   <tr><td>{@link java.util.Map#remove(Object) remove(Object)}</td>
+ *   <tr><td>{@code replace(key, value)}</td>
+ *          <td>✓</td><td>✓</td><td>-</td></tr>
+ *   <tr><td>{@code replace(key, oldValue, newValue)}</td>
+ *          <td>✓</td><td>✓</td><td>-</td></tr>
+ *   <tr><td>{@link java.util.Map#putAll(java.util.Map) putAll(m)}</td>
+ *          <td>✓</td><td>✓</td><td>-</td></tr>
+ *   <tr><td>{@code replaceAll(function)}</td>
+ *          <td>✓</td><td>✓</td><td>-</td></tr>
+ *   <tr><td>{@code compute(key, remappingFunction)}</td>
+ *          <td>✓</td><td>✓, except removing entry on returning {@code null} from
+ *          the {@code remappingFunction}</td><td>-</td></tr>
+ *   <tr><td>{@code computeIfPresent(key, remappingFunction)}</td>
+ *          <td>✓</td><td>✓, except removing entry on returning {@code null} from
+ *          the {@code remappingFunction}</td><td>-</td></tr>
+ *   <tr><td>{@code merge(key, value, remappingFunction)}</td>
+ *          <td>✓</td><td>✓, except removing entry on returning {@code null} from
+ *          the {@code remappingFunction}</td><td>-</td></tr>
+ *   <tr><td>{@code remove(key)}</td>
  *          <td>✓</td><td>-</td><td>-</td></tr>
- *   // if JDK8 jdk //
- *   <tr><td>{@link java.util.Map#remove(Object, Object) remove(Object, Object)}</td>
- *          <td>✓</td><td>-</td><td>-</td></tr>// endif //
+ *   <tr><td>{@code remove(key, value)}</td>
+ *          <td>✓</td><td>-</td><td>-</td></tr>
+ *   <tr><td>{@code removeIf(filter)}</td>
+ *          <td>✓</td><td>-</td><td>-</td></tr>
  * </table>
  *
  * <p>See other matrices for information if the concrete method is supported by the given
- * mutability profile: <a href="com/koloboke/collect/Container.html#mutability">
+ * mutability profile: <a href="{@docRoot}/com/koloboke/collect/Container.html#mutability">
  * {@code Container}</a>.
  *
  * <h2><a name="iteration"></a>Comparison of iteration ways</h2>

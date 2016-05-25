@@ -2,6 +2,19 @@ evaluationDependsOn("$parent.path")
 
 description = 'API'
 
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    // just for Javadoc links
+    provided 'com.koloboke:koloboke-compile:0.5'
+}
+poms*.whenConfigured { pom ->
+    pom.dependencies.removeAll { dep -> dep.artifactId == 'koloboke-compile' }
+}
+
 configure(javadoc) {
     title "Koloboke Collections $apiVersion API"
     configure((StandardJavadocDocletOptions) getOptions()) {

@@ -26,6 +26,12 @@ import javax.annotation.Nonnull;
  * A mutable pointer to the element in an iteration
  * of // if !(obj elem) //{@code char}// elif obj elem //object// endif //s.
  *
+ * <p>Basic {@code CharCursor} usage idiom is: <pre>{@code
+ * for (CharCursor//<>// cur = collection.cursor(); cur.moveNext();) {
+ *     // Work with cur.elem()
+ *     // Call cur.remove() to remove the current entry
+ * }}</pre>
+ *
  * @see CharCollection#cursor()
  */
 public interface CharCursor/*<>*/ extends Cursor {

@@ -19,6 +19,7 @@ package com.koloboke.collect.set;
 
 import com.koloboke.collect.CharCollection;
 import com.koloboke.collect.CharIterator;
+import com.koloboke.compile.KolobokeSet;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -36,6 +37,7 @@ import java.util.Set;
  * over the specifications from superinterfaces.
  *
  * @see CharSetFactory
+ * @see KolobokeSet @KolobokeSet
  */
 public interface CharSet/*<>*/ extends CharCollection/*<>*/, Set<Character> {
 

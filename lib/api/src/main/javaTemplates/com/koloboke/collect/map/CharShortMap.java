@@ -22,6 +22,7 @@ package com.koloboke.collect.map;
 
 import com.koloboke.collect.Container;
 import com.koloboke.collect.Equivalence;
+import com.koloboke.compile.KolobokeMap;
 import com.koloboke.function.BiConsumer;
 import com.koloboke.function.BiFunction;
 import com.koloboke.function./*f*/CharShortConsumer/**/;
@@ -47,6 +48,7 @@ import java.util.Map;
  * // endif //
  *
  * @see CharShortMapFactory
+ * @see KolobokeMap @KolobokeMap
  */
 public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
 
@@ -268,6 +270,12 @@ public interface CharShortMap/*<>*/ extends Map<Character, Short>, Container {
     /**
      * Returns a new cursor over the entries of this map. It's order is always correspond to the
      * entry set iterator order.
+     *
+     * <p>Basic cursor usage idiom is: <pre>{@code
+     * for (CharShortCursor//<>// cur = map.cursor(); cur.moveNext();) {
+     *     // Work with cur.key() and cur.value()
+     *     // Call cur.remove() to remove the current entry
+     * }}</pre>
      *
      * @return a new cursor over the entries of this map
      * @see <a href="{@docRoot}/overview-summary.html#iteration">

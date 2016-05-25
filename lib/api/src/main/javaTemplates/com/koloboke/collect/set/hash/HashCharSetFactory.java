@@ -19,6 +19,8 @@ package com.koloboke.collect.set.hash;
 
 import com.koloboke.collect.*;
 import com.koloboke.collect.hash.*;
+import com.koloboke.compile.CustomKeyEquivalence;
+import com.koloboke.compile.KolobokeSet;
 import com.koloboke.function.Consumer;
 import com.koloboke.collect.set.CharSetFactory;
 
@@ -32,6 +34,7 @@ import java.util.Iterator;
  *
  * @see HashCharSet
  * @see HashCharSets#getDefaultFactory()
+ * @see KolobokeSet @KolobokeSet
  */
 public interface HashCharSetFactory/*<>*/
         extends CharSetFactory</* if obj elem //E, // endif */HashCharSetFactory/*<>*/>
@@ -52,6 +55,9 @@ public interface HashCharSetFactory/*<>*/
      * Returns a copy of this factory, with exception that it constructs sets with
      * {@linkplain ObjCollection#equivalence() element equivalence} set to the given
      * {@code Equivalence}.
+     *
+     * <p>The Koloboke Compile's counterpart of this configuration is the {@link
+     * CustomKeyEquivalence @CustomKeyEquivalence} annotation.
      *
      * @param equivalence the new element equivalence
      * @return a copy of this factory, which constructs sets with the given {@code keyEquivalence}

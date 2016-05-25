@@ -21,6 +21,7 @@
 package com.koloboke.collect.map;
 
 import com.koloboke.collect.*;
+import com.koloboke.compile.KolobokeMap;
 import com.koloboke.function.Consumer;
 
 import javax.annotation.Nonnull;
@@ -40,6 +41,7 @@ import java.util.Map;
  *                           by this factory // endif //
  * @param <F> the concrete factory type which extends this interface
  * @see CharShortMap
+ * @see KolobokeMap @KolobokeMap
  */
 public interface CharShortMapFactory</*bp*/F extends CharShortMapFactory</*bp*/F>>
         extends ContainerFactory<F> {

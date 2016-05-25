@@ -21,6 +21,7 @@
 package com.koloboke.collect.map.hash;
 
 import com.koloboke.collect.map.CharShortMap;
+import com.koloboke.compile.KolobokeMap;
 import com.koloboke.function.Consumer;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,7 @@ import java.util.ServiceLoader;
  * the default {@link HashCharShortMapFactory} static provider ({@link #getDefaultFactory()}).
  *
  * @see HashCharShortMap
+ * @see KolobokeMap @KolobokeMap
  */
 public final class HashCharShortMaps {
     

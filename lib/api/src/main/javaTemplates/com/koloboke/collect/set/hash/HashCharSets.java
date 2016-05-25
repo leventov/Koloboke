@@ -18,6 +18,7 @@
 package com.koloboke.collect.set.hash;
 
 import com.koloboke.collect.set.CharSet;
+import com.koloboke.compile.KolobokeSet;
 import com.koloboke.function.Consumer;
 
 import javax.annotation.Nonnull;
@@ -29,6 +30,7 @@ import java.util.*;
  * the default {@link HashCharSetFactory} static provider ({@link #getDefaultFactory()}).
  *
  * @see HashCharSet
+ * @see KolobokeSet @KolobokeSet
  */
 public final class HashCharSets {
 

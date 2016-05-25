@@ -19,6 +19,7 @@ package com.koloboke.collect.set;
 
 import com.koloboke.collect.ContainerFactory;
 import com.koloboke.collect.Equivalence;
+import com.koloboke.compile.KolobokeSet;
 import com.koloboke.function.Consumer;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,7 @@ import java.util.Iterator;
  *                          by this factory // endif //
  * @param <F> the concrete factory type which extends this interface
  * @see CharSet
+ * @see KolobokeSet @KolobokeSet
  */
 public interface CharSetFactory</* if obj elem //E, // endif */
         F extends CharSetFactory</* if obj elem //E, // endif */F>> extends ContainerFactory<F> {

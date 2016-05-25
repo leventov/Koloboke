@@ -17,6 +17,9 @@
 package com.koloboke.collect.hash;
 
 
+import com.koloboke.compile.NullKeyAllowed;
+
+
 /**
  * Common configuration for factories of hash containers with {@code Object} keys.
  *
@@ -35,6 +38,12 @@ package com.koloboke.collect.hash;
  * <em>must</em> configure the corresponding factory to allow {@code null} keys:
  * <pre>{@code
  * factory = factory.withNullKeyAllowed(true);}</pre>
+ *
+ * <p>Koloboke Compile's counterpart of the {@code withNullKeyAllowed()} configuration is the {@link
+ * NullKeyAllowed @NullKeyAllowed} annotation. An important difference is that {@code
+ * ObjHashFactory} doesn't guarantee that constructed containers throws {@code NullPointerException}
+ * to enforce the {@code null} key disallowance in runtime, while {@code @NullKeyAllowed} does
+ * guarantee that.
  *
  * @param <F> the concrete factory type which extends this interface
  */

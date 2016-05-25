@@ -24,6 +24,8 @@ import com.koloboke.collect.hash.HashContainer;
 import com.koloboke.collect.map.CharShortMap;
 import com.koloboke.collect.set.hash.HashCharSet;
 import com.koloboke.collect.set.hash.HashObjSet;
+import com.koloboke.compile.KolobokeMap;
+
 import javax.annotation.Nonnull;
 
 
@@ -37,6 +39,7 @@ import javax.annotation.Nonnull;
  *
  * @see HashCharShortMapFactory
  * @see HashCharShortMaps
+ * @see KolobokeMap @KolobokeMap
  */
 public interface HashCharShortMap/*<>*/ extends CharShortMap/*<>*/, HashContainer {
 

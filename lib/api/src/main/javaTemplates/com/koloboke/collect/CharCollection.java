@@ -118,6 +118,12 @@ public interface CharCollection extends Collection<Character>, Container {
      * Returns a new cursor over this collection's elements. Cursor iteration order is always
      * corresponds to the {@linkplain #iterator() iterator}'s order.
      *
+     * <p>Basic cursor usage idiom is: <pre>{@code
+     * for (CharCursor//<>// cur = collection.cursor(); cur.moveNext();) {
+     *     // Work with cur.elem()
+     *     // Call cur.remove() to remove the current entry
+     * }}</pre>
+     *
      * @return a new cursor over this collection's elements
      * @see <a href="{@docRoot}/overview-summary.html#iteration">
      *     Comparison of iteration options in the library</a>

@@ -30,6 +30,12 @@ import javax.annotation.Nonnull;
  * A mutable pointer to the entry in an iteration of entries with {@code // raw //char} keys and
  * {@code // raw //short} values.
  *
+ * <p>Basic {@code CharShortCursor} usage idiom is: <pre>{@code
+ * for (CharShortCursor//<>// cur = map.cursor(); cur.moveNext();) {
+ *     // Work with cur.key() and cur.value()
+ *     // Call cur.remove() to remove the current entry
+ * }}</pre>
+ *
  * <p>See the <a href="{@docRoot}/overview-summary.html#iteration">comparison of iteration ways</a>
  * in the library.
  *

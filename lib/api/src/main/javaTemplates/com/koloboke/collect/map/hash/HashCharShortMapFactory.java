@@ -22,6 +22,8 @@ package com.koloboke.collect.map.hash;
 
 import com.koloboke.collect.*;
 import com.koloboke.collect.hash.*;
+import com.koloboke.compile.CustomKeyEquivalence;
+import com.koloboke.compile.KolobokeMap;
 import com.koloboke.function.Consumer;
 import com.koloboke.collect.map.*;
 
@@ -38,6 +40,7 @@ import java.util.Map;
  *
  * @see HashCharShortMap
  * @see HashCharShortMaps#getDefaultFactory()
+ * @see KolobokeMap @KolobokeMap
  */
 public interface HashCharShortMapFactory/*<>*/
         extends CharShortMapFactory</*bp*/HashCharShortMapFactory/*<>*/>
@@ -82,6 +85,9 @@ public interface HashCharShortMapFactory/*<>*/
      * Returns a copy of this factory, with exception that it constructs maps with
      * {@linkplain HashObjShortMap#keyEquivalence() key equivalence} set to the given
      * {@code Equivalence}.
+     *
+     * <p>The Koloboke Compile's counterpart of this configuration is the {@link
+     * CustomKeyEquivalence @CustomKeyEquivalence} annotation.
      *
      * @param keyEquivalence the new key equivalence
      * @return a copy of this factory, which constructs maps with the given {@code keyEquivalence}
