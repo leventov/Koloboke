@@ -82,9 +82,9 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
 
     @Override
     protected void generateNext() {
+        checkModCount(this, cxt, true);
         lines("int nextI;");
         ifBlock("(nextI = nextIndex) >= 0");
-        checkModCount(this, cxt, true);
         if (cxt.mutable())
             lines("index = nextI;");
         copyKeys(this, cxt);
@@ -92,10 +92,10 @@ public final class HashIteratorMethodGenerator extends IteratorMethodGenerator {
         lines(elemType() + " prev = next;");
         loop();
         ret("prev");
-        endOfModCountCheck(this, cxt);
         elseBlock();
         lines("throw new java.util.NoSuchElementException();");
         blockEnd();
+        endOfModCountCheck(this, cxt);
     }
 
     @Override
