@@ -65,7 +65,7 @@ configure([apiProject, implCommonProject, implProject]) {
         options.compilerArgs << '-XDignore.symbol.file'
         options.compilerArgs << '-Xlint:-deprecation' << '-Xlint:-overloads'
         options.fork = true
-        options.forkOptions.executable = "${System.properties['java.home']}/../../jdk-9/bin/javac"
+        options.forkOptions.executable = "${System.properties['java.home']}/../../jdk1.8/bin/javac"
     }
 
     test.testLogging.exceptionFormat = 'full'
