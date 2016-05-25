@@ -50,23 +50,23 @@ All this goodness for the cost of... the library is insanely fat. Currently it t
 Add to your Gradle build script:
 
     dependencies {
-        // `jdk8` instead of `jdk6-7` if you use Java 8
-        compile 'net.openhft:koloboke-api-jdk6-7:0.6.8'
-        runtime 'net.openhft:koloboke-impl-jdk6-7:0.6.8'
+        // `jdk6-7` instead of `jdk8` if you use Java 7 or older
+        compile 'com.koloboke:koloboke-api-jdk8:1.0.0'
+        runtime 'com.koloboke:koloboke-impl-jdk8:1.0.0'
     }
 
 Or Maven config (don't forget about jdk6-7/jdk8 suffix):
 
     <dependencies>
         <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>koloboke-api-jdk6-7</artifactId>
-            <version>0.6.8</version>
+            <groupId>com.koloboke</groupId>
+            <artifactId>koloboke-api-jdk8</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>koloboke-impl-jdk6-7</artifactId>
-            <version>0.6.8</version>
+            <groupId>com.koloboke</groupId>
+            <artifactId>koloboke-impl-jdk8</artifactId>
+            <version>1.0.0</version>
             <scope>runtime</scope>
         </dependency>
     <dependencies>
@@ -83,9 +83,9 @@ with
     Map<Integer, Integer> map = HashIntIntMaps.newMutableMap();
 
 Next step: see [the table of equivalents of JDK collection patterns]
-(http://leventov.github.io/Koloboke/api/0.6/java8/index.html#jdk-equivalents).
+(http://leventov.github.io/Koloboke/api/1.0/java8/index.html#jdk-equivalents).
 
-### JavaDoc: [Java 6] (http://leventov.github.io/Koloboke/api/0.6/java6/index.html) | [Java 7] (http://leventov.github.io/Koloboke/api/0.6/java7/index.html) | [Java 8] (http://leventov.github.io/Koloboke/api/0.6/java8/index.html)
+### JavaDoc: [Java 6] (http://leventov.github.io/Koloboke/api/1.0/java6/index.html) | [Java 7] (http://leventov.github.io/Koloboke/api/1.0/java7/index.html) | [Java 8] (http://leventov.github.io/Koloboke/api/1.0/java8/index.html)
 
 ### [Releases (with changelog)](https://github.com/leventov/Koloboke/releases)
 
