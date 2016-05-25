@@ -24,7 +24,7 @@ interface ForkJoinTasks {
     companion object {
         private val LOG = LoggerFactory.getLogger(ForkJoinTasks::class.java)
 
-        private val forkJoinTasks: ForkJoinTasks = try {
+        private var forkJoinTasks: ForkJoinTasks = try {
             RealForkJoinTasks()
         } catch (t: Throwable) {
             LOG.warn("Not found ForkJoinTask class, recommended to use JDK 8")
@@ -37,6 +37,10 @@ interface ForkJoinTasks {
 
         fun <T> invokeAll(tasks: Iterable<ForkJoinTaskShim<T>>) {
             forkJoinTasks.invokeAll(tasks)
+        }
+
+        fun useNoForkJoinPool() {
+            forkJoinTasks = NoForkJoinTasks()
         }
     }
 
