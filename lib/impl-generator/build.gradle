@@ -16,3 +16,12 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile project(':jpsg:core')
 }
+
+configurePublishing(project)
+version = meta_projects_version
+archivesBaseName = "koloboke-$project.name"
+poms*.whenConfigured { pom ->
+    pom.project {
+        name = "Koloboke Collections Implementation Methods Generator"
+    }
+}
