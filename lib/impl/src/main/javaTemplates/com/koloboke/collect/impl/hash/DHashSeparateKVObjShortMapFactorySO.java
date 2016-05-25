@@ -112,7 +112,7 @@ public abstract class DHashSeparateKVObjShortMapFactorySO<K/* if obj value //, V
     public /*p1*/<K2 extends K>/**/ MutableDHashSeparateKVObjShortMapGO/*p2*/<K2>/**/ newMutableMap(
             Map/*ep*/<? extends K2, Short>/**/ map, int expectedSize) {
         if (map instanceof ObjShortMap) {
-            // noinspection unchecked
+            @SuppressWarnings("unchecked")
             ObjShortMap/*p2*/<K2>/**/ objShortMap = (ObjShortMap/*p2*/<K2>/**/) map;
             if (map instanceof SeparateKVObjShortDHash) {
                 SeparateKVObjShortDHash hash = (SeparateKVObjShortDHash) map;

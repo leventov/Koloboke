@@ -170,6 +170,7 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
     /* endif */
 
     /* if compile project */@SuppressFBWarnings("BC_IMPOSSIBLE_CAST")/* endif */
+    @SuppressWarnings("unchecked")
     @Override
     public boolean containsAllEntries(Map<?, ?> m) {
         /* if impl project */
@@ -194,14 +195,12 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
                     return false;
                 if (InternalByteShortMapOps.class.isAssignableFrom(getClass()) &&
                         m2 instanceof InternalByteShortMapOps) {
-                    //noinspection unchecked
                     return ((InternalByteShortMapOps) m2).allEntriesContainingIn(
                             (InternalByteShortMapOps/*<?>*/)
                                     InternalByteShortMapOps.class.cast(this));
                 }
             /* if obj key || obj value */
             }
-            // noinspection unchecked
             /* endif */
             return m2.forEachWhile(new
                    /*f*/ByteShortPredicate/**/() {
@@ -930,12 +929,12 @@ public class MutableDHashSeparateKVByteShortMapGO/*<>*/
             /* template RemoveIf */ throw new NotGenerated(); /* endtemplate */
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public final boolean removeAll(@Nonnull Collection<?> c) {
             if (c instanceof InternalObjCollectionOps) {
                 InternalObjCollectionOps c2 = (InternalObjCollectionOps) c;
                 if (equivalence().equals(c2.equivalence()) && c2.size() < this.size()) {
-                    // noinspection unchecked
                     c2.reverseRemoveAllFrom(this);
                 }
             }

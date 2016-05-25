@@ -189,10 +189,10 @@ public abstract class DHashByteSetFactoryGO/*<>*/ extends DHashByteSetFactorySO/
     }
 
 
+    @SuppressWarnings("unchecked")
     private static /*<>*/ void addAll(UpdatableDHashByteSetGO/*<>*/ set,
             Iterable<? extends Byte> elems) {
         if (elems instanceof Collection) {
-            // noinspection unchecked
             set.addAll((Collection<? extends Byte>) elems);
         } else {
             for (byte e : elems) {

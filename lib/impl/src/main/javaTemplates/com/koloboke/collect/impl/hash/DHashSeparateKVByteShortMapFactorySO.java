@@ -71,8 +71,10 @@ public abstract class DHashSeparateKVByteShortMapFactorySO/*<>*/
         map.init(configWrapper, expectedSize);
         return map;
         /* elif !(float|double key) && !(LHash hash) && Mutable mutability */
-        // noinspection unchecked
-        return (MutableDHashSeparateKVByteShortMapGO/*p2*/) newMutableHash(expectedSize);
+        @SuppressWarnings("unchecked")
+        MutableDHashSeparateKVByteShortMapGO/*p2*/ res =
+                (MutableDHashSeparateKVByteShortMapGO/*p2*/) newMutableHash(expectedSize);
+        return res;
         /* elif LHash hash || Updatable mutability */
         MutableDHashSeparateKVByteShortMapGO/*p2*/ map = uninitializedMutableMap();
         map.init(configWrapper, expectedSize, getFree());

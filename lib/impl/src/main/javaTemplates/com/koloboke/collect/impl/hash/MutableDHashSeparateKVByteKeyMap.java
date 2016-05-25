@@ -305,6 +305,7 @@ public abstract class MutableDHashSeparateKVByteKeyMap/*<>*/
         }
         /* endif */
 
+        /* if obj key */@SuppressWarnings("unchecked")/* endif */
         @Override
         public boolean removeAll(@Nonnull Collection<?> c) {
             /* if !(obj key) */
@@ -315,7 +316,6 @@ public abstract class MutableDHashSeparateKVByteKeyMap/*<>*/
                     if (c2.size() < this.size()/* if obj key //
                             && equivalence().equals(c2.equivalence())
                             // endif */) {
-                        /* if obj key */// noinspection unchecked/* endif */
                         return c2.reverseRemoveAllFrom(this);
                     }
                 }

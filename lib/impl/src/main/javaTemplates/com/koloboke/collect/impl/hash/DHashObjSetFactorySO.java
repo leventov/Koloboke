@@ -67,6 +67,7 @@ public abstract class DHashObjSetFactorySO<E> extends ObjHashFactorySO<E>
     }
 
     /* if Updatable mutability */
+    @SuppressWarnings("unchecked")
     @Override
     @Nonnull
     public <E2 extends E> MutableDHashObjSetGO<E2> newMutableSet(Iterable<? extends E2> elements,
@@ -93,7 +94,6 @@ public abstract class DHashObjSetFactorySO<E> extends ObjHashFactorySO<E>
                 size = expectedSize;
             }
             MutableDHashObjSetGO<E2> set = newMutableSet(size);
-            // noinspection unchecked
             set.addAll((Collection<? extends E2>) elements);
             return set;
         } else {

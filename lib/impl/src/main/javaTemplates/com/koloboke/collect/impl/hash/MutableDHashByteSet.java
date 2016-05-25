@@ -32,10 +32,10 @@ public final class MutableDHashByteSet/*<>*/ extends MutableDHashByteSetGO/*<>*/
     static final class WithCustomEquivalence<E> extends MutableDHashObjSetGO<E> {
         Equivalence<? super E> equivalence;
 
+        @SuppressWarnings("unchecked")
         @Override
         @Nonnull
         public Equivalence<E> equivalence() {
-            // noinspection unchecked
             return (Equivalence<E>) equivalence;
         }
 

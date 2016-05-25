@@ -43,11 +43,11 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
         super(/* commonArgApply */);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     @Nonnull
     public HashObjSetFactory<E> withEquivalence(@Nonnull Equivalence<? super E> equivalence) {
         if (equivalence.equals(Equivalence.defaultEquality())) {
-            // noinspection unchecked
             return (HashObjSetFactory<E>) this;
         }
         return new WithCustomEquivalence<E>(/* commonArgGet */, (Equivalence<E>) equivalence);
@@ -97,13 +97,13 @@ public final class DHashObjSetFactoryImpl<E> extends DHashObjSetFactoryGO<E> {
         }
         /* endwith */
 
+        @SuppressWarnings("unchecked")
         @Override
         @Nonnull
         public HashObjSetFactory<E> withEquivalence(@Nonnull Equivalence<? super E> equivalence) {
             if (equivalence.equals(Equivalence.defaultEquality()))
                 return new DHashObjSetFactoryImpl<E>(/* commonArgGet */);
             if (this.equivalence.equals(equivalence)) {
-                // noinspection unchecked
                 return (HashObjSetFactory<E>) this;
             }
             return new WithCustomEquivalence<E>(/* commonArgGet */, (Equivalence<E>) equivalence);

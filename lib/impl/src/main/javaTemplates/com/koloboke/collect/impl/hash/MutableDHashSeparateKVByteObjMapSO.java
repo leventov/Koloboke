@@ -40,15 +40,15 @@ public abstract class MutableDHashSeparateKVByteObjMapSO</* if obj key //K, // e
     /* if Separate kv */
     V[] values;
 
+    @SuppressWarnings("unchecked")
     void copy(SeparateKVByteObjDHash hash) {
         super.copy(hash);
-        // noinspection unchecked
         values = (V[]) hash.valueArray().clone();
     }
 
+    @SuppressWarnings("unchecked")
     void move(SeparateKVByteObjDHash hash) {
         super.move(hash);
-        // noinspection unchecked
         values = (V[]) hash.valueArray();
     }
 
@@ -118,10 +118,10 @@ public abstract class MutableDHashSeparateKVByteObjMapSO</* if obj key //K, // e
     /* endif */
 
     /* if Separate kv */
+    @SuppressWarnings("unchecked")
     @Override
     void allocateArrays(int capacity) {
         super.allocateArrays(capacity);
-        // noinspection unchecked
         values = (V[]) new /* print newValueArrayType */Object/* endprint */[capacity];
     }
 

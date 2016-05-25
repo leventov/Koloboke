@@ -102,6 +102,7 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
     /* endif */
 
     /* if compile project */@SuppressFBWarnings("BC_IMPOSSIBLE_CAST")/* endif */
+    @SuppressWarnings("unchecked")
     @Override
     public boolean containsAll(@Nonnull Collection<?> c) {
         /* if impl project */
@@ -120,13 +121,11 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
                 }
                 if (ByteCollection.class.isAssignableFrom(getClass()) &&
                         c2 instanceof InternalByteCollectionOps) {
-                    // noinspection unchecked
                     return ((InternalByteCollectionOps) c2).allContainingIn(
                             (ByteCollection/*<?>*/) ByteCollection.class.cast(this));
                 }
             /* if obj elem */
             }
-            // noinspection unchecked
             /* endif */
             return c2.forEachWhile(new
                     /*f*/BytePredicate/**/() {
@@ -250,6 +249,7 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
 
     /* if compile project */@SuppressFBWarnings({"EC_UNRELATED_TYPES_USING_POINTER_EQUALITY"
             /* if Mutable mutability */, "BC_IMPOSSIBLE_CAST"/* endif */})/* endif */
+    /* if obj elem */@SuppressWarnings("unchecked")/* endif */
     @Override
     public boolean removeAll(@Nonnull Collection<?> c) {
         /* if Mutable mutability */
@@ -263,7 +263,6 @@ public class MutableDHashByteSetGO/*<>*/ extends MutableByteDHashSetSO/*<>*/
                 if (c2.size() < this.size()/* if obj elem //
                             && equivalence().equals(c2.equivalence())
                             // endif */) {
-                    /* if obj elem */// noinspection unchecked/* endif */
                     return c2.reverseRemoveAllFrom(
                             /* if impl project //this
                             /* elif compile project */(ByteSet/*<?>*/)
