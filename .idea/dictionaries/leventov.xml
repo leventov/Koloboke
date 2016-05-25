@@ -8,13 +8,16 @@
       <w>backports</w>
       <w>bytecode</w>
       <w>cond</w>
+      <w>delim</w>
       <w>deployer</w>
       <w>dhash</w>
+      <w>disallowance</w>
       <w>elems</w>
       <w>elif</w>
       <w>endconst</w>
       <w>enddefine</w>
       <w>endif</w>
+      <w>endprint</w>
       <w>endtemplate</w>
       <w>endwith</w>
       <w>exprs</w>
@@ -22,11 +25,13 @@
       <w>fild</w>
       <w>findbugs</w>
       <w>fmul</w>
+      <w>fromdocs</w>
       <w>github</w>
       <w>gradlew</w>
       <w>hashtable</w>
       <w>haswell</w>
       <w>hftc</w>
+      <w>hppc</w>
       <w>inlined</w>
       <w>ints</w>
       <w>inversed</w>
@@ -43,8 +48,12 @@
       <w>lookups</w>
       <w>megamorphic</w>
       <w>memoized</w>
+      <w>mutabilities</w>
       <w>nobr</w>
       <w>openhft</w>
+      <w>overloadings</w>
+      <w>overridable</w>
+      <w>parameterize</w>
       <w>polyfills</w>
       <w>precompute</w>
       <w>qhash</w>
@@ -64,6 +73,9 @@
       <w>unary</w>
       <w>unbox</w>
       <w>unboxed</w>
+      <w>underridden</w>
+      <w>underride</w>
+      <w>underriding</w>
       <w>uninstantiable</w>
       <w>updatable</w>
       <w>vals</w>
