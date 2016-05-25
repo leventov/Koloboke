@@ -21,6 +21,10 @@ def implProject = project('impl')
 configure([apiProject, implCommonProject, implProject, project('testing')]) {
     applyJpsg()
 
+    dependencies {
+        provided "com.google.code.findbugs:annotations:$findbugs_version"
+    }
+
     def jpsgTasks = [generateJavaSpecializations]
     def generateTestSpecializations = tasks.findByName('generateTestJavaSpecializations')
     if (generateTestSpecializations != null)
