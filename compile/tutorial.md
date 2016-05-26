@@ -161,10 +161,11 @@ abstract class MySet<E> implements Set<E> {
  prefix. A constructor of this class accepts an `int` parameter, that means the *expected size* of
  the map or set to construct.
  3. Use it:
- ```java
- Map<String, String> tickers = MyMap.withExpectedSize(10);
- tickers.put("AAPL", "Apple, Inc.");
- ```
+
+      ```java
+      Map<String, String> tickers = MyMap.withExpectedSize(10);
+      tickers.put("AAPL", "Apple, Inc.");
+      ```
 
 You can also construct `KolobokeMyMap` directly from anywhere within the package of `MyMap`, but it
 is recommended to reference the generated class only from static factory methods, defined in the
