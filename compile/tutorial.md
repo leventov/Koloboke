@@ -23,12 +23,12 @@
  - [Advanced usage](#advanced-usage)
    - [Custom key equivalence](#custom-key-equivalence)
      - [`IdentityHashMap`-like Koloboke map with primitive
-     values](#identityhashmap---like-koloboke-map-with-primitive-values)
+     values](#identityhashmap-like-koloboke-map-with-primitive-values)
    - [Underriding methods](#underriding-methods)
    - [Constructor parameters and fields](#constructor-parameters-and-fields)
    - [Model method renaming](#model-method-renaming)
      - [Lighter-weight alternative to
-     `Collections.synchronizedMap()`](#lighter-weight-alternative-to-collectionssynchronizedmap`)
+     `Collections.synchronizedMap()`](#lighter-weight-alternative-to-collectionssynchronizedmap)
    - [Default value in Maps with numeric primitive
    values](#default-value-in-maps-with-numeric-primitive-values)
  - [Best practices](#best-practices)
@@ -47,7 +47,7 @@
  - [IDE and tools configuration](#ide-and-tools-configuration)
    - [IntelliJ IDEA](#intellij-idea)
    - [Eclipse](#eclipse)
-   - [Other IDE + build tool combinations](#other-ide-build-tool-combinations)
+   - [Other IDE + build tool combinations](#other-ide--build-tool-combinations)
    - [FindBugs](#findbugs)
    - [Compiler warnings](#compiler-warnings)
  - [Known issues](#known-issues)
@@ -89,7 +89,7 @@ To start using Koloboke Compile, you should just add the following dependencies 
   <dependency>
     <groupId>com.koloboke</groupId>
     <artifactId>koloboke-compile</artifactId>
-    <version>0.5.0</version>
+    <version>0.5</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
@@ -102,22 +102,27 @@ To start using Koloboke Compile, you should just add the following dependencies 
 
 Or in your Gradle build script, in the `dependencies` block:
 ```groovy
-provided 'com.koloboke:koloboke-compile:0.5.0'
+provided 'com.koloboke:koloboke-compile:0.5'
 // `jdk6-7` instead of `jdk8` if you use Java 6 or 7
 compile 'com.koloboke:koloboke-impl-common-jdk8:1.0.0'
 ```
 
 The table of compatible versions:
 <table>
- <tr><th></th><th>`koloboke-compile`</th><th>`koloboke-impl-common-jdk*`</th></tr>
- <tr><td></td><td>0.5.0</td><td>1.0.0</td></tr>
+ <tr><th></th><th><code>koloboke-compile</code></th><th><code>koloboke-impl-common-jdk*</code></th>
+ </tr>
+ <tr><td></td><td>0.5</td><td>1.0.0</td></tr>
  <tr><td>Latest versions</td>
- <td>[![Maven Central](
-     https://maven-badges.herokuapp.com/maven-central/com.koloboke/koloboke-compile/badge.svg)](
-     https://maven-badges.herokuapp.com/maven-central/com.koloboke/koloboke-compile)</td>
- <td>[![Maven Central](
-https://maven-badges.herokuapp.com/maven-central/com.koloboke/koloboke-impl-common-jdk8/badge.svg)](
-https://maven-badges.herokuapp.com/maven-central/com.koloboke/koloboke-impl-common-jdk8)</td>
+ <td>
+ <a href="https://maven-badges.herokuapp.com/maven-central/com.koloboke/koloboke-compile">
+ <img src="https://maven-badges.herokuapp.com/maven-central/com.koloboke/koloboke-compile/badge.svg" />
+ </a>
+ </td>
+ <td>
+ <a href="https://maven-badges.herokuapp.com/maven-central/com.koloboke/koloboke-impl-common-jdk8">
+ <img src="https://maven-badges.herokuapp.com/maven-central/com.koloboke/koloboke-impl-common-jdk8/badge.svg" />
+ </a>
+ </td>
  </tr>
 </table>
 
@@ -1003,11 +1008,11 @@ Java compilation time (or IDE build time).
 Processing time should be improved in future versions of Koloboke Compile.
 
 ### Runtime dependencies
-Currently projects that use Koloboke Compile [should depend on `koloboke-impl-common`](
-#build-configuration) and transitively on `koloboke-api` even if Koloboke Collections classes
-and interfaces are never used in the project code. This is because Koloboke Compile generates
-implementations that depend on `koloboke-api` and `koloboke-impl-common`. Total size of those jars
-is about 1 MB.
+Currently projects that use Koloboke Compile [should depend on
+`koloboke-impl-common`](#build-configuration) and transitively on `koloboke-api` even if Koloboke
+Collections classes and interfaces are never used in the project code. This is because Koloboke
+Compile generates implementations that depend on `koloboke-api` and `koloboke-impl-common`. Total
+size of those jars is about 1 MB.
 
 Future versions of Koloboke Compile shouldn't have this requirement, allowing projects to have zero
 runtime dependencies.
