@@ -1,13 +1,13 @@
 # Koloboke Compile Tutorial
 
 ## Table of Contents
-
  - [Introduction](#introduction)
  - [Why I may want to use Koloboke Compile?](#why-i-may-want-to-use-koloboke-compile)
  - [Supported Java versions](#supported-java-versions)
  - [Build configuration](#build-configuration)
  - [Basic usage](#basic-usage)
-   - [Generic class](#generic-class)
+   - [Map-like generic class](#map-like-generic-class)
+   - [Set-like class](#set-like-class)
    - [Interface](#interface)
    - [Specialized class](#specialized-class)
    - [More reasonable static factory methods](#more-reasonable-static-factory-methods)
@@ -82,7 +82,6 @@ could be **1.6 or higher**.
 `javac` and Eclipse Compiler for Java (ECJ) are supported.
 
 ## Build configuration
-
 To start using Koloboke Compile, you should just add the following dependencies in your Maven
 `pom.xml`:
 ```xml
@@ -100,11 +99,15 @@ To start using Koloboke Compile, you should just add the following dependencies 
   </dependency>
 ```
 
-Or in your Gradle build script, in the `dependencies` block:
+Or in your Gradle build script, you should first apply the [`propdeps` Gradle plugin](
+https://github.com/spring-projects/gradle-plugins/tree/master/propdeps-plugin#overview) to enable
+`provided` dependencies, and then configure the `dependencies` block:
 ```groovy
-provided 'com.koloboke:koloboke-compile:0.5'
-// `jdk6-7` instead of `jdk8` if you use Java 6 or 7
-compile 'com.koloboke:koloboke-impl-common-jdk8:1.0.0'
+dependencies {
+    provided 'com.koloboke:koloboke-compile:0.5'
+    // `jdk6-7` instead of `jdk8` if you use Java 6 or 7
+    compile 'com.koloboke:koloboke-impl-common-jdk8:1.0.0'
+}
 ```
 
 The table of compatible versions:
@@ -127,10 +130,8 @@ The table of compatible versions:
 </table>
 
 ## Basic usage
-
-### Generic class
-
-Map-like class definition:
+### Map-like generic class
+Class definition:
 ```java
 import com.koloboke.compile.KolobokeMap;
 import java.util.Map;
@@ -143,20 +144,7 @@ abstract class MyMap<K, V> implements Map<K, V> {
 }
 ```
 
-Or Set-like class:
-```java
-import com.koloboke.compile.KolobokeSet;
-import java.util.Set;
-
-@KolobokeSet
-abstract class MySet<E> implements Set<E> {
-    static <E> Set<E> withExpectedSize(int expectedSize) {
-        return new KolobokeMySet<E>(expectedSize);
-    }
-}
-```
-
- 1. Annotate a Map-like class with `@KolobokeMap`, or a Set-like class with `@KolobokeSet`
+ 1. Annotate a Map-like class with `@KolobokeMap`
  2. Provide a static factory method, that instantiates a class called as your class with `Koloboke`
  prefix. A constructor of this class accepts an `int` parameter, that means the *expected size* of
  the map or set to construct.
@@ -180,8 +168,21 @@ and don't keep the insertion order.** Currently there are no other options, but 
 Compile may learn how to generate tree-based, concurrent, ordered implementations, and any
 combinations of these.
 
-### Interface
+### Set-like class
+Use Koloboke Compile for Set-like classes the same way as for Map-like classes:
+```java
+import com.koloboke.compile.KolobokeSet;
+import java.util.Set;
 
+@KolobokeSet
+abstract class MySet<E> implements Set<E> {
+    static <E> Set<E> withExpectedSize(int expectedSize) {
+        return new KolobokeMySet<E>(expectedSize);
+    }
+}
+```
+
+### Interface
 The type to be implemented could also be an interface:
 ```java
 @KolobokeMap
@@ -192,7 +193,6 @@ prior to Java 8, hence you cannot place static factory methods directly in the i
 interface.
 
 ### Specialized class
-
 Your class shouldn't be a generic class, like `java.util.Map`. It could be specialized for your use
 case:
 
@@ -212,7 +212,6 @@ tickers.put("AAPL", "Apple, Inc.");
 ```
 
 ### More reasonable static factory methods
-
 More examples of useful static factory methods, that you could write for your class:
 ```java
 @KolobokeMap
@@ -234,7 +233,6 @@ abstract class Tickers implements Map<String, String> {
 ```
 
 ### Reduce API
-
 Your class shouldn't extend `java.util.Map`. You could declare just a few abstract methods
 "from Map interface" that you need directly in your class, and Koloboke Compile will generate a
 smaller class, that implements only those methods:
@@ -272,7 +270,6 @@ methods on your own, it is recommended to stick to "generified" versions, becaus
 safety of usage of your class.
 
 ### Extend API
-
 Koloboke Compile supports not just `java.util.Map` and `java.util.Set` interfaces, but their
 extended versions from the Koloboke Collections API, i. e. [`HashObjObjMap`](
 http://leventov.github.io/Koloboke/api/1.0/java8/com/koloboke/collect/map/hash/HashObjObjMap.html)
@@ -326,7 +323,6 @@ abstract class ExtendedMap<V> {
 ```
 
 ### Primitive specializations
-
 If you specialize Map's key and/or value type to a primitive wrapper class on the declaration site,
 Koloboke Compile will automatically generate an implementation which internally stores keys and/or
 values in primitive arrays:
@@ -419,7 +415,6 @@ href="http://leventov.github.io/Koloboke/api/1.0/java8/com/koloboke/collect/map/
 </table>
 
 ### Reference keys, primitive values
-
 `Map`'s methods, where key or value type (or both) are specialized to primitive usually have the
 names, except when the key type is still a reference type (a type variable, or a concrete class
 which is not a primitive wrapper class), and the value type is a numeric primitive type, the 2nd row
@@ -445,7 +440,6 @@ interface.
 
 
 ## Implementation Customizations
-
 This section describes ways to make Koloboke Compile to generate a different implementation for
 the same annotated class or interface, using special annotations.
 
@@ -457,7 +451,6 @@ than one customization could be applied to the same type, there are no restricti
 could be combined.
 
 ### Reduce mutability
-
 Annotate a Map- or a Set-like class or interface with [`@Updatable`](
 http://leventov.github.io/Koloboke/compile/0.5/com/koloboke/compile/mutability/Updatable.html) to
 make Koloboke Compile to generate implementation which throws `UnsupportedOperationException` in
@@ -477,7 +470,6 @@ This is not only recommended in *Effective Java*, Item 15, but also often allows
 generate a faster optimized implementation.
 
 ### Allow the `null` key
-
 By default, Koloboke Compile generates map and set implementations that both *disallow* the `null`
 key to be inserted and even queried (like `map.get(null)`), always throwing `NullPointerException`.
 
@@ -509,7 +501,6 @@ type or a wrapper class of a numeric primitive type (that is actually [the same
 thing](#primitive-specializations) for Koloboke Compile).
 
 ### Hash table configuration
-
 Actually Koloboke Compile-generated classes (those that start with `Koloboke-` prefix) has two
 constructors: the first (only this one is used in all examples above in this tutorial) accepts a
 single `int` argument, that means the *expected size* of the map or set to construct. The second
@@ -567,7 +558,6 @@ http://leventov.github.io/Koloboke/compile/0.5/com/koloboke/compile/hash/algo/op
 package.
 
 ## [Javadocs](http://leventov.github.io/Koloboke/compile/0.5/overview-summary.html)
-
 Please read [`@KolobokeMap`](
 http://leventov.github.io/Koloboke/compile/0.5/com/koloboke/compile/KolobokeMap.html) or
 [`@KolobokeSet`](
@@ -576,9 +566,7 @@ comprehensive information about requirements to annotated classes or interfaces,
 the generated implementations, available implementation customizations, etc.
 
 ## Advanced usage
-
 ### Custom key equivalence
-
 If a Set-like or a Map-like type has a reference key type (a type variable like `K`, or a concrete
 reference type like `String`), by default Koloboke Compile generates implementation which uses
 built-in Java equality (via `Object.equals()` and `hashCode()` methods) to compare keys. To modify
@@ -649,7 +637,6 @@ abstract class IdentityToIntMap<K> implements Map<K, Integer> {
 ```
 
 ### Underriding methods
-
 `@KolobokeMap`- or `@KolobokeSet`-annotated types could have non-abstract methods (concrete methods
 in abstract classes or *default* methods in interfaces), Koloboke Compile doesn't override them even
 if otherwise it would implement them in generated classes. [Auto Value](
@@ -672,7 +659,6 @@ abstract class SmallerLongIntMap extends AbstractMap<Long, Integer> {
 ```
 
 ### Constructor parameters and fields
-
 The Map- or Set-like abstract class could have a single non-private constructor with some
 parameters. In this case list of parameters of both [Koloboke implementation constructors](
 http://leventov.github.io/Koloboke/compile/0.5/com/koloboke/compile/KolobokeMap.html#constructors)
@@ -733,7 +719,6 @@ implementation for `ConfigurableKeyEquivalenceMap`, which has a constructor with
 parameter, has constructors with `Equivalence, int` and `Equivalence, HashConfig, int` parameters.
 
 ### Model method renaming
-
 By default Koloboke Compile generates implementations for methods, that match some *method forms*,
 i. e. have "right" names, parameter and return types, -- corresponding to methods, defined in `Map`
 or `Set` interface, or [their extensions](#prototyping-interfaces) in the Koloboke Collections API.
@@ -846,7 +831,6 @@ http://leventov.github.io/Koloboke/compile/0.5/com/koloboke/compile/KolobokeMap.
 in `@KolobokeMap` javadocs for more information.
 
 ## Best practices
-
 In the order of importance (more important practices go first):
 
 ### Mark all concrete methods `final`
@@ -872,7 +856,6 @@ In the order of importance (more important practices go first):
  - Koloboke Compile generates smaller implementation.
 
 ### Use `@Updatable` when applicable
-
 If you need your abstract class or interface to be a subclass of `Map` or `Set`, but you don't
 actually need individual entry or element removal operations on it, you should always [reduce
 mutability](#reduce-mutability) by annotating the implemented type with `@Updatable`. Apart from
@@ -896,7 +879,6 @@ showing up in your generated API documentation. Whether these benefits are worth
 the file is a matter of your judgment.
 
 ## Achieving maximum performance
-
 ### Follow best practices
  - [Mark all concrete methods `final`](#mark-all-concrete-methods-final)
  - [Do reduce API](#do-reduce-api)
@@ -904,7 +886,6 @@ the file is a matter of your judgment.
  - [Prefer abstract classes to interfaces](#prefer-abstract-classes-to-interfaces)
 
 ### Use `justPut()` and `justRemove()` methods
-
 Koloboke Compile can generate implementations for methods `void justPut(KeyType, ValueType)` and
 `boolean justRemove(KeyType)`, they are slightly more efficient than classic `put()` and `remove()`
 because don't have to return previously mapped value:
@@ -945,20 +926,16 @@ http://leventov.github.io/Koloboke/compile/0.5/com/koloboke/compile/ConcurrentMo
 for this annotation for more details.
 
 ## Samples
-
 You can find all samples from this tutorial and Javadocs in the
 [`com.koloboke.compile.fromdocs`](src/test/java/com/koloboke/compile/fromdocs) package.
 
 ## IDE and tools configuration
-
 ### IntelliJ IDEA
-
 If you use [Maven or Gradle build](#build-configuration), you merely have to check the "Enable
 Annotation Processing" box on the IntelliJ Annotation Processing Settings screen:
 ![IntelliJ Annotation Processing Settings](idea-annotation-processor-preferences.png)
 
 ### Eclipse
-
 If you use Maven:
 
  1. Install the `m2e-apt` Eclipse plugin. Go to Help > Eclipse Marketplace, type `m2e-apt` into the
@@ -978,7 +955,6 @@ tools:
  - [RESTX](http://restx.io/docs/ide.html)
 
 ### FindBugs
-
 Normally FindBugs shouldn't complain about code generated by Koloboke Compile. Koloboke Compile
 strives to suppress all FindBugs's false positives on the generated sources. If FindBugs *does*
 emit warnings about Koloboke Compile-generated code, the case deserves close investigation and
@@ -987,7 +963,6 @@ Compile. If you think this is a bug in Koloboke Compile, please report it via [G
 https://github.com/leventov/Koloboke/issues).
 
 ### Compiler warnings
-
 `javac` and ECJ shouldn't generally report warnings about the Koloboke Compile-generated source
 code, except about `sun.misc.Unsafe` usages. To disable them, you could provide
 `-XDenableSunApiLintControl -Xlint:-sunapi` arguments to `javac`. See instructions on how to
@@ -1001,7 +976,6 @@ compileJava {
 ```
 
 ## Known issues
-
 ### Slow compilation
 Currently each `@KolobokeMap`- or `@KolobokeSet`-annotated class adds 2-3 seconds to the overall
 Java compilation time (or IDE build time).
