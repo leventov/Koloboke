@@ -929,6 +929,10 @@ for this annotation for more details.
 You can find all samples from this tutorial and Javadocs in the
 [`com.koloboke.compile.fromdocs`](src/test/java/com/koloboke/compile/fromdocs) package.
 
+Outside this repository, you can find proof of concept implementation of interfaces from the Trove
+collections library in the [trove-over-koloboke-compile](
+https://github.com/leventov/trove-over-koloboke-compile) project.
+
 ## IDE and tools configuration
 ### IntelliJ IDEA
 If you use [Maven or Gradle build](#build-configuration), you merely have to check the "Enable
