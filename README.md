@@ -1,6 +1,7 @@
-# [Koloboke](https://koloboke.com)
+# Koloboke
 
-A family of projects around collections in Java (so far).
+A family of projects around collections in Java ([so far](
+https://koloboke.com/compile/koloboke-compile-for-languages-other-than-java/)).
 
 ## The Koloboke Collections API
 [![koloboke-api maven central](
