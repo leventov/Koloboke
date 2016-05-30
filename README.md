@@ -1,4 +1,4 @@
-## [Koloboke](https://koloboke.com)
+# [Koloboke](https://koloboke.com)
 
 A family of projects around collections in Java (so far).
 
@@ -54,6 +54,8 @@ dependencies {
     compile 'com.koloboke:koloboke-impl-common-jdk8:1.0.0'
 }
 ```
+
+Next step: read the [Koloboke Compile tutorial](compile/tutorial.md).
 
 ## [The Koloboke implementation library](https://koloboke.com/implementation-library)
 [![koloboke-impl maven central](
@@ -117,6 +119,8 @@ Next step: see [the table of equivalents of JDK collection patterns]
 ### Contributing, Feedback & Support
 Use [issues](https://github.com/leventov/Koloboke/issues) or ask a question on
 [StackOverflow](stackoverflow.com/questions/tagged/koloboke).
+
+---
 
 ### How to build and develop
 Gradle build requires Java 8 compiler, set `JAVA_HOME` environment variable to the JDK 8 location.
