@@ -21,6 +21,10 @@ more. Java 6+. Apache 2.0 license.
 | [Java 8](http://leventov.github.io/Koloboke/api/1.0/java8/index.html)**
 
 ## [Koloboke Compile](https://koloboke.com/compile)
+[![koloboke-compile maven central](
+https://maven-badges.herokuapp.com/maven-central/com.koloboke/koloboke-compile/badge.svg)](
+https://maven-badges.herokuapp.com/maven-central/com.koloboke/koloboke-compile)
+
 An annotation processor, generates implementations for collection-like abstract classes or
 interfaces. API agnostic, may be used to generate implementation for classes or interfaces,
 extending interfaces from the Koloboke Collections API, or, for example, [interfaces from the Trove
@@ -56,6 +60,8 @@ dependencies {
 ```
 
 Next step: read the [Koloboke Compile tutorial](compile/tutorial.md).
+
+[**Javadocs**](http://leventov.github.io/Koloboke/compile/0.5/index.html)
 
 ## [The Koloboke implementation library](https://koloboke.com/implementation-library)
 [![koloboke-impl maven central](
