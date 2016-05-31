@@ -88,7 +88,7 @@ To start using Koloboke Compile, you should just add the following dependencies 
   <dependency>
     <groupId>com.koloboke</groupId>
     <artifactId>koloboke-compile</artifactId>
-    <version>0.5</version>
+    <version>0.5.1</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
@@ -104,7 +104,7 @@ https://github.com/spring-projects/gradle-plugins/tree/master/propdeps-plugin#ov
 `provided` dependencies, and then configure the `dependencies` block:
 ```groovy
 dependencies {
-    provided 'com.koloboke:koloboke-compile:0.5'
+    provided 'com.koloboke:koloboke-compile:0.5.1'
     // `jdk6-7` instead of `jdk8` if you use Java 6 or 7
     compile 'com.koloboke:koloboke-impl-common-jdk8:1.0.0'
 }
@@ -114,7 +114,7 @@ The table of compatible versions:
 <table>
  <tr><th></th><th><code>koloboke-compile</code></th><th><code>koloboke-impl-common-jdk*</code></th>
  </tr>
- <tr><td></td><td>0.5</td><td>1.0.0</td></tr>
+ <tr><td></td><td>0.5-0.5.1</td><td>1.0.0</td></tr>
  <tr><td>Latest versions</td>
  <td>
  <a href="https://maven-badges.herokuapp.com/maven-central/com.koloboke/koloboke-compile">
