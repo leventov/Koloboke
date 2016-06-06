@@ -326,7 +326,7 @@ import java.util.*;
  * classes, a possible workaround is to declare new abstract method(s) having the same parameter and
  * return types as the underridden method(s) which caused undesirable semantics change of other
  * methods, but with different names, and annotate them with {@link
- * MethodForm @MethodForm("nameOfTheUnderriddenMethod"}. This makes Koloboke Compile to "remap"
+ * MethodForm @MethodForm("nameOfTheUnderriddenMethod")}. This makes Koloboke Compile to "remap"
  * usages of the underridden methods in the generated implementation (usages, which statically
  * resolve to the underridden methods, i. e. where the type of the method call
  * receiver is the implemented type or the implementation type, but not a supertype of the
