@@ -105,11 +105,13 @@ public final class HashCursorMethodGenerator extends CursorMethodGenerator {
     protected void generateSetValue() {
         ifBlock(INSTANCE.isNotFree(cxt, "curKey"));
         checkModCount(this, cxt, false);
-        INSTANCE.writeValue(this, cxt, "index", unwrapValue("value"));
+        lines(cxt.valueUnwrappedType() + " unwrappedValue = curValue = " + unwrapValue("value") +
+                ";");
+        INSTANCE.writeValue(this, cxt, "index", "unwrappedValue");
         if (possibleArrayCopyOnRemove(cxt)) {
             String tableHaveCopied = INSTANCE.parallelKV(cxt) ? "tab != table" : "vals != values";
             ifBlock(tableHaveCopied); {
-                INSTANCE.writeValue(this, cxt, "table", "values", "index", unwrapValue("value"));
+                INSTANCE.writeValue(this, cxt, "table", "values", "index", "unwrappedValue");
             } blockEnd();
         }
         endOfModCountCheck(this, cxt);
